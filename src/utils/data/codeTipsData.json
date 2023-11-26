@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "category":"pl",
+    "title": "Understand the Problem First",
+    "description": "Before diving into coding, it's vital to comprehend the problem you're solving. Let's say we need to find the maximum number in an array. Understanding the problem leads us to a simple solution.",
+    "snippet": "int[] numbers = {1, 3, 5, 7, 9};\nint max = Arrays.stream(numbers).max().getAsInt();\nSystem.out.println(\"Max number is: \" + max);",
+    "source":{
+      "name":"twitter",
+      "link":"www.twitter.com"
+    }
+  },
+  {
+    "id": 2,
+    "category":"pl",
+    "title": "Plan Your Code",
+    "description": "Planning your code can save you from future headaches. For instance, if we're creating a class to represent a `Person`, we can plan the attributes and methods this class should have:",
+    "snippet": "class Person {\n  String name;\n  int age;\n\n  Person(String name, int age) {\n    this.name = name;\n    this.age = age;\n  }\n\n  void sayHello() {\n    System.out.println(\"Hello, my name is \" + name);\n  }\n}",
+    "source":{
+      "name":"twitter",
+      "link":"www.twitter.com"
+    }
+  },
+  {
+    "id": 3,
+    "category":"pl",
+    "title": "Test your Code",
+    "description": "Testing ensures your code works as expected. Here's a simple JUnit test:",
+    "snippet": "@Test\npublic void testMaxNumber() {\nint[] numbers = {1, 3, 5, 7, 9};\n\nint max = Arrays.stream(numbers).max().getAsInt();\nassertEquals(9, max);}",
+    "source":{
+      "name":"twitter",
+      "link":"www.twitter.com"
+    }
+  },
+  {
+    "id": 4,
+    "category":"interview",
+    "title": "Know the interviewer's name, its spelling, and pronunciation.",
+    "description": "Use it during the interview. If you don’t know the name, call beforehand and ask the secretary. Also, note the secretary’s name in case you have to call back. Secretaries can influence the hiring decision!",
+    "snippet": "",
+    "source":{
+      "name":"twitter",
+      "link":"www.twitter.com"
+    }
+  },
+  {
+    "id": 5,
+    "category":"interview",
+    "title": "Have a reliable pen and a small note pad with you.",
+    "description": "But do not take notes during the interview. However, immediately afterward, write down as much as you can remember, including your impression of how well you did.",
+    "snippet": "",
+    "source":{
+      "name":"twitter",
+      "link":"www.twitter.com"
+    }
+  }
+]
