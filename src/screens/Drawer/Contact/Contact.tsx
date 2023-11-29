@@ -1,10 +1,10 @@
 import { SafeAreaView, StyleSheet, View, Text } from 'react-native'
 // import { WebView } from "react-native-webview";
 import React from 'react'
-import { useNavigation } from '@react-navigation/native'
-import Header from '../../NewsDetails/helperComponents/Header';
-import { Feather, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
+import Header from '../../../components/Header/Header';
+import { useNavigation } from '@react-navigation/native';
 import { COLOR, FONTSIZE } from '../../../constants/contants';
+import { Feather, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
 
 const Contact = () => {
   const navigation = useNavigation();
