@@ -11,16 +11,16 @@ import {
 
 import * as Updates from 'expo-updates';
 
-// constants
-import { COLOR } from '../../constants/contants'
-
 import { AppContext } from '../../helper/context/AppContext'
 
+// components 
 import TabBar from '../../routes/TabBar'
-
 import Loading from '../../components/Loading/Loader';
 import Header from '../../components/Header/Header';
+
+// constants
 import { useFonts } from 'expo-font';
+import { COLOR } from '../../constants/contants'
 
 const Home = () => {
 
@@ -38,7 +38,7 @@ const Home = () => {
         // Since updates are available, notify the user about the updates available
         Alert.alert(
           "Update available",
-          "Don't miss out on the latest Ablist features. Tap 'UPDATE' to update your app now.",
+          "Don't miss out on the latest Insightify features. Tap 'UPDATE' to update your app now.",
           [
             {
               text: "UPDATE",
@@ -53,7 +53,10 @@ const Home = () => {
           ],
           {
             cancelable: true,
-            onDismiss() { },
+            onDismiss: async () => {
+              // await Updates.fetchUpdateAsync();
+              // await Updates.reloadAsync();
+            },
           }
         )
       }

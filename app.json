@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F36C32"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -18,11 +18,12 @@
       "supportsTablet": true
     },
     "android": {
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.android.Insightify"
+      "package": "com.Insightify"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,6 +32,12 @@
       "eas": {
         "projectId": "71c972bf-a293-4e64-96a6-f4cb003fb30c"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/71c972bf-a293-4e64-96a6-f4cb003fb30c"
     }
   }
 }

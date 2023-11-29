@@ -8,5 +8,6 @@ declare module '@env' {
   export const APPWRITE_PROJECT_ENDPOINT:string
   export const APPWRITE_CODETIPS_COLLECTION_ID:string
   export const APPWRITE_ARTICLES_COLLECTION_ID:string
-  export const APPWRITE_SERVICEREQUESTS_COLLECTION_ID:string
+  export const APPWRITE_FEEDBACK_COLLECTION_ID:string
+  export const APPWRITE_SERVICEREQUESTS_COLLECTION_ID: string
 }

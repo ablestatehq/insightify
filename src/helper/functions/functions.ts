@@ -38,3 +38,8 @@ export function ArticleLifeSpan(date: string) {
     return `${seconds} seconds`
   }
 }
+
+
+export function removeHTMLEntities(text: string): string {
+  return text.replace(/&[^\s]*;|&#(\d+|[a-fA-F]+);/g, '')
+}

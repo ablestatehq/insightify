@@ -19,6 +19,7 @@ type RootStackParamList = {
     articleContent: string,
   };
   CodeTips: undefined;
+  Privacy: undefined
 }
 type userModal = {
   email: string
@@ -69,6 +70,12 @@ type ArticleType = {
   author: Author
 }
 
+interface FeedbackObject {
+  rating: number
+  whatToImprove: string
+  suggestion:string
+}
+
 export {
   NewsRouteParams,
   RootStackParamList,
@@ -77,5 +84,6 @@ export {
   userModal,
   ExpandableListItemProps,
   HomeDisplayProps,
-  ArticleType
+  ArticleType,
+  FeedbackObject
 }

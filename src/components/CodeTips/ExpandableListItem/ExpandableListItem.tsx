@@ -6,13 +6,13 @@ import {
 } from 'react-native';
 import React from 'react';
 import onShare from '../../../utils/onShare';
-import { Feather, FontAwesome } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import CodeHighlighter from "react-native-code-highlighter";
 import { COLOR, FONTSIZE } from '../../../constants/contants';
 import { ExpandableListItemProps } from '../../../utils/types';
 import { atomOneDarkReasonable } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-const ExpandableListItem:React.FC<ExpandableListItemProps> = (
+const ExpandableListItem: React.FC<ExpandableListItemProps> = (
   {
     title,
     index,
@@ -173,8 +173,8 @@ const ExpandableListItem:React.FC<ExpandableListItemProps> = (
             }}
             onPress={() => onShare(message)}
           >
-            <FontAwesome
-              name="share"
+            <Feather
+              name="share-2"
               size={20}
               color={COLOR.B_300}
             />
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     borderColor: COLOR.GREY_75,
     borderWidth: 0.2,
-    flex:1
+    flex: 1
   },
   itemPressable: {
     height: 100,
@@ -213,17 +213,17 @@ const styles = StyleSheet.create({
     fontSize: FONTSIZE.TITLE_1,
   },
   itemsourceName: {
-    fontSize: FONTSIZE.BODY,
+    // fontSize: FONTSIZE.BODY,
     color: COLOR.GREY_100,
   },
   itemLink: {
-    fontSize: FONTSIZE.BODY,
+    // fontSize: FONTSIZE.BODY,
     color: COLOR.B_300,
   },
   itemContent: {
-    fontSize: FONTSIZE.TITLE_1,
+    fontSize: FONTSIZE.BODY,
     color: COLOR.GREY_100,
-    fontFamily:"ComfortaaMedium"
+    fontFamily: "ComfortaaMedium"
   },
   codeSnippet: {
     width: '100%',
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   text: {
-    fontFamily:'ComfortaaMedium'
+    fontFamily: 'ComfortaaMedium'
   },
   titleViewStyle: {
     flex: 1,
