@@ -1,23 +1,21 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, View,Text } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { COLOR, FONTSIZE } from '../../constants/contants';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 
+
 interface HeaderProps {
   title?: string
-  iconName?: any
 }
-
 
 const Header = (
   {
     title,
-    iconName,
   }: HeaderProps
 ) => {
   const navigation = useNavigation();
-  
+
   // open drawer 
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer())
@@ -31,7 +29,8 @@ const Header = (
           flexDirection: 'row',
           paddingHorizontal: 10,
           alignItems: 'center',
-          gap:30
+          gap: 30,
+          // justifyContent:'space-between'
         }}
       >
         <Ionicons
@@ -40,7 +39,23 @@ const Header = (
           color={COLOR.B_300}
           onPress={openDrawer}
         />
-        <Text style={styles.text}>{title}</Text>
+        {title && <Text style={styles.text}>{title}</Text>}
+        {/* <View style={styles.headerIcons}>
+          <View>
+            <View
+              style={{
+                width: 6,
+                right: 0,
+                height: 6,
+                borderRadius: 6,
+                position: 'absolute',
+                backgroundColor: COLOR.DANGER,
+              }}
+            />
+            <Ionicons name="md-notifications-outline" size={25} color={COLOR.B_300} />
+          </View>
+          <Ionicons name="person-circle-outline" size={25} color={COLOR.B_300} />
+        </View> */}
       </View>
 
     </View >
@@ -54,11 +69,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     borderBottomWidth: 1,
     borderBottomColor: COLOR.GREY_50,
-    paddingVertical:10
+    paddingVertical: 10
   },
   text: {
     color: COLOR.B_300,
     fontSize: FONTSIZE.HEADING_5,
     marginRight: 10
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    gap: 5
   }
 })
