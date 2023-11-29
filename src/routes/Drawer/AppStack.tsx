@@ -4,9 +4,9 @@ import CustomDrawerContent from "./CustomDrawerContent";
 import Contact from "../../screens/Drawer/Contact/Contact";
 import Privacy from "../../screens/Drawer/Privacy/Privacy";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import FeedBack from "../../screens/Drawer/FeedBack/FeedBack";
 
 const Drawer = createDrawerNavigator();
-
 
 const AppStack = () => {
 
@@ -15,7 +15,10 @@ const AppStack = () => {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerShown: false,
-        drawerActiveTintColor: COLOR.ORANGE_300
+        drawerActiveTintColor: COLOR.ORANGE_300,
+        drawerStyle: {
+          backgroundColor:'transparent'
+        }
       }}
     >
       <Drawer.Screen
@@ -32,11 +35,18 @@ const AppStack = () => {
           title: 'Contact',
         }}
       />
-      <Drawer.Screen
-        name='Privacy'
-        component={Privacy}
+      {/* <Drawer.Screen
+        name='Solutions'
+        component={Contact}
         options={{
-          title: 'Privacy Policy'
+          title: 'Solution',
+        }}
+      /> */}
+      <Drawer.Screen
+        name="Feedback"
+        component={FeedBack}
+        options={{
+          title:'Share your Feedback'
         }}
       />
     </Drawer.Navigator>
