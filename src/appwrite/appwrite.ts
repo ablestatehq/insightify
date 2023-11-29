@@ -1,6 +1,6 @@
 import { Client, Databases, ID, Query } from "appwrite";
 import { environments } from "../constants/environments";
-import { TalentSubmissionForm, userModal } from "../utils/types";
+import { FeedbackObject, TalentSubmissionForm, userModal } from "../utils/types";
 
 export const appwriteClient = new Client();
 
@@ -28,7 +28,7 @@ const {
     }
   }
    
-  async storeDBdata(databaseID: string, collectionID: string, data:userModal | TalentSubmissionForm) {
+  async storeDBdata(databaseID: string, collectionID: string, data:userModal | TalentSubmissionForm | FeedbackObject) {
     try {
       return this.databases.createDocument(databaseID, collectionID, ID.unique(),data)
     } catch (error:any) {
