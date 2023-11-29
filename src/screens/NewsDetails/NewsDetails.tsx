@@ -30,6 +30,7 @@ import {
   NativeStackNavigationProp
 } from '@react-navigation/native-stack';
 import { DetailsScreenProps } from '../../utils/types';
+import { removeHTMLEntities } from '../../helper/functions/functions'
 
 const NewsDetails = () => {
 
@@ -89,7 +90,7 @@ const NewsDetails = () => {
           }}
           numberOfLines={4}
         >
-          {params?.title}
+          {removeHTMLEntities(params?.title as string)}
         </Text>
         <Text
           style={{
@@ -99,7 +100,7 @@ const NewsDetails = () => {
             fontFamily: "RalewayRegular"
           }}
         >
-          { params?.articleContent.match(/[^.!?]+[.!?]+/g)?.slice(0,2).join(" ")}
+          {removeHTMLEntities(params?.articleContent.match(/[^.!?]+[.!?]+/g)?.slice(0, 2).join(" ") as string)}
         </Text>
 
         <Image
@@ -135,8 +136,8 @@ const NewsDetails = () => {
               fontSize: FONTSIZE.HEADING_5,
               lineHeight: 25,
             }}
-          >{params?.articleContent.match(/[^.!?]+[.!?]+/g)?.slice(2).join(" ")[1]}</Text>
-          {params?.articleContent.match(/[^.!?]+[.!?]+/g)?.slice(2).join(" ").slice(2,)}
+          >{removeHTMLEntities(params?.articleContent.match(/[^.!?]+[.!?]+/g)?.slice(2).join(" ")[1] as string)}</Text>
+          {removeHTMLEntities(params?.articleContent.match(/[^.!?]+[.!?]+/g)?.slice(2).join(" ").slice(2,) as string)}
         </Text >
 
         <View
