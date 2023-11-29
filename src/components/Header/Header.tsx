@@ -31,7 +31,7 @@ const Header = (
           flexDirection: 'row',
           paddingHorizontal: 10,
           alignItems: 'center',
-          gap:50
+          gap:30
         }}
       >
         <Ionicons
@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     borderBottomWidth: 1,
     borderBottomColor: COLOR.GREY_50,
+    paddingVertical:10
   },
   text: {
     color: COLOR.B_300,
