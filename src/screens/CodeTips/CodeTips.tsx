@@ -2,15 +2,14 @@ import {
   ScrollView,
   StyleSheet,
   View,
-  useWindowDimensions,
 } from 'react-native'
-import React, { useContext, useRef } from 'react';
+import React, { useContext } from 'react';
 // constants 
 import { COLOR } from '../../constants/contants';
 
 // components 
 import ExpandableListItem from '../../components/CodeTips/ExpandableListItem/ExpandableListItem';
-import Carousel from 'react-native-snap-carousel';
+// import Carousel from 'react-native-snap-carousel';
 
 
 import { AppContext } from '../../helper/context/AppContext';
@@ -21,40 +20,39 @@ const CodeTips = () => {
   const [expandedIndex, setExpandedIndex] = React.useState<number | null>(0)
   
   // useRef hook
-  const carouselRef = useRef(null);
+  // const carouselRef = useRef(null);
 
-  const setCarouselRef = (c: any) => {
-    carouselRef.current = c;
-  };
+  // const setCarouselRef = (c: any) => {
+  //   carouselRef.current = c;
+  // };
 
   // useWindowDimensions
-  const { width: windowWidth } = useWindowDimensions();
+  // const { width: windowWidth } = useWindowDimensions();
 
 
   const handleToggleExpand = (index: number) => {
     setExpandedIndex((prevIndex) => (prevIndex === index ? null : index))
   }
 
-  const renderCodeTips = ({ item, index }: { item: any, index: number }) => {
-    return (
-      <ExpandableListItem
-        key={index}
-        title={item.title}
-        index={index}
-        sourceName={`Berkeley Boot Camps	`}
-        content={item.description}
-        snippet={item.snippet}
-        sourceLink={item.source.link}
-        expandedIndex={expandedIndex}
-      />
-    )
-  }
+  // const renderCodeTips = ({ item, index }: { item: any, index: number }) => {
+  //   return (
+  //     <ExpandableListItem
+  //       key={index}
+  //       title={item.title}
+  //       index={index}
+  //       sourceName={`Berkeley Boot Camps	`}
+  //       content={item.description}
+  //       snippet={item.snippet}
+  //       sourceLink={item.source.link}
+  //       expandedIndex={expandedIndex}
+  //     />
+  //   )
+  // }
   
   return (
     <View
       style={styles.codeTipsContainer}
     >
-
       <View
         style={styles.contentContainer}
       >
