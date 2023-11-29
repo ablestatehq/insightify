@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Image, View, Text, Pressable } from 'react-native'
 import { COLOR, FONTSIZE } from '../../../../constants/contants';
-import { ArticleLifeSpan } from '../../../../helper/functions/functions';
+import { ArticleLifeSpan, removeHTMLEntities } from '../../../../helper/functions/functions';
 
 interface NewsItemContainerProps {
   image: any,
@@ -48,7 +48,7 @@ const NewsItemContainer = (
             }}
           numberOfLines={2}
           >
-          {title}
+            {removeHTMLEntities(title)}
         </Text>
         <Text
             style={{

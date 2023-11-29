@@ -1,11 +1,7 @@
 import React from 'react'
-import {
-  StyleSheet, Text,
-  View, Image, TouchableOpacity
-} from 'react-native';
-
-import { ArticleLifeSpan } from '../../../helper/functions/functions'
 import { FONTSIZE, COLOR } from '../../../constants/contants'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { ArticleLifeSpan, removeHTMLEntities } from '../../../helper/functions/functions'
 
 interface TrendingNewsItem {
   title: string,
@@ -42,7 +38,7 @@ const TrendingNewsItem = (
           numberOfLines={2}
           style={styles.text}
         >
-          {title}
+          {removeHTMLEntities(title)}
         </Text>
         <View
           style={styles.newHeadingContainerFooter}
