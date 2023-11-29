@@ -76,6 +76,19 @@ interface FeedbackObject {
   suggestion:string
 }
 
+type LoginDetails = {
+  email?: string
+  password?: string
+}
+
+type OpportunityItemCard = {
+  title: string
+  description: string
+  link: string
+  expireDate: string
+  type: string
+}
+
 export {
   NewsRouteParams,
   RootStackParamList,
