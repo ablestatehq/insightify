@@ -19,11 +19,14 @@ type RootStackParamList = {
     articleContent: string,
   };
   CodeTips: undefined;
-  Privacy: undefined
+  Privacy: undefined;
+  Share: undefined;
+  OpportunityList: undefined;
+  Login: undefined
+  SignUp: undefined
 }
 type userModal = {
   email: string
-  phone: string
   lastName: string
   firstName: string
 }
@@ -81,22 +84,35 @@ type LoginDetails = {
   password?: string
 }
 
-type OpportunityItemCard = {
+type OpportunityItemCardProps = {
   title: string
   description: string
   link: string
   expireDate: string
   type: string
+  location: string
+  createdAt: string
 }
 
+type OpportunitiesFormType = {
+  link:string
+  type: string
+  title:string 
+  location: string
+  expireDate: string
+  description: string
+  companyName: string
+}
 export {
+  userModal,
+  ArticleType,
+  FeedbackObject,
   NewsRouteParams,
+  HomeDisplayProps,
   RootStackParamList,
   DetailsScreenProps,
   TalentSubmissionForm,
-  userModal,
+  OpportunitiesFormType,
   ExpandableListItemProps,
-  HomeDisplayProps,
-  ArticleType,
-  FeedbackObject
+  OpportunityItemCardProps,
 }

@@ -7,19 +7,9 @@ const TalentFormValidationSchema = Yup.object().shape({
     .required('Your name is required.'),
   email: Yup.string()
     .email('Invalid email'),
-    // .when('phone', {
-    //   is: (phone: string) => !phone || phone.trim() === '',
-    //   then: Yup.string().email("Email or phone is required"),
-    //   otherwise: Yup.string().email().notRequired(),
-    // }),
   phone: Yup.string()
     .min(10, "Number entered is too short.")
     .max(15, "Number entered is too long"),
-    // .when('email', {
-    //   is: (email: string) => !email || email.trim() === '',
-    //   then: Yup.string().required("Email or phone is required"),
-    //   otherwise: Yup.string().notRequired()
-    // }),
   company: Yup.string()
     .required('Organization name is required'),
   message: Yup.string(),
@@ -41,7 +31,29 @@ const TalentFormValidationSchema = Yup.object().shape({
   }
 )
 
+const ShareSchema = Yup.object().shape({
+  title: Yup.string()
+    .required('The title of the opportunity is required'),
+  description: Yup.string()
+    .required('Provide a short description of the Opportunity'),
+  link: Yup.string()
+    .url('Invalid URL')
+    .required('Provide a link where the user can find more information about the Opportunity'),
+  location: Yup.string()
+    .required('Location is required'),
+  companyName: Yup.string()
+    .required('Company Name is required'),
+  type: Yup.string()
+    .required('Provide the type of the opportunity e.g Web design, coding'),
+  expiryDate: Yup.date()
+    .required('Expiry Date is required')
+    .min(new Date(), 'Expiry Date must be in the future'), // Example: Expiry date should be in the future
+});
+
+
+
 
 export {
-  TalentFormValidationSchema
+  TalentFormValidationSchema,
+  ShareSchema
 }
