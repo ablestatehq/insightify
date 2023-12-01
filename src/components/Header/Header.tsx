@@ -30,7 +30,7 @@ const Header = (
           paddingHorizontal: 10,
           alignItems: 'center',
           gap: 30,
-          // justifyContent:'space-between'
+          justifyContent:'space-between'
         }}
       >
         <Ionicons
@@ -40,24 +40,18 @@ const Header = (
           onPress={openDrawer}
         />
         {title && <Text style={styles.text}>{title}</Text>}
-        {/* <View style={styles.headerIcons}>
-          <View>
-            <View
-              style={{
-                width: 6,
-                right: 0,
-                height: 6,
-                borderRadius: 6,
-                position: 'absolute',
-                backgroundColor: COLOR.DANGER,
-              }}
-            />
-            <Ionicons name="md-notifications-outline" size={25} color={COLOR.B_300} />
-          </View>
-          <Ionicons name="person-circle-outline" size={25} color={COLOR.B_300} />
-        </View> */}
+        <View style={styles.headerIcons}>
+          {/* <View>
+            <View style={styles.notificationDot}/>
+            <Ionicons name="md-notifications-outline" size={30} color={COLOR.B_300} />
+          </View> */}
+          <Ionicons
+            name="person-circle-outline"
+            color={COLOR.B_300}
+            size={30}
+          />
+        </View>
       </View>
-
     </View >
   );
 }
@@ -67,7 +61,7 @@ export default Header
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 5,
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.9,
     borderBottomColor: COLOR.GREY_50,
     paddingVertical: 10
   },
@@ -79,5 +73,15 @@ const styles = StyleSheet.create({
   headerIcons: {
     flexDirection: 'row',
     gap: 5
+  },
+  notificationDot: {
+    top: 4,
+    width: 8,
+    right: 7,
+    zIndex: 1,
+    height: 8,
+    borderRadius: 8,
+    position: 'absolute',
+    backgroundColor: COLOR.DANGER,
   }
 })
