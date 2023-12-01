@@ -4,10 +4,12 @@ declare module '@env' {
   export const AUTHOR_ENDPOINT:string
   export const APPWRITE_API_KEY:string
   export const APPWRITE_PROJECT_ID:string
-  export const APPWRITE_DATABASE_ID:string
+  export const APPWRITE_DATABASE_ID: string
   export const APPWRITE_PROJECT_ENDPOINT:string
+  export const APPWRITE_USER_COLLECTION_ID:string
   export const APPWRITE_CODETIPS_COLLECTION_ID:string
   export const APPWRITE_ARTICLES_COLLECTION_ID:string
-  export const APPWRITE_FEEDBACK_COLLECTION_ID:string
+  export const APPWRITE_FEEDBACK_COLLECTION_ID: string
+  export const APPWRITE_OPPORTUNITIES_COLLECTION_ID:string
   export const APPWRITE_SERVICEREQUESTS_COLLECTION_ID: string
 }
