@@ -1,21 +1,25 @@
-import React from 'react'
-import {
-  DrawerContentComponentProps,
-  DrawerContentScrollView,
-  DrawerItemList,
-} from '@react-navigation/drawer'
-import { Feather } from '@expo/vector-icons';
-import { COLOR, FONTSIZE } from '../../constants/contants'
-import { View, Text, Image, StyleSheet, TouchableOpacity, Pressable } from 'react-native'
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, { useContext } from 'react'
+import { SimpleLineIcons } from '@expo/vector-icons';
+import DatabaseService from '../../appwrite/appwrite';
 import SolutionsView from './components/SolutionsView';
+import { useNavigation } from '@react-navigation/native';
+import { COLOR, FONTSIZE } from '../../constants/contants';
+import { AppContext } from '../../helper/context/AppContext';
+import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 
 const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  const handlePrivacy = () => {
-    navigation.navigate('Privacy')
+  const { isLoggedIn, setIsLoggedIn } = useContext(AppContext);
+  const handleLoginLogout = async () => {
+    if (isLoggedIn) {
+      await DatabaseService.logOut();
+      setIsLoggedIn(false);
+    } else {
+      navigation.navigate('Login')
+    }
   }
 
   return (
@@ -39,10 +43,12 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
       <View style={{
         backgroundColor: COLOR.WHITE, padding: 5, borderBottomLeftRadius: 5,
         borderBottomRightRadius: 5
-      }}>
-        <Pressable style={styles.privacyContainer} onPress={handlePrivacy}>
-          <Text style={styles.drawerText}>Privacy Policy</Text>
-          <Feather name="arrow-up-right" size={20} color="black" />
+      }}
+      >
+        <Pressable style={styles.privacyContainer} onPress={handleLoginLogout}>
+          {!isLoggedIn && <SimpleLineIcons name="login" size={24} color="black" />}
+          {isLoggedIn && <SimpleLineIcons name="logout" size={24} color="black" />}
+          <Text style={styles.drawerText}>{isLoggedIn ? 'Log out' : 'Login'}</Text>
         </Pressable>
       </View>
     </View>
@@ -76,11 +82,13 @@ const styles = StyleSheet.create({
   },
   privacyContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10
+    padding: 10,
+    gap: 20,
+    alignItems: 'center',
+    
   },
   drawerText: {
-    fontSize: FONTSIZE.TITLE_2,
+    fontSize: FONTSIZE.TITLE_1,
     fontFamily: "ComfortaaBold"
   }
 })

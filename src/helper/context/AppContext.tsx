@@ -28,6 +28,8 @@ interface AppContextType {
   setTopStories: React.Dispatch<React.SetStateAction<any[]>>
   articles: any[]
   setArticles: React.Dispatch<React.SetStateAction<any[]>>
+  isLoggedIn: boolean
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -39,6 +41,8 @@ export const AppContext = createContext<AppContextType>({
   setTopStories: () => { },
   articles: [],
   setArticles: () => { },
+  isLoggedIn: false,
+  setIsLoggedIn: () => {},
 });
 
 const AppContextProvider = (
@@ -50,7 +54,8 @@ const AppContextProvider = (
   const [codeTips, setCodeTips] = useState<any[]>(codeTipsData);
   const [topStories, setTopStories] = useState<any[]>([])
   const [articles, setArticles] = useState<any[]>([]);
-
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  
   useEffect(() => {
 
     const fetchData = async () => {
@@ -123,6 +128,8 @@ const AppContextProvider = (
     setTopStories,
     articles,
     setArticles,
+    isLoggedIn,
+    setIsLoggedIn
   };
 
   return (
