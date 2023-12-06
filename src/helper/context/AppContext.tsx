@@ -3,15 +3,17 @@ import React, {
   createContext,
   useEffect,
 } from 'react';
-import codeTipsData from "../../utils/data/codeTipsData.json";
-import { environments } from '../../constants/environments';
 import DatabaseService from '../../appwrite/appwrite';
+import { environments } from '../../constants/environments';
+import codeTipsData from "../../utils/data/codeTipsData.json";
+import opportunityData from '../../../src/utils/data/opportunities.json'
 import { retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions';
 
 const {
   APPWRITE_DATABASE_ID,
   APPWRITE_ARTICLES_COLLECTION_ID,
   APPWRITE_CODETIPS_COLLECTION_ID,
+  APPWRITE_OPPORTUNITIES_COLLECTION_ID
 } = environments;
 
 
@@ -30,6 +32,8 @@ interface AppContextType {
   setArticles: React.Dispatch<React.SetStateAction<any[]>>
   isLoggedIn: boolean
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
+  opportunities: any[]
+  setOpportunities: React.Dispatch<React.SetStateAction<any[]>>
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -42,7 +46,9 @@ export const AppContext = createContext<AppContextType>({
   articles: [],
   setArticles: () => { },
   isLoggedIn: false,
-  setIsLoggedIn: () => {},
+  setIsLoggedIn: () => { },
+  opportunities: [],
+  setOpportunities: () => { }
 });
 
 const AppContextProvider = (
@@ -55,12 +61,13 @@ const AppContextProvider = (
   const [topStories, setTopStories] = useState<any[]>([])
   const [articles, setArticles] = useState<any[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  
+  const [opportunities, setOpportunities] = useState<any[]>([]);
+
+
   useEffect(() => {
 
     const fetchData = async () => {
       try {
-        // setIsLoading(true);
         const techInAfricaNewsInLocalStorage =
           await retrieveLocalData('articles')
 
@@ -79,6 +86,17 @@ const AppContextProvider = (
           )
             .then(response => response)
             .catch(error => alert(`Developer tips error${error}`));
+
+        const response =
+          await DatabaseService.getDBData(
+            APPWRITE_DATABASE_ID,
+            APPWRITE_OPPORTUNITIES_COLLECTION_ID
+          )
+        if (response) {
+          setOpportunities([...response]);
+        }
+        // console.log(opportunities);
+        setOpportunities([...opportunities, ...opportunityData.opportunities])
 
         if (techInAfricaResponse) {
           // Sort articles by publication date
@@ -129,7 +147,9 @@ const AppContextProvider = (
     articles,
     setArticles,
     isLoggedIn,
-    setIsLoggedIn
+    setIsLoggedIn,
+    opportunities,
+    setOpportunities
   };
 
   return (
