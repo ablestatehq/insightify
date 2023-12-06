@@ -1,9 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import AppContextProvider from './src/helper/context/AppContext';
-import AppStack from './src/routes/Drawer/AppStack';
-import BottomTabNavigator from './src/routes/BottomTabNavigator';
 import { useFonts } from 'expo-font';
 import { MainStackNavigator } from './src/routes/StackNavigator';
+import { Loader } from './src/components';
 
 
 export default function App() {
@@ -27,13 +26,11 @@ export default function App() {
 
 
   if (!fontsLoaded && !fontError) {
-    return null;
+    return <Loader />
   }
   return (
     <NavigationContainer>
       <AppContextProvider>
-        {/* <AppStack /> */}
-        {/* <BottomTabNavigator /> */}
         <MainStackNavigator />
       </AppContextProvider>
     </NavigationContainer>
