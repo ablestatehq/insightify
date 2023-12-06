@@ -1,33 +1,52 @@
 import { NavigationContainer } from '@react-navigation/native';
 import AppContextProvider from './src/helper/context/AppContext';
-import { useFonts } from 'expo-font';
 import { MainStackNavigator } from './src/routes/StackNavigator';
-import { Loader } from './src/components';
+import * as Updates from 'expo-updates';
+import { Alert } from 'react-native';
 
 
 export default function App() {
-  let [fontsLoaded, fontError] = useFonts({
-    "ComfortaaLight": require('./src/assets/fonts/Comfortaa/static/Comfortaa-Light.ttf'),
-    "Comfortaa_Regular": require('./src/assets/fonts/Comfortaa/static/Comfortaa-Regular.ttf'),
-    "ComfortaaMedium": require('./src/assets/fonts/Comfortaa/static/Comfortaa-Medium.ttf'),
-    "ComfortaaSemiBold": require('./src/assets/fonts/Comfortaa/static/Comfortaa-SemiBold.ttf'),
-    "ComfortaaBold": require('./src/assets/fonts/Comfortaa/static/Comfortaa-Bold.ttf'),
-    "RalewayThin": require('./src/assets/fonts/Raleway/static/Raleway-Thin.ttf'),
-    "RalewayExtraLight": require('./src/assets/fonts/Raleway/static/Raleway-ExtraLight.ttf'),
-    "RalewayLight": require('./src/assets/fonts/Raleway/static/Raleway-Light.ttf'),
-    "RalewayRegular": require('./src/assets/fonts/Raleway/static/Raleway-Regular.ttf'),
-    "RalewayMedium": require('./src/assets/fonts/Raleway/static/Raleway-Medium.ttf'),
-    "RalewaySemiBold": require('./src/assets/fonts/Raleway/static/Raleway-SemiBold.ttf'),
-    "RalewayBold": require('./src/assets/fonts/Raleway/static/Raleway-Bold.ttf'),
-    "RalewayExtraBold": require('./src/assets/fonts/Raleway/static/Raleway-ExtraBold.ttf'),
-    "RalewayBlack": require('./src/assets/fonts/Raleway/static/Raleway-Black.ttf')
-  }
-  );
 
-
-  if (!fontsLoaded && !fontError) {
-    return <Loader />
+  // function to listen to updates.
+  const eventListener = (event: Updates.UpdateEvent) => {
+    try {
+      if (event.type === Updates.UpdateEventType.ERROR) {
+        // Error occured.
+      } else if (event.type === Updates.UpdateEventType.NO_UPDATE_AVAILABLE) {
+        // No update available.
+      } else if (event.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
+        // Since updates are available, notify the user about the updates available
+        Alert.alert(
+          "Update available",
+          "Don't miss out on the latest Insightify features. Tap 'UPDATE' to update your app now.",
+          [
+            {
+              text: "UPDATE",
+              onPress: async () => {
+                // When the user presses 'update'
+                // install updates.
+                await Updates.fetchUpdateAsync();
+                await Updates.reloadAsync();
+              },
+              style: 'cancel'
+            }
+          ],
+          {
+            cancelable: true,
+            onDismiss: async () => {
+              // await Updates.fetchUpdateAsync();
+              // await Updates.reloadAsync();
+            },
+          }
+        )
+      }
+    } catch (error) {
+      console.log("error occured.")
+    }
   }
+  // Listen to the updates available and do the required action.
+  Updates.useUpdateEvents(eventListener);
+
   return (
     <NavigationContainer>
       <AppContextProvider>
