@@ -8,7 +8,10 @@
       "type": "coding",
       "location": "Online",
       "createdAt": "2023-11-30",
-      "companyName": "AbleState Creatives Limited"
+      "companyName": "AbleState Creatives Limited",
+      "tag":[
+        "work"
+      ]
     },
     {
       "title": "Frontend Developer",
@@ -18,7 +21,10 @@
       "type": "web design",
       "location": "Remote",
       "createdAt": "2023-11-01",
-      "companyName": "TechCo"
+      "companyName": "TechCo",
+      "tag":[
+        "work"
+      ]
     },
     {
       "title": "Data Science Bootcamp",
@@ -28,7 +34,10 @@
       "type": "study opportunity",
       "location": "Online",
       "createdAt": "2023-11-20",
-      "companyName": "DataTech Academy"
+      "companyName": "DataTech Academy",
+      "tag":[
+        "Bootcamp"
+      ]
     },
     {
       "title": "Mobile App Developer",
@@ -38,7 +47,10 @@
       "type": "mobile app",
       "location": "San Francisco, CA",
       "createdAt": "2023-10-25",
-      "companyName": "AppTech Solutions"
+      "companyName": "AppTech Solutions",
+      "tag":[
+        "work"
+      ]
     },
     {
       "title": "Product Manager",
@@ -48,7 +60,10 @@
       "type": "product management",
       "location": "New York, NY",
       "createdAt": "2023-11-05",
-      "companyName": "InnoSoft"
+      "companyName": "InnoSoft",
+      "tag":[
+        "work"
+      ]
     },
     {
       "title": "Backend Developer",
@@ -58,7 +73,10 @@
       "type": "coding",
       "location": "London, UK",
       "createdAt": "2023-11-10",
-      "companyName": "CodeCrafters Ltd."
+      "companyName": "CodeCrafters Ltd.",
+      "tag":[
+        "internship"
+      ]
     },
     {
       "title": "Full Stack Developer",
@@ -68,7 +86,10 @@
       "type": "coding",
       "location": "Remote",
       "createdAt": "2023-11-15",
-      "companyName": "DevWorks Inc."
+      "companyName": "DevWorks Inc.",
+      "tag":[
+        "work"
+      ]
     }
   ]
 }
