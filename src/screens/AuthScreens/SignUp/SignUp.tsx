@@ -1,15 +1,16 @@
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { Ionicons } from '@expo/vector-icons'
 import { Formik } from 'formik'
+import React, { useContext } from 'react'
+import { Ionicons } from '@expo/vector-icons'
+import SignUpWith from '../../../components/SignUpWith'
+import DatabaseService from '../../../appwrite/appwrite'
+import { useNavigation } from '@react-navigation/native'
+import { COLOR, FONTSIZE } from '../../../constants/contants'
+import { environments } from '../../../constants/environments'
+import { AppContext } from '../../../helper/context/AppContext'
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import InputText from '../../../components/FomikComponents/InputText/InputText'
 import SubmitButton from '../../../components/FomikComponents/SubmitButton/SubmitButton'
-import { useNavigation } from '@react-navigation/native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import SignUpWith from '../components/SignUpWith'
-import { COLOR, FONTSIZE } from '../../../constants/contants'
-import DatabaseService from '../../../appwrite/appwrite'
-import { environments } from '../../../constants/environments'
 
 
 const {
@@ -18,6 +19,7 @@ const {
 } = environments;
 const SignUp = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { isLoggedIn, setIsLoggedIn } = useContext(AppContext);
 
   const signUpFormInitValues = {
     name: '',
@@ -44,11 +46,9 @@ const SignUp = () => {
 
         if (createdUser) {
           const loggedIn = await DatabaseService.loginWithEmailAndPassword(signUpResponse.email, values.password);
-
-          // const userResponse = await appwrite.returnDocument(DATABASEID, USER_COLLECTION_ID, signUpResponse.$id);
-          // const user = { ...userResponse.documents[0] };
-          // setUser(user);
-          // setIsLoggedIn(true);
+          setIsLoggedIn(true);
+          navigation.goBack();
+          navigation.goBack();
         }
       } else {
         // console.log(signUpResponse);
@@ -132,15 +132,15 @@ export default SignUp
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLOR.WHITE,
-    flex:1
+    flex: 1
   },
   text: {
     fontFamily: 'RalewayBold',
     fontSize: FONTSIZE.HEADING_3,
-    textAlign:'center'
+    textAlign: 'center'
   },
   contentContainer: {
-    paddingHorizontal:20
+    paddingHorizontal: 20
   },
   loginView: {},
   header: {

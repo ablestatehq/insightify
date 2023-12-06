@@ -1,19 +1,17 @@
-import { Alert,KeyboardAvoidingView,ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext } from 'react'
 import { Formik } from 'formik'
 import { Ionicons } from '@expo/vector-icons'
-import SignUpWith from '../components/SignUpWith'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { SignUpWith, InputText, SubmitButton } from '../../../components'
 import { useNavigation } from '@react-navigation/native'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import InputText from '../../../components/FomikComponents/InputText/InputText'
-import SubmitButton from '../../../components/FomikComponents/SubmitButton/SubmitButton'
 import DatabaseService from '../../../appwrite/appwrite'
 import { environments } from '../../../constants/environments'
 import { AppContext } from '../../../helper/context/AppContext'
 
 
-const { 
+const {
   APPWRITE_DATABASE_ID,
   APPWRITE_USER_COLLECTION_ID
 } = environments;
@@ -26,7 +24,7 @@ const Login = () => {
     password: ''
   }
 
-  const handleLoginWithEmailAndPassword = async (values:any) => {
+  const handleLoginWithEmailAndPassword = async (values: any) => {
     try {
       const response = await DatabaseService.loginWithEmailAndPassword(values.email, values.password)
       if (response) {
@@ -147,13 +145,13 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontFamily: 'RalewayRegular',
-    textAlign:'center'
+    textAlign: 'center'
   },
   signUpText: {
-    fontFamily:'RalewaySemiBold'
+    fontFamily: 'RalewaySemiBold'
   },
   footer: {
     flexDirection: 'row',
-    justifyContent:'center'
+    justifyContent: 'center'
   }
 })
