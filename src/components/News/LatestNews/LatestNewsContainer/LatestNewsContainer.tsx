@@ -5,14 +5,13 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
-// hooks 
+// hooks
 import { useNavigation } from '@react-navigation/native';
 
 // components 
+import { AppContext } from '../../../../helper/context/AppContext';
 import NewsItemContainer from '../NewsItemContainer/NewsItemContainer';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AppContext } from '../../../../helper/context/AppContext';
-import Carousel from 'react-native-snap-carousel';
 
 const LatestNewsContainer: React.FC = () => {
 
@@ -50,7 +49,7 @@ const LatestNewsContainer: React.FC = () => {
     <View
       style={styles.container}
     >
-      <Carousel
+      {/* <Carousel
         ref={setCarouselRef}
         data={topStories}
         renderItem={renderLatestStory}
@@ -63,7 +62,7 @@ const LatestNewsContainer: React.FC = () => {
         autoplayInterval={5000}
         onSnapToItem={(index) => setIndex(index)}
         useScrollView={true}
-      />
+      /> */}
     </View>
   );
 }
