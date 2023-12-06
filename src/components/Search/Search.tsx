@@ -1,16 +1,20 @@
 import React from 'react'
-import { Ionicons } from '@expo/vector-icons'
+// import { Ionicons } from '@expo/vector-icons'
 import { COLOR, FONTSIZE } from '../../constants/contants'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
 const Search = () => {
   return (
     <View style={styles.container}>
       <View>
         <View style={styles.textContainer}>
-          <Text style={styles.text}>
-            Discover Limitless <Text style={styles.oppStyle}>Opportunities.</Text>
-          </Text>
+          <View>
+            <Text style={styles.text}>
+              {/* Discover Limitless <Text style={styles.oppStyle}> */}
+              Opportunities.
+              {/* </Text> */}
+            </Text>
+          </View>
         </View>
       </View>
       {/* <View style={styles.searchMain}>
@@ -38,13 +42,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   searchContainer: {
-    width: '100%',
+    // width: '100%',
     borderRadius: 20,
     flexDirection: 'row',
     paddingHorizontal: 10,
     backgroundColor: COLOR.B_50,
     alignItems: 'center',
-    elevation:1,
+    elevation: 1,
+    flex: 1
   },
   textInput: {
     flex: 1,
@@ -57,10 +62,13 @@ const styles = StyleSheet.create({
 
   },
   textContainer: {
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   searchMain: {
-    // flex: 1,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    // justifyContent: 'center',
     marginTop: 10
   },
   oppStyle: {

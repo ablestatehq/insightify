@@ -1,7 +1,6 @@
 import { SafeAreaView, StyleSheet, View, Text } from 'react-native'
 // import { WebView } from "react-native-webview";
 import React from 'react'
-import Header from '../../../components/Header/Header';
 import { useNavigation } from '@react-navigation/native';
 import { COLOR, FONTSIZE } from '../../../constants/contants';
 import { Feather, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
@@ -12,8 +11,6 @@ const Contact = () => {
     <SafeAreaView
       style={styles.safeAreaContainer}
     >
-      <Header title='Contact us' />
-
       <View style={styles.contactContainer}>
         <View style={styles.contactView}>
           <Feather

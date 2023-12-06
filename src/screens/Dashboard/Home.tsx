@@ -8,24 +8,20 @@ import {
   Alert,
 } from 'react-native';
 
-
 import * as Updates from 'expo-updates';
 
 import { AppContext } from '../../helper/context/AppContext'
 
 // components 
-import TabBar from '../../routes/TabBar'
-import Loading from '../../components/Loading/Loader';
-import Header from '../../components/Header/Header';
+import { Loader } from '../../components';
+// import TabBar from '../../routes/TabBar'
+// import Header from '../../components/Header/Header';
 
 // constants
-import { useFonts } from 'expo-font';
 import { COLOR } from '../../constants/contants'
+import OpportunityList from '../OpportunityStack/OpportunityList/OpportunityList';
 
 const Home = () => {
-
-  // Insightify
-  const { isLoading } = useContext(AppContext);
 
   // function to listen to updates.
   const eventListener = (event: Updates.UpdateEvent) => {
@@ -67,38 +63,14 @@ const Home = () => {
   // Listen to the updates available and do the required action.
   Updates.useUpdateEvents(eventListener);
 
-  // console.log(environments);
-  let [fontsLoaded, fontError] = useFonts({
-    "ComfortaaLight": require('../../assets/fonts/Comfortaa/static/Comfortaa-Light.ttf'),
-    "Comfortaa_Regular": require('../../assets/fonts/Comfortaa/static/Comfortaa-Regular.ttf'),
-    "ComfortaaMedium": require('../../assets/fonts/Comfortaa/static/Comfortaa-Medium.ttf'),
-    "ComfortaaSemiBold": require('../../assets/fonts/Comfortaa/static/Comfortaa-SemiBold.ttf'),
-    "ComfortaaBold": require('../../assets/fonts/Comfortaa/static/Comfortaa-Bold.ttf'),
-    "RalewayThin": require('../../assets/fonts/Raleway/static/Raleway-Thin.ttf'),
-    "RalewayExtraLight": require('../../assets/fonts/Raleway/static/Raleway-ExtraLight.ttf'),
-    "RalewayLight": require('../../assets/fonts/Raleway/static/Raleway-Light.ttf'),
-    "RalewayRegular": require('../../assets/fonts/Raleway/static/Raleway-Regular.ttf'),
-    "RalewayMedium": require('../../assets/fonts/Raleway/static/Raleway-Medium.ttf'),
-    "RalewaySemiBold": require('../../assets/fonts/Raleway/static/Raleway-SemiBold.ttf'),
-    "RalewayBold": require('../../assets/fonts/Raleway/static/Raleway-Bold.ttf'),
-    "RalewayExtraBold": require('../../assets/fonts/Raleway/static/Raleway-ExtraBold.ttf'),
-    "RalewayBlack": require('../../assets/fonts/Raleway/static/Raleway-Black.ttf')
-  }
-  );
-
-
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }
-  return isLoading ? <Loading message='Loading articles' /> : (
+  return (
     <SafeAreaView
       style={styles.container}
     >
       <View
         style={styles.headerContainer}
       >
-        <Header />
-        <TabBar />
+        <OpportunityList />
       </View>
     </SafeAreaView >
   );
@@ -110,10 +82,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLOR.WHITE,
-  },
-
-  text: {
-
   },
   headerContainer: {
     flex: 1,
