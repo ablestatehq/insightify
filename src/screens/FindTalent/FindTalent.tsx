@@ -1,21 +1,23 @@
 import {
   StyleSheet,
   Text, View,
-  Pressable,
-  TextInput,
   ToastAndroid,
-  ActivityIndicator,
+  ScrollView,
   KeyboardAvoidingView,
-  ScrollView
 } from 'react-native';
 import React from 'react';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers, FormikProps } from 'formik';
 import { Picker } from "@react-native-picker/picker";
 import DatabaseService from '../../appwrite/appwrite';
 import { TalentSubmissionForm } from '../../utils/types';
 import { COLOR, FONTSIZE } from '../../constants/contants';
 import { environments } from '../../constants/environments';
 import { TalentFormValidationSchema } from '../../utils/validations';
+import { AntDesign } from '@expo/vector-icons';
+import SubmitButton from '../../components/FomikComponents/SubmitButton/SubmitButton';
+import InputText from '../../components/FomikComponents/InputText/InputText';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 // Access the environmental variables needed in this file.
 const {
@@ -23,25 +25,48 @@ const {
   APPWRITE_SERVICEREQUESTS_COLLECTION_ID
 } = environments;
 
-// submit request form.
-const submitTalentRequestForm = async (values: TalentSubmissionForm) => {
-
-  const submissionResponse = await DatabaseService.storeDBdata(
-    APPWRITE_DATABASE_ID,
-    APPWRITE_SERVICEREQUESTS_COLLECTION_ID,
-    values
-  );
-
-  if (submissionResponse) {
-    // Toast a message to show the user that the request form has been successfully submitted.
-    ToastAndroid.show('Request successfully sent', 5000);
-  }
-}
-
 const FindTalent = () => {
 
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+
+  const initialTalentFormValues = {
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    message: '',
+    lookingFor: '',
+  }
+
+  // submit request form.
+  const submitTalentRequestForm = async (values: TalentSubmissionForm, formikHelpers: FormikHelpers<any>) => {
+
+    const submissionResponse = await DatabaseService.storeDBdata(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_SERVICEREQUESTS_COLLECTION_ID,
+      values
+    );
+
+    if (submissionResponse) {
+      // Toast a message to show the user that the request form has been successfully submitted.
+      ToastAndroid.show('Request successfully sent', 5000);
+      formikHelpers.resetForm({
+        values: initialTalentFormValues
+      })
+    }
+  }
   return (
     <KeyboardAvoidingView style={styles.container}>
+      {/* <View style={{
+        paddingHorizontal: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 25,
+        paddingVertical:5
+      }}>
+        <AntDesign name="arrowleft" size={24} color="black" onPress={() => navigation.goBack()} />
+        <Text style={styles.title}>Talent Form</Text>
+      </View> */}
       <View
         style={{
           paddingHorizontal: 20,
@@ -54,14 +79,7 @@ const FindTalent = () => {
         </Text>
       </View>
       <Formik
-        initialValues={{
-          name: '',
-          email: '',
-          phone: '',
-          company: '',
-          message: '',
-          lookingFor: '',
-        }}
+        initialValues={initialTalentFormValues}
         onSubmit={submitTalentRequestForm}
         validationSchema={TalentFormValidationSchema}
       >
@@ -80,41 +98,30 @@ const FindTalent = () => {
             style={styles.formContainer}
             showsVerticalScrollIndicator={false}
           >
-            <TextInput
-              onChangeText={handleChange('name')}
-              onBlur={handleBlur('name')}
-              value={values.name}
-              placeholder='Name'
-              style={styles.inputContainer}
+            <InputText
+              label='Name'
+              fieldName='name'
+              placeholder='Enter your name e.g Gideon'
             />
-            {errors.name && touched.name && <Text style={styles.errorText}>{errors.name}</Text>}
 
-            <TextInput
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              value={values.email}
-              placeholder='Email'
-              style={styles.inputContainer}
+            <InputText
+              label='Email'
+              fieldName='email'
+              placeholder='example@gmail.com'
             />
-            {errors.email && touched.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
-            <TextInput
-              onChangeText={handleChange('phone')}
-              onBlur={handleBlur('phone')}
-              value={values.phone}
-              placeholder='Phone'
-              style={styles.inputContainer}
+            <InputText
+              fieldName='phone'
+              label='Phone number'
+              placeholder='e.g 077777777'
             />
-            {errors.phone && touched.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
 
-            <TextInput
-              onChangeText={handleChange('company')}
-              onBlur={handleBlur('company')}
-              value={values.company}
-              placeholder='Company/Organization'
-              style={styles.inputContainer}
+            <InputText
+              fieldName='company'
+              label='Company Name'
+              placeholder='e.g Insightify'
             />
-            {errors.company && touched.company && <Text style={styles.errorText}>{errors.company}</Text>}
+
             <View
               style={{
                 borderWidth: 1,
@@ -150,46 +157,13 @@ const FindTalent = () => {
               </Picker>
               {errors.lookingFor && touched.lookingFor && <Text style={styles.errorText}>{errors.lookingFor}</Text>}
             </View>
-            <TextInput
-              onChangeText={handleChange('message')}
-              onBlur={handleBlur('message')}
-              value={values.message}
-              placeholder='Enter details here...'
-              style={styles.inputContainer}
-              multiline
+            <InputText
+              isMultiLine={true}
+              fieldName='message'
+              label='Tell us more'
+              placeholder='Tell us more about your need'
             />
-            {errors.message && touched.message && <Text style={styles.errorText}>{touched.message}</Text>}
-
-            <Pressable
-              onPress={() => handleSubmit()}
-              style={{
-                ...styles.button,
-                flexDirection: "row",
-                alignContent: "center",
-                justifyContent: "center",
-                gap: 5,
-                opacity: isSubmitting ? 0.5 : 1
-
-              }}
-              disabled={isSubmitting}
-            >
-
-              {isSubmitting &&
-                <ActivityIndicator
-                  size='small'
-                  color={COLOR.WHITE}
-                />
-              }
-              <Text
-                style={{
-                  color: COLOR.WHITE,
-                  textAlign: 'center',
-                  fontFamily: "ComfortaaBold"
-                }}
-              >
-                SEND
-              </Text>
-            </Pressable>
+            <SubmitButton handleSubmit={() => handleSubmit()} />
           </ScrollView>
         )}
       </Formik>
@@ -223,7 +197,8 @@ const styles = StyleSheet.create({
     width: '95%'
   },
   formContainer: {
-    padding: 10
+    padding: 10,
+    flex: 1
   },
   inputContainer: {
     padding: 10,
