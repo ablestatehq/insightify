@@ -5,7 +5,7 @@ import {
   Text, View
 } from 'react-native';
 import React from 'react';
-import onShare from '../../../utils/onShare';
+import onShare, { handleLinkPress } from '../../../utils/onShare';
 import { Feather } from '@expo/vector-icons';
 import CodeHighlighter from "react-native-code-highlighter";
 import { COLOR, FONTSIZE } from '../../../constants/contants';
@@ -33,27 +33,7 @@ const ExpandableListItem: React.FC<ExpandableListItemProps> = (
     }
   }
 
-  const handleLinkPress = async () => {
-    try {
-      const canOpen = await Linking.canOpenURL(sourceLink ?? "")
-        .then(response => response)
-        .catch((error: any) => {
-          console.log("Link error", error.message);
-        });
-      if (canOpen) {
-        console.log("The link should open");
-        await Linking.openURL(sourceLink ?? "")
-          .then(response => {
-            console.log("Opened the link", response);
-          })
-          .catch(error => {
-            console.log("Failed to open a given link");
-          })
-      }
-    } catch (error) {
-      console.log("Caught the error", error);
-    }
-  }
+
 
   const message = content + " " + title;
 
@@ -84,7 +64,7 @@ const ExpandableListItem: React.FC<ExpandableListItemProps> = (
           {/* Open the neccessary app so that a link is opened  */}
           <Pressable
             style={styles.linkStyle}
-            onPress={handleLinkPress}
+            onPress={() => handleLinkPress(sourceLink as string)}
           >
             <Text
               style={{
