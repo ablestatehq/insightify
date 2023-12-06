@@ -13,7 +13,7 @@ import BottomTabNavigator from './BottomTabNavigator';
 const Stack = createNativeStackNavigator();
 
 const screenOptionStyle = {
-  headerShown: false 
+  headerShown: false
 }
 const MainStackNavigator = () => {
   return (
@@ -33,7 +33,7 @@ const CodingTips = () => {
     <Stack.Navigator
       screenOptions={screenOptionStyle}
     >
-      <Stack.Screen name='CodingTips' component={CodeTips}/>
+      <Stack.Screen name='CodingTips' component={CodeTips} />
     </Stack.Navigator>
   )
 }
@@ -49,4 +49,4 @@ const OpportunityStack = () => {
 
 
 
-export { MainStackNavigator, CodingTips }
+export { MainStackNavigator, CodingTips, OpportunityStack }

@@ -1,14 +1,10 @@
 import { Text, View, TouchableOpacity } from 'react-native';
 import { COLOR, FONTSIZE } from '../constants/contants';
-import {
-  MaterialTopTabNavigationProp,
-} from '@react-navigation/material-top-tabs';
 
 
-
-function MyTabBar({ state, descriptors, navigation }) {
+function MyTabBar({ state, descriptors, navigation }:any) {
   return (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+    <View style={{ flexDirection: 'row', width:'100%', justifyContent:'space-between', paddingHorizontal:10}}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -49,12 +45,9 @@ function MyTabBar({ state, descriptors, navigation }) {
             onPress={onPress}
             onLongPress={onLongPress}
             style={{
-              flex: 1,
-              borderRadius: 10,
-              alignSelf: 'flex-start',
               paddingVertical: 10,
-              paddingHorizontal: 10,
               marginBottom: 2,
+              marginLeft: 5
             }}
           >
             <View
@@ -67,8 +60,8 @@ function MyTabBar({ state, descriptors, navigation }) {
               <Text
                 style={{
                   fontSize: FONTSIZE.TITLE_1,
+                  fontFamily: "RalewaySemiBold",
                   color: isFocused ? COLOR.ORANGE_300 : COLOR.B_500,
-                  fontFamily: "ComfortaaBold",
                 }}
               >
                 {label}

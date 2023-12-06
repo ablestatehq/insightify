@@ -1,7 +1,7 @@
 import React from 'react'
-import { Linking } from 'react-native';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { COLOR } from '../../../constants/contants';
+import OpenLink from '../../../utils/OpenLink';
 
 const SolutionsView = () => {
 
@@ -12,14 +12,6 @@ const SolutionsView = () => {
     { title: 'Cloud', url: 'https://ablestate.cloud/' },
   ];
 
-  const handleCardPress = async (url: string) => {
-    // Navigate to the link in the browser upon card press
-    const supported = await Linking.canOpenURL(url);
-    if (supported) {
-      await Linking.openURL(url);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Solutions</Text>
@@ -27,7 +19,7 @@ const SolutionsView = () => {
         {solutions.map((solution, index) => (
           <TouchableOpacity
             key={index}
-            onPress={() => handleCardPress(solution.url)}
+            onPress={() => OpenLink(solution.url)}
             style={styles.solutionItem}
           >
             <Text style={styles.itemText}>{solution.title}</Text>
