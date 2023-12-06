@@ -15,7 +15,9 @@ const OpportunityList = () => {
     setShowCard(!showCard);
   }
 
-  const filteredOpportunities = opportunities.filter((opp: any) => filteredItems.includes(opp.title));
+  const filteredOpportunities = opportunities.filter((opp) =>
+    opp.tag.some((tag:string) => filteredItems.includes(tag))
+  );
 
   return (
     <View style={styles.container}>
