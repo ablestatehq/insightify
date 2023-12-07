@@ -21,30 +21,32 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> =
     return (
       <View style={styles.container}>
         <View style={styles.headSection}>
-          <View>
+          <View style={{ flex: 1 }}>
             <Text style={styles.heading}>{title}</Text>
             <TouchableOpacity onPress={() => OpenLink(link)}>
               <Text style={styles.linkText}>Apply on: {link}</Text>
             </TouchableOpacity>
           </View>
+          <View style={{paddingTop:10}}>
           <Feather
             name="bookmark"
             size={20}
-            // color={COLOR.WHITE}
-            // color={COLOR.ORANGE_300}
           />
+          </View>
         </View>
         <View style={styles.description}>
           <Text style={styles.text}>{description}</Text>
         </View>
         <View style={styles.footer}>
-          <Text style={styles.text}>Location: {location}</Text>
-          <Button
-            title='apply now'
-            btn={styles.btn}
-            textStyle={styles.btnText}
-            handlePress={() => handleLinkPress(link)}
-          />
+          <Text style={{ ...styles.text, color: COLOR.B_75 }}><Text style={styles.location}>Location:</Text> {location}</Text>
+          <View style={{}}>
+            <Button
+              title='Apply Now'
+              btn={styles.btn}
+              textStyle={styles.btnText}
+              handlePress={() => handleLinkPress(link)}
+            />
+          </View>
         </View>
       </View>
     )
@@ -57,13 +59,15 @@ const styles = StyleSheet.create({
     padding: 20,
     elevation: 0.5,
     marginBottom: 10,
-    borderRadius:0.5
+    borderRadius: 0.5,
+    paddingTop: 10
   },
   headSection: {
     padding: 10,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    gap: 5,
+    paddingVertical: 5,
   },
   heading: {
     fontSize: FONTSIZE.TITLE_1,
@@ -95,6 +99,9 @@ const styles = StyleSheet.create({
     fontFamily: 'ComfortaaBold',
     fontSize: FONTSIZE.TITLE_2,
     textAlign: 'center',
-    color:COLOR.ORANGE_300
+    color: COLOR.ORANGE_300
+  },
+  location: {
+    color: COLOR.B_300
   }
 })

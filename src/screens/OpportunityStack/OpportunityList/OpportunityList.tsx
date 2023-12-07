@@ -97,7 +97,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   scrolllOpp: {
-    padding: 5
+    padding: 5,
+    paddingBottom:25
   },
   opportunityHeaderStyles: {
     flexDirection: 'row',
