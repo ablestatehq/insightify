@@ -24,10 +24,8 @@ export const handleLinkPress = async (sourceLink:string) => {
         console.log("Link error", error.message);
       });
     if (canOpen) {
-      console.log("The link should open");
       await Linking.openURL(sourceLink ?? "")
         .then(response => {
-          console.log("Opened the link", response);
         })
         .catch(error => {
           console.log("Failed to open a given link");
