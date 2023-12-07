@@ -21,18 +21,15 @@ export const handleLinkPress = async (sourceLink:string) => {
     const canOpen = await Linking.canOpenURL(sourceLink ?? "")
       .then(response => response)
       .catch((error: any) => {
-        console.log("Link error", error.message);
       });
     if (canOpen) {
       await Linking.openURL(sourceLink ?? "")
         .then(response => {
         })
         .catch(error => {
-          console.log("Failed to open a given link");
         })
     }
   } catch (error) {
-    console.log("Caught the error", error);
   }
 }
 
