@@ -1,5 +1,4 @@
 import {
-  Linking,
   Pressable,
   StyleSheet,
   Text, View
@@ -35,7 +34,7 @@ const ExpandableListItem: React.FC<ExpandableListItemProps> = (
 
 
 
-  const message = content + " " + title;
+  const message = title + "\n\n" + content + "\n\n" + snippet;
 
   return (
     <View style={styles.itemContainer}>
@@ -73,7 +72,7 @@ const ExpandableListItem: React.FC<ExpandableListItemProps> = (
               }}
               numberOfLines={1}
             >
-              Source: {sourceName}
+              {sourceName}
             </Text>
           </Pressable>
         </View>
