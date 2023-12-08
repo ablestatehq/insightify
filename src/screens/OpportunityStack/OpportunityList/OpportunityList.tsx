@@ -37,6 +37,7 @@ const OpportunityList = () => {
             >
               {filteredOpportunities.map((_, index: number) => (
                 <OpportunityCard
+                  id={_.$id}
                   key={index}
                   location={_.location}
                   createdAt={_.createdAt}
@@ -45,6 +46,7 @@ const OpportunityList = () => {
                   title={_.title}
                   expireDate={_.expiryDate}
                   description={_.description}
+                  bookmarked={_.bookmarked}
                 />
               ))}
             </ScrollView>
@@ -61,6 +63,7 @@ const OpportunityList = () => {
           >
             {opportunities.map((_, index: number) => (
               <OpportunityCard
+                id={_.$id}
                 key={index}
                 location={_.location}
                 createdAt={_.createdAt}
@@ -69,6 +72,7 @@ const OpportunityList = () => {
                 title={_.title}
                 expireDate={_.expiryDate}
                 description={_.description}
+                bookmarked={_.bookmarked}
               />
             ))}
           </ScrollView>
