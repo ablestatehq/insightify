@@ -1,9 +1,39 @@
-import { useContext } from "react";
 import { Linking, Share, Alert, } from "react-native";
-import { AppContext } from "../context/AppContext";
 import { retrieveLocalData, storeToLocalStorage } from "../../utils/localStorageFunctions";
 
-// open a link in the browser
+// Function to handle opportunity bookmarking 
+const handleBookmark = async (id: string, opportunities:any[], setOpportunities:(opp:any[]) => void) => {
+  const updatedOpportunities = [...opportunities];
+  const targetIndex = updatedOpportunities.findIndex(opportunity => opportunity.$id === id);
+
+  if (targetIndex !== -1) {
+    const targetOpportunity = updatedOpportunities[targetIndex];
+
+    // Toggle bookmark status
+    targetOpportunity.bookmarked = !targetOpportunity.bookmarked;
+
+    updatedOpportunities[targetIndex] = targetOpportunity;
+
+    setOpportunities(updatedOpportunities);
+
+    // Update local storage
+    try {
+      const bookmarkedData = await retrieveLocalData('opportunities');
+      const updatedBookmarkedData = bookmarkedData ? bookmarkedData.filter((oppId: string) => oppId !== id) : [];
+
+      if (targetOpportunity.bookmarked) {
+        updatedBookmarkedData.push(id);
+      } else {
+        updatedBookmarkedData.filter((removeId: string) => removeId !== id)
+      }
+
+      await storeToLocalStorage('opportunities', updatedBookmarkedData);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+// Function to handle opening a link in the browser
 const OpenLink = async (url: string) => {
   // Navigate to the link in the browser upon card press
   const supported = await Linking.canOpenURL(url);
@@ -13,7 +43,7 @@ const OpenLink = async (url: string) => {
 };
 
 
-// Share content
+// Function to handle sharing of content
 const onShare = async (message: string) => {
   try {
     const results = await Share.share(
@@ -33,4 +63,5 @@ const onShare = async (message: string) => {
 export {
   OpenLink,
   onShare,
+  handleBookmark
 }
