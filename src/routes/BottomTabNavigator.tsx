@@ -1,15 +1,23 @@
 import React from 'react'
+import { View, Text } from 'react-native';
 
+// components 
 import { Loader } from '../components';
-import Home from '../screens/Dashboard/Home';
+
+// helper 
+import { fontsLoading } from '../assets/fonts/fonts';
 import { COLOR, FONTSIZE } from '../constants/contants';
+import { AppContext } from '../helper/context/AppContext';
+
+// screens 
+import Home from '../screens/Dashboard/Home';
+import CodeTips from '../screens/CodeTips/CodeTips';
 import Contact from '../screens/Drawer/Contact/Contact';
 import FindTalent from '../screens/FindTalent/FindTalent';
-import { AppContext } from '../helper/context/AppContext';
-import { TouchableOpacity, Text, View } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import CodeTips from '../screens/CodeTips/CodeTips';
 
+import { useNavigation } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,66 +25,37 @@ const screenOptionStyle = {
   headerShown: false,
 }
 
-// Custom Tab Button Component
-const CustomTabButton = ({ state, descriptors, navigation }: any) => {
-  return (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-      {state.routes.map((route: any, index: number) => {
-        const { options } = descriptors[route.key];
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-              ? options.title
-              : route.name;
-
-        const isFocused = state.index === index;
-
-        const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-            canPreventDefault: true,
-          });
-
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name); // Navigate to the selected route
-          }
-        };
-
-        const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          });
-        };
-        return (
-          <TouchableOpacity
-            key={index} // Add a unique key for each TouchableOpacity
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-            onPress={onPress}
-            onLongPress={onLongPress}
-          >
-            <Text style={{ fontFamily: 'RalewayBold', fontSize: FONTSIZE.TITLE_1 }}>
-              {label}
-            </Text>
-          </TouchableOpacity>
-        )
-      })
-      }
-    </View>
-  )
-};
-
-
+interface CustomItemTabProp {
+  focused: any
+  text: string
+}
+const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
+  <View
+    style={{
+      backgroundColor: focused ? COLOR.ORANGE_50 : '',
+      paddingHorizontal: 20,
+      paddingBottom: 5,
+      borderRadius: 10
+    }}
+  >
+    <Text
+      style={{
+        color: focused ? COLOR.ORANGE_300 : COLOR.B_300,
+        fontFamily: 'RalewayBold',
+        fontSize: FONTSIZE.TITLE_2
+      }}
+    >{text}</Text>
+  </View>
+)
 const BottomTabNavigator = () => {
 
-  const { isLoading } = React.useContext(AppContext);
-  
-  return isLoading ? <Loader message='Loading articles' /> : (
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+
+  const { fontsLoaded, fontError } = fontsLoading();
+
+  const { isLoading, isLoggedIn } = React.useContext(AppContext);
+
+  return isLoading || (!fontsLoaded && !fontError) ? <Loader message='Loading...' /> : (
     <Tab.Navigator
       screenOptions={{
         ...screenOptionStyle,
@@ -85,23 +64,17 @@ const BottomTabNavigator = () => {
           fontSize: FONTSIZE.TITLE_1,
           textAlign: 'center'
         },
-        tabBarStyle: {
-          marginBottom: 0,
-        },
         tabBarInactiveTintColor: COLOR.B_300,
         tabBarActiveTintColor: COLOR.ORANGE_300,
-        tabBarItemStyle: {
-          borderRadius:20,
-          paddingVertical: 10,
-        }
+        tabBarShowLabel: false,
       }}
     >
       <Tab.Screen
         name='Deck'
         component={Home}
         options={{
-          tabBarIcon: () => null,
-          tabBarLabel: 'Home'
+          tabBarLabel: 'Deck',
+          tabBarIcon: ({ focused }) => <CustomItemTab text='Deck' focused={focused} />
         }}
 
       />
@@ -110,7 +83,7 @@ const BottomTabNavigator = () => {
         component={CodeTips}
         options={{
           tabBarLabel: 'Sky',
-          tabBarIcon: () => null
+          tabBarIcon: ({ focused }) => <CustomItemTab text='Sky' focused={focused} />
         }}
       />
       <Tab.Screen
@@ -118,15 +91,15 @@ const BottomTabNavigator = () => {
         component={FindTalent}
         options={{
           tabBarLabel: 'Talent',
-          tabBarIcon: () => null
+          tabBarIcon: ({ focused }) => <CustomItemTab text='Talent' focused={focused} />,
         }}
       />
       <Tab.Screen
-        name='Contact'
+        name='More'
         component={Contact}
         options={{
           tabBarLabel: 'Contact',
-          tabBarIcon: () => null
+          tabBarIcon: ({ focused }) => <CustomItemTab text='Contact' focused={focused} />,
         }}
       />
     </Tab.Navigator>
