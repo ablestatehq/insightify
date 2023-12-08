@@ -4,11 +4,11 @@ import {
   Text, View
 } from 'react-native';
 import React from 'react';
-import onShare, { handleLinkPress } from '../../../utils/onShare';
 import { Feather } from '@expo/vector-icons';
 import CodeHighlighter from "react-native-code-highlighter";
 import { COLOR, FONTSIZE } from '../../../constants/contants';
 import { ExpandableListItemProps } from '../../../utils/types';
+import onShare, { handleLinkPress } from '../../../utils/onShare';
 import { atomOneDarkReasonable } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 const ExpandableListItem: React.FC<ExpandableListItemProps> = (
@@ -219,7 +219,8 @@ const styles = StyleSheet.create({
   },
   titleViewStyle: {
     flex: 1,
-    height: "100%"
+    flexDirection: 'column',
+    gap:50
   },
   linkStyle: {
     bottom: 0,
