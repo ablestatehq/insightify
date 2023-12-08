@@ -3,7 +3,7 @@ import React from 'react'
 import { COLOR, FONTSIZE } from '../../constants/contants'
 import { StyleSheet, Text, View } from 'react-native'
 
-const Search = () => {
+const Search:React.FC = () => {
   return (
     <View style={styles.container}>
       <View>

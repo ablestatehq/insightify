@@ -1,19 +1,18 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-interface ReporterComponentProps{
+interface ReporterComponentProps {
   name: string,
   articleLongitivity: any,
   imageUrl: any
 }
 
-const Reporter = (
+const Reporter: React.FC<ReporterComponentProps> = (
   {
     name,
     articleLongitivity,
     imageUrl
-  }:ReporterComponentProps
-) => {
+  }) => {
   return (
     <View
       style={styles.container}
@@ -22,14 +21,14 @@ const Reporter = (
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          gap:10
+          gap: 10
         }}
       >
         <View
           style={styles.imageView}
         >
           <Image
-            source={{uri:imageUrl}}
+            source={{ uri: imageUrl }}
             resizeMethod='resize'
             resizeMode='contain'
             style={styles.imageStyle}
@@ -38,7 +37,7 @@ const Reporter = (
         <Text>{name}</Text>
       </View>
       <Text>{articleLongitivity}</Text>
-      
+
     </View>
   )
 }
@@ -56,11 +55,11 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     flexWrap: 'wrap',
-    borderRadius:25
+    borderRadius: 25
   },
   imageStyle: {
     width: '100%',
     height: "100%",
-    borderRadius:50
-    }
+    borderRadius: 50
+  }
 })

@@ -4,7 +4,7 @@ import { COLOR, FONTSIZE } from "../../constants/contants";
 interface LoaderProps{
   message?: string
 }
-const Loader = ({message}:LoaderProps) => {
+const Loader:React.FC<LoaderProps> = ({message}) => {
   return (
     <Modal
       transparent={true}

@@ -6,11 +6,10 @@ import { FONTSIZE, COLOR } from '../../constants/contants'
 interface TextProps {
   title: string
 }
-const HomeHeading = (
+const HomeHeading:React.FC<TextProps> = (
   {
     title
-  }:
-    TextProps) => {
+  }) => {
 
   return (
     <View

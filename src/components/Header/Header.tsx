@@ -9,7 +9,7 @@ interface HeaderProps {
   title?: string
 }
 
-const Header = (
+const Header:React.FC = (
   {
     title,
   }: HeaderProps
