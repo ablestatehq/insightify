@@ -8,7 +8,7 @@ import React, { useContext } from 'react';
 import { COLOR } from '../../constants/contants';
 
 // components 
-import ExpandableListItem from '../../components/CodeTips/ExpandableListItem/ExpandableListItem';
+import { ExpandableItemList } from '../../components';
 // import Carousel from 'react-native-snap-carousel';
 
 
@@ -18,7 +18,7 @@ const CodeTips = () => {
 
   const { codeTips } = useContext(AppContext);
   const [expandedIndex, setExpandedIndex] = React.useState<number | null>(0)
-  
+
   // useRef hook
   // const carouselRef = useRef(null);
 
@@ -48,7 +48,7 @@ const CodeTips = () => {
   //     />
   //   )
   // }
-  
+
   return (
     <View
       style={styles.codeTipsContainer}
@@ -64,7 +64,7 @@ const CodeTips = () => {
           {
             codeTips?.map((codeTip: any, index: number) => {
               return (
-                <ExpandableListItem
+                <ExpandableItemList
                   key={index}
                   title={codeTip.title}
                   index={index}
