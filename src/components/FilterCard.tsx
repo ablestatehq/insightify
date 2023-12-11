@@ -1,10 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react'
 import Button from './Button';
 import TagCard from './TagCard';
-import { AntDesign } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 import { COLOR, FONTSIZE } from '../constants/contants';
-import { Modal, StyleSheet, Text, View } from 'react-native'
 import { AppContext } from '../helper/context/AppContext';
+import { Modal, StatusBar, StyleSheet, Text, View } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
 
 interface FilterCardProps {
   cardVisible?: boolean
@@ -27,15 +27,19 @@ const FilterCard: React.FC<FilterCardProps> =
       setOpportunityTags(prevTags => {
         const updatedTags = opportunities.reduce((acc, opp) => {
           opp.tag.forEach((tag:string) => {
-            if (!acc.includes(tag)) {
-              acc.push(tag);
+            if (!acc.includes(tag.toLowerCase())) {
+              acc.push(tag.toLowerCase());
             }
           });
           return acc;
         }, [...prevTags]);
+
+        updatedTags.sort((a:string, b:string) => a.length - b.length);
+
         return updatedTags;
       });
     }, [opportunities]);
+
 
 
     const handlePress = () => {
@@ -50,12 +54,18 @@ const FilterCard: React.FC<FilterCardProps> =
         handleCardVisibility();
       }
     }
+
     return (
       <Modal style={styles.container} visible={cardVisible} transparent>
         <View style={styles.nothingContainer} />
         <View style={styles.contentStyles}>
           <View style={styles.filterHeaderStyles}>
-            <AntDesign name="arrowleft" size={24} color="black" onPress={handlePress} />
+            <Entypo
+              name="chevron-thin-down"
+              size={20}
+              color={COLOR.B_300}
+              onPress={handlePress}
+            />
             <Text style={styles.filterText}>Filters</Text>
             <View />
           </View>
@@ -89,6 +99,7 @@ const FilterCard: React.FC<FilterCardProps> =
             
           />}
         </View>
+        <StatusBar backgroundColor={COLOR.NEUTRAL_1} translucent />
       </Modal>
     )
   }
@@ -98,6 +109,7 @@ export default FilterCard
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:COLOR.WHITE
   },
   filterHeaderStyles: {
     gap: 25,
@@ -105,7 +117,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   nothingContainer: {
-    flex: 1
+    flex: 1,
+    backgroundColor: COLOR.NEUTRAL_1,
   },
   contentStyles: {
     flex: 4,
@@ -114,8 +127,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     paddingHorizontal: 25,
     paddingVertical: 10,
-    elevation: 5,
+    // elevation: 5,
     gap: 25,
+    top:-15
   },
   filterText: {
     fontSize: FONTSIZE.TITLE_1,
@@ -124,10 +138,10 @@ const styles = StyleSheet.create({
   buttonStyles: {
     backgroundColor: COLOR.ORANGE_300,
     padding: 5, 
-    borderRadius: 10,
+    borderRadius: 50,
     alignSelf: 'flex-start',
     width: '40%',
-    paddingBottom:10
+    paddingBottom: 10,
   },
   tagStyles: {
     flex: 1,
