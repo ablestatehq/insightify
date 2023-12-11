@@ -2,19 +2,15 @@ import React, { useState } from 'react'
 import Selectable from './components/Selectable'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
 import { FeedbackObject } from '../../../utils/types'
-import Header from '../../../components/Header/Header'
 import DatabaseService from '../../../appwrite/appwrite'
-import { environments } from '../../../constants/environments'
-import { Pressable, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native'
-
-const {
-  APPWRITE_DATABASE_ID,
-  APPWRITE_FEEDBACK_COLLECTION_ID
-} = environments;
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native'
+import Header from '../../NewsDetails/helperComponents/Header'
+import { APPWRITE_DATABASE_ID, APPWRITE_FEEDBACK_COLLECTION_ID } from '@env'
 
 const FeedBack = () => {
   const [selectedImprovement, setSelectedImprovement] = useState<string | null>(null);
   const [suggestionText, setSuggestionText] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const toImprove = [
     {
@@ -54,31 +50,36 @@ const FeedBack = () => {
 
   // submit feedback to database 
   const handleSubmission = async () => {
+    setIsSubmitting(true);
     const newFeedback: FeedbackObject = {
       rating: 0,
       whatToImprove: selectedImprovement ?? '',
       suggestion: suggestionText
     }
-    // console.log(newFeedback);
     const response = await DatabaseService.storeDBdata(
       APPWRITE_DATABASE_ID,
       APPWRITE_FEEDBACK_COLLECTION_ID,
       newFeedback)
-    
+      .then(response => response)
+      .catch((error: any) => {
+      })
+
+
     if (response) {
       setSuggestionText('')
       setSelectedImprovement(null)
       ToastAndroid.show('Feedback successfully submitted', 3000);
     }
+    setIsSubmitting(false);
   }
 
   const isSubmitDisabled = selectedImprovement === null && suggestionText === '';
   return (
-    <View>
-      <Header title='Give us your honest feedback' />
+    <View style={styles.container}>
+      <Header title='Give us your feedback' />
       <View style={styles.feedBackContainer}>
         {/* Add emojis for the user to select what appeals to them  */}
-        <View>
+        <View style={styles.emojiView}>
           <Text></Text>
         </View>
         <View>
@@ -86,7 +87,7 @@ const FeedBack = () => {
             marginBottom: 10,
             fontFamily: 'ComfortaaBold',
             fontSize: FONTSIZE.TITLE_2,
-            color:COLOR.B_300
+            color: COLOR.B_300
           }}
           >
             What should we improve to serve you better?
@@ -118,7 +119,14 @@ const FeedBack = () => {
           disabled={isSubmitDisabled}
         >
           {({ pressed }) => (
-            <Text style={{ color: COLOR.WHITE, fontFamily: 'ComfortaaBold' }}>SEND</Text>
+            <View style={styles.pressedViewState}>
+              {isSubmitting &&
+                <ActivityIndicator
+                  color={COLOR.WHITE}
+                  size='small'
+                />}
+              <Text style={{ color: COLOR.WHITE, fontFamily: 'ComfortaaBold' }}>{isSubmitting ? '' : 'SEND'}</Text>
+            </View>
           )}
         </Pressable>
       </View>
@@ -129,6 +137,10 @@ const FeedBack = () => {
 export default FeedBack
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLOR.WHITE
+  },
   feedBackContainer: {
     padding: 20
   },
@@ -152,5 +164,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.ORANGE_300,
     borderRadius: 5,
     marginTop: 20
+  },
+  emojiView: {
+
+  },
+  pressedViewState: {
+    flexDirection: 'row',
+    gap: 5,
   }
 })
