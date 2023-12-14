@@ -6,22 +6,22 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import React from 'react';
-import { Formik, FormikHelpers, FormikProps } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import { Picker } from "@react-native-picker/picker";
 import DatabaseService from '../../appwrite/appwrite';
 import { TalentSubmissionForm } from '../../utils/types';
 import { COLOR, FONTSIZE } from '../../constants/contants';
 import { environments } from '../../constants/environments';
+
 import { TalentFormValidationSchema } from '../../utils/validations';
-import { AntDesign } from '@expo/vector-icons';
-import SubmitButton from '../../components/FomikComponents/SubmitButton/SubmitButton';
 import InputText from '../../components/FomikComponents/InputText/InputText';
+import SubmitButton from '../../components/FomikComponents/SubmitButton/SubmitButton';
+
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 // Access the environmental variables needed in this file.
 const {
-  APPWRITE_DATABASE_ID,
   APPWRITE_SERVICEREQUESTS_COLLECTION_ID
 } = environments;
 
@@ -42,7 +42,6 @@ const FindTalent = () => {
   const submitTalentRequestForm = async (values: TalentSubmissionForm, formikHelpers: FormikHelpers<any>) => {
 
     const submissionResponse = await DatabaseService.storeDBdata(
-      APPWRITE_DATABASE_ID,
       APPWRITE_SERVICEREQUESTS_COLLECTION_ID,
       values
     );
@@ -57,20 +56,11 @@ const FindTalent = () => {
   }
   return (
     <KeyboardAvoidingView style={styles.container}>
-      {/* <View style={{
-        paddingHorizontal: 20,
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 25,
-        paddingVertical:5
-      }}>
-        <AntDesign name="arrowleft" size={24} color="black" onPress={() => navigation.goBack()} />
-        <Text style={styles.title}>Talent Form</Text>
-      </View> */}
       <View
         style={{
           paddingHorizontal: 20,
-          padding: 5
+          padding: 5,
+          marginTop: 25
         }}
       >
         <Text style={styles.title}>Tell us about your need.</Text>
@@ -95,7 +85,7 @@ const FindTalent = () => {
           }
         ) => (
           <ScrollView
-            style={styles.formContainer}
+            contentContainerStyle={styles.formContainer}
             showsVerticalScrollIndicator={false}
           >
             <InputText
@@ -163,7 +153,10 @@ const FindTalent = () => {
               label='Tell us more'
               placeholder='Tell us more about your need'
             />
-            <SubmitButton handleSubmit={() => handleSubmit()} />
+            <SubmitButton
+              button={styles.submit_button}
+              handleSubmit={() => handleSubmit()}
+            />
           </ScrollView>
         )}
       </Formik>
@@ -175,7 +168,6 @@ export default FindTalent
 
 const styles = StyleSheet.create({
   container: {
-    // padding: 10,
     backgroundColor: COLOR.WHITE,
     flex: 1,
   },
@@ -184,7 +176,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: FONTSIZE.TITLE_1,
-    fontFamily: "RalewaySemiBold"
+    fontFamily: "RalewayBold"
   },
   description: {
     fontFamily: 'RalewayMedium'
@@ -198,7 +190,6 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     padding: 10,
-    flex: 1
   },
   inputContainer: {
     padding: 10,
@@ -211,5 +202,15 @@ const styles = StyleSheet.create({
   errorText: {
     color: COLOR.DANGER,
     paddingHorizontal: 10
+  },
+  submit_button: {
+    alignContent: "center",
+    justifyContent: "center",
+    alignSelf: 'center',
+    backgroundColor: COLOR.B_300,
+    padding: 5,
+    borderRadius: 20,
+    margin: 10,
+    width: '40%',
   }
 })
