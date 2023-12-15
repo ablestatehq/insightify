@@ -3,7 +3,7 @@ import TagCard from './TagCard';
 import { Entypo } from '@expo/vector-icons';
 import { COLOR, FONTSIZE } from '../constants/contants';
 import { AppContext } from '../helper/context/AppContext';
-import { Modal, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Modal, StyleSheet, Text, View, Animated, Pressable } from 'react-native';
 import React, { useContext, useState, useEffect } from 'react';
 
 interface FilterCardProps {
@@ -11,6 +11,7 @@ interface FilterCardProps {
   handleCardVisibility?: () => void
   setFilteredItems: (data: any) => void
   filteredItems: string[]
+  scaleValue?:Animated.Value
 }
 
 const FilterCard: React.FC<FilterCardProps> =
@@ -18,28 +19,35 @@ const FilterCard: React.FC<FilterCardProps> =
     cardVisible,
     handleCardVisibility,
     setFilteredItems,
-    filteredItems
+    filteredItems,
+    scaleValue
   }) => {
     const { opportunities } = useContext(AppContext);
-    const [opportunityTags, setOpportunityTags] = useState<string[]>([]);
+    const [opportunityTags, setOpportunityTags] = useState<any[]>([]);
+
     // load tags 
     useEffect(() => {
       setOpportunityTags(prevTags => {
         const updatedTags = opportunities.reduce((acc, opp) => {
-          opp.tag.forEach((tag:string) => {
-            if (!acc.includes(tag.toLowerCase())) {
-              acc.push(tag.toLowerCase());
+          opp.tag.forEach((tag: string) => {
+            const findTag = acc.find((tagObject: any) => tagObject.tag == tag);
+            if (!findTag) {
+              acc.push({
+                tag: tag.toLowerCase(),
+                tagCount: 1
+              });
+            } else {
+              findTag.tagCount = findTag.tagCount + 1
             }
           });
           return acc;
         }, [...prevTags]);
 
-        updatedTags.sort((a:string, b:string) => a.length - b.length);
+        updatedTags.sort((a: any, b: any) => a?.tag.length - b?.tag.length);
 
         return updatedTags;
       });
     }, [opportunities]);
-
 
 
     const handlePress = () => {
@@ -56,50 +64,61 @@ const FilterCard: React.FC<FilterCardProps> =
     }
 
     return (
-      <Modal style={styles.container} visible={cardVisible} transparent>
-        <View style={styles.nothingContainer} />
-        <View style={styles.contentStyles}>
-          <View style={styles.filterHeaderStyles}>
-            <Entypo
-              name="chevron-thin-down"
-              size={20}
-              color={COLOR.B_300}
-              onPress={handlePress}
-            />
-            <Text style={styles.filterText}>Filters</Text>
-            <View />
+      <Modal
+        transparent
+        visible={cardVisible}
+        animationType='slide'
+        hardwareAccelerated
+        onRequestClose={handlePress}
+        statusBarTranslucent
+      >
+        <Animated.View style={
+          [styles.modalContainer,
+            // {transform: [{scale: scaleValue as Animated.Value}]}
+          ]}>
+          <Animated.View style={styles.nothingContainer} />
+          <View style={styles.contentStyles}>
+            <View style={styles.filterHeaderStyles}>
+              <Entypo
+                name="chevron-thin-down"
+                size={20}
+                color={COLOR.B_300}
+                onPress={handlePress}
+              />
+              <Text style={styles.filterText}>Filters</Text>
+              <View />
+            </View>
+            <Text>Filter to suite your needs</Text>
+            {
+              opportunityTags.length > 0 ?
+                <View style={styles.tagStyles}>
+                  {
+                    opportunityTags.map((_, index: number) => (
+                      <TagCard
+                        title={_.tag}
+                        key={index}
+                        setActive={setFilteredItems}
+                        filteredItems={filteredItems}
+                        isActive={filteredItems.includes(_.tag)}
+                        itemCount={_.tagCount}
+                      />
+                    ))
+                  }
+                </View>
+                :
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={{ fontFamily: 'ComfortaaBold' }}>No tags available</Text>
+                </View>
+            }
+            {opportunityTags.length > 0 && <Button
+              btn={styles.buttonStyles}
+              textStyle={styles.textStyle}
+              title='reset'
+              handlePress={handleReset}
+
+            />}
           </View>
-          {/* tags  */}
-          <Text>Filter to suite your needs</Text>
-          {
-            opportunityTags.length > 0 ?
-              <View style={styles.tagStyles}>
-                {
-                  opportunityTags.map((_, index: number) => (
-                    <TagCard
-                      title={_}
-                      key={index}
-                      setActive={setFilteredItems}
-                      filteredItems={filteredItems}
-                      isActive={filteredItems.includes(_)} />
-                  ))
-                }
-              </View>
-              :
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ fontFamily: 'ComfortaaBold' }}>No tags available</Text>
-              </View>
-          }
-          {/* buttons  */}
-          {opportunityTags.length > 0 && <Button
-            btn={styles.buttonStyles}
-            textStyle={styles.textStyle}
-            title='reset'
-            handlePress={handleReset}
-            
-          />}
-        </View>
-        <StatusBar backgroundColor={COLOR.NEUTRAL_1} translucent />
+        </Animated.View>
       </Modal>
     )
   }
@@ -107,9 +126,8 @@ const FilterCard: React.FC<FilterCardProps> =
 export default FilterCard
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor:COLOR.WHITE
+  modalContainer: {
+    flex:1
   },
   filterHeaderStyles: {
     gap: 25,
@@ -127,9 +145,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     paddingHorizontal: 25,
     paddingVertical: 10,
-    // elevation: 5,
     gap: 25,
-    top:-15
+    top: -15
   },
   filterText: {
     fontSize: FONTSIZE.TITLE_1,
@@ -137,7 +154,7 @@ const styles = StyleSheet.create({
   },
   buttonStyles: {
     backgroundColor: COLOR.ORANGE_300,
-    padding: 5, 
+    padding: 5,
     borderRadius: 50,
     alignSelf: 'flex-start',
     width: '40%',
@@ -154,6 +171,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'ComfortaaBold',
     fontSize: FONTSIZE.TITLE_2,
-    textTransform:'uppercase'
+    textTransform: 'uppercase'
   }
 })
