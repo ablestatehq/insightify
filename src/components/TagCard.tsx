@@ -7,51 +7,57 @@ interface TagCardProps {
   isActive: boolean
   setActive: (data: any) => void
   filteredItems: string[]
+  itemCount?: number
 }
 const TagCard: React.FC<TagCardProps> =
   ({
     title,
     setActive,
     filteredItems,
-    isActive
+    isActive,
+    itemCount
   }) => {
-  
-  const handlePress = () => {
-    if (isActive) {
-      const newActive = filteredItems.filter((tag:string) => tag !== title)
-      setActive([...newActive])
-    } else {
-      if (!filteredItems.includes(title as string)) {
-        setActive([...filteredItems, title]);
+
+    const handlePress = () => {
+      if (isActive) {
+        const newActive = filteredItems.filter((tag: string) => tag !== title)
+        setActive([...newActive])
+      } else {
+        if (!filteredItems.includes(title as string)) {
+          setActive([...filteredItems, title]);
+        }
       }
     }
-  }
-  return (
-    <Pressable
-      style={{
-        backgroundColor: isActive ? COLOR.B_300 : COLOR.WHITE,
-        borderWidth: 1,
-        borderColor: COLOR.B_300,
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        borderRadius:100
-      }}
-      onPress={handlePress}
-    >
-      <Text
+    return (
+      <Pressable
         style={{
-          color: isActive ? COLOR.WHITE : COLOR.B_300,
-          fontFamily:'RalewayBold'
+          backgroundColor: isActive ? COLOR.B_300 : COLOR.WHITE,
+          borderWidth: 1,
+          borderColor: COLOR.B_300,
+          paddingHorizontal: 10,
+          borderRadius: 100,
+          paddingBottom: 5,
+          flexDirection: 'row',
+          gap: 5
         }}
+        onPress={handlePress}
       >
-        {title}
-      </Text>
-    </Pressable>
-  )
-}
+        <Text
+          style={{
+            color: isActive ? COLOR.WHITE : COLOR.B_300,
+            fontFamily: 'RalewayBold'
+          }}
+        >
+          {title}
+        </Text>
+        {<Text
+          style={{
+            color: isActive ? COLOR.WHITE : COLOR.B_300,
+            fontFamily: 'RalewayBold'
+          }}
+        >{`(${itemCount})`}</Text>}
+      </Pressable>
+    )
+  }
 
 export default TagCard
-
-const styles = StyleSheet.create({
-
-})
