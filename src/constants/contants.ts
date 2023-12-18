@@ -1,5 +1,7 @@
 import { Dimensions } from "react-native";
 
+
+
 export const COLOR = {
   ORANGE_50: "#fef0eb",
   ORANGE_75: "#fac3ab",
