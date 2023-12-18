@@ -12,12 +12,12 @@ import { AppContext } from '../helper/context/AppContext';
 // screens 
 import Home from '../screens/Dashboard/Home';
 import CodeTips from '../screens/CodeTips/CodeTips';
-import Contact from '../screens/Drawer/Contact/Contact';
 import FindTalent from '../screens/FindTalent/FindTalent';
 
 import { useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import MoreDrawerScreen from '../screens/MoreDrawerScreen/MoreDrawerScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -42,7 +42,6 @@ const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
       style={{
         color: focused ? COLOR.ORANGE_300 : COLOR.B_300,
         fontFamily: 'RalewayBold',
-        fontSize: FONTSIZE.TITLE_2
       }}
     >{text}</Text>
   </View>
@@ -96,10 +95,10 @@ const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name='More'
-        component={Contact}
+        component={MoreDrawerScreen}
         options={{
-          tabBarLabel: 'Contact',
-          tabBarIcon: ({ focused }) => <CustomItemTab text='Contact' focused={focused} />,
+          tabBarLabel: 'More',
+          tabBarIcon: ({ focused }) => <CustomItemTab text='More' focused={focused} />,
         }}
       />
     </Tab.Navigator>
