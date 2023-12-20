@@ -71,7 +71,7 @@ const OpportunityList = () => {
               <OpportunityCard
                 id={_.$id}
                 key={index}
-                location={_.location}
+                location={_.location ?? "Remote"}
                 createdAt={_.publishedAt}
                 type={_.Category}
                 link={_.URL}
