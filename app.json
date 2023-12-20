@@ -18,12 +18,14 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 6,
+      "versionCode": 11,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.Insightify"
+      "package": "com.Insightify",
+      "googleServicesFile":"./google-services.json",
+      "useNextNotificationsApi":"true"
     },
     "web": {
       "favicon": "./assets/favicon.png"
