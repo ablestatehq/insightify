@@ -14,6 +14,7 @@ import Privacy from '../screens/Drawer/Privacy/Privacy';
 import OnBoard from '../screens/OpportunityStack/onBoardSharing/OnBoard';
 import { retrieveLocalData } from '../utils/localStorageFunctions';
 import { Loader } from '../components';
+import Notification from '../screens/Notifications/Notification';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,9 +49,10 @@ const MainStackNavigator = () => {
       <Stack.Screen name='Login' component={Login} />
       <Stack.Screen name='Share' component={Share} />
       <Stack.Screen name='SignUp' component={SignUp} />
+      <Stack.Screen name='Privacy' component={Privacy} />
       <Stack.Screen name='Contact' component={Contact} />
       <Stack.Screen name='Feedback' component={FeedBack} />
-      <Stack.Screen name='Privacy' component={Privacy} />
+      <Stack.Screen name='Notification' component={Notification} />
     </Stack.Navigator>
   )
 }
