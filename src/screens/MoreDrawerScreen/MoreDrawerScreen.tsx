@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { COLOR, FONTSIZE } from '../../constants/contants'
 import { Entypo, SimpleLineIcons, Ionicons, MaterialIcons, AntDesign, Feather } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Switch, Text, View } from 'react-native'
@@ -6,22 +6,55 @@ import { AppContext } from '../../helper/context/AppContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import DatabaseService from '../../appwrite/appwrite';
+import { APPWRITE_DATABASE_ID, APPWRITE_NOTIFICATION_TOKEN_COLLECTION_ID } from '@env';
+import { Query } from 'appwrite';
+import { clearLocalData, retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions';
 
 const MoreDrawerScreen = () => {
-  const { isLoggedIn, setIsLoggedIn } = useContext(AppContext);
-  const [isEnabled, setIsEnabled] = useState(false);
+  const { isLoggedIn, setIsLoggedIn, isNotificationEnabled, setIsNotificationEnabled } = useContext(AppContext);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
+  const toggleSwitch = async () => {
+    const { pushToken, isPushNotificationEnabled } = await retrieveLocalData('tokens');
+
+    setIsNotificationEnabled(previousState => !previousState);
+
+    // Save the current state of the setting.
+    const saveToken = await storeToLocalStorage('tokens', { pushToken, isPushNotificationEnabled: isNotificationEnabled });
+
+    const { total, documents } = await DatabaseService.databases.listDocuments(
+      APPWRITE_DATABASE_ID,
+      APPWRITE_NOTIFICATION_TOKEN_COLLECTION_ID,
+      [
+        Query.equal('tokenValue', pushToken)
+      ]
+    )
+
+    if (total > 0) {
+      const response = await DatabaseService.databases.updateDocument(
+        APPWRITE_DATABASE_ID,
+        APPWRITE_NOTIFICATION_TOKEN_COLLECTION_ID,
+        documents[0].$id,
+        {
+          subscription:isNotificationEnabled
+        }
+      ).then(response => {
+        console.log(response);
+      }).catch((error: any) => {
+        console.log(error.message)
+      })
+    }
+  }
 
   const handleLoginLogout = async () => {
     if (isLoggedIn) {
       await DatabaseService.logOut();
       setIsLoggedIn(false);
     } else {
-      navigation.navigate('Login',{title: ''})
+      navigation.navigate('Login', { title: '' })
     }
   }
+
   return (
     <View style={styles.container}>
 
@@ -49,14 +82,17 @@ const MoreDrawerScreen = () => {
       <View style={styles.contentContainer}>
         <View style={styles.itemContainer}>
           <View style={styles.iconContainer}>
-            <Ionicons name="ios-notifications-outline" size={24} color={COLOR.B_300} />
+            <Ionicons
+              size={24} color={COLOR.B_300}
+              name="ios-notifications-outline"
+            />
             <Text style={styles.text}>Push notifications</Text>
           </View>
           <Switch
-            trackColor={{ false: `${COLOR.B_100}`, true: `${COLOR.ORANGE_100}`}}
-            thumbColor={isEnabled ? `${COLOR.ORANGE_300}` : `${COLOR.B_50}`}
+            trackColor={{ false: `${COLOR.B_100}`, true: `${COLOR.ORANGE_100}` }}
+            thumbColor={isNotificationEnabled ? `${COLOR.ORANGE_300}` : `${COLOR.B_50}`}
             onValueChange={toggleSwitch}
-            value={isEnabled}
+            value={isNotificationEnabled}
           />
         </View>
       </View>
@@ -64,7 +100,10 @@ const MoreDrawerScreen = () => {
       {/* Support  */}
       <Text style={styles.textHeading}>Support</Text>
       <View style={styles.contentContainer}>
-        <View style={styles.itemContainer}>
+        <Pressable
+          onPress={() => navigation.navigate('Contact')}
+          style={styles.itemContainer}
+        >
           <View style={styles.iconContainer}>
             <SimpleLineIcons name="earphones" size={20} color={COLOR.B_300} />
             <Text style={styles.text}>Contact Us</Text>
@@ -73,26 +112,31 @@ const MoreDrawerScreen = () => {
             size={15}
             name="chevron-thin-right"
             color={COLOR.B_300}
-            onPress={() => navigation.navigate('Contact')}
           />
-        </View>
-        <View style={styles.itemContainer}>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            clearLocalData('onBoard');
+            console.log('Clear confirmed')
+          }}
+          style={styles.itemContainer}>
           <View style={styles.iconContainer}>
             <Feather
               name="help-circle"
               size={24}
               color={COLOR.B_300}
             />
-            <Text style={styles.text}>Help Center</Text>
+            <Text style={styles.text}>Help</Text>
           </View>
           <Entypo
             size={15}
             name="chevron-thin-right"
             color={COLOR.B_300}
-            onPress={() => navigation.navigate('Contact')}
           />
-        </View>
-        <View style={styles.itemContainer}>
+        </Pressable>
+        <Pressable
+          onPress={() => navigation.navigate('Feedback')}
+          style={styles.itemContainer}>
           <View style={styles.iconContainer}>
             <MaterialIcons
               name="feedback"
@@ -105,14 +149,15 @@ const MoreDrawerScreen = () => {
             size={15}
             name="chevron-thin-right"
             color={COLOR.B_300}
-            onPress={() => navigation.navigate('Feedback')}
           />
-        </View>
+        </Pressable>
       </View>
 
       <Text style={styles.textHeading}>Legal</Text>
       <View style={styles.contentContainer}>
-        <View style={styles.itemContainer}>
+        <Pressable
+          onPress={() => navigation.navigate('Privacy')}
+          style={styles.itemContainer}>
           <View style={styles.iconContainer}>
             <MaterialIcons name="privacy-tip" size={24} color={COLOR.B_300} />
             <Text style={styles.text}>Privacy Policy</Text>
@@ -121,9 +166,8 @@ const MoreDrawerScreen = () => {
             size={15}
             name="chevron-thin-right"
             color={COLOR.B_300}
-            onPress={() => navigation.navigate('Privacy')}
           />
-        </View>
+        </Pressable>
       </View>
 
 
@@ -139,9 +183,9 @@ const MoreDrawerScreen = () => {
           <AntDesign name={isLoggedIn ? "logout" : "login"} size={25} color={COLOR.B_300} />
           <Text
             style={{
-            ...styles.text,
-            fontSize: FONTSIZE.TITLE_1
-          }}
+              ...styles.text,
+              fontSize: FONTSIZE.TITLE_1
+            }}
           >
             {isLoggedIn ? 'Logout' : 'Login'}
           </Text>
@@ -158,14 +202,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: COLOR.WHITE,
-    paddingTop:50
+    paddingTop: 50
   },
   contentContainer: {
     borderRadius: 10,
     paddingVertical: 5,
     margin: 10,
     backgroundColor: COLOR.WHITE,
-    elevation: 1,    
+    elevation: 1,
   },
   itemContainer: {
     flexDirection: 'row',
@@ -183,10 +227,10 @@ const styles = StyleSheet.create({
     fontFamily: 'RalewayBold',
     fontSize: FONTSIZE.TITLE_1,
     opacity: 0.5,
-    marginLeft:10
+    marginLeft: 10
   },
   text: {
     fontFamily: 'ComfortaaBold',
-    fontSize:FONTSIZE.TITLE_2
+    fontSize: FONTSIZE.TITLE_2
   }
 })
