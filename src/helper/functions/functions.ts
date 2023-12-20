@@ -1,3 +1,5 @@
+import { useWindowDimensions } from "react-native";
+
 export function ArticleLifeSpan(date: string) {
   const publishedAt = new Date(date);
   const currentDate = new Date();
@@ -77,3 +79,21 @@ export function contentLifeSpan(date:string):string {
 export function removeHTMLEntities(text: string): string {
   return text.replace(/&[^\s]*;|&#(\d+|[a-fA-F]+);/g, '')
 }
+
+export const generateTransactionRef = (length:number) => {
+  var result = '';
+  var characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return `${result}`;
+};
+
+
+// export function useScreenDiagnol() {
+//   const { width, height } = useWindowDimensions();
+
+//   return Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
+// }
