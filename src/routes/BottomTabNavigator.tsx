@@ -33,7 +33,7 @@ const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
   <View
     style={{
       backgroundColor: focused ? COLOR.ORANGE_50 : '',
-      paddingHorizontal: 20,
+      paddingHorizontal: 15,
       paddingBottom: 5,
       borderRadius: 10
     }}
@@ -42,6 +42,7 @@ const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
       style={{
         color: focused ? COLOR.ORANGE_300 : COLOR.B_300,
         fontFamily: 'RalewayBold',
+        fontSize:FONTSIZE.BODY
       }}
     >{text}</Text>
   </View>

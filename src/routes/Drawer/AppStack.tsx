@@ -1,4 +1,3 @@
-import Routes from "../routes";
 import { COLOR } from "../../constants/contants";
 import CustomDrawerContent from "./CustomDrawerContent";
 import Contact from "../../screens/Drawer/Contact/Contact";
@@ -17,16 +16,19 @@ const AppStack = () => {
         drawerActiveTintColor: COLOR.ORANGE_300,
         drawerStyle: {
           backgroundColor:'transparent'
+        },
+        drawerItemStyle: {
+          
         }
       }}
     >
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name='HomeTabs'
         component={Routes}
         options={{
           title: 'Home',
         }}
-      />
+      /> */}
       <Drawer.Screen
         name='Contact'
         component={Contact}
