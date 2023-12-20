@@ -8,6 +8,7 @@ import { retrieveLocalData } from '../../utils/localStorageFunctions';
 import opportunityData from '../../../src/utils/data/opportunities.json'
 import DatabaseService from '../../appwrite/appwrite';
 import { APPWRITE_DATABASE_ID, APPWRITE_OPPORTUNITIES_COLLECTION_ID, APPWRITE_CODETIPS_COLLECTION_ID } from '@env';
+import { getOpportunites } from '../../../api/strapiJSAPI';
 
 
 interface AppContextProviderProps {
@@ -59,6 +60,9 @@ const AppContextProvider = (
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const oppos = await getOpportunites();
+
+        // console.log(oppos[0].Description[0].children[0].text)
         const bookmarked_opportunities = await retrieveLocalData('opportunities'); // check for bookmarks
         const { isPushNotificationEnabled } = await retrieveLocalData('tokens');
 
@@ -67,10 +71,10 @@ const AppContextProvider = (
             APPWRITE_OPPORTUNITIES_COLLECTION_ID
           )
         // When there is a response from the database.
-        if (response) {
-          const updatedOpportunity = response.map((opp: any) => {
+        if (oppos) {
+          const updatedOpportunity = oppos.map((opp: any) => {
             return ({
-              APPWRITE_DATABASE_ID,
+              // APPWRITE_DATABASE_ID,
               ...opp,
               bookmarked: bookmarked_opportunities ? bookmarked_opportunities.includes(opp.$id) : false
             })
@@ -78,8 +82,8 @@ const AppContextProvider = (
 
           // Sort the opportunites to bring the lasted notifications first.
           const sortedOpportunities = updatedOpportunity.sort((a: any, b: any) => {
-            const dateA = new Date(a?.$createdAt)
-            const dateB = new Date(b?.$createdAt)
+            const dateA = new Date(a?.$publishedAt)
+            const dateB = new Date(b?.$publishedAt)
 
             return (dateB as any) - (dateA as any)
           });

@@ -17,10 +17,12 @@ const OpportunityList = () => {
     setShowCard(!showCard)
   }
 
-  const filteredOpportunities = opportunities.filter((opp) =>
-    opp.tag.some((tag: string) => filteredItems.includes(tag.toLowerCase()))
-  );
+  // const filteredOpportunities = opportunities.filter((opp) =>
+  //   opp.Category.some((category: string) => filteredItems.includes(category.toLowerCase()))
+  // );
 
+  const filteredOpportunities = opportunities.filter((opp) => filteredItems.includes(opp.Category));
+    
   console.log(notifications)
   return (
     <View style={styles.container}>
@@ -44,12 +46,12 @@ const OpportunityList = () => {
                   id={_.$id}
                   key={index}
                   location={_.location}
-                  createdAt={_.createdAt}
-                  type={_.type}
-                  link={_.link}
-                  title={_.title}
-                  expireDate={_.expireDate}
-                  description={_.description}
+                  createdAt={_.publishedAt}
+                  type={_.Category}
+                  link={_.URL}
+                  title={_.Title}
+                  expireDate={_.expiring}
+                  description={_.Description[0].children[0].text}
                   bookmarked={_.bookmarked}
                 />
               ))}
@@ -70,12 +72,12 @@ const OpportunityList = () => {
                 id={_.$id}
                 key={index}
                 location={_.location}
-                createdAt={_.createdAt}
-                type={_.type}
-                link={_.link}
-                title={_.title}
-                expireDate={_.expireDate}
-                description={_.description}
+                createdAt={_.publishedAt}
+                type={_.Category}
+                link={_.URL}
+                title={_.Title}
+                expireDate={_.expiring}
+                description={_.Description[0].children[0].text}
                 bookmarked={_.bookmarked}
               />
             ))}

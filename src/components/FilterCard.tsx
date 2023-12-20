@@ -29,23 +29,36 @@ const FilterCard: React.FC<FilterCardProps> =
 
     useEffect(() => {
       setOpportunityTags(prevTags => {
+        // const updatedTags = opportunities.reduce((acc, opp) => {
+        //   opp.tag.forEach((tag: string) => {
+        //     const findTag = acc.find((tagObject: any) => tagObject.tag == tag);
+        //     if (!findTag) {
+        //       acc.push({
+        //         tag: tag.toLowerCase(),
+        //         tagCount: 1
+        //       });
+        //     } else {
+        //       findTag.tagCount = findTag.tagCount + 1
+        //     }
+        //   });
+        //   return acc;
+        // }, [...prevTags]);
+
+        // updatedTags.sort((a: any, b: any) => a?.tag.length - b?.tag.length);
+
         const updatedTags = opportunities.reduce((acc, opp) => {
-          opp.tag.forEach((tag: string) => {
-            const findTag = acc.find((tagObject: any) => tagObject.tag == tag);
-            if (!findTag) {
-              acc.push({
-                tag: tag.toLowerCase(),
-                tagCount: 1
-              });
-            } else {
-              findTag.tagCount = findTag.tagCount + 1
-            }
-          });
+          const findCategory = acc.find((tagObject: any) => tagObject.Category == opp.Category);
+          if (!findCategory) {
+            acc.push({
+              category: opp.Category,
+              categoryCount: 1
+            });
+          } else {
+            findCategory.categoryCount = findCategory.categoryCount + 1;
+          }
+
           return acc;
         }, [...prevTags]);
-
-        updatedTags.sort((a: any, b: any) => a?.tag.length - b?.tag.length);
-
         return updatedTags;
       });
     }, [opportunities]);
@@ -72,10 +85,7 @@ const FilterCard: React.FC<FilterCardProps> =
         onRequestClose={handlePress}
         statusBarTranslucent
       >
-        <Animated.View style={
-          [styles.modalContainer,
-            // {transform: [{scale: scaleValue as Animated.Value}]}
-          ]}>
+        <Animated.View style={styles.modalContainer}>
           <Animated.View style={styles.nothingContainer} />
           <View style={styles.contentStyles}>
             <View style={styles.filterHeaderStyles}>
