@@ -1,23 +1,16 @@
-import { environments } from "../constants/environments";
 import { Client, Databases, ID, Query, Account } from "appwrite";
-import { FeedbackObject, OpportunitiesFormType, TalentSubmissionForm, userModal } from "../utils/types";
+import { FeedbackObject, NotificationType, OpportunitiesFormType, TalentSubmissionForm, userModal } from "../utils/types";
+import { APPWRITE_DATABASE_ID, APPWRITE_PROJECT_ID, APPWRITE_PROJECT_ENDPOINT, APPWRITE_NOTIFICATION_TOKEN_COLLECTION_ID } from "@env";
 
-export const appwriteClient = new Client();
-
-const { 
-  APPWRITE_PROJECT_ID,
-  APPWRITE_PROJECT_ENDPOINT,
-} = environments;
+export const appwriteClient = new Client()
+  .setEndpoint(APPWRITE_PROJECT_ENDPOINT)
+  .setProject(APPWRITE_PROJECT_ID)
  
 class AppwriteService {
   databases: Databases;
   account: Account;
 
   constructor(){
-    appwriteClient
-      .setEndpoint(APPWRITE_PROJECT_ENDPOINT)
-      .setProject(APPWRITE_PROJECT_ID)
-      
     this.databases = new Databases(appwriteClient);
     this.account = new Account(appwriteClient);
   }
@@ -25,14 +18,13 @@ class AppwriteService {
   async createAccountWithEmail(email:string, password:string) {
     try {
       const accountResponse = await this.account.create(ID.unique(),email,password)
-      return accountResponse;
+      return accountResponse
     } catch (error) {
     }
   }
 
   async createAccountWithAuth2() {
     try {
-      
     } catch (error) {
       
     }
@@ -54,28 +46,46 @@ class AppwriteService {
     }
   }
   // Data functions, fetch and store
-  async getDBData(databaseID:string, collectionID:string) {
+  async getDBData(collectionID:string) {
     try {
-      return (await this.databases.listDocuments(databaseID, collectionID,[Query.limit(100), Query.offset(0)])).documents
+      return (await this.databases.listDocuments(APPWRITE_DATABASE_ID, collectionID,[Query.limit(100), Query.offset(0)])).documents
     } catch (error:any) {
       console.log('getDBData -- ', error.message);
     }
   }
-  async getDocument(databaseID:string, collectionID:string, documentId:string) {
+  async getDocument(collectionID:string, documentId:string) {
     try {
-      return (await this.databases.getDocument(databaseID, collectionID,documentId)).documents
+      return (await this.databases.getDocument(APPWRITE_DATABASE_ID, collectionID,documentId)).documents
     } catch (error:any) {
       console.log('getDBData -- ', error.message);
     }
   }
    
-  async storeDBdata(databaseID: string, collectionID: string, data:userModal | TalentSubmissionForm | FeedbackObject | OpportunitiesFormType) {
+  async storeDBdata(collectionID: string, data:userModal | TalentSubmissionForm | FeedbackObject | OpportunitiesFormType | NotificationType) {
     try {
-      return this.databases.createDocument(databaseID, collectionID, ID.unique(),data)
+      return this.databases.createDocument(APPWRITE_DATABASE_ID,collectionID, ID.unique(),data)
     } catch (error:any) {
       console.log('storeDBdata -- appwrite class -- ', error.message)
     }
   }
+
+  async checkDuplicateToken(expoToken:string){
+    try {
+      const { total } =
+        await this.databases.listDocuments(
+          APPWRITE_DATABASE_ID,
+          APPWRITE_NOTIFICATION_TOKEN_COLLECTION_ID,
+          [
+            Query.equal('tokenValue', expoToken),
+          ])
+          .then(response => response)
+      
+      return total > 0
+    } catch (error) {
+      console.error('checkDuplicateToken Error -- ')
+    }
+  }
+
 }
 
 const DatabaseService = new AppwriteService();
