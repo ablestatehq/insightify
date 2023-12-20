@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     bottom: 5,
     padding: 10,
     elevation: 3,
-    borderRadius: 20,
+    borderRadius: 100,
     position: 'absolute',
     alignItems: 'center',
     alignSelf: "flex-start",
