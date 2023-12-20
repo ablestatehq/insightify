@@ -28,6 +28,7 @@ const TagCard: React.FC<TagCardProps> =
         }
       }
     }
+    // console.log(filteredItems)
     return (
       <Pressable
         style={{
