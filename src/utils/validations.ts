@@ -45,7 +45,7 @@ const ShareSchema = Yup.object().shape({
     .required('Company Name is required'),
   type: Yup.string()
     .required('Provide the type of the opportunity e.g Web design, coding'),
-  expiryDate: Yup.date()
+  expireDate: Yup.date()
     .required('Expiry Date is required')
     .min(new Date(), 'Expiry Date must be in the future'), // Example: Expiry date should be in the future
 });

@@ -1,5 +1,11 @@
 import { RouteProp } from "@react-navigation/native"
 
+type userModal = {
+  email: string
+  lastName: string
+  firstName: string
+}
+
 type NewsRouteParams = {
   title: string
   content: string
@@ -22,15 +28,19 @@ type RootStackParamList = {
   Privacy: undefined;
   Share: undefined;
   OpportunityList: undefined;
-  Login: undefined
+  Login: {
+    title?: string
+    opportunityID?: string
+  }
   SignUp: undefined
+  Contact: undefined
+  More: undefined
+  Feedback: undefined
+  
 }
-type userModal = {
-  email: string
-  lastName: string
-  firstName: string
-}
+
 type DetailsScreenProps = RouteProp<RootStackParamList, 'Details'>
+type LoginScreenProps = RouteProp<RootStackParamList, 'Login'>
 
 // interface for TalentSubmissionForm
 type TalentSubmissionForm = {
@@ -85,6 +95,7 @@ type LoginDetails = {
 }
 
 type OpportunityItemCardProps = {
+  id:string
   title: string
   description: string
   link: string
@@ -92,6 +103,7 @@ type OpportunityItemCardProps = {
   type: string
   location: string
   createdAt: string
+  bookmarked: boolean
 }
 
 type OpportunitiesFormType = {
@@ -103,12 +115,23 @@ type OpportunitiesFormType = {
   description: string
   companyName: string
 }
+
+type NotificationType = {
+  tokenID: string
+  tokenValue: string 
+  userOrDeviceID: string
+  subscription: boolean
+  platform: string
+}
+
 export {
   userModal,
   ArticleType,
   FeedbackObject,
   NewsRouteParams,
   HomeDisplayProps,
+  LoginScreenProps,
+  NotificationType,
   RootStackParamList,
   DetailsScreenProps,
   TalentSubmissionForm,
