@@ -9,7 +9,7 @@ const contactPressed = (contactProvider: string) => {
       } else {
         number = 'tel:${+256756085187}'
       }
-      // Linking.openURL(number)
+      Linking.openURL(number)
       break
     case 'youtube':
       // console.log("Youtube")
