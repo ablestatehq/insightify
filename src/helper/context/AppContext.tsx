@@ -82,8 +82,8 @@ const AppContextProvider = (
 
           // Sort the opportunites to bring the lasted notifications first.
           const sortedOpportunities = updatedOpportunity.sort((a: any, b: any) => {
-            const dateA = new Date(a?.$publishedAt)
-            const dateB = new Date(b?.$publishedAt)
+            const dateA = new Date(a?.publishedAt)
+            const dateB = new Date(b?.publishedAt)
 
             return (dateB as any) - (dateA as any)
           });
