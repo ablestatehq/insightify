@@ -1,31 +1,35 @@
-import React, { useContext, useState } from 'react'
 import { COLOR } from '../../../constants/contants'
+import React, { useContext, useRef, useState } from 'react'
 import { AppContext } from '../../../helper/context/AppContext'
-import { StyleSheet, View, ScrollView, StatusBar, Text } from 'react-native'
-import { Filter, OpportunityCard, Search, FloatingButton, FilterCard } from '../../../components'
+import { StyleSheet, View, ScrollView, StatusBar, Text, Animated } from 'react-native'
+import { OpportunityCard, OpportunityHeader, FloatingButton, FilterCard } from '../../../components'
 
 
 const OpportunityList = () => {
 
-  const { opportunities } = useContext(AppContext);
+  const { opportunities, notifications } = useContext(AppContext);
   const [filteredItems, setFilteredItems] = useState<string[]>([]);
   const [showCard, setShowCard] = useState<boolean>(false);
 
+  const scaleValue = useRef(new Animated.Value(0)).current;
+
   const showFilterCard = () => {
-    setShowCard(!showCard);
+    setShowCard(!showCard)
   }
 
   const filteredOpportunities = opportunities.filter((opp) =>
-    opp.tag.some((tag:string) => filteredItems.includes(tag))
+    opp.tag.some((tag: string) => filteredItems.includes(tag.toLowerCase()))
   );
 
+  console.log(notifications)
   return (
     <View style={styles.container}>
       <StatusBar barStyle='dark-content' backgroundColor={COLOR.WHITE} />
       {/* search section  */}
       <View style={styles.searchContainer}>
-        <Search />
-        <Filter handlePress={showFilterCard} />
+        <OpportunityHeader
+          showFilterCard={showFilterCard}
+        />
       </View>
 
       <View style={styles.opportunityListContainer}>
@@ -44,7 +48,7 @@ const OpportunityList = () => {
                   type={_.type}
                   link={_.link}
                   title={_.title}
-                  expireDate={_.expiryDate}
+                  expireDate={_.expireDate}
                   description={_.description}
                   bookmarked={_.bookmarked}
                 />
@@ -70,7 +74,7 @@ const OpportunityList = () => {
                 type={_.type}
                 link={_.link}
                 title={_.title}
-                expireDate={_.expiryDate}
+                expireDate={_.expireDate}
                 description={_.description}
                 bookmarked={_.bookmarked}
               />
@@ -83,6 +87,8 @@ const OpportunityList = () => {
           handleCardVisibility={showFilterCard}
           setFilteredItems={setFilteredItems}
           filteredItems={filteredItems}
+          scaleValue={scaleValue}
+          filteredCount={filteredOpportunities.length}
         />}
       </View>
     </View>
@@ -102,13 +108,13 @@ const styles = StyleSheet.create({
   },
   scrolllOpp: {
     padding: 5,
-    paddingBottom:25
+    paddingBottom: 25
   },
   opportunityHeaderStyles: {
     flexDirection: 'row',
     paddingHorizontal: 20,
     justifyContent: 'space-between',
-    paddingVertical:10
+    paddingVertical: 10
   },
   searchContainer: {
     flexDirection: 'row',
@@ -117,7 +123,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15
   },
   noMatcheStyle: {
-    fontFamily:'ComfortaaBold'
+    fontFamily: 'ComfortaaBold'
   },
   noTextStylesContainer: {
     flex: 1,

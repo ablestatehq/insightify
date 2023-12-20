@@ -13,7 +13,7 @@ import SubmitButton from '../../../components/FomikComponents/SubmitButton/Submi
 import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, ToastAndroid, View } from 'react-native'
 import { TagInput } from '../../../components'
 
-const { 
+const {
   APPWRITE_DATABASE_ID,
   APPWRITE_OPPORTUNITIES_COLLECTION_ID
 } = environments;
@@ -23,13 +23,12 @@ const Share = () => {
 
   const handleOpportunitySubmission = async (values: any, formikHelpers: FormikHelpers<any>) => {
     try {
-      const data:OpportunitiesFormType = {
+      const data: OpportunitiesFormType = {
         ...values
       }
       // console.log(data)
       const response =
         await DatabaseService.storeDBdata(
-          APPWRITE_DATABASE_ID,
           APPWRITE_OPPORTUNITIES_COLLECTION_ID,
           data
         )
@@ -45,24 +44,26 @@ const Share = () => {
 
       }
     } catch (error) {
-      
+
     }
   };
-  
+
   const formInitialValues = {
     link: "",
     type: "",
     title: "",
     location: "",
-    expiryDate: "",
+    expireDate: "",
     description: "",
     companyName: "",
-    // tag: ""
+    // tag: [],
+    // category:'' // category of the opportunity.
   }
 
-  const handleTagAddition = (newTag:string) => {
+  const handleTagAddition = (newTag: string) => {
     console.log('New tag added:', newTag);
   };
+
   return (
     <KeyboardAvoidingView style={styles.container}>
       <View style={styles.header}>
@@ -71,7 +72,7 @@ const Share = () => {
           size={30}
           color="black"
           onPress={() => {
-            
+
             navigation.navigate('Home')
           }}
         />
@@ -129,11 +130,13 @@ const Share = () => {
               /> */}
               <InputText
                 label='Expiry Date'
-                fieldName='expiryDate'
+                fieldName='expireDate'
                 placeholder='e.g YYYY-MM-DD'
               />
-
-              <SubmitButton handleSubmit={() => handleSubmit()} />
+              <SubmitButton
+                handleSubmit={() => handleSubmit()}
+                button={styles.buttonStyle}
+              />
             </ScrollView>
           )}
         </Formik>
@@ -166,4 +169,16 @@ const styles = StyleSheet.create({
   formViewContainer: {
     padding: 5
   },
+  buttonStyle: {
+    flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "center",
+    gap: 5,
+    alignSelf: 'center',
+    backgroundColor: COLOR.B_300,
+    padding: 5,
+    borderRadius: 5,
+    width: '95%',
+    margin: 10
+  }
 })

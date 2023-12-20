@@ -1,12 +1,12 @@
-import React, { useContext } from 'react'
-import Button from './Button'
-import { OpenLink } from '../helper/functions/handleFunctions'
+import React, { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { COLOR, FONTSIZE } from '../constants/contants'
-import { OpportunityItemCardProps } from '../utils/types'
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { retrieveLocalData, storeToLocalStorage } from '../utils/localStorageFunctions';
+import { COLOR, FONTSIZE } from '../constants/contants';
+import { useNavigation } from '@react-navigation/native';
+import { OpportunityItemCardProps } from '../utils/types';
 import { AppContext } from '../helper/context/AppContext';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { OpenLink, handleBookmark } from '../helper/functions/handleFunctions';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 const OpportunityItemCard: React.FC<OpportunityItemCardProps> =
   ({
@@ -21,54 +21,18 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> =
     bookmarked
   }) => {
 
-    const { setOpportunities, opportunities } = useContext(AppContext)
-
-    const handleBookmark = async () => {
-      const updatedOpportunities = [...opportunities];
-      const targetIndex = updatedOpportunities.findIndex(opportunity => opportunity.$id === id);
-
-      if (targetIndex !== -1) {
-        const targetOpportunity = updatedOpportunities[targetIndex];
-
-        // Toggle bookmark status
-        targetOpportunity.bookmarked = !targetOpportunity.bookmarked;
-
-        updatedOpportunities[targetIndex] = targetOpportunity;
-
-        setOpportunities(updatedOpportunities);
-
-        // Update local storage
-        try {
-          const bookmarkedData = await retrieveLocalData('opportunities');
-          const updatedBookmarkedData = bookmarkedData ? bookmarkedData.filter((oppId:string) => oppId !== id) : [];
-
-          if (targetOpportunity.bookmarked) {
-            updatedBookmarkedData.push(id);
-          } else {
-            updatedBookmarkedData.filter((removeId:string) => removeId !== id)
-          }
-
-          await storeToLocalStorage('opportunities', updatedBookmarkedData);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    };
+    const { setOpportunities, opportunities, isLoggedIn } = useContext(AppContext)
+    const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
     return (
       <View style={styles.container}>
         <View style={styles.headSection}>
           <View style={{ flex: 1, paddingTop: 10 }}>
             <Text style={styles.heading}>{title}</Text>
-            <TouchableOpacity onPress={() => OpenLink(link)}>
-              <Text style={styles.linkText}>Apply on: {link}</Text>
-            </TouchableOpacity>
           </View>
           <Pressable
             style={{
-              // padding: 5,
-              backgroundColor:
-                COLOR.GREY_50,
+              backgroundColor: COLOR.GREY_50,
               paddingLeft: 15,
               paddingRight: 10,
               alignSelf: 'flex-start',
@@ -80,33 +44,43 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> =
               name="bookmark"
               size={20}
               color={COLOR.B_300}
-              onPress={handleBookmark}
+              onPress={function () {
+                if (isLoggedIn) {
+                  handleBookmark(id, opportunities, setOpportunities)
+                } else {
+                  navigation.navigate('Login', { title: 'Login to \nsave an Opportunity', opportunityID: id })
+                }
+              }}
             />}
             {!bookmarked && <Ionicons
               name="bookmark-outline"
               size={20}
               color={COLOR.B_300}
-              onPress={handleBookmark}
+              onPress={function () {
+                if (isLoggedIn) {
+                  handleBookmark(id, opportunities, setOpportunities);
+                } else {
+                  navigation.navigate('Login', { title: 'Login to save \nthis Opportunity', opportunityID: id })
+                }
+              }}
             />}
           </Pressable>
         </View>
         <View style={styles.description}>
-          <Text style={styles.text}>{description}</Text>
+          <Text
+            style={styles.text}
+            numberOfLines={3}
+          >{description}</Text>
         </View>
         <View style={styles.footer}>
           <View style={{ paddingBottom: 10 }}>
-            <Text style={{ ...styles.text, color: COLOR.B_75 }}><Text style={styles.location}>Location:</Text> {location}</Text>
+            <Text style={{ ...styles.text, color: COLOR.B_300 }}><Text style={styles.location}>Location:</Text> {location}</Text>
           </View>
           <Pressable
             style={{ backgroundColor: COLOR.ORANGE_50, borderTopLeftRadius: 10, paddingHorizontal: 10, paddingBottom: 5 }}
             onPress={() => OpenLink(link)}
           >
-            <Button
-              title='Details'
-              btn={styles.btn}
-              textStyle={styles.btnText}
-            // handlePress={}
-            />
+            <Text style={styles.btnText}>Details</Text>
           </Pressable>
         </View>
       </View>
@@ -162,6 +136,6 @@ const styles = StyleSheet.create({
     color: COLOR.ORANGE_300
   },
   location: {
-    color: COLOR.B_300
+    color: COLOR.B_75
   }
 })
