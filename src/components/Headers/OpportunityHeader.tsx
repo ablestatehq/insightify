@@ -19,7 +19,7 @@ const OpportunityHeader: React.FC<OpportunityHeaderProps> = ({ showFilterCard })
   return (
     <View style={styles.container}>
       <Text style={styles.text}>
-        Opportunities.
+        Opportunities
       </Text>
       <View style={styles.iconContainer}>
         <Ionicons name="filter-outline" size={23} color={COLOR.B_300} onPress={showFilterCard} />
