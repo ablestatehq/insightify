@@ -1,4 +1,4 @@
-export { default as Header } from './Header/Header'
+export { default as Header } from '../components/Headers/Header/Header'
 export { default as Loader } from './Loading/Loader'
 export { default as OpportunityHeader } from './Headers/OpportunityHeader'
 export { default as Button } from './Button'
