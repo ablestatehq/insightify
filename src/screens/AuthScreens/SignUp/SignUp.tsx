@@ -1,17 +1,16 @@
-import { Formik } from 'formik'
 import React, { useContext } from 'react'
-import { Ionicons } from '@expo/vector-icons'
-import SignUpWith from '../../../components/SignUpWith'
+import { Formik, FormikHelpers } from 'formik'
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native'
+
 import DatabaseService from '../../../appwrite/appwrite'
-import { useNavigation } from '@react-navigation/native'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
 import { environments } from '../../../constants/environments'
 import { AppContext } from '../../../helper/context/AppContext'
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import InputText from '../../../components/FomikComponents/InputText/InputText'
-import SubmitButton from '../../../components/FomikComponents/SubmitButton/SubmitButton'
 
+import { Ionicons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { SignUpWith, InputText, SubmitButton } from '../../../components'
 
 const {
   APPWRITE_DATABASE_ID,
@@ -28,7 +27,7 @@ const SignUp = () => {
     con_password: ''
   }
 
-  const handleSignUpWithEmailAndPassword = async (values: any) => {
+  const handleSignUpWithEmailAndPassword = async (values: any, formikHelpers: FormikHelpers<any>) => {
     try {
       // Signing up
       const signUpResponse = await DatabaseService.createAccountWithEmail(
@@ -38,7 +37,7 @@ const SignUp = () => {
 
       // Log in the user after successful sign-up
       if (signUpResponse) {
-        const createdUser = await DatabaseService.storeDBdata(APPWRITE_DATABASE_ID, APPWRITE_USER_COLLECTION_ID, {
+        const createdUser = await DatabaseService.storeDBdata(APPWRITE_USER_COLLECTION_ID, {
           email: values.email,
           firstName: values.name.split(' ')[0],
           lastName: values.name.split(' ')[1]
@@ -46,6 +45,7 @@ const SignUp = () => {
 
         if (createdUser) {
           const loggedIn = await DatabaseService.loginWithEmailAndPassword(signUpResponse.email, values.password);
+          formikHelpers.resetForm({ values: signUpFormInitValues })
           setIsLoggedIn(true);
           navigation.goBack();
           navigation.goBack();
@@ -116,11 +116,15 @@ const SignUp = () => {
                   isInputSecure={true}
                   placeholder='confirm password'
                 />
-                <SubmitButton btnText='Sign Up' handleSubmit={() => handleSubmit()} />
+                <SubmitButton
+                  btnText='Sign Up'
+                  handleSubmit={() => handleSubmit()}
+                  button={styles.button}
+                />
               </ScrollView>
             )}
           </Formik>
-          <SignUpWith />
+          {/* <SignUpWith /> */}
         </View>
       </View>
     </View>
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'RalewayBold',
     fontSize: FONTSIZE.HEADING_3,
-    textAlign: 'center'
+    // textAlign: 'center'
   },
   contentContainer: {
     paddingHorizontal: 20
@@ -145,5 +149,17 @@ const styles = StyleSheet.create({
   loginView: {},
   header: {
     padding: 5,
+  },
+  button: {
+    flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "center",
+    gap: 5,
+    alignSelf: 'center',
+    backgroundColor: COLOR.B_300,
+    padding: 5,
+    borderRadius: 5,
+    width: '95%',
+    margin: 10
   }
 })

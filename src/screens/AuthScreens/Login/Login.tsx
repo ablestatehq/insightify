@@ -1,24 +1,24 @@
-import { Alert, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext } from 'react'
 import { Formik } from 'formik'
-import { Ionicons } from '@expo/vector-icons'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { SignUpWith, InputText, SubmitButton } from '../../../components'
-import { useNavigation } from '@react-navigation/native'
-import { COLOR, FONTSIZE } from '../../../constants/contants'
+import React, { useContext } from 'react'
+import { AntDesign } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native'
 import DatabaseService from '../../../appwrite/appwrite'
-import { environments } from '../../../constants/environments'
+import { COLOR, FONTSIZE } from '../../../constants/contants'
 import { AppContext } from '../../../helper/context/AppContext'
+import { SignUpWith, InputText, SubmitButton } from '../../../components'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { Alert, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { LoginScreenProps } from '../../../utils/types';
+import { handleBookmark } from '../../../helper/functions/handleFunctions';
 
+const Login: React.FC = () => {
+  const route = useRoute<LoginScreenProps>();
 
-const {
-  APPWRITE_DATABASE_ID,
-  APPWRITE_USER_COLLECTION_ID
-} = environments;
-const Login = () => {
+  const { title, opportunityID } = route.params;
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  const { setIsLoggedIn } = useContext(AppContext);
+  const { setIsLoggedIn, opportunities, setOpportunities } = useContext(AppContext);
+
   const loginFormInitValues = {
     email: '',
     password: ''
@@ -28,14 +28,21 @@ const Login = () => {
     try {
       const response = await DatabaseService.loginWithEmailAndPassword(values.email, values.password)
       if (response) {
-        // const data = await DatabaseService.getDocument(APPWRITE_DATABASE_ID, APPWRITE_USER_COLLECTION_ID, response.userId);
-        // const userData = data.documents[0];
         setIsLoggedIn(true);
 
-        navigation.navigate('Share');
+        if (opportunityID) {
+          handleBookmark(opportunityID,opportunities, setOpportunities )
+          navigation.navigate('Deck');
+        } else {
+          if (title) {
+            navigation.navigate('Share');
+          } else {
+            navigation.goBack();
+            navigation.goBack();
+          }
+        }
 
       } else {
-        console.log(response)
         Alert.alert("Request failed", "Login request failed", [
           {
             style: 'cancel',
@@ -55,23 +62,12 @@ const Login = () => {
   return (
     <KeyboardAvoidingView style={styles.container}>
       <View style={styles.header}>
-        <Ionicons
-          name="chevron-back"
-          size={30}
-          color="black"
-          onPress={() => {
-            navigation.goBack()
-          }}
-        />
-        <Text
-          style={styles.text}
-        >
-        </Text>
+        <AntDesign name="close" size={30} color="black" onPress={() => navigation.goBack()} />
         <View />
       </View >
       <View style={styles.contentContainer}>
         <Text style={styles.text}>
-          Good to {'\n'}have you back
+          {(title as string).length > 0 ? title : 'Good to \nhave you back'}
         </Text>
         <View style={styles.loginView}>
           <Formik
@@ -92,7 +88,10 @@ const Login = () => {
                     isInputSecure={true}
                     placeholder='*******'
                   />
-                  <SubmitButton btnText='Login' handleSubmit={() => handleSubmit()} />
+                  <SubmitButton
+                    btnText='Login'
+                    handleSubmit={() => handleSubmit()}
+                    button={styles.button} />
                   <View>
                     <Text style={styles.footerText}>Forgot password?</Text>
                     <View style={styles.footer}>
@@ -110,7 +109,7 @@ const Login = () => {
               </View>
             )}
           </Formik>
-          <SignUpWith />
+          {/* <SignUpWith /> */}
         </View>
       </View>
     </KeyboardAvoidingView>
@@ -126,10 +125,13 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 25,
+    paddingTop: 10
   },
   text: {
-    fontSize: FONTSIZE.HEADING_2,
+    fontSize: FONTSIZE.HEADING_3,
     fontFamily: 'RalewayBold',
   },
   contentContainer: {
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
     marginTop: 50
   },
   loginScroll: {
-    padding: 5
+    // padding: 5
   },
   footerText: {
     fontFamily: 'RalewayRegular',
@@ -153,5 +155,17 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'center'
+  },
+  button: {
+    flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "center",
+    gap: 5,
+    alignSelf: 'center',
+    backgroundColor: COLOR.B_300,
+    padding: 5,
+    borderRadius: 5,
+    width: '95%',
+    margin: 10
   }
 })

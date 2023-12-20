@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { AntDesign, EvilIcons } from '@expo/vector-icons';
+import { COLOR } from '../constants/contants';
 
 const SignUpWith:React.FC = () => {
   return (
@@ -30,10 +31,12 @@ const styles = StyleSheet.create({
     gap: 5,
     alignItems:'center',
     flexDirection: "row",
+    justifyContent:'center'
   },
   view: {
+    width: '25%',
     borderBottomWidth: 1,
-    flex:1
+    borderBottomColor:COLOR.B_50
   },
   iconContainer: {
     gap: 10,
