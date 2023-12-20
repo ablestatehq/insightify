@@ -2,6 +2,7 @@ import { SafeAreaView, StyleSheet, } from 'react-native'
 import React from 'react'
 import { WebView } from 'react-native-webview';
 import Header from '../../NewsDetails/helperComponents/Header';
+import { COLOR } from '../../../constants/contants';
 
 const Privacy = () => {
   return (
@@ -22,6 +23,7 @@ const styles = StyleSheet.create({
     flex:1
   },
   container: {
-    flex:1
+    flex: 1,
+    backgroundColor:COLOR.WHITE
   }
 })
