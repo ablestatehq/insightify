@@ -1,6 +1,6 @@
 export { default as Header } from './Header/Header'
 export { default as Loader } from './Loading/Loader'
-export { default as OpportunityHeader } from './Search/OpportunityHeader'
+export { default as OpportunityHeader } from './Headers/OpportunityHeader'
 export { default as Button } from './Button'
 export { default as Filter } from './Filter'
 export { default as SignUpWith } from './SignUpWith'
