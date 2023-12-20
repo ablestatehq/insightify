@@ -29,25 +29,8 @@ const FilterCard: React.FC<FilterCardProps> =
 
     useEffect(() => {
       setOpportunityTags(prevTags => {
-        // const updatedTags = opportunities.reduce((acc, opp) => {
-        //   opp.tag.forEach((tag: string) => {
-        //     const findTag = acc.find((tagObject: any) => tagObject.tag == tag);
-        //     if (!findTag) {
-        //       acc.push({
-        //         tag: tag.toLowerCase(),
-        //         tagCount: 1
-        //       });
-        //     } else {
-        //       findTag.tagCount = findTag.tagCount + 1
-        //     }
-        //   });
-        //   return acc;
-        // }, [...prevTags]);
-
-        // updatedTags.sort((a: any, b: any) => a?.tag.length - b?.tag.length);
-
         const updatedTags = opportunities.reduce((acc, opp) => {
-          const findCategory = acc.find((tagObject: any) => tagObject.Category == opp.Category);
+          const findCategory = acc.find((cate: any) => cate.category == opp.Category);
           if (!findCategory) {
             acc.push({
               category: opp.Category,
@@ -59,6 +42,7 @@ const FilterCard: React.FC<FilterCardProps> =
 
           return acc;
         }, [...prevTags]);
+
         return updatedTags;
       });
     }, [opportunities]);
@@ -105,12 +89,12 @@ const FilterCard: React.FC<FilterCardProps> =
                   {
                     opportunityTags.map((_, index: number) => (
                       <TagCard
-                        title={_.tag}
+                        title={_.category}
                         key={index}
                         setActive={setFilteredItems}
                         filteredItems={filteredItems}
-                        isActive={filteredItems.includes(_.tag)}
-                        itemCount={_.tagCount}
+                        isActive={filteredItems.includes(_.category)}
+                        itemCount={_.categoryCount}
                       />
                     ))
                   }
