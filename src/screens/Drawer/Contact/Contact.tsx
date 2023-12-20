@@ -1,37 +1,48 @@
-import { SafeAreaView, StyleSheet, View, Text } from 'react-native'
-// import { WebView } from "react-native-webview";
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
-import { COLOR, FONTSIZE } from '../../../constants/contants';
+import { SafeAreaView, StyleSheet, View, Text, Pressable } from 'react-native'
 import { Feather, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
+
+import { contactPressed } from '../handlers';
+import { COLOR, FONTSIZE } from '../../../constants/contants';
+import Header from '../../NewsDetails/helperComponents/Header';
 
 const Contact = () => {
   const navigation = useNavigation();
+
   return (
     <SafeAreaView
       style={styles.safeAreaContainer}
     >
+      <Header title='Contact us' />
       <View style={styles.contactContainer}>
-        <View style={styles.contactView}>
+        <Text style={styles.introText}>
+          Get in touch with us!
+        </Text>
+        <Pressable
+          onPress={() => contactPressed('tel')}
+          style={styles.contactView}>
           <Feather
             name="smartphone"
-            size={25}
+            size={20}
             color={COLOR.B_300}
           />
           <Text style={styles.contactText}>
             +256756085187
           </Text>
-        </View>
-        <View style={styles.contactView}>
+        </Pressable>
+        <Pressable
+          onPress={() => contactPressed('email')}
+          style={styles.contactView}>
           <MaterialCommunityIcons
             name="email-outline"
-            size={25}
+            size={20}
             color={COLOR.B_300}
           />
           <Text style={styles.contactText}>
-            theablestate@gmail.com
+            hello@theablestate.com
           </Text>
-        </View>
+        </Pressable>
 
         <View style={styles.socialMediaContainer}>
           <View style={styles.socialMediaTitleView}>
@@ -39,39 +50,45 @@ const Contact = () => {
               Social media
             </Text>
           </View>
-          <View style={styles.socialContainer}>
+          <Pressable
+            onPress={() => contactPressed('twitter')}
+            style={styles.socialContainer}>
             <Feather
               name="twitter"
-              size={30}
+              size={20}
               color={COLOR.B_300}
             />
             <Text style={styles.socialText}>
               Twitter{'\n'}
               <Text style={styles.handleText}>@ablestatehq</Text>
             </Text>
-          </View>
-          <View style={styles.socialContainer}>
+          </Pressable>
+          <Pressable
+            onPress={() => contactPressed('linkedIn')}
+            style={styles.socialContainer}>
             <SimpleLineIcons
               name="social-linkedin"
               color={COLOR.B_300}
-              size={30}
+              size={20}
             />
             <Text style={styles.socialText}>
               LinkedIn{'\n'}
               <Text style={styles.handleText}>@ablestatehq</Text>
             </Text>
-          </View>
-          <View style={styles.socialContainer}>
+          </Pressable>
+          <Pressable
+            onPress={() => contactPressed('youtube')}
+            style={styles.socialContainer}>
             <Feather
               name="youtube"
-              size={30}
+              size={20}
               color={COLOR.B_300}
             />
             <Text style={styles.socialText}>
               YouTube{'\n'}
               <Text style={styles.handleText}>@ablestatehq</Text>
             </Text>
-          </View>
+          </Pressable>
         </View>
       </View>
     </SafeAreaView>
@@ -84,14 +101,16 @@ const styles = StyleSheet.create({
   safeAreaContainer: {
     flex: 1,
     paddingTop: 5,
+    backgroundColor: COLOR.WHITE,
   },
   contactContainer: {
     flex: 1,
-    padding: 20
+    padding: 25,
+    backgroundColor: COLOR.WHITE
   },
   contactText: {
     fontFamily: 'ComfortaaSemiBold',
-    fontSize: FONTSIZE.TITLE_1
+    fontSize: FONTSIZE.TITLE_2
   },
   contactView: {
     gap: 25,
@@ -102,6 +121,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 10,
     backgroundColor: COLOR.WHITE,
+    elevation: 1
   },
   socialContainer: {
     gap: 20,
@@ -114,19 +134,25 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     fontSize: FONTSIZE.TITLE_2,
     fontFamily: "ComfortaaSemiBold",
-    color:COLOR.B_300,
+    color: COLOR.B_300,
   },
   socialMediaContainer: {
     padding: 10,
     borderRadius: 10,
     backgroundColor: COLOR.WHITE,
+    elevation: 1
   },
   socialMediaTitleView: {
-    paddingBottom:10,
+    paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: COLOR.GREY_50,
   },
   handleText: {
-    fontSize:FONTSIZE.SMALL
+    fontSize: FONTSIZE.SMALL
+  },
+  introText: {
+    fontFamily: 'RalewayBold',
+    fontSize: FONTSIZE.HEADING_5,
+    marginBottom: 20
   }
 })

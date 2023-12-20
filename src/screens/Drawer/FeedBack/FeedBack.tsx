@@ -57,14 +57,13 @@ const FeedBack = () => {
       suggestion: suggestionText
     }
     const response = await DatabaseService.storeDBdata(
-      APPWRITE_DATABASE_ID,
       APPWRITE_FEEDBACK_COLLECTION_ID,
       newFeedback)
       .then(response => response)
       .catch((error: any) => {
+        console.log(error.message)
       })
-
-
+    
     if (response) {
       setSuggestionText('')
       setSelectedImprovement(null)
