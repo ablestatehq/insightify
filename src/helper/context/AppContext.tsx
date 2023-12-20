@@ -6,7 +6,7 @@ import React, {
 import codeTipsData from "../../utils/data/codeTipsData.json";
 import { retrieveLocalData } from '../../utils/localStorageFunctions';
 import opportunityData from '../../../src/utils/data/opportunities.json'
-import DatabaseService, { appwriteClient } from '../../appwrite/appwrite';
+import DatabaseService from '../../appwrite/appwrite';
 import { APPWRITE_DATABASE_ID, APPWRITE_OPPORTUNITIES_COLLECTION_ID, APPWRITE_CODETIPS_COLLECTION_ID } from '@env';
 
 
@@ -25,6 +25,8 @@ interface AppContextType {
   setOpportunities: React.Dispatch<React.SetStateAction<any[]>>
   isNotificationEnabled: boolean
   setIsNotificationEnabled: React.Dispatch<React.SetStateAction<boolean>>
+  notifications: any[],
+  setNotifications: React.Dispatch<React.SetStateAction<Notification[]>>
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -37,7 +39,9 @@ export const AppContext = createContext<AppContextType>({
   opportunities: [],
   setOpportunities: () => { },
   isNotificationEnabled: false,
-  setIsNotificationEnabled: () => { }
+  setIsNotificationEnabled: () => { },
+  notifications: [],
+  setNotifications: () => { },
 });
 
 const AppContextProvider = (
@@ -50,12 +54,13 @@ const AppContextProvider = (
   const [opportunities, setOpportunities] = useState<any[]>([]);
   const [codeTips, setCodeTips] = useState<any[]>(codeTipsData);
   const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
-
+  const [notifications, setNotifications] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const bookmarked_opportunities = await retrieveLocalData('opportunities')
+        const bookmarked_opportunities = await retrieveLocalData('opportunities'); // check for bookmarks
+        const { isPushNotificationEnabled } = await retrieveLocalData('tokens');
 
         const response =
           await DatabaseService.getDBData(
@@ -103,6 +108,8 @@ const AppContextProvider = (
         if (developerTips) {
           // setCodeTips(developerTips);
         }
+
+        setIsNotificationEnabled(isPushNotificationEnabled);
       } catch (error: any) {
         alert(`error occured while fetching data ${error}`);
       } finally {
@@ -111,30 +118,8 @@ const AppContextProvider = (
     }
 
     fetchData();
-
-    // const unsubscribe = appwriteClient?.subscribe(
-    //   `databases.${APPWRITE_DATABASE_ID}.collections.${APPWRITE_OPPORTUNITIES_COLLECTION_ID}.documents`,
-    //   (response: any) => {
-    //     if (response.events.includes(
-    //       'databases.*.collections.*.documents.*.create'
-    //     )) {
-    //       setOpportunities((prevOpportunities: any[]) => {
-    //         const updatedOpportunity = [...prevOpportunities, ...response.payload];
-    //         return updatedOpportunity;
-    //       })
-    //     } else if (response.events.includes(
-    //       'database.*.collections.*.documents.delete'
-    //     )) {
-    //       setOpportunities((prevOpportunities: any[]) => {
-    //         return prevOpportunities.filter((opportunity) => {
-    //           return opportunity.$id !== response.payload.$id
-    //         })
-    //       })
-    //     }
-    //   })
-
+    
     return () => {
-      // unsubscribe ? unsubscribe() : null
     }
   }, []);
 
@@ -149,7 +134,9 @@ const AppContextProvider = (
     opportunities,
     setOpportunities,
     isNotificationEnabled,
-    setIsNotificationEnabled
+    setIsNotificationEnabled,
+    notifications,
+    setNotifications,
   };
 
   return (
