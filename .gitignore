@@ -33,3 +33,7 @@ yarn-error.*
 .env
 # typescript
 *.tsbuildinfo
+
+# The process file contains some of the processes that I decided to use for this 
+# particular project.
+/Processes.txt
