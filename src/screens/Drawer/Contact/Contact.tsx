@@ -1,9 +1,9 @@
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView, StyleSheet, View, Text, Pressable } from 'react-native'
-import { Feather, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { contactPressed } from '../handlers';
+import { contactPressed } from '../Contacthandlers';
 import { COLOR, FONTSIZE } from '../../../constants/contants';
 import Header from '../../NewsDetails/helperComponents/Header';
 
@@ -40,7 +40,7 @@ const Contact = () => {
             color={COLOR.B_300}
           />
           <Text style={styles.contactText}>
-            hello@theablestate.com
+            insights@ablestate.africa
           </Text>
         </Pressable>
 
@@ -66,13 +66,26 @@ const Contact = () => {
           <Pressable
             onPress={() => contactPressed('linkedIn')}
             style={styles.socialContainer}>
-            <SimpleLineIcons
-              name="social-linkedin"
+            <Feather
+              name="linkedin"
               color={COLOR.B_300}
               size={20}
             />
             <Text style={styles.socialText}>
               LinkedIn{'\n'}
+              <Text style={styles.handleText}>@ablestatehq</Text>
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => contactPressed('instagram')}
+            style={styles.socialContainer}>
+            <Feather
+              name="instagram"
+              color={COLOR.B_300}
+              size={20}
+            />
+            <Text style={styles.socialText}>
+              Instagram{'\n'}
               <Text style={styles.handleText}>@ablestatehq</Text>
             </Text>
           </Pressable>
