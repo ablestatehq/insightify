@@ -3,15 +3,16 @@ import TagCard from './TagCard';
 import { Entypo } from '@expo/vector-icons';
 import { COLOR, FONTSIZE } from '../constants/contants';
 import { AppContext } from '../helper/context/AppContext';
-import { Modal, StyleSheet, Text, View, Animated, Pressable } from 'react-native';
 import React, { useContext, useState, useEffect } from 'react';
+import { Modal, StyleSheet, Text, View, Animated } from 'react-native';
 
 interface FilterCardProps {
   cardVisible?: boolean
   handleCardVisibility?: () => void
   setFilteredItems: (data: any) => void
   filteredItems: string[]
-  scaleValue?:Animated.Value
+  scaleValue?: Animated.Value
+  filteredCount?: number
 }
 
 const FilterCard: React.FC<FilterCardProps> =
@@ -20,12 +21,12 @@ const FilterCard: React.FC<FilterCardProps> =
     handleCardVisibility,
     setFilteredItems,
     filteredItems,
-    scaleValue
+    scaleValue,
+    filteredCount
   }) => {
     const { opportunities } = useContext(AppContext);
     const [opportunityTags, setOpportunityTags] = useState<any[]>([]);
 
-    // load tags 
     useEffect(() => {
       setOpportunityTags(prevTags => {
         const updatedTags = opportunities.reduce((acc, opp) => {
@@ -48,7 +49,6 @@ const FilterCard: React.FC<FilterCardProps> =
         return updatedTags;
       });
     }, [opportunities]);
-
 
     const handlePress = () => {
       if (handleCardVisibility) {
@@ -110,13 +110,23 @@ const FilterCard: React.FC<FilterCardProps> =
                   <Text style={{ fontFamily: 'ComfortaaBold' }}>No tags available</Text>
                 </View>
             }
-            {opportunityTags.length > 0 && <Button
-              btn={styles.buttonStyles}
-              textStyle={styles.textStyle}
-              title='reset'
-              handlePress={handleReset}
+            <View style={styles.filterFooter}>
+              {opportunityTags.length > 0 && <Button
+                title='reset'
+                btn={styles.buttonStyles}
+                textStyle={styles.textStyle}
+                handlePress={handleReset}
 
-            />}
+              />}
+              {(filteredCount as number) > 0 &&
+                <Text
+                  style={{
+                    fontFamily: 'ComfortaaBold',
+                    fontSize: FONTSIZE.TITLE_2
+                  }}
+                >{`Results(${filteredCount})`}
+                </Text>}
+            </View>
           </View>
         </Animated.View>
       </Modal>
@@ -127,7 +137,7 @@ export default FilterCard
 
 const styles = StyleSheet.create({
   modalContainer: {
-    flex:1
+    flex: 1
   },
   filterHeaderStyles: {
     gap: 25,
@@ -172,5 +182,10 @@ const styles = StyleSheet.create({
     fontFamily: 'ComfortaaBold',
     fontSize: FONTSIZE.TITLE_2,
     textTransform: 'uppercase'
+  },
+  filterFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   }
 })
