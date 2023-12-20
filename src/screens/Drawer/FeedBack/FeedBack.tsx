@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import Selectable from './components/Selectable'
-import { COLOR, FONTSIZE } from '../../../constants/contants'
 import { FeedbackObject } from '../../../utils/types'
+import { APPWRITE_FEEDBACK_COLLECTION_ID } from '@env'
 import DatabaseService from '../../../appwrite/appwrite'
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native'
+import { COLOR, FONTSIZE } from '../../../constants/contants'
 import Header from '../../NewsDetails/helperComponents/Header'
-import { APPWRITE_DATABASE_ID, APPWRITE_FEEDBACK_COLLECTION_ID } from '@env'
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native'
 
 const FeedBack = () => {
   const [selectedImprovement, setSelectedImprovement] = useState<string | null>(null);
@@ -141,7 +141,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.WHITE
   },
   feedBackContainer: {
-    padding: 20
+    flex:1,
+    padding: 20,
   },
   suggestions: {
     borderRadius: 10,
@@ -162,7 +163,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLOR.ORANGE_300,
     borderRadius: 5,
-    marginTop: 20
+    marginTop: 20,
+    bottom: 20,
+    position: 'absolute',
+    width: '100%',
+    alignSelf:'center'
   },
   emojiView: {
 
