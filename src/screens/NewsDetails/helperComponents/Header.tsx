@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons';
-import { FONTSIZE } from '../../../constants/contants'
-import { useNavigation } from '@react-navigation/native'
+import { FONTSIZE } from '../../../constants/contants';
+import { useNavigation } from '@react-navigation/native';
 
 interface HeaderProps {
   title?: string
@@ -51,8 +51,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 5,
     paddingVertical: 10,
-    // borderBottomWidth: 1,
-    // borderBottomColor:COLOR.B_50
+    paddingHorizontal:20
   },
   text: {
     fontSize: FONTSIZE.TITLE_1
