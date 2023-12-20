@@ -8,24 +8,20 @@ import { useNavigation } from '@react-navigation/native';
 import TrendingNewsItem from '../TrendingNewsItem/TrendingNewsItem';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { COLOR, FONTSIZE } from '../../../constants/contants';
-import HomeHeading from '../../HomeScreenText/HomeHeading';
-import { AppContext } from '../../../helper/context/AppContext';
 
 
 const NewsListContainer:React.FC = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-
-  const { articles } = useContext(AppContext);
+  const articles: any[] = []
   return (
     <View style={{ flex: 1 }}>
-      <HomeHeading title='Trending in Africa' />
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
       >
         {/* Container for the list of the rest of the news  */}
         {
-          articles.map((item: any, index: number) => (
+          articles?.map((item: any, index: number) => (
             <Fragment key={index}>
               <TrendingNewsItem
                 title={item.title}

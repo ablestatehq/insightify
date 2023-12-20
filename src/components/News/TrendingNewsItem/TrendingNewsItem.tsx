@@ -11,15 +11,14 @@ interface TrendingNewsItem {
   handleTendingArticleClick: () => void
 }
 
-const TrendingNewsItem = (
+const TrendingNewsItem:React.FC<TrendingNewsItem> = (
   {
     title,
     reporter,
     datePublished,
     featuredImage,
     handleTendingArticleClick
-  }
-    : TrendingNewsItem) => {
+  }) => {
   return (
     <TouchableOpacity
       style={styles.container}
