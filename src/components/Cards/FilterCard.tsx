@@ -1,17 +1,16 @@
-import Button from './Button';
+import Button from '../Button';
 import TagCard from './TagCard';
-import { Entypo } from '@expo/vector-icons';
-import { COLOR, FONTSIZE } from '../constants/contants';
-import { AppContext } from '../helper/context/AppContext';
+import { Feather } from '@expo/vector-icons';
+import { COLOR, FONTSIZE } from '../../constants/contants';
+import { AppContext } from '../../helper/context/AppContext';
 import React, { useContext, useState, useEffect } from 'react';
-import { Modal, StyleSheet, Text, View, Animated } from 'react-native';
+import { Modal, StyleSheet, Text, View, Animated, ScrollView } from 'react-native';
 
 interface FilterCardProps {
   cardVisible?: boolean
   handleCardVisibility?: () => void
   setFilteredItems: (data: any) => void
   filteredItems: string[]
-  scaleValue?: Animated.Value
   filteredCount?: number
 }
 
@@ -21,14 +20,13 @@ const FilterCard: React.FC<FilterCardProps> =
     handleCardVisibility,
     setFilteredItems,
     filteredItems,
-    scaleValue,
-    filteredCount
+    filteredCount,
   }) => {
     const { opportunities } = useContext(AppContext);
-    const [opportunityTags, setOpportunityTags] = useState<any[]>([]);
+    const [opportunityCategories, setOpportunityCategories] = useState<any[]>([]);
 
     useEffect(() => {
-      setOpportunityTags(prevTags => {
+      setOpportunityCategories(prevTags => {
         const updatedTags = opportunities.reduce((acc, opp) => {
           const findCategory = acc.find((cate: any) => cate.category == opp.Category);
           if (!findCategory) {
@@ -69,43 +67,46 @@ const FilterCard: React.FC<FilterCardProps> =
         onRequestClose={handlePress}
         statusBarTranslucent
       >
-        <Animated.View style={styles.modalContainer}>
+        <Animated.View style={[styles.modalContainer]}>
           <Animated.View style={styles.nothingContainer} />
           <View style={styles.contentStyles}>
             <View style={styles.filterHeaderStyles}>
-              <Entypo
-                name="chevron-thin-down"
+              <Feather
+                name="x"
                 size={20}
                 color={COLOR.B_300}
                 onPress={handlePress}
               />
-              <Text style={styles.filterText}>Filters</Text>
+              <Text style={styles.filterText}>Filter your search</Text>
               <View />
             </View>
-            <Text>Filter to suite your needs</Text>
-            {
-              opportunityTags.length > 0 ?
-                <View style={styles.tagStyles}>
-                  {
-                    opportunityTags.map((_, index: number) => (
-                      <TagCard
-                        title={_.category}
-                        key={index}
-                        setActive={setFilteredItems}
-                        filteredItems={filteredItems}
-                        isActive={filteredItems.includes(_.category)}
-                        itemCount={_.categoryCount}
-                      />
-                    ))
-                  }
-                </View>
-                :
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={{ fontFamily: 'ComfortaaBold' }}>No tags available</Text>
-                </View>
-            }
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+            >
+              {
+                opportunityCategories.length > 0 ?
+                  <View style={styles.tagStyles}>
+                    {
+                      opportunityCategories.map((_, index: number) => (
+                        <TagCard
+                          title={_.category}
+                          key={index}
+                          setActive={setFilteredItems}
+                          filteredItems={filteredItems}
+                          isActive={filteredItems.includes(_.category)}
+                          itemCount={_.categoryCount}
+                        />
+                      ))
+                    }
+                  </View>
+                  :
+                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontFamily: 'ComfortaaBold' }}>No tags available</Text>
+                  </View>
+              }
+            </ScrollView>
             <View style={styles.filterFooter}>
-              {opportunityTags.length > 0 && <Button
+              {opportunityCategories.length > 0 && <Button
                 title='reset'
                 btn={styles.buttonStyles}
                 textStyle={styles.textStyle}
@@ -137,24 +138,28 @@ const styles = StyleSheet.create({
     gap: 25,
     alignItems: 'center',
     flexDirection: 'row',
+    paddingTop: 10
   },
   nothingContainer: {
-    flex: 1,
+    flex: 2,
     backgroundColor: COLOR.NEUTRAL_1,
   },
   contentStyles: {
     flex: 4,
     backgroundColor: COLOR.WHITE,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
     paddingHorizontal: 25,
     paddingVertical: 10,
     gap: 25,
     top: -15
   },
   filterText: {
-    fontSize: FONTSIZE.TITLE_1,
-    fontFamily: 'ComfortaaBold'
+    // flex:1,
+    // textAlign: 'center',
+    fontSize: FONTSIZE.TITLE_2,
+    fontFamily: 'ComfortaaBold',
+    marginLeft: 20
   },
   buttonStyles: {
     backgroundColor: COLOR.ORANGE_300,

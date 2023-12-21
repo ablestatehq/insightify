@@ -1,5 +1,5 @@
 import React from 'react'
-import { COLOR } from '../constants/contants'
+import { COLOR } from '../../constants/contants'
 import { Pressable, StyleSheet, Text } from 'react-native'
 
 interface TagCardProps {

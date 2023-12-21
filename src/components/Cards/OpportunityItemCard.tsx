@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { COLOR, FONTSIZE } from '../constants/contants';
+import { COLOR, FONTSIZE } from '../../constants/contants';
 import { useNavigation } from '@react-navigation/native';
-import { OpportunityItemCardProps } from '../utils/types';
-import { AppContext } from '../helper/context/AppContext';
+import { OpportunityItemCardProps } from '../../utils/types';
+import { AppContext } from '../../helper/context/AppContext';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { OpenLink, handleBookmark } from '../helper/functions/handleFunctions';
+import { OpenLink, handleBookmark } from '../../helper/functions/handleFunctions';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 const OpportunityItemCard: React.FC<OpportunityItemCardProps> =
