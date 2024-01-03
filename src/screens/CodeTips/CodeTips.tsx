@@ -13,42 +13,18 @@ import { ExpandableItemList } from '../../components';
 
 
 import { AppContext } from '../../helper/context/AppContext';
+import { extractCodeSnippet } from '../../helper/functions/functions';
 
 const CodeTips = () => {
 
   const { codeTips } = useContext(AppContext);
   const [expandedIndex, setExpandedIndex] = React.useState<number | null>(0)
 
-  // useRef hook
-  // const carouselRef = useRef(null);
-
-  // const setCarouselRef = (c: any) => {
-  //   carouselRef.current = c;
-  // };
-
-  // useWindowDimensions
-  // const { width: windowWidth } = useWindowDimensions();
-
 
   const handleToggleExpand = (index: number) => {
     setExpandedIndex((prevIndex) => (prevIndex === index ? null : index))
   }
-
-  // const renderCodeTips = ({ item, index }: { item: any, index: number }) => {
-  //   return (
-  //     <ExpandableListItem
-  //       key={index}
-  //       title={item.title}
-  //       index={index}
-  //       sourceName={`Berkeley Boot Camps	`}
-  //       content={item.description}
-  //       snippet={item.snippet}
-  //       sourceLink={item.source.link}
-  //       expandedIndex={expandedIndex}
-  //     />
-  //   )
-  // }
-
+  
   return (
     <View
       style={styles.codeTipsContainer}
@@ -66,14 +42,15 @@ const CodeTips = () => {
               return (
                 <ExpandableItemList
                   key={index}
-                  title={codeTip.title}
+                  title={codeTip.Title}
                   index={index}
-                  sourceName={`Berkeley Boot Camps	`}
-                  content={codeTip.description}
-                  snippet={codeTip.snippet}
-                  sourceLink={codeTip.source.link}
+                  sourceName={codeTip?.Credit}
+                  content={codeTip?.details?.replace(/```([^`]*)```/g, '')}
+                  snippet={extractCodeSnippet(codeTip?.details)}
+                  sourceLink={codeTip.Link}
                   expandedIndex={expandedIndex}
                   onToggleExpand={handleToggleExpand}
+                  PL={codeTip?.Category}
                 />
               )
             })

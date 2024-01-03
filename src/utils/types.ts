@@ -9,7 +9,7 @@ type userModal = {
 type NewsRouteParams = {
   title: string
   content: string
-  excerpt: string 
+  excerpt: string
   datePublised: string
   featured_image: string
 }
@@ -24,19 +24,18 @@ type RootStackParamList = {
     featured_image: string,
     articleContent: string,
   };
-  CodeTips: undefined;
-  Privacy: undefined;
-  Share: undefined;
-  OpportunityList: undefined;
+  More: undefined
+  Share: undefined
+  SignUp: undefined
+  Privacy: undefined
+  Contact: undefined
+  CodeTips: undefined
+  Feedback: undefined
   Login: {
     title?: string
     opportunityID?: string
   }
-  SignUp: undefined
-  Contact: undefined
-  More: undefined
-  Feedback: undefined
-  
+  OpportunityList: undefined;
 }
 
 type DetailsScreenProps = RouteProp<RootStackParamList, 'Details'>
@@ -48,17 +47,19 @@ type TalentSubmissionForm = {
   email: string
   phone: string
   company: string
-  lookingFor: string
   message: string
+  lookingFor: string
 }
 interface ExpandableListItemProps {
-  title: string,
-  content: string,
-  snippet?: any,
-  sourceName?: string,
+  PL?: string
+  snippet?: any
+  index: number
+  title: string
+  image?:string
+  content: string
+  sourceName?: string
   sourceLink?: string
   expandedIndex?: number | null
-  index: number
   onToggleExpand?: (index: number) => void
 }
 

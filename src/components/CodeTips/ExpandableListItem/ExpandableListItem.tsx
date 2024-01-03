@@ -20,7 +20,9 @@ const ExpandableListItem: React.FC<ExpandableListItemProps> = (
     sourceLink,
     snippet = "",
     expandedIndex,
-    onToggleExpand
+    onToggleExpand,
+    PL,
+    image
   }) => {
   const [expand, setExpand] = React.useState<boolean>(true);
 
@@ -124,7 +126,7 @@ const ExpandableListItem: React.FC<ExpandableListItemProps> = (
               hljsStyle={atomOneDarkReasonable}
               containerStyle={styles.codeSnippet}
               textStyle={styles.text}
-              language="javascript"
+              language={`${PL?.toLowerCase()}`}
             >
               {snippet}
             </CodeHighlighter>
