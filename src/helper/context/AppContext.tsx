@@ -3,12 +3,10 @@ import React, {
   createContext,
   useEffect,
 } from 'react';
+import socket from '../../../api/socket';
+import { getStrapiData } from '../../../api/strapiJSAPI';
 import codeTipsData from "../../utils/data/codeTipsData.json";
-import { retrieveLocalData } from '../../utils/localStorageFunctions';
-import opportunityData from '../../../src/utils/data/opportunities.json'
-import DatabaseService from '../../appwrite/appwrite';
-import { APPWRITE_DATABASE_ID, APPWRITE_OPPORTUNITIES_COLLECTION_ID, APPWRITE_CODETIPS_COLLECTION_ID } from '@env';
-import { getOpportunites } from '../../../api/strapiJSAPI';
+import { retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions';
 
 
 interface AppContextProviderProps {
@@ -53,28 +51,26 @@ const AppContextProvider = (
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [opportunities, setOpportunities] = useState<any[]>([]);
-  const [codeTips, setCodeTips] = useState<any[]>(codeTipsData);
-  const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
+  const [codeTips, setCodeTips] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const oppos = await getOpportunites();
-
-        // console.log(oppos[0].Description[0].children[0].text)
+        // fetch remote data from the api 
+        const techTips = await getStrapiData('tech-tips');
+        const oppos = await getStrapiData('opportunities');
+        console.log(techTips)
+        // fetch local data 
+        const localNotification = await retrieveLocalData('notifications');
         const bookmarked_opportunities = await retrieveLocalData('opportunities'); // check for bookmarks
         const { isPushNotificationEnabled } = await retrieveLocalData('tokens');
 
-        const response =
-          await DatabaseService.getDBData(
-            APPWRITE_OPPORTUNITIES_COLLECTION_ID
-          )
         // When there is a response from the database.
         if (oppos) {
           const updatedOpportunity = oppos.map((opp: any) => {
             return ({
-              // APPWRITE_DATABASE_ID,
               ...opp,
               bookmarked: bookmarked_opportunities ? bookmarked_opportunities.includes(opp.$id) : false
             })
@@ -89,31 +85,16 @@ const AppContextProvider = (
           });
 
           setOpportunities([...sortedOpportunities]);
-        } else {
-          // If there is no response from the database, use the opportunities stored.
-          const updatedOpportunity = opportunityData.opportunities.map((opp: any) => {
-            return ({
-              ...opp,
-              bookmarked: bookmarked_opportunities ? bookmarked_opportunities.includes(opp.$id) : false
-            })
-          })
-          setOpportunities([...updatedOpportunity]);
         }
 
-        const developerTips =
-          await DatabaseService.getDBData(
-            APPWRITE_CODETIPS_COLLECTION_ID
-          )
-            .then(response => response)
-            .catch(error => alert(`Developer tips error${error}`));
-
-        // If developer tips are returned from the database. 
-        // Store the tips in the codeTips state.
-        if (developerTips) {
-          // setCodeTips(developerTips);
+        if (techTips) {
+          setCodeTips(prev => [...prev, ...techTips]);
         }
-
         setIsNotificationEnabled(isPushNotificationEnabled);
+        if (localNotification) {
+          // console.log(localNotification)
+          setNotifications(prev => [...prev, ...localNotification])
+        }
       } catch (error: any) {
         alert(`error occured while fetching data ${error}`);
       } finally {
@@ -122,7 +103,34 @@ const AppContextProvider = (
     }
 
     fetchData();
-    
+
+    const s = socket.connect();
+
+    s.on('notifications', async (notes: any) => {
+      const localNotifications = await retrieveLocalData('notifications');
+      if (localNotifications) {
+        if (!localNotifications.some((element: any) => (element.notification_data.data.entry.id == notes.data.entry.id && element.notification_data.data.model == notes.data.model))) {
+          setNotifications(prev => [...prev, {
+            'notification_data': notes,
+            'status': 'UNREAD'
+          }]);
+          await storeToLocalStorage('notifications', [...localNotifications, {
+            'notification_data': notes,
+            'status': 'UNREAD'
+          }])
+        }
+      } else {
+        setNotifications(prev => [...prev, {
+          'notification_data': notes,
+          'status': 'UNREAD'
+        }]);
+        await storeToLocalStorage('notifications', [{
+          'notification_data': notes,
+          'status': 'UNREAD'
+        }])
+      }
+    })
+
     return () => {
     }
   }, []);
