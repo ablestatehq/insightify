@@ -92,6 +92,11 @@ export const generateTransactionRef = (length:number) => {
 };
 
 
+export function extractCodeSnippet(text: string): string {
+  const res = /```(.*?)```/gs.test(text) ? /```(.*?)```/gs.exec(text) : undefined
+  return res ? res[1] : ''
+
+}
 // export function useScreenDiagnol() {
 //   const { width, height } = useWindowDimensions();
 
