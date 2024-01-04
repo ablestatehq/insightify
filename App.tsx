@@ -9,7 +9,6 @@ import { generateTransactionRef } from './src/helper/functions/functions';
 import AppContextProvider, { AppContext } from './src/helper/context/AppContext';
 import { Device, NotificationController, Notifications } from './src/helper/functions/notifications';
 
-import { getOpportunites } from './api/strapiJSAPI';
 import { NotificationType } from './src/utils/types';
 import { storeToLocalStorage } from './src/utils/localStorageFunctions';
 
@@ -20,9 +19,9 @@ export default function App() {
   const { setNotifications, setIsNotificationEnabled } = useContext(AppContext);
 
   // refs
+  const notificationBack = useRef<any>(null);
   const responseListener = useRef<any>(null);
   const notificationListener = useRef<any>(null);
-  const notificationBack = useRef<any>(null);
   // function to listen to updates.
   const eventListener = (event: Updates.UpdateEvent) => {
     try {
@@ -65,7 +64,6 @@ export default function App() {
 
   useEffect(() => {
     const notifications = async () => {
-      const opps = await getOpportunites();
       await NotificationController.registerForPushNotifications()
         .then(async (token) => {
           setExpoPushToken(token as string)
@@ -83,16 +81,16 @@ export default function App() {
               APPWRITE_NOTIFICATION_TOKEN_COLLECTION_ID,
               tokenData
             ).then(response => {
-              Alert.alert('Opportunity notifications', 'You will be receiving notifications for the latest opportunities.', [
-                {
-                  text: 'ok',
-                  style: 'cancel',
-                  onPress: () => { }
-                }
-              ], {
-                cancelable: true,
-                onDismiss: () => { }
-              })
+              // Alert.alert('Opportunity notifications', 'You will be receiving notifications for the latest opportunities.', [
+              //   {
+              //     text: 'ok',
+              //     style: 'cancel',
+              //     onPress: () => { }
+              //   }
+              // ], {
+              //   cancelable: true,
+              //   onDismiss: () => { }
+              // })
             });
 
             setIsNotificationEnabled(true)
@@ -132,7 +130,6 @@ export default function App() {
     }
   }, []);
 
-  // console.log("App section", isOnBoard);
   return (
     <NavigationContainer>
       <AppContextProvider>
