@@ -26,8 +26,8 @@ const OpportunityHeader: React.FC<OpportunityHeaderProps> = ({ showFilterCard })
         <View style={styles.searchMain}>
           <View style={{
             ...styles.badge,
-            backgroundColor: notifications.length > 0 ? COLOR.DANGER : COLOR.WHITE,
-            zIndex: notifications.length > 0 ? 1 : 0,
+            backgroundColor: notifications.some((notification:any) => notification.status == 'UNREAD') ? COLOR.DANGER : COLOR.WHITE,
+            zIndex: notifications.some((notification: any) => notification.status == 'UNREAD') ? 1 : 0,
           }} />
           <Ionicons
             size={20}
