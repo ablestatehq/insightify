@@ -37,3 +37,9 @@ yarn-error.*
 # The process file contains some of the processes that I decided to use for this 
 # particular project.
 /Processes.txt
+
+# ignore the api.calls.rest file
+/api/api.calls.rest
+
+# ignore the eas.json file
+/eas.json
