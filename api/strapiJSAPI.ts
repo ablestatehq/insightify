@@ -1,4 +1,4 @@
-import { STRAPI_TOKEN } from "@env"
+import { STRAPI_TOKEN, STRAPI_BASE_URL } from "@env"
 
 // Function to save opportunities to strapiJS database.
 async function storeData(endpoint: string, data:any) {
@@ -11,7 +11,7 @@ async function storeData(endpoint: string, data:any) {
     body: JSON.stringify(data)
   }
 
-  const response = await fetch(`https://insightify-admin.ablestate.cloud/api/${endpoint}`, options)
+  const response = await fetch(`${STRAPI_BASE_URL}${endpoint}`, options)
     .then(response => response.json())
     .then(storedData => storedData)
     .catch(error => { console.log(error)})
