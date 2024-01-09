@@ -5,7 +5,6 @@ import React, {
 } from 'react';
 import socket from '../../../api/socket';
 import { getStrapiData } from '../../../api/strapiJSAPI';
-import codeTipsData from "../../utils/data/codeTipsData.json";
 import { retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions';
 
 
@@ -61,7 +60,7 @@ const AppContextProvider = (
         // fetch remote data from the api 
         const techTips = await getStrapiData('tech-tips');
         const oppos = await getStrapiData('opportunities');
-        console.log(techTips)
+        // console.log(techTips)
         // fetch local data 
         const localNotification = await retrieveLocalData('notifications');
         const bookmarked_opportunities = await retrieveLocalData('opportunities'); // check for bookmarks
@@ -107,27 +106,29 @@ const AppContextProvider = (
     const s = socket.connect();
 
     s.on('notifications', async (notes: any) => {
-      const localNotifications = await retrieveLocalData('notifications');
-      if (localNotifications) {
-        if (!localNotifications.some((element: any) => (element.notification_data.data.entry.id == notes.data.entry.id && element.notification_data.data.model == notes.data.model))) {
+      if (notes.data.model != 'talent-request') {
+        const localNotifications = await retrieveLocalData('notifications');
+        if (localNotifications) {
+          if (!localNotifications.some((element: any) => (element.notification_data.data.entry.id == notes.data.entry.id && element.notification_data.data.model == notes.data.model))) {
+            setNotifications(prev => [...prev, {
+              'notification_data': notes,
+              'status': 'UNREAD'
+            }]);
+            await storeToLocalStorage('notifications', [...localNotifications, {
+              'notification_data': notes,
+              'status': 'UNREAD'
+            }])
+          }
+        } else {
           setNotifications(prev => [...prev, {
             'notification_data': notes,
             'status': 'UNREAD'
           }]);
-          await storeToLocalStorage('notifications', [...localNotifications, {
+          await storeToLocalStorage('notifications', [{
             'notification_data': notes,
             'status': 'UNREAD'
           }])
         }
-      } else {
-        setNotifications(prev => [...prev, {
-          'notification_data': notes,
-          'status': 'UNREAD'
-        }]);
-        await storeToLocalStorage('notifications', [{
-          'notification_data': notes,
-          'status': 'UNREAD'
-        }])
       }
     })
 
