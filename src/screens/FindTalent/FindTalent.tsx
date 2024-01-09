@@ -8,10 +8,8 @@ import {
 import React from 'react';
 import { Formik, FormikHelpers } from 'formik';
 import { Picker } from "@react-native-picker/picker";
-import DatabaseService from '../../appwrite/appwrite';
 import { TalentSubmissionForm } from '../../utils/types';
 import { COLOR, FONTSIZE } from '../../constants/contants';
-import { environments } from '../../constants/environments';
 
 import { TalentFormValidationSchema } from '../../utils/validations';
 import InputText from '../../components/FomikComponents/InputText/InputText';
@@ -19,39 +17,36 @@ import SubmitButton from '../../components/FomikComponents/SubmitButton/SubmitBu
 
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-// Access the environmental variables needed in this file.
-const {
-  APPWRITE_SERVICEREQUESTS_COLLECTION_ID
-} = environments;
+import { storeData } from '../../../api/strapiJSAPI';
 
 const FindTalent = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const initialTalentFormValues = {
-    name: '',
-    email: '',
-    phone: '',
-    company: '',
-    message: '',
-    lookingFor: '',
+    Client: '', // Client name
+    Email: '',
+    Phone: '',
+    Message: '', // Message left
+    Need: '', // Looking for
+    Heads: '', // Number of developers need.
+    Company: ''
   }
 
   // submit request form.
   const submitTalentRequestForm = async (values: TalentSubmissionForm, formikHelpers: FormikHelpers<any>) => {
 
-    const submissionResponse = await DatabaseService.storeDBdata(
-      APPWRITE_SERVICEREQUESTS_COLLECTION_ID,
-      values
-    );
 
+    const submissionResponse = await storeData('talent-requests', values)
+    console.log(submissionResponse)
     if (submissionResponse) {
       // Toast a message to show the user that the request form has been successfully submitted.
       ToastAndroid.show('Request successfully sent', 5000);
       formikHelpers.resetForm({
         values: initialTalentFormValues
       })
+    } else {
+      console.log('Failed to submit request')
     }
   }
   return (
@@ -90,28 +85,28 @@ const FindTalent = () => {
           >
             <InputText
               label='Name'
-              fieldName='name'
+              fieldName='Client'
               placeholder='Enter your name e.g Gideon'
             />
 
             <InputText
               label='Email'
-              fieldName='email'
+              fieldName='Email'
               placeholder='example@gmail.com'
             />
 
             <InputText
-              fieldName='phone'
+              fieldName='Phone'
               label='Phone number'
               placeholder='e.g 077777777'
             />
 
             <InputText
-              fieldName='company'
-              label='Company Name'
-              placeholder='e.g Insightify'
+              fieldName='Company'
+              label='Company/Organisation'
+              placeholder='Company/Organisation'
             />
-
+            
             <View
               style={{
                 borderWidth: 1,
@@ -121,15 +116,15 @@ const FindTalent = () => {
               }}
             >
               <Picker
-                selectedValue={values.lookingFor}
-                onValueChange={handleChange('lookingFor')}
+                selectedValue={values.Need}
+                onValueChange={handleChange('Need')}
               >
                 <Picker.Item
                   label="I'm looking for"
                   value=""
                 />
                 <Picker.Item
-                  label="New Software develoepr"
+                  label="New software developer"
                   value="NewDeveloper"
                 />
                 <Picker.Item
@@ -145,11 +140,17 @@ const FindTalent = () => {
                   value="toolManager"
                 />
               </Picker>
-              {errors.lookingFor && touched.lookingFor && <Text style={styles.errorText}>{errors.lookingFor}</Text>}
+              {errors.Need && touched.Need && <Text style={styles.errorText}>{errors.Need}</Text>}
             </View>
+            {values.Need == 'NewDeveloper' &&
+              <InputText
+                fieldName='Heads'
+                label='How many developers may you need?'
+                placeholder='Enter number of developers'
+              />}
             <InputText
               isMultiLine={true}
-              fieldName='message'
+              fieldName='Message'
               label='Tell us more'
               placeholder='Tell us more about your need'
             />

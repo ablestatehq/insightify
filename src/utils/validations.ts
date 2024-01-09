@@ -1,27 +1,25 @@
 import * as Yup from 'yup';
 
 const TalentFormValidationSchema = Yup.object().shape({
-  name: Yup.string()
+  Client: Yup.string()
     .min(1, 'Name too short')
     .max(70, 'Name too long')
     .required('Your name is required.'),
-  email: Yup.string()
+  Email: Yup.string()
     .email('Invalid email'),
-  phone: Yup.string()
+  Phone: Yup.string()
     .min(10, "Number entered is too short.")
     .max(15, "Number entered is too long"),
-  company: Yup.string()
-    .required('Organization name is required'),
-  message: Yup.string(),
-  lookingFor: Yup.string()
+  Message: Yup.string(),
+  Need: Yup.string()
     .required('Select a service you are looking for.'),
 })
   .test(
   'contact-info',
   'At least one of email or phone is required',
   function (value) {
-    const { email, phone } = value as { email: string, phone: string };
-    if (!email && !phone) {
+    const { Email, Phone } = value as { Email: string, Phone: string };
+    if (!Email && !Phone) {
       return this.createError({
         path: 'email',
         message: 'At least one of email or phone is required',

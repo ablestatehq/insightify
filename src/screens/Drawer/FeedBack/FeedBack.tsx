@@ -6,6 +6,7 @@ import DatabaseService from '../../../appwrite/appwrite'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
 import Header from '../../NewsDetails/helperComponents/Header'
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native'
+import { storeData } from '../../../../api/strapiJSAPI'
 
 const FeedBack = () => {
   const [selectedImprovement, setSelectedImprovement] = useState<string | null>(null);
@@ -53,17 +54,11 @@ const FeedBack = () => {
     setIsSubmitting(true);
     const newFeedback: FeedbackObject = {
       rating: 0,
-      whatToImprove: selectedImprovement ?? '',
+      improvements: selectedImprovement ?? '',
       suggestion: suggestionText
     }
-    const response = await DatabaseService.storeDBdata(
-      APPWRITE_FEEDBACK_COLLECTION_ID,
-      newFeedback)
-      .then(response => response)
-      .catch((error: any) => {
-        console.log(error.message)
-      })
-    
+    const response = await storeData('suggestions', newFeedback)
+    console.log(response)
     if (response) {
       setSuggestionText('')
       setSelectedImprovement(null)
@@ -106,7 +101,8 @@ const FeedBack = () => {
           multiline
           numberOfLines={10}
           style={styles.suggestions}
-          placeholder='Other suggestions...'
+          placeholder={suggestionText == '' ? 'Other suggestions...' : suggestionText}
+          value={suggestionText}
           onChangeText={handleSuggestionChange}
         />
         <Pressable
@@ -141,7 +137,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.WHITE
   },
   feedBackContainer: {
-    flex:1,
+    flex: 1,
     padding: 20,
   },
   suggestions: {
@@ -167,7 +163,7 @@ const styles = StyleSheet.create({
     bottom: 20,
     position: 'absolute',
     width: '100%',
-    alignSelf:'center'
+    alignSelf: 'center'
   },
   emojiView: {
 
