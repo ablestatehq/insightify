@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons';
-import { FONTSIZE } from '../../../constants/contants';
+import { COLOR, FONTSIZE } from '../../../constants/contants';
 import { useNavigation } from '@react-navigation/native';
 
 interface HeaderProps {
@@ -49,11 +49,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // padding: 5,
     paddingVertical: 10,
     paddingHorizontal:20
   },
   text: {
-    fontSize: FONTSIZE.TITLE_1
+    fontSize: FONTSIZE.TITLE_1,
+    // color:COLOR.ORANGE_300
   }
 })
