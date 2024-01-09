@@ -1,9 +1,8 @@
 import { COLOR } from '../../../constants/contants'
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../../../helper/context/AppContext'
-import { StyleSheet, View, ScrollView, StatusBar, Text, Animated } from 'react-native'
+import { StyleSheet, View, ScrollView, StatusBar, Text } from 'react-native'
 import { OpportunityCard, OpportunityHeader, FloatingButton, FilterCard } from '../../../components'
-
 
 const OpportunityList = () => {
 
@@ -11,19 +10,12 @@ const OpportunityList = () => {
   const [filteredItems, setFilteredItems] = useState<string[]>([]);
   const [showCard, setShowCard] = useState<boolean>(false);
 
-  const scaleValue = useRef(new Animated.Value(0)).current;
-
   const showFilterCard = () => {
     setShowCard(!showCard)
   }
 
-  // const filteredOpportunities = opportunities.filter((opp) =>
-  //   opp.Category.some((category: string) => filteredItems.includes(category.toLowerCase()))
-  // );
-
   const filteredOpportunities = opportunities.filter((opp) => filteredItems.includes(opp.Category));
-    
-  console.log(notifications)
+  // console.log(notifications);
   return (
     <View style={styles.container}>
       <StatusBar barStyle='dark-content' backgroundColor={COLOR.WHITE} />
@@ -89,7 +81,6 @@ const OpportunityList = () => {
           handleCardVisibility={showFilterCard}
           setFilteredItems={setFilteredItems}
           filteredItems={filteredItems}
-          scaleValue={scaleValue}
           filteredCount={filteredOpportunities.length}
         />}
       </View>

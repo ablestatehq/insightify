@@ -106,15 +106,16 @@ const Style = StyleSheet.create({
     width: PAGE_WIDTH,
     alignItems: 'center',
     justifyContent: 'center',
+    gap:10
   },
   container: {
-    flex: 2,
+    flex: 1,
     alignItems: 'center',
     position: 'absolute',
     justifyContent: 'center',
   },
   container2: {
-    flex: 1,
+    // flex: 1,
     top: 200,
     position: 'absolute'
   },
