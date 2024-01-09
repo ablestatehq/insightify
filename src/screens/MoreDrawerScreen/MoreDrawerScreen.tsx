@@ -36,7 +36,7 @@ const MoreDrawerScreen = () => {
         APPWRITE_NOTIFICATION_TOKEN_COLLECTION_ID,
         documents[0].$id,
         {
-          subscription:isNotificationEnabled
+          subscription: isNotificationEnabled
         }
       ).then(response => {
         console.log(response);
@@ -115,10 +115,7 @@ const MoreDrawerScreen = () => {
           />
         </Pressable>
         <Pressable
-          onPress={() => {
-            clearLocalData('onBoard');
-            console.log('Clear confirmed')
-          }}
+          onPress={() => navigation.navigate('Contact')}
           style={styles.itemContainer}>
           <View style={styles.iconContainer}>
             <Feather
