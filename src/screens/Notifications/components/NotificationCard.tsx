@@ -40,7 +40,7 @@ const NotificationCard: React.FC<NotificationCardProps> = (
         storeToLocalStorage('notifications', notifications);
         setNotifications(prev => {
           return [...notifications]
-        })
+        });
       }}
     >
       {/* <View style={styles.textContainer}> */}
