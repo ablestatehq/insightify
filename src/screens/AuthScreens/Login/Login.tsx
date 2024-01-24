@@ -10,6 +10,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Alert, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { LoginScreenProps } from '../../../utils/types';
 import { handleBookmark } from '../../../helper/functions/handleFunctions';
+import { login } from '../../../../api/auth';
 
 const Login: React.FC = () => {
   const route = useRoute<LoginScreenProps>();
@@ -24,14 +25,15 @@ const Login: React.FC = () => {
     password: ''
   }
 
-  const handleLoginWithEmailAndPassword = async (values: any) => {
+  const handleLogin = async (values: any) => {
     try {
-      const response = await DatabaseService.loginWithEmailAndPassword(values.email, values.password)
-      if (response) {
+      const response = await login(values.email, values.password);
+
+      if (response?.jwt) {
         setIsLoggedIn(true);
 
         if (opportunityID) {
-          handleBookmark(opportunityID,opportunities, setOpportunities )
+          handleBookmark(opportunityID, opportunities, setOpportunities)
           navigation.navigate('Deck');
         } else {
           if (title) {
@@ -41,7 +43,6 @@ const Login: React.FC = () => {
             navigation.goBack();
           }
         }
-
       } else {
         Alert.alert("Request failed", "Login request failed", [
           {
@@ -56,65 +57,66 @@ const Login: React.FC = () => {
           })
       }
     } catch (error) {
+      // console.error("Error here", error)
     }
-  };
+  }
 
-  return (
-    <KeyboardAvoidingView style={styles.container}>
-      <View style={styles.header}>
-        <AntDesign name="close" size={30} color="black" onPress={() => navigation.goBack()} />
-        <View />
-      </View >
-      <View style={styles.contentContainer}>
-        <Text style={styles.text}>
-          {(title as string).length > 0 ? title : 'Good to \nhave you back'}
-        </Text>
-        <View style={styles.loginView}>
-          <Formik
-            initialValues={loginFormInitValues}
-            onSubmit={handleLoginWithEmailAndPassword}
-          >
-            {({ handleSubmit }) => (
-              <View style={styles.loginScroll}>
-                <ScrollView>
-                  <InputText
-                    label='Email'
-                    fieldName='email'
-                    placeholder='example@gmail.com'
-                  />
-                  <InputText
-                    label='Password'
-                    fieldName='password'
-                    isInputSecure={true}
-                    placeholder='*******'
-                  />
-                  <SubmitButton
-                    btnText='Login'
-                    handleSubmit={() => handleSubmit()}
-                    button={styles.button} />
-                  <View>
-                    <Text style={styles.footerText}>Forgot password?</Text>
-                    <View style={styles.footer}>
-                      <Text style={styles.footerText}>Don't have an account?</Text>
-                      <TouchableOpacity
-                        onPress={() => {
-                          navigation.navigate('SignUp')
-                        }}
-                      >
-                        <Text style={styles.signUpText}> Sign up</Text>
-                      </TouchableOpacity>
+    return (
+      <KeyboardAvoidingView style={styles.container}>
+        <View style={styles.header}>
+          <AntDesign name="close" size={30} color="black" onPress={() => navigation.goBack()} />
+          <View />
+        </View >
+        <View style={styles.contentContainer}>
+          <Text style={styles.text}>
+            {(title as string).length > 0 ? title : 'Good to \nhave you back'}
+          </Text>
+          <View style={styles.loginView}>
+            <Formik
+              initialValues={loginFormInitValues}
+              onSubmit={handleLogin}
+            >
+              {({ handleSubmit }) => (
+                <View style={styles.loginScroll}>
+                  <ScrollView>
+                    <InputText
+                      label='Email'
+                      fieldName='email'
+                      placeholder='example@gmail.com'
+                    />
+                    <InputText
+                      label='Password'
+                      fieldName='password'
+                      isInputSecure={true}
+                      placeholder='*******'
+                    />
+                    <SubmitButton
+                      btnText='Login'
+                      handleSubmit={() => handleSubmit()}
+                      button={styles.button} />
+                    <View>
+                      <Text style={styles.footerText}>Forgot password?</Text>
+                      <View style={styles.footer}>
+                        <Text style={styles.footerText}>Don't have an account?</Text>
+                        <TouchableOpacity
+                          onPress={() => {
+                            navigation.navigate('SignUp')
+                          }}
+                        >
+                          <Text style={styles.signUpText}> Sign up</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  </View>
-                </ScrollView>
-              </View>
-            )}
-          </Formik>
-          {/* <SignUpWith /> */}
+                  </ScrollView>
+                </View>
+              )}
+            </Formik>
+            {/* <SignUpWith /> */}
+          </View>
         </View>
-      </View>
-    </KeyboardAvoidingView>
-  )
-}
+      </KeyboardAvoidingView>
+    )
+  };
 
 export default Login;
 
