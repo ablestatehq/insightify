@@ -1,51 +1,48 @@
-import React, { useContext } from 'react'
-import { COLOR, FONTSIZE } from '../../constants/contants'
-import { Entypo, SimpleLineIcons, Ionicons, MaterialIcons, AntDesign, Feather } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Switch, Text, View } from 'react-native'
-import { AppContext } from '../../helper/context/AppContext';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, { useContext } from 'react';
 import DatabaseService from '../../appwrite/appwrite';
-import { APPWRITE_DATABASE_ID, APPWRITE_NOTIFICATION_TOKEN_COLLECTION_ID } from '@env';
-import { Query } from 'appwrite';
-import { clearLocalData, retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions';
+import { useNavigation } from '@react-navigation/native';
+import { COLOR, FONTSIZE } from '../../constants/contants';
+import { AppContext } from '../../helper/context/AppContext';
+import { getDataId, updateStrapiData } from '../../../api/strapiJSAPI';
+import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions';
+import { Entypo, SimpleLineIcons, Ionicons, MaterialIcons, AntDesign, Feather } from '@expo/vector-icons';
 
 const MoreDrawerScreen = () => {
   const { isLoggedIn, setIsLoggedIn, isNotificationEnabled, setIsNotificationEnabled } = useContext(AppContext);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
+  /**
+   * @name toggleSwitch
+   * This function toggles the subscription of push notifications for a device.
+   * when ever the user toggles the switch button for notification, update the database table for subscriptions.
+   */
   const toggleSwitch = async () => {
-    const { pushToken, isPushNotificationEnabled } = await retrieveLocalData('tokens');
+    const tokens = await retrieveLocalData('tokens');
 
-    setIsNotificationEnabled(previousState => !previousState);
-
-    // Save the current state of the setting.
-    const saveToken = await storeToLocalStorage('tokens', { pushToken, isPushNotificationEnabled: isNotificationEnabled });
-
-    const { total, documents } = await DatabaseService.databases.listDocuments(
-      APPWRITE_DATABASE_ID,
-      APPWRITE_NOTIFICATION_TOKEN_COLLECTION_ID,
-      [
-        Query.equal('tokenValue', pushToken)
-      ]
-    )
-
-    if (total > 0) {
-      const response = await DatabaseService.databases.updateDocument(
-        APPWRITE_DATABASE_ID,
-        APPWRITE_NOTIFICATION_TOKEN_COLLECTION_ID,
-        documents[0].$id,
-        {
-          subscription: isNotificationEnabled
+    if (tokens) {
+      const { pushToken, isPushNotificationEnabled } = tokens;
+      const id = await getDataId('notification-tokens', 'tokenID', pushToken);
+      
+      if (id) { // if the pushToken exists in the notifications collections
+        setIsNotificationEnabled(previousState => !previousState);
+        const updateStrapi = await updateStrapiData('notification-tokens', id, { subscription: isNotificationEnabled })
+        if (updateStrapi) {
+          console.log("strapiJS updated data.",updateStrapi);
         }
-      ).then(response => {
-        console.log(response);
-      }).catch((error: any) => {
-        console.log(error.message)
-      })
+        await storeToLocalStorage('tokens', { pushToken, isPushNotificationEnabled: isNotificationEnabled });
+      }
+    } else {
+      // The pushNotification should be saved 
+      // in from the App.jsx file when the app was starting 
     }
   }
 
+  /**
+   * @name handleLoginLogout
+   * This function handles the login/logout button functionality.
+   */
   const handleLoginLogout = async () => {
     if (isLoggedIn) {
       await DatabaseService.logOut();
