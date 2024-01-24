@@ -4,14 +4,13 @@ import Header from '../NewsDetails/helperComponents/Header'
 import { AppContext } from '../../helper/context/AppContext'
 import { StyleSheet, View, Text, ScrollView } from 'react-native'
 import NotificationCard from './components/NotificationCard'
-import { clearLocalData } from '../../utils/localStorageFunctions'
+// import { clearLocalData } from '../../utils/localStorageFunctions'
 
 const Notification = () => {
 
   // notifications 
   const { notifications } = useContext(AppContext);
   // clearLocalData('notifications');
-  // console.log('notification.tsx', notifications)
   return (
     <View style={styles.container}>
       <Header title='Notifications' />
@@ -27,16 +26,16 @@ const Notification = () => {
                     id={item?.notification_data?.data?.entry?.id}
                     key={index}
                     title={item?.notification_data?.data?.entry?.Title}
-                    desciption={item.notification_data?.data?.entry?.Description[0]?.children[0]?.text}
+                    // desciption={item.notification_data?.data?.entry?.Description[0]?.children[0]?.text}
                     expiryDate={'03/20/24'}
-                    status={item.status}
+                    // status={item.status}
                     model={item?.notification_data?.data?.model} />
                 } else {
                   return <NotificationCard
                     id={item?.notification_data?.data?.entry?.id}
                     key={index}
                     title={item?.notification_data?.data?.entry?.Title}
-                    status={item.status}
+                    // status={item.status}
                     model={item?.notification_data?.data?.model} />
                 }
               })

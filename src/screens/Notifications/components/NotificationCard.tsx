@@ -1,24 +1,22 @@
 import React, { useContext } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
-import { clearLocalData, retrieveLocalData, storeToLocalStorage } from '../../../utils/localStorageFunctions'
+import { retrieveLocalData, storeToLocalStorage } from '../../../utils/localStorageFunctions'
 import { AppContext } from '../../../helper/context/AppContext'
 
 interface NotificationCardProps {
   id?:string
   title: string
-  status: string
+  // status: string
   model: string
-  desciption?: string
+  // desciption?: string
   expiryDate?: string
 }
 const NotificationCard: React.FC<NotificationCardProps> = (
   {
     id,
     title,
-    desciption,
     expiryDate,
-    status,
     model
   }) => {
   const { setNotifications } = useContext(AppContext);
@@ -26,8 +24,8 @@ const NotificationCard: React.FC<NotificationCardProps> = (
     <Pressable
       style={{
         ...styles.notificationCard,
-        backgroundColor: status == 'READ' ? COLOR.ORANGE_75 : COLOR.ORANGE_300,
-        borderRadius: 5
+        // backgroundColor: status == 'READ' ? COLOR.ORANGE_75 : COLOR.ORANGE_300,
+        // borderRadius: 5
       }}
       onPress={async function () {
         const notifications = await retrieveLocalData('notifications');
@@ -69,6 +67,8 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
     marginHorizontal: 10,
+    borderBottomWidth: 1,
+    borderBottomColor:COLOR.B_75
   },
   textContainer: {
     flexDirection: 'row',
