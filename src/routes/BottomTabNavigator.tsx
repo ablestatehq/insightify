@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import MoreDrawerScreen from '../screens/MoreDrawerScreen/MoreDrawerScreen';
+import Icon from '../assets/icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -35,9 +36,12 @@ const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
       backgroundColor: focused ? COLOR.ORANGE_50 : '',
       paddingHorizontal: 15,
       paddingBottom: 5,
-      borderRadius: 10
+      borderRadius: 10,
+      justifyContent: 'center',
+      alignItems:'center'
     }}
   >
+    <Icon name={text} isActive={focused} />
     <Text
       style={{
         color: focused ? COLOR.ORANGE_300 : COLOR.B_300,
