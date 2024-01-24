@@ -41,8 +41,6 @@ class NotificationHandler{
       token = await Notifications.getExpoPushTokenAsync({
         projectId: Constants.expoConfig?.extra?.eas?.projectId
       });
-    } else {
-      alert('Must use physical device for Push Notifications');
     }
 
     return token?.data;
