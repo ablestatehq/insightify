@@ -1,29 +1,57 @@
-import { SafeAreaView, StyleSheet, } from 'react-native'
-import React from 'react'
-import { WebView } from 'react-native-webview';
+import { SafeAreaView, ScrollView, StyleSheet, View, Text} from 'react-native'
+import React, { useEffect } from 'react';
 import Header from '../../NewsDetails/helperComponents/Header';
 import { COLOR } from '../../../constants/contants';
+import { STRAPI_BASE_URL } from '@env';
 
 const Privacy = () => {
+  const [content, setContent] = React.useState('');
+  useEffect(() => {
+    const fetch_data = async () => {
+      const options = {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json',
+        }
+      }
+
+      const response = await fetch(`${STRAPI_BASE_URL}insightify-privacy-policy`, options)
+        .then(response => response.json())
+        .catch((error: any) => { console.log(error.message) });
+      
+      setContent(response?.data.attributes?.body)
+    }
+
+    fetch_data();
+  }, [content]);
   return (
     <SafeAreaView style={styles.container}>
       <Header title='Privacy Policy'/>
-        <WebView
-          style={styles.webViewStyle}
-        source={{ uri: "https://aluminum-machine-14c.notion.site/Insightify-Privacy-Policy-e7d50f64518648618d0d5ff4d17fc6bf?pvs=4"}}
-        />
+      <View style={styles.content}>
+        <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+          <Text style={styles.text}>{content}</Text>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   )
 }
 
-export default Privacy
+export default Privacy;
 
 const styles = StyleSheet.create({
-  webViewStyle: {
-    flex:1
+  content: {
+    flex: 1,
+    padding: 10,
   },
   container: {
     flex: 1,
     backgroundColor:COLOR.WHITE
+  },
+  text: {
+    textAlign: 'justify',
+    fontFamily:'RalewayMedium'
+  },
+  scroll: {
+    padding:10
   }
 })
