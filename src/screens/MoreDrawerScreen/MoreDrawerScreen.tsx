@@ -137,7 +137,7 @@ const MoreDrawerScreen = () => {
               size={24}
               color={COLOR.B_300}
             />
-            <Text style={styles.text}>Give us your feedback</Text>
+            <Text style={styles.text}>Your voice matters</Text>
           </View>
           <Entypo
             size={15}
