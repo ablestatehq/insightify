@@ -19,23 +19,19 @@ const MoreDrawerScreen = () => {
    * when ever the user toggles the switch button for notification, update the database table for subscriptions.
    */
   const toggleSwitch = async () => {
+    setIsNotificationEnabled(!isNotificationEnabled);
     const tokens = await retrieveLocalData('tokens');
-
     if (tokens) {
       const { pushToken, isPushNotificationEnabled } = tokens;
+
       const id = await getDataId('notification-tokens', 'tokenID', pushToken);
       
-      if (id) { // if the pushToken exists in the notifications collections
-        setIsNotificationEnabled(previousState => !previousState);
-        const updateStrapi = await updateStrapiData('notification-tokens', id, { subscription: isNotificationEnabled })
-        if (updateStrapi) {
-          console.log("strapiJS updated data.",updateStrapi);
-        }
-        await storeToLocalStorage('tokens', { pushToken, isPushNotificationEnabled: isNotificationEnabled });
+      if (id) {
+
+        await storeToLocalStorage('tokens', { pushToken, "isPushNotificationEnabled": !isPushNotificationEnabled });
+        await updateStrapiData('notification-tokens', id[0]?.id, { subscription: !isPushNotificationEnabled });
+        
       }
-    } else {
-      // The pushNotification should be saved 
-      // in from the App.jsx file when the app was starting 
     }
   }
 
