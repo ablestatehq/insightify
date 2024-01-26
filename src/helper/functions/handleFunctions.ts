@@ -4,7 +4,7 @@ import { retrieveLocalData, storeToLocalStorage } from "../../utils/localStorage
 // Function to handle opportunity bookmarking 
 const handleBookmark = async (id: string, opportunities:any[], setOpportunities:(opp:any[]) => void) => {
   const updatedOpportunities = [...opportunities];
-  const targetIndex = updatedOpportunities.findIndex(opportunity => opportunity.$id === id);
+  const targetIndex = updatedOpportunities.findIndex(opportunity => opportunity.id === id);
 
   if (targetIndex !== -1) {
     const targetOpportunity = updatedOpportunities[targetIndex];
@@ -17,20 +17,19 @@ const handleBookmark = async (id: string, opportunities:any[], setOpportunities:
     setOpportunities(updatedOpportunities);
 
     // Update local storage
-    try {
-      const bookmarkedData = await retrieveLocalData('opportunities');
-      const updatedBookmarkedData = bookmarkedData ? bookmarkedData.filter((oppId: string) => oppId !== id) : [];
-
-      if (targetOpportunity.bookmarked) {
-        updatedBookmarkedData.push(id);
-      } else {
-        updatedBookmarkedData.filter((removeId: string) => removeId !== id)
-      }
-
-      await storeToLocalStorage('opportunities', updatedBookmarkedData);
-    } catch (error) {
-      console.log(error);
-    }
+    await storeToLocalStorage('opportunities', updatedOpportunities);
+    // try {
+    //   const bookmarkedData = await retrieveLocalData('opportunities');
+    //   // console.log(bookmarkedData)
+    //   const updatedBookmarkedData = bookmarkedData ? bookmarkedData.filter((oppId: string) => oppId !== id) : [];
+    //   if (targetOpportunity.bookmarked) {
+    //     updatedBookmarkedData.push(id);
+    //   } else {
+    //     updatedBookmarkedData.filter((removeId: string) => removeId !== id)
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
 };
 // Function to handle opening a link in the browser
