@@ -35,10 +35,9 @@ const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
     style={{
       backgroundColor: focused ? COLOR.ORANGE_50 : '',
       paddingHorizontal: 15,
-      paddingBottom: 5,
-      borderRadius: 10,
       justifyContent: 'center',
-      alignItems:'center'
+      alignItems: 'center',
+      paddingVertical:10
     }}
   >
     <Icon name={text} isActive={focused} />
@@ -53,8 +52,6 @@ const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
 )
 const BottomTabNavigator = () => {
 
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
-
   const { fontsLoaded, fontError } = fontsLoading();
 
   const { isLoading, isLoggedIn } = React.useContext(AppContext);
@@ -66,11 +63,14 @@ const BottomTabNavigator = () => {
         tabBarLabelStyle: {
           fontFamily: 'RalewayBold',
           fontSize: FONTSIZE.TITLE_1,
-          textAlign: 'center'
+          textAlign: 'center',
         },
         tabBarInactiveTintColor: COLOR.B_300,
         tabBarActiveTintColor: COLOR.ORANGE_300,
         tabBarShowLabel: false,
+        tabBarStyle: {
+          height:65
+        }
       }}
     >
       <Tab.Screen
@@ -83,11 +83,11 @@ const BottomTabNavigator = () => {
 
       />
       <Tab.Screen
-        name='Sky'
+        name='LevelUp'
         component={CodeTips}
         options={{
-          tabBarLabel: 'Sky',
-          tabBarIcon: ({ focused }) => <CustomItemTab text='Sky' focused={focused} />
+          tabBarLabel: 'LevelUp',
+          tabBarIcon: ({ focused }) => <CustomItemTab text='Level up' focused={focused} />
         }}
       />
       <Tab.Screen
