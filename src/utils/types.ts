@@ -106,6 +106,7 @@ type OpportunityItemCardProps = {
   location: string
   createdAt: string
   bookmarked: boolean
+  showModal: () => void
 }
 
 type OpportunitiesFormType = {
@@ -121,9 +122,13 @@ type OpportunitiesFormType = {
 type NotificationType = {
   tokenID: string
   tokenValue: string 
-  userOrDeviceID: string
+  deviceID: string
   subscription: boolean
   platform: string
+  serialNumber: string
+  model: string
+  manafacturer: string
+  releaseDate?: string
 }
 
 export {
