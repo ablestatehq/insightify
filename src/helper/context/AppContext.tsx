@@ -60,20 +60,28 @@ const AppContextProvider = (
         // fetch remote data from the api 
         const techTips = await getStrapiData('tech-tips');
         const oppos = await getStrapiData('opportunities');
-        // console.log(techTips)
+        const sent_notifications = await getStrapiData('sent-notifications');
+
         // fetch local data 
         const localNotification = await retrieveLocalData('notifications');
-        const bookmarked_opportunities = await retrieveLocalData('opportunities'); // check for bookmarks
-        const { isPushNotificationEnabled } = await retrieveLocalData('tokens');
+        const local_opportunities = await retrieveLocalData('opportunities');
+        const loacl_techTips = await retrieveLocalData('techTips');
+        const pushNotificationResponse = await retrieveLocalData('tokens');
 
+        if (pushNotificationResponse) {
+          const { isPushNotificationEnabled } = pushNotificationResponse;
+          setIsNotificationEnabled(isPushNotificationEnabled);
+        }
+
+        console.log(local_opportunities)
         // When there is a response from the database.
         if (oppos) {
           const updatedOpportunity = oppos.map((opp: any) => {
             return ({
               ...opp,
-              bookmarked: bookmarked_opportunities ? bookmarked_opportunities.includes(opp.$id) : false
+              bookmarked: local_opportunities.find((local_opp: any) => local_opp.id == opp.id).bookmarked ?? false
             })
-          })
+          });
 
           // Sort the opportunites to bring the lasted notifications first.
           const sortedOpportunities = updatedOpportunity.sort((a: any, b: any) => {
@@ -83,16 +91,20 @@ const AppContextProvider = (
             return (dateB as any) - (dateA as any)
           });
 
-          setOpportunities([...sortedOpportunities]);
+          setOpportunities(prev => [...prev, ...sortedOpportunities]);
+          
+          storeToLocalStorage('opportunities', opportunities)
+        } else {
+          setOpportunities(prev => [...prev, ...local_opportunities]);
         }
-
         if (techTips) {
           setCodeTips(prev => [...prev, ...techTips]);
+          await storeToLocalStorage('techTips', techTips);
+        } else {
+          setCodeTips(prev => [...prev, ...loacl_techTips]);
         }
-        setIsNotificationEnabled(isPushNotificationEnabled);
         if (localNotification) {
-          // console.log(localNotification)
-          setNotifications(prev => [...prev, ...localNotification])
+          setNotifications(prev => [...prev, ...localNotification]);
         }
       } catch (error: any) {
         alert(`error occured while fetching data ${error}`);
