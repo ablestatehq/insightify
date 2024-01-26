@@ -43,13 +43,13 @@ type LoginScreenProps = RouteProp<RootStackParamList, 'Login'>
 
 // interface for TalentSubmissionForm
 type TalentSubmissionForm = {
-  Client: string // Client name
-  Email: string
-  Phone: string
-  Message: string // Message left
-  Need: string // Looking for
-  Heads?: string // Quantity needed.
-  Company?:string
+  client: string // Client name
+  email: string
+  phone: string
+  message: string // Message left
+  need: string // Looking for
+  heads?: string // Quantity needed.
+  company?:string
 }
 interface ExpandableListItemProps {
   PL?: string

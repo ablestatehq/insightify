@@ -24,29 +24,27 @@ const FindTalent = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const initialTalentFormValues = {
-    Client: '', // Client name
-    Email: '',
-    Phone: '',
-    Message: '', // Message left
-    Need: '', // Looking for
-    Heads: '', // Number of developers need.
-    Company: ''
+    client: '', // Client name
+    email: '',
+    phone: '',
+    message: '', // Message left
+    need: '', // Looking for
+    heads: '', // Number of developers need.
+    company: ''
   }
 
   // submit request form.
   const submitTalentRequestForm = async (values: TalentSubmissionForm, formikHelpers: FormikHelpers<any>) => {
 
-
     const submissionResponse = await storeData('talent-requests', values)
-    console.log(submissionResponse)
-    if (submissionResponse) {
+    if (submissionResponse.data != null) {
       // Toast a message to show the user that the request form has been successfully submitted.
       ToastAndroid.show('Request successfully sent', 5000);
       formikHelpers.resetForm({
         values: initialTalentFormValues
       })
     } else {
-      console.log('Failed to submit request')
+      ToastAndroid.show('Failed to submit request', 5000);
     }
   }
   return (
@@ -85,24 +83,24 @@ const FindTalent = () => {
           >
             <InputText
               label='Name'
-              fieldName='Client'
+              fieldName='client'
               placeholder='Enter your name e.g Gideon'
             />
 
             <InputText
               label='Email'
-              fieldName='Email'
+              fieldName='email'
               placeholder='example@gmail.com'
             />
 
             <InputText
-              fieldName='Phone'
+              fieldName='phone'
               label='Phone number'
               placeholder='e.g 077777777'
             />
 
             <InputText
-              fieldName='Company'
+              fieldName='company'
               label='Company/Organisation'
               placeholder='Company/Organisation'
             />
@@ -116,8 +114,8 @@ const FindTalent = () => {
               }}
             >
               <Picker
-                selectedValue={values.Need}
-                onValueChange={handleChange('Need')}
+                selectedValue={values.need}
+                onValueChange={handleChange('need')}
               >
                 <Picker.Item
                   label="I'm looking for"
@@ -140,17 +138,17 @@ const FindTalent = () => {
                   value="toolManager"
                 />
               </Picker>
-              {errors.Need && touched.Need && <Text style={styles.errorText}>{errors.Need}</Text>}
+              {errors.need && touched.need && <Text style={styles.errorText}>{errors.need}</Text>}
             </View>
-            {values.Need == 'NewDeveloper' &&
+            {values.need == 'NewDeveloper' &&
               <InputText
-                fieldName='Heads'
+                fieldName='heads'
                 label='How many developers may you need?'
                 placeholder='Enter number of developers'
               />}
             <InputText
               isMultiLine={true}
-              fieldName='Message'
+              fieldName='message'
               label='Tell us more'
               placeholder='Tell us more about your need'
             />
