@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { COLOR, FONTSIZE } from '../../constants/contants';
 import { useNavigation } from '@react-navigation/native';
+import { COLOR, FONTSIZE } from '../../constants/contants';
 import { OpportunityItemCardProps } from '../../utils/types';
 import { AppContext } from '../../helper/context/AppContext';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { OpenLink, handleBookmark } from '../../helper/functions/handleFunctions';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 const OpportunityItemCard: React.FC<OpportunityItemCardProps> =
   ({
@@ -18,14 +18,20 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> =
     type,
     location,
     createdAt,
-    bookmarked
+    bookmarked,
+    showModal,
   }) => {
 
-    const { setOpportunities, opportunities, isLoggedIn } = useContext(AppContext)
+    const { setOpportunities, opportunities, isLoggedIn } = useContext(AppContext);
+    // console.log(opportunities.map((ele:any) => ele.id))
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
+    const handleDetailsPress = () => {
+      showModal();
+    }
+
     return (
-      <View style={styles.container}>
+      <Pressable style={styles.container} onPress={handleDetailsPress}>
         <View style={styles.headSection}>
           <View style={{ flex: 1, paddingTop: 10 }}>
             <Text style={styles.heading}>{title}</Text>
@@ -41,7 +47,7 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> =
             }}
           >
             {bookmarked && <Ionicons
-              name="bookmark"
+              name="heart"
               size={20}
               color={COLOR.B_300}
               onPress={function () {
@@ -53,7 +59,7 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> =
               }}
             />}
             {!bookmarked && <Ionicons
-              name="bookmark-outline"
+              name="heart-outline"
               size={20}
               color={COLOR.B_300}
               onPress={function () {
@@ -74,7 +80,10 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> =
         </View>
         <View style={styles.footer}>
           <View style={{ paddingBottom: 10 }}>
-            <Text style={{ ...styles.text, color: COLOR.B_300 }}><Text style={styles.location}>Location:</Text> {location}</Text>
+            <Text style={{ ...styles.text, color: COLOR.B_300 }}>
+              <Text style={styles.location}>Location:</Text>
+              {location}
+            </Text>
           </View>
           <Pressable
             style={{ backgroundColor: COLOR.ORANGE_50, borderTopLeftRadius: 10, paddingHorizontal: 10, paddingBottom: 5 }}
@@ -83,7 +92,7 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> =
             <Text style={styles.btnText}>Details</Text>
           </Pressable>
         </View>
-      </View>
+      </Pressable>
     )
   }
 
