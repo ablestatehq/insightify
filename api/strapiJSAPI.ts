@@ -23,7 +23,10 @@ async function storeData(endpoint: string, data: any) {
 
   const response = await fetch(`${STRAPI_BASE_URL}${endpoint}`, options)
     .then(response => response.json())
-    .then(storedData => storedData)
+    .then(storedData => {
+      // console.log("Data saved", storedData)
+      return storedData
+    })
     .catch(error => console.log(error))
   return response
 }
@@ -51,7 +54,9 @@ async function getStrapiData(endpoint: string) {
         if (endpoint == 'notification-tokens') {
           return data.data.map((res: any) => res.attributes.tokenID)
         }
-        return data.data.map((res: any) => res.attributes)
+        return data?.data?.map((res:any) => {
+         return {id: res.id, ...res.attributes}
+        })
       })
       .catch((error:any) => { console.log(error.message) });
     return response;
@@ -84,9 +89,11 @@ async function updateStrapiData(endpoint: string, id: number, data: any) {
 
   try {
     const response = await
-      fetch(`${STRAPI_BASE_URL}${endpoint}`, options)
-        .then(response => response.json)
-        .then(data => data)
+      fetch(`${STRAPI_BASE_URL}${endpoint}/${id}`, options)
+        .then(response => response.json())
+        .then(data => {
+          return data
+        })
         .catch(error => console.warn(error))
     
     return response
@@ -114,21 +121,15 @@ async function getDataId(endpoint: string, attribute: string, attributeValue: an
 
   try {
     const response = await
-      fetch(`${STRAPI_BASE_URL}${endpoint}`, options)
-        .then(response => response.json())
-        .then(data => data.data.find((res: any) => {
-          if (res.attributes[attribute] == attributeValue) {
-            return res.attributes.id
-          }
-        }))
+      fetch(`${STRAPI_BASE_URL}${endpoint}?filters[${attribute}][$eq]=${attributeValue}`, options)
+        .then(response => {
+          return response.json()
+        })
+        .then(data => data.data.map(((res:any) => {return {token: res.attributes.tokenID, id: res.id}})))
         .catch(error => console.warn(error))
     
     return response
   } catch (error) {
-    // return {
-    //   status: 'error',
-    //   message: error
-    // }
   }
 }
 export {
