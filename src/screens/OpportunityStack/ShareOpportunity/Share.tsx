@@ -3,20 +3,14 @@ import { Formik, FormikHelpers } from 'formik'
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { ShareSchema } from '../../../utils/validations'
-import DatabaseService from '../../../appwrite/appwrite'
 import { OpportunitiesFormType } from '../../../utils/types'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
-import { environments } from '../../../constants/environments'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import InputText from '../../../components/FomikComponents/InputText/InputText'
 import SubmitButton from '../../../components/FomikComponents/SubmitButton/SubmitButton'
 import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, ToastAndroid, View } from 'react-native'
-import { TagInput } from '../../../components'
+import { storeData } from '../../../../api/strapiJSAPI'
 
-const {
-  APPWRITE_DATABASE_ID,
-  APPWRITE_OPPORTUNITIES_COLLECTION_ID
-} = environments;
 const Share = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -26,26 +20,15 @@ const Share = () => {
       const data: OpportunitiesFormType = {
         ...values
       }
-      // console.log(data)
-      const response =
-        await DatabaseService.storeDBdata(
-          APPWRITE_OPPORTUNITIES_COLLECTION_ID,
-          data
-        )
-          .then(response => response)
-          .catch(error => {
-            console.log(error);
-          });
-      if (response) {
+      console.log(data);
+      const response = await storeData('talent-requests', data);
+      if (response.data != null) {
         ToastAndroid.show('Request successfully sent', 5000);
         formikHelpers.resetForm({
-          values: formInitialValues
-        });
-
+          values:formInitialValues
+        })
       }
-    } catch (error) {
-
-    }
+    } catch (error) {}
   };
 
   const formInitialValues = {

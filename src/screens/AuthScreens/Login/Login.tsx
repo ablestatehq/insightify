@@ -2,7 +2,6 @@ import { Formik } from 'formik'
 import React, { useContext } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native'
-import DatabaseService from '../../../appwrite/appwrite'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
 import { AppContext } from '../../../helper/context/AppContext'
 import { SignUpWith, InputText, SubmitButton } from '../../../components'

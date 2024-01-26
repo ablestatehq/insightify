@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import DatabaseService from '../../appwrite/appwrite';
 import { useNavigation } from '@react-navigation/native';
 import { COLOR, FONTSIZE } from '../../constants/contants';
 import { AppContext } from '../../helper/context/AppContext';
@@ -41,7 +40,6 @@ const MoreDrawerScreen = () => {
    */
   const handleLoginLogout = async () => {
     if (isLoggedIn) {
-      await DatabaseService.logOut();
       setIsLoggedIn(false);
     } else {
       navigation.navigate('Login', { title: '' })

@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import Selectable from './components/Selectable'
 import { FeedbackObject } from '../../../utils/types'
-import { APPWRITE_FEEDBACK_COLLECTION_ID } from '@env'
-import DatabaseService from '../../../appwrite/appwrite'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
 import Header from '../../NewsDetails/helperComponents/Header'
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native'
