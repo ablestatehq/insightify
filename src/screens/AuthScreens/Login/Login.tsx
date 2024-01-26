@@ -34,7 +34,8 @@ const Login: React.FC = () => {
 
         if (opportunityID) {
           handleBookmark(opportunityID, opportunities, setOpportunities)
-          navigation.navigate('Deck');
+          // navigation.navigate('Deck');
+          navigation.goBack()
         } else {
           if (title) {
             navigation.navigate('Share');
