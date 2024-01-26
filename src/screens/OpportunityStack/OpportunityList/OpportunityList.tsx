@@ -1,6 +1,7 @@
 import { COLOR } from '../../../constants/contants'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { AppContext } from '../../../helper/context/AppContext'
+import OpportunityDetails from '../../../components/OpportunityDetails'
 import { StyleSheet, View, ScrollView, StatusBar, Text } from 'react-native'
 import { OpportunityCard, OpportunityHeader, FloatingButton, FilterCard } from '../../../components'
 
@@ -9,21 +10,29 @@ const OpportunityList = () => {
   const { opportunities, notifications } = useContext(AppContext);
   const [filteredItems, setFilteredItems] = useState<string[]>([]);
   const [showCard, setShowCard] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [link, setLink] = useState<string>('');
 
   const showFilterCard = () => {
     setShowCard(!showCard)
   }
 
+  const handleShowModal = (title: string, desc: string, link: string) => {
+    setTitle(title)
+    setDescription(desc)
+    setLink(link)
+    setShowModal(!showModal)
+  }
   const filteredOpportunities = opportunities.filter((opp) => filteredItems.includes(opp.Category));
-  // console.log(notifications);
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle='dark-content' backgroundColor={COLOR.WHITE} />
       {/* search section  */}
       <View style={styles.searchContainer}>
-        <OpportunityHeader
-          showFilterCard={showFilterCard}
-        />
+        <OpportunityHeader showFilterCard={showFilterCard} />
       </View>
 
       <View style={styles.opportunityListContainer}>
@@ -35,7 +44,7 @@ const OpportunityList = () => {
             >
               {filteredOpportunities.map((_, index: number) => (
                 <OpportunityCard
-                  id={_.$id}
+                  id={_.id}
                   key={index}
                   location={_.location}
                   createdAt={_.publishedAt}
@@ -45,6 +54,7 @@ const OpportunityList = () => {
                   expireDate={_.expiring}
                   description={_.Description[0].children[0].text}
                   bookmarked={_.bookmarked}
+                  showModal={() => { handleShowModal(_.Title, _.Description[0].children[0].text, _.URL) }}
                 />
               ))}
             </ScrollView>
@@ -61,7 +71,7 @@ const OpportunityList = () => {
           >
             {opportunities.map((_, index: number) => (
               <OpportunityCard
-                id={_.$id}
+                id={_.id}
                 key={index}
                 location={_.location ?? "Remote"}
                 createdAt={_.publishedAt}
@@ -70,9 +80,17 @@ const OpportunityList = () => {
                 title={_.Title}
                 expireDate={_.expiring}
                 description={_.Description[0].children[0].text}
-                bookmarked={_.bookmarked}
+                bookmarked={_?.bookmarked}
+                showModal={() => { handleShowModal(_.Title, _.Description[0].children[0].text, _.URL) }}
               />
             ))}
+            <OpportunityDetails
+              visible={showModal}
+              handleVisibility={() => handleShowModal('', '', '')}
+              Title={title}
+              description={description}
+              link={link}
+            />
           </ScrollView>
         }
         <FloatingButton title='Add Opportunity' />
