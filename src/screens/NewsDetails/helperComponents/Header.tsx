@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons';
-import { COLOR, FONTSIZE } from '../../../constants/contants';
+import { FONTSIZE } from '../../../constants/contants';
 import { useNavigation } from '@react-navigation/native';
 
 interface HeaderProps {
@@ -31,7 +31,7 @@ const Header = (
         style={[
           styles.text,
           {
-            fontFamily:'ComfortaaBold'
+            fontFamily:'RalewayBold'
           }
         ]}
       >
@@ -54,6 +54,5 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: FONTSIZE.TITLE_1,
-    // color:COLOR.ORANGE_300
   }
 })

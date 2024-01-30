@@ -40,7 +40,7 @@ const Contact = () => {
             color={COLOR.B_300}
           />
           <Text style={styles.contactText}>
-            insights@ablestate.africa
+            grow@ablestate.africa
           </Text>
         </Pressable>
 
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     fontSize: FONTSIZE.SMALL
   },
   introText: {
-    fontFamily: 'RalewayBold',
+    fontFamily: 'ComfortaaBold',
     fontSize: FONTSIZE.HEADING_5,
     marginBottom: 20
   }

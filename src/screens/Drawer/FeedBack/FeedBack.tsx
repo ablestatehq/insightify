@@ -56,7 +56,6 @@ const FeedBack = () => {
       suggestion: suggestionText
     }
     const response = await storeData('suggestions', newFeedback)
-    console.log(response)
     if (response) {
       setSuggestionText('')
       setSelectedImprovement(null)
