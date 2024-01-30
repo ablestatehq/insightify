@@ -22,7 +22,9 @@ async function storeToLocalStorage(key: string, value: any) {
   } else {
     try {
       await AsyncStorage.setItem(`${key}`, stringified_data)
-      .then(response => {console.log('Data saved to local storage', response)})
+        .then(response => {
+          // console.log('Data saved to local storage', response)
+        })
     } catch (error) {
       console.error("Error occuring",error)
     }
