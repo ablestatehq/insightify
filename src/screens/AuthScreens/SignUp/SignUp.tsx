@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Formik, FormikHelpers } from 'formik'
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
 import { COLOR, FONTSIZE } from '../../../constants/contants'
 import { AppContext } from '../../../helper/context/AppContext'
@@ -8,12 +8,16 @@ import { AppContext } from '../../../helper/context/AppContext'
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { SignUpWith, InputText, SubmitButton } from '../../../components'
+import { SignUpWith, InputText, SubmitButton, CustomModal } from '../../../components'
 import { signUp } from '../../../../api/auth'
 
 const SignUp = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { isLoggedIn, setIsLoggedIn } = useContext(AppContext);
+
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
+  const [modalTitle, setModalTitle] = useState<string>('');
 
   const signUpFormInitValues = {
     name: '',
@@ -31,21 +35,9 @@ const SignUp = () => {
         navigation.goBack()
       }
     } catch (error) {
-      Alert.alert(
-        'Sign-up or login failed',
-        'An error occurred during sign-up or login.',
-        [
-          {
-            text: 'OK',
-            onPress: () => { },
-            style: 'cancel',
-          },
-        ],
-        {
-          cancelable: true,
-          onDismiss: () => { },
-        }
-      );
+      setShowModal(true);
+      setModalTitle('Sign-up or login failed');
+      setModalMessage('An error occurred during sign-up or login.');
     }
   };
   
@@ -103,6 +95,12 @@ const SignUp = () => {
           </Formik>
           {/* <SignUpWith /> */}
         </View>
+        <CustomModal
+          title={modalTitle}
+          message={modalMessage}
+          cancelText='Ok'
+          cancel={function (): void {setShowModal(false)}}
+          visibility={showModal} />
       </View>
     </View>
   )

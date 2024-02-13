@@ -1,15 +1,16 @@
 import { Formik } from 'formik'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
 import { AppContext } from '../../../helper/context/AppContext'
-import { SignUpWith, InputText, SubmitButton } from '../../../components'
+import { SignUpWith, InputText, SubmitButton, CustomModal } from '../../../components'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Alert, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { LoginScreenProps } from '../../../utils/types';
 import { handleBookmark } from '../../../helper/functions/handleFunctions';
 import { login } from '../../../../api/auth';
+import { storeToLocalStorage } from '../../../utils/localStorageFunctions';
 
 const Login: React.FC = () => {
   const route = useRoute<LoginScreenProps>();
@@ -17,7 +18,11 @@ const Login: React.FC = () => {
   const { title, opportunityID } = route.params;
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  const { setIsLoggedIn, opportunities, setOpportunities } = useContext(AppContext);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
+  const [modalTitle, setModalTitle] = useState<string>('');
+
+  const { setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser } = useContext(AppContext);
 
   const loginFormInitValues = {
     email: '',
@@ -29,6 +34,15 @@ const Login: React.FC = () => {
       const response = await login(values.email, values.password);
 
       if (response?.jwt) {
+        await storeToLocalStorage('user_token',
+          {
+            id: response.user.id,
+            email: response.user.email,
+            lastName: response.user.lastName,
+            firstName: response.user.firstName,
+            token: response.jwt
+          });
+        setUser(response.user)
         setIsLoggedIn(true);
 
         if (opportunityID) {
@@ -44,21 +58,11 @@ const Login: React.FC = () => {
           }
         }
       } else {
-        Alert.alert("Request failed", "Login request failed", [
-          {
-            style: 'cancel',
-            text: 'Try again',
-            onPress: () => { }
-          }
-        ],
-          {
-            cancelable: true,
-            onDismiss: () => { }
-          })
+        setShowModal(true);
+        setModalTitle('Login Error');
+        setModalMessage('Login Failed');
       }
-    } catch (error) {
-      // console.error("Error here", error)
-    }
+    } catch (error) {}
   }
 
     return (
@@ -95,7 +99,9 @@ const Login: React.FC = () => {
                       handleSubmit={() => handleSubmit()}
                       button={styles.button} />
                     <View>
-                      <Text style={styles.footerText}>Forgot password?</Text>
+                      <Pressable onPress={() => {}}>
+                        <Text style={styles.footerText}>Forgot password?</Text>
+                      </Pressable>
                       <View style={styles.footer}>
                         <Text style={styles.footerText}>Don't have an account?</Text>
                         <TouchableOpacity
@@ -113,6 +119,12 @@ const Login: React.FC = () => {
             </Formik>
             {/* <SignUpWith /> */}
           </View>
+          <CustomModal
+            title={modalTitle}
+            message={modalMessage}
+            cancelText='ok'
+            cancel={function (): void { setShowModal(false)}}
+            visibility={showModal} />
         </View>
       </KeyboardAvoidingView>
     )
