@@ -1,4 +1,38 @@
 import { STRAPI_TOKEN, STRAPI_BASE_URL,STRAPI_TALENT_FORM_API_KEY } from "@env"
+import { clearLocalData, retrieveLocalData } from "../src/utils/localStorageFunctions";
+
+/**
+ * @name getMe
+ * @returns {Record}
+ */
+async function getMe() {
+  const url = `${STRAPI_BASE_URL}api/users/me?`;
+  const authToken = await retrieveLocalData('user_token');
+
+  // if the authToken does not exist, return an object with null data.
+  if (!authToken) return { ok: false, data: null }
+  
+  try {
+    const jwt = authToken.token;
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${jwt}`
+      }
+    };
+    const reponse = await fetch(url, options);
+    const data = await reponse.json();
+
+    // if the returned data has an error yet the jwt existed in the localStorage 
+    // clear the local data and prompt the user to login again 
+    if (data.error && authToken) clearLocalData('user_token');
+
+    // if data is returned from online, then return the Record that contains the data returned and a jwt.
+    return { ok: true, data: data, jwt };
+  } catch (error) {}
+  return {ok: false, data: null}
+};
 
 /**
  * @name storeData
@@ -37,7 +71,7 @@ async function storeData(endpoint: string, data: any) {
  * @returns 
  * retrieve data from strapi
  */
-async function getStrapiData(endpoint: string) {
+function getStrapiData(endpoint: string) {
   const options = {
     method: 'GET',
     headers: {
@@ -46,9 +80,8 @@ async function getStrapiData(endpoint: string) {
     }
   }
 
-  // console.log(`${endpoint}`,options)
   try {
-    const response = await fetch(`${STRAPI_BASE_URL}${endpoint}`, options)
+    const response = fetch(`${STRAPI_BASE_URL}${endpoint}?populate=*`, options)
       .then(response => response.json())
       .then(data => {
         if (endpoint == 'notification-tokens') {
@@ -63,7 +96,6 @@ async function getStrapiData(endpoint: string) {
   } catch (error) {
   }
 }
-
 
 /**
  * Update document in strapiJS
@@ -132,7 +164,9 @@ async function getDataId(endpoint: string, attribute: string, attributeValue: an
   } catch (error) {
   }
 }
+
 export {
+  getMe,
   storeData,
   getDataId,
   getStrapiData,

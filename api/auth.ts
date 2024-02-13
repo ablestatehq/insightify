@@ -10,7 +10,6 @@ interface UserData{
 }
 
 const signUp = async (userData: any) => {
-  console.log(userData)
   const payload = {
     username: userData.email,
     email: userData.email,
@@ -68,4 +67,41 @@ const login = async (identifier:string, password:string) => {
   }
 };
 
-export {signUp, login}
+const resetPassword = async (identifier: string, newPassword: string, code: string) => {
+  const payload = {
+    code,
+    password: newPassword,
+    passwordConfirmation: newPassword
+  }
+  try {
+    const options = {
+      method: 'POST',
+      headers: {
+        'content-type':'appplication/json'
+      },
+      body: JSON.stringify(payload)
+    }
+    const update = await
+      fetch(`${STRAPI_BASE_URL}auth/local/reset-password`, options)
+        .then((response) => { console.log(response)})
+        .catch(error => { });
+  } catch (error) {
+    
+  }
+}
+
+const forgotRequest =async (identifier:string,) => {
+  const options = {
+    email: identifier,
+    url:`${STRAPI_BASE_URL}/admin/plugins/users-permissions/auth/reset-password`
+  }
+  try {
+    const response = await
+      fetch(`${STRAPI_BASE_URL}/auth/forgot-password`)
+        .then(response => response.json())
+        .then(code => code)
+        .catch(error => { });
+    return response;
+  } catch (error) {}
+}
+export {signUp, login, resetPassword, forgotRequest}
