@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Formik, FormikHelpers } from 'formik'
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
@@ -8,25 +8,33 @@ import { COLOR, FONTSIZE } from '../../../constants/contants'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import InputText from '../../../components/FomikComponents/InputText/InputText'
 import SubmitButton from '../../../components/FomikComponents/SubmitButton/SubmitButton'
-import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, ToastAndroid, View } from 'react-native'
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { storeData } from '../../../../api/strapiJSAPI'
+import { CustomModal } from '../../../components'
 
 const Share = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
+  const [modalTitle, setModalTitle] = useState<string>('');
 
+  
   const handleOpportunitySubmission = async (values: any, formikHelpers: FormikHelpers<any>) => {
     try {
       const data: OpportunitiesFormType = {
         ...values
       }
-      console.log(data);
-      const response = await storeData('talent-requests', data);
+      const response = await storeData('opportunities', data);
       if (response.data != null) {
-        ToastAndroid.show('Request successfully sent', 5000);
+        // ToastAndroid.show('Request successfully sent', 5000);
         formikHelpers.resetForm({
-          values:formInitialValues
-        })
+          values: formInitialValues
+        });
+
+        setShowModal(true);
+        setModalTitle('Opportunity submission');
+        setModalMessage('Opportunity has been submitted successfully. \nIt will reviewed by our team.')
       }
     } catch (error) {}
   };
@@ -39,13 +47,8 @@ const Share = () => {
     expireDate: "",
     description: "",
     companyName: "",
-    // tag: [],
-    // category:'' // category of the opportunity.
   }
 
-  const handleTagAddition = (newTag: string) => {
-    console.log('New tag added:', newTag);
-  };
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -123,6 +126,12 @@ const Share = () => {
             </ScrollView>
           )}
         </Formik>
+        <CustomModal
+          title={modalTitle}
+          message={modalMessage}
+          cancelText='Ok'
+          cancel={function (): void {setShowModal(false)}}
+          visibility={showModal} />
       </View>
     </KeyboardAvoidingView>
   )

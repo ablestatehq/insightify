@@ -5,7 +5,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, FormikHelpers } from 'formik';
 import { Picker } from "@react-native-picker/picker";
 import { TalentSubmissionForm } from '../../utils/types';
@@ -18,11 +18,15 @@ import SubmitButton from '../../components/FomikComponents/SubmitButton/SubmitBu
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { storeData } from '../../../api/strapiJSAPI';
+import { CustomModal } from '../../components';
 
 const FindTalent = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
+  const [modalTitle, setModalTitle] = useState<string>('');
+  
   const initialTalentFormValues = {
     client: '', // Client name
     email: '',
@@ -39,12 +43,18 @@ const FindTalent = () => {
     const submissionResponse = await storeData('talent-requests', values)
     if (submissionResponse.data != null) {
       // Toast a message to show the user that the request form has been successfully submitted.
-      ToastAndroid.show('Request successfully sent', 5000);
+      // ToastAndroid.show('Request successfully sent', 5000);
+      setShowModal(true);
+      setModalTitle('Talent Request');
+      setModalMessage('Your talent request has been successfully submitted.')
       formikHelpers.resetForm({
         values: initialTalentFormValues
       })
     } else {
-      ToastAndroid.show('Failed to submit request', 5000);
+      // ToastAndroid.show('Failed to submit request', 5000);
+      setShowModal(true);
+      setModalTitle('Talent Request Error');
+      setModalMessage('Your talent request has not been submitted....')
     }
   }
   return (
@@ -159,6 +169,12 @@ const FindTalent = () => {
           </ScrollView>
         )}
       </Formik>
+      <CustomModal
+        title={modalTitle}
+        message={modalMessage}
+        cancelText='Ok'
+        cancel={function (): void {setShowModal(false)}}
+        visibility={showModal} />
     </KeyboardAvoidingView>
   )
 }

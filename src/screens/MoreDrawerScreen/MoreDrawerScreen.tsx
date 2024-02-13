@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { COLOR, FONTSIZE } from '../../constants/contants';
 import { AppContext } from '../../helper/context/AppContext';
@@ -7,10 +7,12 @@ import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions';
 import { Entypo, SimpleLineIcons, Ionicons, MaterialIcons, AntDesign, Feather } from '@expo/vector-icons';
+import { CustomModal } from '../../components';
 
 const MoreDrawerScreen = () => {
   const { isLoggedIn, setIsLoggedIn, isNotificationEnabled, setIsNotificationEnabled } = useContext(AppContext);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const [modal, setModal] = useState<boolean>(false);
 
   /**
    * @name toggleSwitch
@@ -38,13 +40,10 @@ const MoreDrawerScreen = () => {
    * @name handleLoginLogout
    * This function handles the login/logout button functionality.
    */
-  const handleLoginLogout = async () => {
-    if (isLoggedIn) {
-      setIsLoggedIn(false);
-    } else {
-      navigation.navigate('Login', { title: '' })
-    }
-  }
+  const handleLoginLogout = () => {
+    setModal(false);
+    setIsLoggedIn(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -166,7 +165,13 @@ const MoreDrawerScreen = () => {
         borderRadius: 10,
       }}>
         <Pressable style={styles.iconContainer}
-          onPress={handleLoginLogout}
+          onPress={() => {
+            if (isLoggedIn) {
+              setModal(true);
+            } else {
+              navigation.navigate('Login', { title: '' });
+            }
+          }}
         >
           <AntDesign name={isLoggedIn ? "logout" : "login"} size={25} color={COLOR.B_300} />
           <Text
@@ -179,6 +184,12 @@ const MoreDrawerScreen = () => {
           </Text>
         </Pressable>
       </View>
+      <CustomModal
+        title={isLoggedIn ? 'Logout' : ''}
+        message={isLoggedIn ? 'Do you want to logout' : ''}
+        cancel={function (): void { setModal(false)}}
+        accept={handleLoginLogout}
+        visibility={modal} />
     </View>
   )
 }
