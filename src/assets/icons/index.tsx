@@ -1,7 +1,7 @@
-import { Image, StyleSheet, View, Text } from 'react-native'
-import { Ionicons, Feather, MaterialIcons, Foundation, MaterialCommunityIcons } from '@expo/vector-icons';
-import { COLOR } from '../../constants/contants';
+import React from 'react';
 import TalentIcon from './Talent';
+import {COLOR} from '../../constants/contants';
+import {MaterialIcons, Foundation, MaterialCommunityIcons} from '@expo/vector-icons';
 
 interface IconName {
   name: string // 'Deck' | 'Sky' | 'Talent' | 'More',
@@ -15,7 +15,7 @@ const SIZE = {
 }
 const Icon: React.FC<IconName> = ({name, isActive}) => {
   switch (name) {
-    case 'Deck':
+    case 'Explore':
       return <Foundation name="clipboard-notes" size={24} color={isActive ? COLOR.ORANGE_300 : COLOR.B_300} />
         // : <Ionicons name="book-outline" size={SIZE.MEDIUM} color={COLOR.B_300} />
     case 'Level up':
@@ -27,6 +27,4 @@ const Icon: React.FC<IconName> = ({name, isActive}) => {
   }
 }
 
-export default Icon
-
-const styles = StyleSheet.create({})
+export default React.memo(Icon)
