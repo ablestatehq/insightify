@@ -4,7 +4,7 @@ import React, {
   useEffect,
 } from 'react';
 import socket from '../../../api/socket';
-import { getStrapiData } from '../../../api/strapiJSAPI';
+import { getMe, getStrapiData } from '../../../api/strapiJSAPI';
 import { retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions';
 
 
@@ -13,6 +13,10 @@ interface AppContextProviderProps {
 }
 
 interface AppContextType {
+  jwt: string
+  setJwt: React.Dispatch<React.SetStateAction<string>>
+  user: any
+  setUser: React.Dispatch<React.SetStateAction<any>>
   isLoading: boolean
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   codeTips: any[]
@@ -28,6 +32,10 @@ interface AppContextType {
 }
 
 export const AppContext = createContext<AppContextType>({
+  jwt: '',
+  setJwt: () => {},
+  user: {},
+  setUser: () => {},
   isLoading: true,
   setIsLoading: () => { },
   codeTips: [],
@@ -49,6 +57,8 @@ const AppContextProvider = (
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [user, setUser] = useState<any>({});
+  const [jwt, setJwt] = useState<string>('');
   const [opportunities, setOpportunities] = useState<any[]>([]);
   const [codeTips, setCodeTips] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -57,57 +67,92 @@ const AppContextProvider = (
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // get me 
+        const user_ = await getMe();
+
+        if (user_.ok) {
+          setIsLoggedIn(true);
+          setUser(user_.data);
+          setJwt(user_.jwt);
+        }
         // fetch remote data from the api 
         const techTips = await getStrapiData('tech-tips');
         const oppos = await getStrapiData('opportunities');
         const sent_notifications = await getStrapiData('sent-notifications');
 
-        // fetch local data 
+        // console.log(oppos[5].Description)
         const localNotification = await retrieveLocalData('notifications');
         const local_opportunities = await retrieveLocalData('opportunities');
         const loacl_techTips = await retrieveLocalData('techTips');
         const pushNotificationResponse = await retrieveLocalData('tokens');
 
+        // console.log("This is it",local_opportunities[0].id)
         if (pushNotificationResponse) {
           const { isPushNotificationEnabled } = pushNotificationResponse;
           setIsNotificationEnabled(isPushNotificationEnabled);
         }
 
-        console.log(local_opportunities)
         // When there is a response from the database.
         if (oppos) {
-          const updatedOpportunity = oppos.map((opp: any) => {
-            return ({
-              ...opp,
-              bookmarked: local_opportunities.find((local_opp: any) => local_opp.id == opp.id).bookmarked ?? false
-            })
+          setOpportunities(prev => {
+            const updatedOpportunity = oppos.map((opp: any) => {
+              return ({
+                ...opp,
+                bookmarked: local_opportunities?.find((local_opp: any) => local_opp.id == opp.id)?.bookmarked ?? false
+              })
+            });
+
+            // Sort the opportunites to bring the lasted notifications first.
+            const sortedOpportunities = updatedOpportunity.sort((a: any, b: any) => {
+              const dateA = new Date(a?.publishedAt)
+              const dateB = new Date(b?.publishedAt)
+
+              return (dateB as any) - (dateA as any)
+            });
+
+            const newOpportunities = [...prev, ...sortedOpportunities];
+            storeToLocalStorage('opportunities', newOpportunities)
+
+            return newOpportunities
           });
-
-          // Sort the opportunites to bring the lasted notifications first.
-          const sortedOpportunities = updatedOpportunity.sort((a: any, b: any) => {
-            const dateA = new Date(a?.publishedAt)
-            const dateB = new Date(b?.publishedAt)
-
-            return (dateB as any) - (dateA as any)
-          });
-
-          setOpportunities(prev => [...prev, ...sortedOpportunities]);
           
-          storeToLocalStorage('opportunities', opportunities)
         } else {
           setOpportunities(prev => [...prev, ...local_opportunities]);
         }
+
+        // tech tips 
         if (techTips) {
-          setCodeTips(prev => [...prev, ...techTips]);
-          await storeToLocalStorage('techTips', techTips);
+          setCodeTips(prev => {
+            const updatedCodeTip = techTips.map((tip: any) => {
+              return ({
+                ...tip,
+                bookmarked: loacl_techTips?.find((local_tip: any) => local_tip.id == tip.id)?.bookmarked ?? false
+              })
+            });
+
+            // Sort the opportunites to bring the lasted notifications first.
+            const sortedCodeTips = updatedCodeTip.sort((a: any, b: any) => {
+              const dateA = new Date(a?.publishedAt)
+              const dateB = new Date(b?.publishedAt)
+
+              return (dateB as any) - (dateA as any)
+            });
+
+            const newCodeTips = [...prev, ...sortedCodeTips];
+            storeToLocalStorage('techTips', newCodeTips)
+
+            return newCodeTips
+          });
         } else {
           setCodeTips(prev => [...prev, ...loacl_techTips]);
         }
+
+        // notifications
         if (localNotification) {
           setNotifications(prev => [...prev, ...localNotification]);
         }
       } catch (error: any) {
-        alert(`error occured while fetching data ${error}`);
+        
       } finally {
         setIsLoading(false);
       }
@@ -150,6 +195,10 @@ const AppContextProvider = (
 
 
   const contextValue: AppContextType = {
+    user,
+    setUser,
+    jwt,
+    setJwt,
     isLoading,
     setIsLoading,
     codeTips,
@@ -163,6 +212,7 @@ const AppContextProvider = (
     notifications,
     setNotifications,
   };
+
 
   return (
     <AppContext.Provider value={contextValue}>
