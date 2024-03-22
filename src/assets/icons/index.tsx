@@ -63,7 +63,7 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
       return <AntDesign
         name='closecircle'
         size={size ? size : 24}
-        color={COLOR.PRIMARY_300}
+        color={_color ? _color : COLOR.PRIMARY_300}
         onPress={press}
       />
     case 'clipboard':
