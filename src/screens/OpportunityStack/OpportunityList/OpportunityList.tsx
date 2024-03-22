@@ -73,6 +73,9 @@ const OpportunityList = () => {
         } else {
           navigation.navigate('Login', { title: 'Login to share\nan Opportunity' });
         }
+      } } buttonPosition={{
+        bottom: 20,
+        right: 0,
       }} />
       {showCard && <FilterCard
         handleCardVisibility={showFilterCard}
