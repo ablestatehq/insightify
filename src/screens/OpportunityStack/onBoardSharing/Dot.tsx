@@ -7,7 +7,7 @@ interface DotProps {
   style?: any,
   color: string,
   translateX: any,
-  setCurrentIndex: (n:number) => void
+  setCurrentIndex: (n: number) => void
 }
 
 const { SCREENHEIGHT: PAGE_HEIGHT, SCREENWIDTH: PAGE_WIDTH } = DIMEN;
@@ -55,6 +55,6 @@ const Style = StyleSheet.create({
     height: 8,
     margin: 5,
     borderRadius: 10,
-    borderColor: COLOR.ORANGE_300
+    borderColor: COLOR.PRIMARY_300
   }
 })

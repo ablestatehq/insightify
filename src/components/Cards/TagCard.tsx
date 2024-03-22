@@ -32,9 +32,9 @@ const TagCard: React.FC<TagCardProps> =
     return (
       <Pressable
         style={{
-          backgroundColor: isActive ? COLOR.B_300 : COLOR.WHITE,
+          backgroundColor: isActive ? COLOR.SECONDARY_300 : COLOR.WHITE,
           borderWidth: 1,
-          borderColor: COLOR.B_300,
+          borderColor: COLOR.SECONDARY_300,
           paddingHorizontal: 10,
           borderRadius: 100,
           paddingBottom: 5,
@@ -45,7 +45,7 @@ const TagCard: React.FC<TagCardProps> =
       >
         <Text
           style={{
-            color: isActive ? COLOR.WHITE : COLOR.B_300,
+            color: isActive ? COLOR.WHITE : COLOR.SECONDARY_300,
             fontFamily: 'RalewayBold'
           }}
         >
@@ -53,7 +53,7 @@ const TagCard: React.FC<TagCardProps> =
         </Text>
         {<Text
           style={{
-            color: isActive ? COLOR.WHITE : COLOR.B_300,
+            color: isActive ? COLOR.WHITE : COLOR.SECONDARY_300,
             fontFamily: 'RalewayBold'
           }}
         >{`(${itemCount})`}</Text>}

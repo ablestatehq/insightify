@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
-import { Formik, FormikHelpers } from 'formik'
 import { Ionicons } from '@expo/vector-icons'
+import { Formik, FormikHelpers } from 'formik'
 import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+// import InputText from '../../../components/FomikComponents/InputText/InputText'
+// import SubmitButton from '../../../components/FomikComponents/SubmitButton/SubmitButton'
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { CustomModal, SubmitButton, InputText } from '../../../components'
+import { storeData } from '../../../../api/strapiJSAPI'
 import { ShareSchema } from '../../../utils/validations'
 import { OpportunitiesFormType } from '../../../utils/types'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import InputText from '../../../components/FomikComponents/InputText/InputText'
-import SubmitButton from '../../../components/FomikComponents/SubmitButton/SubmitButton'
-import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { storeData } from '../../../../api/strapiJSAPI'
-import { CustomModal } from '../../../components'
 
 const Share = () => {
 
@@ -18,8 +18,9 @@ const Share = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>('');
   const [modalTitle, setModalTitle] = useState<string>('');
+  const [date, setDate] = useState<Date | undefined>(new Date());
 
-  
+
   const handleOpportunitySubmission = async (values: any, formikHelpers: FormikHelpers<any>) => {
     try {
       const data: OpportunitiesFormType = {
@@ -36,7 +37,7 @@ const Share = () => {
         setModalTitle('Opportunity submission');
         setModalMessage('Opportunity has been submitted successfully. \nIt will reviewed by our team.')
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const formInitialValues = {
@@ -65,7 +66,7 @@ const Share = () => {
         <Text
           style={styles.text}
         >
-          Opportunity Hub Form
+          Submit tech opportunity
         </Text>
         <View />
       </View >
@@ -86,7 +87,7 @@ const Share = () => {
                 placeholder='Title'
               />
               <InputText
-                label='Description'
+                label='Opportunity Overview'
                 isMultiLine={true}
                 fieldName='description'
                 placeholder='Provide a simple description of the opportunity'
@@ -111,14 +112,18 @@ const Share = () => {
                 fieldName='type'
                 placeholder='Type e.g Coding, Product Manager'
               />
-              {/* <TagInput
-                onAddTag={handleTagAddition}
-              /> */}
+
+              {/**Make this a calendor */}
               <InputText
                 label='Expiry Date'
                 fieldName='expireDate'
                 placeholder='e.g YYYY-MM-DD'
               />
+              {/* <DateInput
+                date={date as Date}
+                setDate={setDate}
+              /> */}
+              
               <SubmitButton
                 handleSubmit={() => handleSubmit()}
                 button={styles.buttonStyle}
@@ -130,7 +135,7 @@ const Share = () => {
           title={modalTitle}
           message={modalMessage}
           cancelText='Ok'
-          cancel={function (): void {setShowModal(false)}}
+          cancel={function (): void { setShowModal(false) }}
           visibility={showModal} />
       </View>
     </KeyboardAvoidingView>
@@ -167,7 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 5,
     alignSelf: 'center',
-    backgroundColor: COLOR.B_300,
+    backgroundColor: COLOR.SECONDARY_300,
     padding: 5,
     borderRadius: 5,
     width: '95%',

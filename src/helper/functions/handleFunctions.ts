@@ -1,5 +1,5 @@
-import { Linking, Share, Alert, } from "react-native";
-import { retrieveLocalData, storeToLocalStorage } from "../../utils/localStorageFunctions";
+import { Linking, Share, ToastAndroid} from "react-native";
+import { storeToLocalStorage } from "../../utils/localStorageFunctions";
 
 // Function to handle opportunity bookmarking 
 const handleBookmark = async (id: string, opportunities:any[], setOpportunities:(opp:any[]) => void) => {
@@ -9,6 +9,7 @@ const handleBookmark = async (id: string, opportunities:any[], setOpportunities:
   if (targetIndex !== -1) {
     const targetOpportunity = updatedOpportunities[targetIndex];
 
+    const toastMessage = targetOpportunity.bookmarked ? 'Removed from saved' : 'Saved this for you'
     // Toggle bookmark status
     targetOpportunity.bookmarked = !targetOpportunity.bookmarked;
 
@@ -18,20 +19,32 @@ const handleBookmark = async (id: string, opportunities:any[], setOpportunities:
 
     // Update local storage
     await storeToLocalStorage('opportunities', updatedOpportunities);
-    // try {
-    //   const bookmarkedData = await retrieveLocalData('opportunities');
-    //   // console.log(bookmarkedData)
-    //   const updatedBookmarkedData = bookmarkedData ? bookmarkedData.filter((oppId: string) => oppId !== id) : [];
-    //   if (targetOpportunity.bookmarked) {
-    //     updatedBookmarkedData.push(id);
-    //   } else {
-    //     updatedBookmarkedData.filter((removeId: string) => removeId !== id)
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    ToastAndroid.show(`${toastMessage}`, 3000);
   }
 };
+
+// Function to handle techtips bookmarking
+async function bookmarkCodeTips(id: string, codeTips: any[], setCodeTips: (tip: any[]) => void) {
+  const updatedCodetips = [...codeTips];
+  const targetIndex = updatedCodetips.findIndex(opportunity => opportunity.id === id);
+
+  if (targetIndex !== -1) {
+    const targetCodeTips = updatedCodetips[targetIndex];
+
+    const toastMessage = targetCodeTips.bookmarked ? 'Removed from watch list' : 'Saved this for you';
+
+    // Toggle bookmark status
+    targetCodeTips.bookmarked = !targetCodeTips.bookmarked;
+
+    updatedCodetips[targetIndex] = targetCodeTips;
+
+    setCodeTips(updatedCodetips);
+
+    // Update local storage
+    await storeToLocalStorage('techTips', updatedCodetips);
+    ToastAndroid.show(`${toastMessage}`, 3000);
+  }
+}
 // Function to handle opening a link in the browser
 const OpenLink = async (url: string) => {
   // Navigate to the link in the browser upon card press
@@ -55,12 +68,13 @@ const onShare = async (message: string) => {
 
     }
   } catch (error: any) {
-    Alert.alert(error.message)
+    // Alert.alert(error.message)
   }
 }
 
 export {
   OpenLink,
   onShare,
-  handleBookmark
+  handleBookmark,
+  bookmarkCodeTips
 }

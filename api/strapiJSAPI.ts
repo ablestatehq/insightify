@@ -1,16 +1,19 @@
-import { STRAPI_TOKEN, STRAPI_BASE_URL,STRAPI_TALENT_FORM_API_KEY } from "@env"
-import { clearLocalData, retrieveLocalData } from "../src/utils/localStorageFunctions";
+import {environments} from '../src/constants/environments'
+import {clearLocalData, retrieveLocalData} from "../src/utils/localStorageFunctions";
 
+
+const {STRAPI_TOKEN, STRAPI_BASE_URL,STRAPI_TALENT_FORM_API_KEY, BASE_URL} = environments;
 /**
  * @name getMe
- * @returns {Record}
+ * @returns
  */
 async function getMe() {
-  const url = `${STRAPI_BASE_URL}api/users/me?`;
-  const authToken = await retrieveLocalData('user_token');
+  const url = `${STRAPI_BASE_URL}/users/me?populate=*`;
+  const authToken = await retrieveLocalData('user_token')
 
+  // console.log(authToken)
   // if the authToken does not exist, return an object with null data.
-  if (!authToken) return { ok: false, data: null }
+  if (!authToken) return {ok: false, data: null}
   
   try {
     const jwt = authToken.token;
@@ -21,12 +24,16 @@ async function getMe() {
         'Authorization': `Bearer ${jwt}`
       }
     };
-    const reponse = await fetch(url, options);
+    const reponse = await fetch(url, options)
     const data = await reponse.json();
-
-    // if the returned data has an error yet the jwt existed in the localStorage 
-    // clear the local data and prompt the user to login again 
-    if (data.error && authToken) clearLocalData('user_token');
+    // user to login again
+    if (data.error && authToken) {
+      clearLocalData('user_token');
+      return {
+        ok: false,
+        data: null
+      }
+    }
 
     // if data is returned from online, then return the Record that contains the data returned and a jwt.
     return { ok: true, data: data, jwt };
@@ -35,11 +42,12 @@ async function getMe() {
 };
 
 /**
- * @name storeData
- * @param endpoint 
- * @param data 
- * @returns 
  * Function to save opportunities to strapiJS database
+ * @name storeData
+ * @param {string} endpoint 
+ * @param {any} data 
+ * @returns
+ * 
  */
 async function storeData(endpoint: string, data: any) {
   // posting data to strapi-backend server
@@ -55,13 +63,13 @@ async function storeData(endpoint: string, data: any) {
     body: JSON.stringify(payload)
   }
 
-  const response = await fetch(`${STRAPI_BASE_URL}${endpoint}`, options)
+  const response = fetch(`${STRAPI_BASE_URL}/${endpoint}`, options)
     .then(response => response.json())
     .then(storedData => {
       // console.log("Data saved", storedData)
       return storedData
     })
-    .catch(error => console.log(error))
+    .catch(error => console.error(error))
   return response
 }
 
@@ -81,7 +89,7 @@ function getStrapiData(endpoint: string) {
   }
 
   try {
-    const response = fetch(`${STRAPI_BASE_URL}${endpoint}?populate=*`, options)
+    const response = fetch(`${STRAPI_BASE_URL}/${endpoint}?populate=*`, options)
       .then(response => response.json())
       .then(data => {
         if (endpoint == 'notification-tokens') {
@@ -121,7 +129,7 @@ async function updateStrapiData(endpoint: string, id: number, data: any) {
 
   try {
     const response = await
-      fetch(`${STRAPI_BASE_URL}${endpoint}/${id}`, options)
+      fetch(`${STRAPI_BASE_URL}/${endpoint}/${id}`, options)
         .then(response => response.json())
         .then(data => {
           return data
@@ -153,7 +161,7 @@ async function getDataId(endpoint: string, attribute: string, attributeValue: an
 
   try {
     const response = await
-      fetch(`${STRAPI_BASE_URL}${endpoint}?filters[${attribute}][$eq]=${attributeValue}`, options)
+      fetch(`${STRAPI_BASE_URL}/${endpoint}?filters[${attribute}][$eq]=${attributeValue}`, options)
         .then(response => {
           return response.json()
         })
@@ -165,10 +173,53 @@ async function getDataId(endpoint: string, attribute: string, attributeValue: an
   }
 }
 
+/**
+ * @name uploadImage
+ * @param img 
+ * @returns 
+ */
+async function uploadImage(img: string, id: number, ref: string, field: string, jwt: string) {
+  
+  const response = await fetch(img);
+  const blob = await response.blob();
+  
+  const formData = new FormData();
+  console.log("This is the uri: ",formData)
+  formData.append('files', blob);
+  // formData.append('refId', id.toString());
+  // formData.append('ref', ref);
+  // formData.append('field', field);
+
+  try {
+    const response = await fetch(`https://insightify-admin.ablestate.cloud/upload`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${jwt}`
+      },
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) return {data, error: data.error}
+    else return {
+      error: null,
+      data
+    };
+  } catch (error) {
+    return {
+      error: error,
+      data: null
+    }
+  }
+}
+
 export {
   getMe,
   storeData,
   getDataId,
+  uploadImage,
   getStrapiData,
   updateStrapiData
 }

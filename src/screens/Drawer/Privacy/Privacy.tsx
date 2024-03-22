@@ -1,35 +1,45 @@
-import { SafeAreaView, ScrollView, StyleSheet, View, Text} from 'react-native'
-import React, { useEffect } from 'react';
-import Header from '../../NewsDetails/helperComponents/Header';
-import { COLOR } from '../../../constants/contants';
 import { STRAPI_BASE_URL } from '@env';
+import React, { useEffect } from 'react';
+import { COLOR } from '../../../constants/contants';
+import Header from '../../../components/Headers/Header';
+import RenderHtml from 'react-native-render-html';
+import {retrieveLocalData, storeToLocalStorage} from '../../../utils/localStorageFunctions';
+import {SafeAreaView, ScrollView, StyleSheet, View, Text, useWindowDimensions} from 'react-native';
 
 const Privacy = () => {
   const [content, setContent] = React.useState('');
+
   useEffect(() => {
     const fetch_data = async () => {
-      const options = {
-        method: 'GET',
-        headers: {
-          'content-type': 'application/json',
-        }
+
+      const local_privacy_content = await retrieveLocalData('privacy_content');
+
+      if (local_privacy_content) {
+        setContent(local_privacy_content);
+      } else {
+        const response = await fetch(`${STRAPI_BASE_URL}insightify-privacy-policy`)
+        const results = await response.json()
+
+        setContent(prev => {
+          storeToLocalStorage('privacy_content', results?.data.attributes?.body)
+          return local_privacy_content ?? results?.data.attributes?.body;
+        })
       }
 
-      const response = await fetch(`${STRAPI_BASE_URL}insightify-privacy-policy`, options)
-        .then(response => response.json())
-        .catch((error: any) => { console.log(error.message) });
-      
-      setContent(response?.data.attributes?.body)
     }
 
     fetch_data();
   }, [content]);
+
+  const {width} = useWindowDimensions();
+  
   return (
     <SafeAreaView style={styles.container}>
-      <Header title='Privacy Policy'/>
+      <Header title='Privacy Policy' />
       <View style={styles.content}>
         <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
-          <Text style={styles.text}>{content}</Text>
+          {/* <Text>{content}</Text> */}
+          <RenderHtml contentWidth={width - 100} source={{html: content}} />
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -45,13 +55,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor:COLOR.WHITE
+    backgroundColor: COLOR.WHITE
   },
   text: {
     textAlign: 'justify',
-    fontFamily:'RalewayMedium'
+    fontFamily: 'RalewayMedium'
   },
   scroll: {
-    padding:10
+    padding: 10
   }
 })

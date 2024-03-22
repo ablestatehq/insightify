@@ -1,12 +1,10 @@
-import { STRAPI_BASE_URL } from "@env";
+import {STRAPI_BASE_URL} from "@env";
 
-interface UserData{
-  email: string
-  phone: string
+interface PasswordDataObject {
+  jwt: string
   password: string
-  username: string
-  lastName: string
-  firstName: string
+  currentPassword: string
+  passwordConfirm: string
 }
 
 const signUp = async (userData: any) => {
@@ -28,16 +26,53 @@ const signUp = async (userData: any) => {
   }
 
   try {
-    const response = await
-      fetch(`${STRAPI_BASE_URL}auth/local/register`, options)
-        .then(response => {
-          return response.json();
-        })
-        .catch(error => console.log("This is the error",error));
+    const response = await fetch(`${STRAPI_BASE_URL}/auth/local/register`, options)
+    const data = await response.json();
     
-    return response;
+    return data;
   } catch (error) {
     console.error("In the try and catch",error);
+  }
+}
+
+async function updateUser(id: number, jwt: string, data_: unknown) {
+  // const payload = {
+  //   // data: {
+  //   //   ...(data_ as any)
+  //   // }
+  //   ..data_
+  // };
+
+  try {
+    const response = await fetch(`${STRAPI_BASE_URL}/users/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type':'application/json',
+        'Authorization': `Bearer ${jwt}`
+      },
+      body: JSON.stringify(data_)
+    });
+
+    const data = await response.json();
+    
+    if (response.ok && data) {
+      return {
+        error: null,
+        success: true, 
+        data
+      }
+    } else {
+      return {
+        error: data,
+        success: false,
+        data: null
+      }
+    }
+  } catch (error) {
+    return {
+      error: error,
+      success: false
+    }
   }
 }
 
@@ -56,16 +91,14 @@ const login = async (identifier:string, password:string) => {
   }
 
   try {
-    const response = await fetch(`${STRAPI_BASE_URL}auth/local`, options)
-      .then(response => response.json())
-      .then(response => response)
-      .catch(error => console.error("Login error ",error))
-    // console.log("This is the response",response)
-    return response;
+    const response = await fetch(`${STRAPI_BASE_URL}/auth/local?populate=*`, options)
+    const data = await response.json();
+
+    return data;
   } catch (error) {
     console.error(error)
   }
-};
+}
 
 const resetPassword = async (identifier: string, newPassword: string, code: string) => {
   const payload = {
@@ -76,13 +109,13 @@ const resetPassword = async (identifier: string, newPassword: string, code: stri
   try {
     const options = {
       method: 'POST',
-      headers: {
-        'content-type':'appplication/json'
-      },
+      // headers: {
+      //   'content-type':'appplication/json'
+      // },
       body: JSON.stringify(payload)
     }
     const update = await
-      fetch(`${STRAPI_BASE_URL}auth/local/reset-password`, options)
+      fetch(`${STRAPI_BASE_URL}/auth/local/reset-password`, options)
         .then((response) => { console.log(response)})
         .catch(error => { });
   } catch (error) {
@@ -90,18 +123,70 @@ const resetPassword = async (identifier: string, newPassword: string, code: stri
   }
 }
 
-const forgotRequest =async (identifier:string,) => {
+const forgotRequest = async (identifier: string,) => {
+  const payload = {
+    email: identifier
+  }
   const options = {
-    email: identifier,
-    url:`${STRAPI_BASE_URL}/admin/plugins/users-permissions/auth/reset-password`
+    method: 'POST',
+    // headers: {
+    //   'content-type': 'application/json'
+    // },
+    // body: JSON.stringify(payload)
   }
   try {
-    const response = await
-      fetch(`${STRAPI_BASE_URL}/auth/forgot-password`)
-        .then(response => response.json())
-        .then(code => code)
-        .catch(error => { });
-    return response;
+    const response = await fetch(`${STRAPI_BASE_URL}/auth/local/forgot-password`, options)
+    // const data = await response.json()
+    .then(response => response.json())
+    .catch(error => console.error("Error message",error))
+    // if (response) {
+    //   console.log(data)
+      return response;
+    // }
+    return;
   } catch (error) {}
 }
-export {signUp, login, resetPassword, forgotRequest}
+
+const changePassword = async (passwordData: PasswordDataObject) => {
+  const {currentPassword, password, passwordConfirm, jwt} = passwordData
+  const options = {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${jwt}`
+    },
+    body: JSON.stringify({currentPassword, password, passwordConfirm})
+  }
+
+  try {
+    const response = await fetch(`${STRAPI_BASE_URL}/auth/change-password`, options);
+    const data = await response.json();
+    return data;
+  } catch (error) {}
+}
+
+const emailConfirmation = async (email: string) => {
+  try {
+    const payload = {
+      email
+    };
+
+    const options = {
+      method: 'POST',
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(payload)
+    }
+
+    const response = await fetch(`${STRAPI_BASE_URL}/auth/send-email-confirmation`, options);
+    const data = await response.json();
+
+    if (data?.data) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {return false}
+};
+
+export {signUp, login, resetPassword, forgotRequest, changePassword, emailConfirmation, updateUser}

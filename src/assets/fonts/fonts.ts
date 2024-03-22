@@ -1,7 +1,7 @@
 import { useFonts } from "expo-font";
 
 export function fontsLoading() {
-    let [fontsLoaded, fontError] = useFonts({
+  let [fontsLoaded, fontError] = useFonts({
     "ComfortaaLight": require('./Comfortaa/static/Comfortaa-Light.ttf'),
     "Comfortaa_Regular": require('./Comfortaa/static/Comfortaa-Regular.ttf'),
     "ComfortaaMedium": require('./Comfortaa/static/Comfortaa-Medium.ttf'),
@@ -15,9 +15,12 @@ export function fontsLoading() {
     "RalewaySemiBold": require('./Raleway/static/Raleway-SemiBold.ttf'),
     "RalewayBold": require('./Raleway/static/Raleway-Bold.ttf'),
     "RalewayExtraBold": require('./Raleway/static/Raleway-ExtraBold.ttf'),
-    "RalewayBlack": require('./Raleway/static/Raleway-Black.ttf')
-  }
-    );
+    "RalewayBlack": require('./Raleway/static/Raleway-Black.ttf'),
+    "LatoLight": require('./lato/Lato-Light.ttf'),
+    "LatoRegular": require('./lato/Lato-Regular.ttf'),
+    "LatoBold": require('./lato/Lato-Bold.ttf')
+  });
+  
   return {
     fontsLoaded,
     fontError

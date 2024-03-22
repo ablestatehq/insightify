@@ -12,51 +12,49 @@ interface OpportunityHeaderProps {
   showFilterCard: () => void
 }
 
-const OpportunityHeader: React.FC<OpportunityHeaderProps> = ({ showFilterCard }) => {
-  const { notifications } = useContext(AppContext);
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+function OpportunityHeader({ showFilterCard }:OpportunityHeaderProps):JSX.Element {
+  const { notifications } = useContext(AppContext)
+const navigation = useNavigation<NativeStackNavigationProp<any>>()
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>
-        Opportunities
-      </Text>
-      <View style={styles.iconContainer}>
-        <Ionicons name="filter-outline" size={23} color={COLOR.B_300} onPress={showFilterCard} />
-        <View style={styles.searchMain}>
-          <View style={{
-            ...styles.badge,
-            backgroundColor: notifications.some((notification:any) => notification.status == 'UNREAD') ? COLOR.DANGER : COLOR.WHITE,
-            zIndex: notifications.some((notification: any) => notification.status == 'UNREAD') ? 1 : 0,
-          }} />
-          <Ionicons
-            size={20}
-            color="black"
-            name="notifications-outline"
-            onPress={()=>navigation.navigate('Notification')}
-            />
-        </View>
+// check the spacing 
+return (
+  <View style={styles.container}>
+    <Text style={styles.text}>
+      Explore opportunities
+    </Text>
+    <View style={styles.iconContainer}>
+      <Ionicons name="filter-outline" size={23} color={COLOR.SECONDARY_300} onPress={showFilterCard} />
+      <View style={styles.searchMain}>
+        <View style={{
+          ...styles.badge,
+          backgroundColor: notifications.some((notification: any) => notification.status == 'UNREAD') ? COLOR.PRIMARY_300 : COLOR.WHITE,
+          zIndex: notifications.some((notification: any) => notification.status == 'UNREAD') ? 1 : 0,
+        }} />
+        <Ionicons
+          size={20}
+          color="black"
+          name="notifications-outline"
+          onPress={() => navigation.navigate('Notification')} />
       </View>
     </View>
-  )
-}
+  </View>
+)
+};
 
-export default OpportunityHeader
+export default React.memo(OpportunityHeader)
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'row',
-    paddingHorizontal: 10,
+    paddingRight: 10,
     justifyContent: 'space-between',
-    alignItems:'center'
+    paddingVertical: 10
   },
   text: {
-    fontSize: FONTSIZE.HEADING_5,
+    fontSize: FONTSIZE.TITLE_1,
     fontFamily: 'RalewayBold',
     marginBottom: 5,
-    marginTop:5
-
+    marginTop: 5,
   },
   searchMain: {
     flexDirection: 'row',
@@ -74,6 +72,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    
+
   }
 })

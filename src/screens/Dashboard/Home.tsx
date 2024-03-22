@@ -33,6 +33,6 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flex: 1,
-    paddingVertical: 10,
+    // paddingVertical: 10,
   }
 })

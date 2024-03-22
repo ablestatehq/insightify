@@ -86,7 +86,7 @@ const OnBoard = () => {
         onScroll={scrollHandler}
         snapToInterval={PAGE_WITH}
         style={styles.onBoardContainer}
-        keyExtractor={(item,index) => item.des}
+        keyExtractor={(item, index) => item.des}
         renderItem={({ item, index }) => {
           return (
             <Page
@@ -101,7 +101,7 @@ const OnBoard = () => {
       </Animated.FlatList>
       <Dot
         data={WORDS}
-        color={COLOR.ORANGE_300}
+        color={COLOR.PRIMARY_300}
         translateX={translateX}
         setCurrentIndex={setCurrentIndex}
       />
@@ -114,7 +114,7 @@ export default OnBoard
 
 const styles = StyleSheet.create({
   input: {
-    color: COLOR.ORANGE_300,
+    color: COLOR.PRIMARY_300,
   },
   onBoardContainer: {
     flex: 1,

@@ -1,49 +1,54 @@
 import {
   StyleSheet,
   Text, View,
-  ToastAndroid,
   ScrollView,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, { useState } from 'react';
-import { Formik, FormikHelpers } from 'formik';
-import { Picker } from "@react-native-picker/picker";
-import { TalentSubmissionForm } from '../../utils/types';
-import { COLOR, FONTSIZE } from '../../constants/contants';
+import React, {useState} from 'react';
+import {Formik, FormikHelpers} from 'formik';
 
-import { TalentFormValidationSchema } from '../../utils/validations';
+import {Dropdown} from 'react-native-element-dropdown';
+import {TalentSubmissionForm} from '../../utils/types';
+import {COLOR, FONTSIZE} from '../../constants/contants';
+
+import {TalentFormValidationSchema} from '../../utils/validations';
 import InputText from '../../components/FomikComponents/InputText/InputText';
 import SubmitButton from '../../components/FomikComponents/SubmitButton/SubmitButton';
 
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+// import { useNavigation } from '@react-navigation/native';
+// import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { storeData } from '../../../api/strapiJSAPI';
 import { CustomModal } from '../../components';
 
 const FindTalent = () => {
 
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  // const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>('');
   const [modalTitle, setModalTitle] = useState<string>('');
-  
+  const [selectedItem, setSelectedItem] = useState<string>('');
+
   const initialTalentFormValues = {
     client: '', // Client name
     email: '',
     phone: '',
     message: '', // Message left
-    need: '', // Looking for
+    need: selectedItem, // Looking for
     heads: '', // Number of developers need.
     company: ''
   }
 
+  const serviceAvailable = [
+    { label: 'New software developer', value: 1 },
+    { label: 'Product Manager', value: 2 },
+    { label: 'Marketing Manager', value: 3 },
+    { label: 'Mobile developer', value: 4 }
+  ]
   // submit request form.
   const submitTalentRequestForm = async (values: TalentSubmissionForm, formikHelpers: FormikHelpers<any>) => {
 
     const submissionResponse = await storeData('talent-requests', values)
     if (submissionResponse.data != null) {
-      // Toast a message to show the user that the request form has been successfully submitted.
-      // ToastAndroid.show('Request successfully sent', 5000);
       setShowModal(true);
       setModalTitle('Talent Request');
       setModalMessage('Your talent request has been successfully submitted.')
@@ -51,7 +56,6 @@ const FindTalent = () => {
         values: initialTalentFormValues
       })
     } else {
-      // ToastAndroid.show('Failed to submit request', 5000);
       setShowModal(true);
       setModalTitle('Talent Request Error');
       setModalMessage('Your talent request has not been submitted....')
@@ -114,43 +118,29 @@ const FindTalent = () => {
               label='Company/Organisation'
               placeholder='Company/Organisation'
             />
-            
-            <View
-              style={{
-                borderWidth: 1,
-                margin: 10,
-                borderRadius: 10,
-                borderColor: COLOR.B_300
-              }}
-            >
-              <Picker
-                selectedValue={values.need}
-                onValueChange={handleChange('need')}
-              >
-                <Picker.Item
-                  label="I'm looking for"
-                  value=""
-                />
-                <Picker.Item
-                  label="New software developer"
-                  value="NewDeveloper"
-                />
-                <Picker.Item
-                  label="Assistance to developer a software"
-                  value="assistantDeveloper"
-                />
-                <Picker.Item
-                  label="Support for my existing IT team"
-                  value="supportIT"
-                />
-                <Picker.Item
-                  label="Tool to manage/sale my training program"
-                  value="toolManager"
-                />
-              </Picker>
-              {errors.need && touched.need && <Text style={styles.errorText}>{errors.need}</Text>}
+
+            <Text style={{
+              marginLeft:10,
+              marginBottom: 5,
+              fontFamily: "RalewayBold",
+              fontSize: FONTSIZE.TITLE_2,
+            }}>I'm looking for</Text>
+            <View style={{ borderWidth: 1, margin: 5, borderRadius: 5, paddingHorizontal: 5, borderColor: COLOR.SECONDARY_100, paddingVertical: 5, marginLeft:10}}>
+              <Dropdown
+                data={serviceAvailable}
+                labelField='label'
+                valueField='value'
+                value={selectedItem}
+                placeholder='Select service'
+                iconStyle={{ width: 15, height: 15 }}
+                placeholderStyle={{
+                  color: COLOR.SECONDARY_75,
+                }}
+                onChange={function (item) { setSelectedItem(item.label) }}
+              />
             </View>
-            {values.need == 'NewDeveloper' &&
+
+            {values.need.includes('NewDeveloper') &&
               <InputText
                 fieldName='heads'
                 label='How many developers may you need?'
@@ -173,10 +163,10 @@ const FindTalent = () => {
         title={modalTitle}
         message={modalMessage}
         cancelText='Ok'
-        cancel={function (): void {setShowModal(false)}}
+        cancel={function (): void { setShowModal(false) }}
         visibility={showModal} />
     </KeyboardAvoidingView>
-  )
+  );
 }
 
 export default FindTalent
@@ -198,7 +188,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignSelf: 'center',
-    backgroundColor: COLOR.B_300,
+    backgroundColor: COLOR.SECONDARY_300,
     padding: 5,
     borderRadius: 5,
     width: '95%'
@@ -211,7 +201,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     margin: 10,
-    borderColor: COLOR.B_300,
+    borderColor: COLOR.SECONDARY_300,
     fontFamily: 'ComfortaaMedium'
   },
   errorText: {
@@ -222,10 +212,10 @@ const styles = StyleSheet.create({
     alignContent: "center",
     justifyContent: "center",
     alignSelf: 'center',
-    backgroundColor: COLOR.B_300,
+    backgroundColor: COLOR.SECONDARY_300,
     padding: 5,
-    borderRadius: 20,
+    borderRadius: 10,
     margin: 10,
-    width: '40%',
+    width: '100%',
   }
 })

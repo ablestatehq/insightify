@@ -4,8 +4,8 @@ import React, {
   useEffect,
 } from 'react';
 import socket from '../../../api/socket';
-import { getMe, getStrapiData } from '../../../api/strapiJSAPI';
-import { retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions';
+import {getMe, getStrapiData} from '../../../api/strapiJSAPI';
+import {retrieveLocalData, storeToLocalStorage} from '../../utils/localStorageFunctions';
 
 
 interface AppContextProviderProps {
@@ -19,6 +19,8 @@ interface AppContextType {
   setUser: React.Dispatch<React.SetStateAction<any>>
   isLoading: boolean
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  isInCommunity: boolean
+  setIsInCommunity: React.Dispatch<React.SetStateAction<boolean>>
   codeTips: any[]
   setCodeTips: React.Dispatch<React.SetStateAction<any[]>>
   isLoggedIn: boolean
@@ -33,11 +35,13 @@ interface AppContextType {
 
 export const AppContext = createContext<AppContextType>({
   jwt: '',
-  setJwt: () => {},
+  setJwt: () => { },
   user: {},
-  setUser: () => {},
+  setUser: () => { },
   isLoading: true,
   setIsLoading: () => { },
+  isInCommunity: false,
+  setIsInCommunity: () => { },
   codeTips: [],
   setCodeTips: () => { },
   isLoggedIn: false,
@@ -48,7 +52,7 @@ export const AppContext = createContext<AppContextType>({
   setIsNotificationEnabled: () => { },
   notifications: [],
   setNotifications: () => { },
-});
+})
 
 const AppContextProvider = (
   {
@@ -64,6 +68,8 @@ const AppContextProvider = (
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
 
+  const [isInCommunity, setIsInCommunity] = useState<boolean>(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -71,16 +77,20 @@ const AppContextProvider = (
         const user_ = await getMe();
 
         if (user_.ok) {
+          console.log(user_.jwt)
+          console.log(user_.data);
           setIsLoggedIn(true);
           setUser(user_.data);
           setJwt(user_.jwt);
         }
+
         // fetch remote data from the api 
         const techTips = await getStrapiData('tech-tips');
         const oppos = await getStrapiData('opportunities');
         const sent_notifications = await getStrapiData('sent-notifications');
 
         // console.log(oppos[5].Description)
+        const inCommunity = await retrieveLocalData('joined_comm');
         const localNotification = await retrieveLocalData('notifications');
         const local_opportunities = await retrieveLocalData('opportunities');
         const loacl_techTips = await retrieveLocalData('techTips');
@@ -151,11 +161,13 @@ const AppContextProvider = (
         if (localNotification) {
           setNotifications(prev => [...prev, ...localNotification]);
         }
-      } catch (error: any) {
-        
-      } finally {
-        setIsLoading(false);
+        // inCommunity
+        if(inCommunity){
+          setIsInCommunity(inCommunity.isJoined);
+        }
       }
+      catch (error: any) { }
+      finally { setIsLoading(false) }
     }
 
     fetchData();
@@ -201,6 +213,8 @@ const AppContextProvider = (
     setJwt,
     isLoading,
     setIsLoading,
+    isInCommunity,
+    setIsInCommunity,
     codeTips,
     setCodeTips,
     isLoggedIn,

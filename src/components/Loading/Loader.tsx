@@ -1,16 +1,16 @@
-import { ActivityIndicator, Modal, StyleSheet, View, Text } from "react-native";
+import { ActivityIndicator, Modal, StyleSheet, View, Text, StatusBar } from "react-native";
 import { COLOR, FONTSIZE } from "../../constants/contants";
 
-interface LoaderProps{
+interface LoaderProps {
   message?: string
 }
-const Loader:React.FC<LoaderProps> = ({message}) => {
+const Loader: React.FC<LoaderProps> = ({ message }) => {
   return (
     <Modal
-      transparent={true}
       visible={true}
       animationType='none'
     >
+      <StatusBar barStyle='dark-content' backgroundColor={COLOR.NEUTRAL_1} />
       <View
         style={{
           flex: 1,
@@ -24,7 +24,7 @@ const Loader:React.FC<LoaderProps> = ({message}) => {
           style={{
             backgroundColor: 'transparent',
           }}
-          color={COLOR.ORANGE_300}
+          color={COLOR.PRIMARY_300}
         />
         <Text
           style={styles.text}
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: FONTSIZE.TITLE_2,
-    color:COLOR.B_300
+    color: COLOR.SECONDARY_300
   }
 });
 

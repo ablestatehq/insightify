@@ -1,31 +1,39 @@
-import { COLOR } from '../../../constants/contants'
-import React, { useContext, useState } from 'react'
-import { AppContext } from '../../../helper/context/AppContext'
-import OpportunityDetails from '../../../components/OpportunityDetails'
-import { StyleSheet, View, ScrollView, StatusBar, Text } from 'react-native'
-import { OpportunityCard, OpportunityHeader, FloatingButton, FilterCard } from '../../../components'
+import React, {useCallback, useContext, useState} from 'react';
+import {StyleSheet, View, StatusBar, Text, FlatList} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
+import {COLOR} from '../../../constants/contants';
+import {AppContext} from '../../../helper/context/AppContext';
+// import useOpportunities from '../../../helper/customHooks/useOpportunities';
+import {OpportunityCard, OpportunityHeader, FloatingButton, FilterCard, CategorySection, FormModal} from '../../../components'
+import useFilter from '../../../helper/customHooks/useFilter';
 
 const OpportunityList = () => {
 
-  const { opportunities, notifications } = useContext(AppContext);
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const {opportunities, notifications, user, isLoggedIn} = useContext(AppContext);
+  
+  const [category, setCategory] = useState<string>('All');
   const [filteredItems, setFilteredItems] = useState<string[]>([]);
   const [showCard, setShowCard] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [link, setLink] = useState<string>('');
+  const [showReportModal, setShowReportModal] = useState<boolean>(false);
+
+  const [resourceId, setResourceId] = useState<number>(0);
 
   const showFilterCard = () => {
-    setShowCard(!showCard)
+    setShowCard(!showCard);
   }
 
-  const handleShowModal = (title: string, desc: string, link: string) => {
-    setTitle(title)
-    setDescription(desc)
-    setLink(link)
-    setShowModal(!showModal)
-  }
-  const filteredOpportunities = opportunities.filter((opp) => filteredItems.includes(opp.Category));
+  const renderOpportunity = useCallback(({ item, index }: { item: any, index: number }) => (
+    <OpportunityCard
+      opportunity={item}
+      key={index}
+      showReportModal={function (): void {setShowReportModal(true)}}
+    />
+  ), []);
+
+  const [opps, isLoading] = useFilter(category, opportunities, filteredItems);
 
   return (
     <View style={styles.container}>
@@ -33,77 +41,47 @@ const OpportunityList = () => {
       {/* search section  */}
       <View style={styles.searchContainer}>
         <OpportunityHeader showFilterCard={showFilterCard} />
+        <CategorySection setFilteredItems={setCategory} categories={['All', 'For you', 'Saved', 'Archived']} />
+      </View>
+      <View style={styles.opportunityListContainer}>
+        <FlatList
+          data={opps}
+          keyExtractor={(item, _) => item?.id.toString()}
+          renderItem={renderOpportunity}
+          contentContainerStyle={styles.scrolllOpp}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => (
+            <View style={styles.noTextStylesContainer}>
+              <Text style={styles.noMatcheStyle}>
+                No opportunities found
+              </Text>
+            </View>
+          )}
+        />
+        <FormModal
+          visible={showReportModal}
+          resourceId={resourceId}
+          type={'Opportunity'}
+          author={user?.id}
+          onSubmit={() => {setShowReportModal(!showReportModal)}}
+        />
       </View>
 
-      <View style={styles.opportunityListContainer}>
-        {filteredItems.length > 0 ?
-          filteredOpportunities.length > 0 ?
-            <ScrollView
-              contentContainerStyle={styles.scrolllOpp}
-              showsVerticalScrollIndicator={false}
-            >
-              {filteredOpportunities.map((_, index: number) => (
-                <OpportunityCard
-                  id={_.id}
-                  key={index}
-                  location={_.location}
-                  createdAt={_.publishedAt}
-                  type={_.Category}
-                  link={_.URL}
-                  title={_.Title}
-                  expireDate={_.expiring}
-                  description={_.Description[0].children[0].text}
-                  bookmarked={_.bookmarked}
-                  showModal={() => { handleShowModal(_.Title, _.Description[0].children[0].text, _.URL) }}
-                />
-              ))}
-            </ScrollView>
-            : (
-              <View style={styles.noTextStylesContainer}>
-                <Text style={styles.noMatcheStyle}>We Couldn't Find Any Matches</Text>
-                <Text style={styles.noMatcheStyle}>Try Adjusting Your Filters</Text>
-              </View>
-            )
-          :
-          <ScrollView
-            contentContainerStyle={styles.scrolllOpp}
-            showsVerticalScrollIndicator={false}
-          >
-            {opportunities.map((_, index: number) => (
-              <OpportunityCard
-                id={_.id}
-                key={index}
-                location={_.location ?? "Remote"}
-                createdAt={_.publishedAt}
-                type={_.Category}
-                link={_.URL}
-                title={_.Title}
-                expireDate={_.expiring}
-                description={_.Description[0].children[0].text}
-                bookmarked={_?.bookmarked}
-                showModal={() => { handleShowModal(_.Title, _.Description[0].children[0].text, _.URL) }}
-              />
-            ))}
-            <OpportunityDetails
-              visible={showModal}
-              handleVisibility={() => handleShowModal('', '', '')}
-              Title={title}
-              description={description}
-              link={link}
-            />
-          </ScrollView>
+      <FloatingButton press={function () {
+        if (isLoggedIn) {
+          navigation.navigate('Share');
+        } else {
+          navigation.navigate('Login', { title: 'Login to share\nan Opportunity' });
         }
-        <FloatingButton title='Add Opportunity' />
-        {/* filter card  */}
-        {showCard && <FilterCard
-          handleCardVisibility={showFilterCard}
-          setFilteredItems={setFilteredItems}
-          filteredItems={filteredItems}
-          filteredCount={filteredOpportunities.length}
-        />}
-      </View>
+      }} />
+      {showCard && <FilterCard
+        handleCardVisibility={showFilterCard}
+        setFilteredItems={setFilteredItems}
+        filteredItems={filteredItems}
+        filteredCount={opps?.length}
+      />}
     </View>
-  )
+  );
 }
 
 export default OpportunityList
@@ -111,11 +89,11 @@ export default OpportunityList
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLOR.WHITE,
+    backgroundColor: COLOR.SECONDARY_50
   },
   opportunityListContainer: {
     flex: 1,
-    padding: 10,
+    paddingVertical: 0.5,
   },
   scrolllOpp: {
     padding: 5,
@@ -125,20 +103,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 20,
     justifyContent: 'space-between',
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   searchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+    backgroundColor: COLOR.WHITE
+
   },
   noMatcheStyle: {
-    fontFamily: 'ComfortaaBold'
+    fontFamily: 'RalewayRegular',
+    textAlign: 'center',
+    textAlignVertical:'center'
   },
   noTextStylesContainer: {
-    flex: 1,
+    flex:1,
     justifyContent: 'center',
     alignItems: 'center',
+    // borderWidth:1
   }
 })

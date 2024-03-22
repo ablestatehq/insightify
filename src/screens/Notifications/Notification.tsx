@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import { COLOR, FONTSIZE } from '../../constants/contants'
-import Header from '../NewsDetails/helperComponents/Header'
+import Header from '../../components/Headers/Header'
 import { AppContext } from '../../helper/context/AppContext'
 import { StyleSheet, View, Text, ScrollView } from 'react-native'
-import NotificationCard from './components/NotificationCard'
+import NotificationCard from '../../components/Cards/NotificationCard'
 // import { clearLocalData } from '../../utils/localStorageFunctions'
 
 const Notification = () => {
@@ -46,8 +46,8 @@ const Notification = () => {
         <View style={styles.noNotification}>
           <Text style={styles.noTextStyle}>You have no notifications.</Text>
         </View>
-      } 
-     
+      }
+
     </View>
   )
 }
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   noTextStyle: {
     fontFamily: 'ComfortaaBold',
     fontSize: FONTSIZE.TITLE_2,
-    color: COLOR.B_75
+    color: COLOR.SECONDARY_75
   },
   noNotification: {
     flex: 1,

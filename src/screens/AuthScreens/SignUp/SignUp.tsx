@@ -29,7 +29,7 @@ const SignUp = () => {
   const handleSignup = async (values: any, formikHelpers: FormikHelpers<any>) => {
     try {
       const signUpResponse = await signUp(values)
-      console.log(signUpResponse)
+
       if (signUpResponse?.jwt) {
         formikHelpers.resetForm()
         navigation.goBack()
@@ -40,7 +40,7 @@ const SignUp = () => {
       setModalMessage('An error occurred during sign-up or login.');
     }
   };
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -99,7 +99,7 @@ const SignUp = () => {
           title={modalTitle}
           message={modalMessage}
           cancelText='Ok'
-          cancel={function (): void {setShowModal(false)}}
+          cancel={function (): void { setShowModal(false) }}
           visibility={showModal} />
       </View>
     </View>
@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'RalewayBold',
     fontSize: FONTSIZE.HEADING_3,
-    // textAlign: 'center'
   },
   contentContainer: {
     paddingHorizontal: 20
@@ -131,7 +130,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 5,
     alignSelf: 'center',
-    backgroundColor: COLOR.B_300,
+    backgroundColor: COLOR.SECONDARY_300,
     padding: 5,
     borderRadius: 5,
     width: '95%',

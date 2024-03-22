@@ -1,122 +1,98 @@
 import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
-import React, { useContext } from 'react';
-// constants 
-import { COLOR, DIMEN, FONTSIZE } from '../../constants/contants';
-import Carousel from 'react-native-reanimated-carousel';
+  Text, View,
+  StatusBar, TextInput,
+  StyleSheet, Alert, ActivityIndicator,
+} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
 
-// components 
-import { ExpandableItemList } from '../../components';
+// constants
+import {COLOR, FONTSIZE} from '../../constants/contants';
 
-import { AppContext } from '../../helper/context/AppContext';
-import { extractCodeSnippet } from '../../helper/functions/functions';
-import CodeHighlighter from 'react-native-code-highlighter';
-import { atomOneDarkReasonable } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import CategorySection from './componets/CategorySection/CategorySection';
+import Carousel from './componets/Carousel'
+import Icons from '../../assets/icons';
+import {AppContext} from '../../helper/context/AppContext';
+import {bookmarkCodeTips} from '../../helper/functions/handleFunctions';
+import {CategorySection, CodeSnippet, FloatingButton, FormModal, Loader, TipFooter} from '../../components';
+
 
 const CodeTips = () => {
-  const { SCREENWIDTH: width, SCREENHEIGHT: height } = DIMEN;
 
-  const { codeTips } = useContext(AppContext);
+  const {codeTips} = useContext(AppContext);
+  // const [showReportModal, setShowReportModal] = useState<boolean>(false);
 
+  // const [isCarouselReady, setIsCarouselReady] = useState<boolean>(false);
+  const [category, setCategory] = useState<string>('All');
+  const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>('');
+  const [carouselData, setCarouselData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+
+  const savedTips = codeTips.filter(saved =>  saved.bookmarked == true);
+  const archivedTips = codeTips.map(tip => {
+
+    const timestamp1 = new Date(tip.publishedAt);
+    const timestamp2 = new Date();
+
+    // Calculate difference in milliseconds
+    const differenceInMilliseconds = Math.floor((timestamp2 as any) - (timestamp1 as any));
+
+    // Convert milliseconds to days
+    const millisecondsInADay = 1000 * 60 * 60 * 24;
+    const differenceInDays = Math.floor(differenceInMilliseconds / millisecondsInADay);
+    if (differenceInDays > 28) {
+      return tip
+    }
+  });
+  
+  useEffect(() => {
+    setIsLoading(true);
+    if (category == 'Archived') {
+      setCarouselData([...archivedTips.filter(tip => tip)]);
+      setIsLoading(false)
+    } else if(category == 'Saved'){
+      setCarouselData([...savedTips.filter(tip => tip)]);
+      setIsLoading(false)
+    } else {
+      setCarouselData([...codeTips]);
+      setIsLoading(false)
+    }
+  }, [category]);
 
   return (
-    <View
-      style={styles.codeTipsContainer}
-    >
-      <View>
-        {/* <Text>Code Tips</Text> */}
-        {/* <CategorySection /> */}
+    <View style={styles.codeTipsContainer}>
+      <StatusBar backgroundColor={COLOR.WHITE} />
+      <View style={{ paddingHorizontal: 20, backgroundColor: COLOR.WHITE }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10, gap: 20 }}>
+          {showSearchBar && <View style={{ flex: 1, borderWidth: 1, borderColor: COLOR.SECONDARY_50, paddingHorizontal: 10, borderRadius: 5, padding: 2 }}>
+            <TextInput
+              placeholder='search'
+              onChangeText={text => {
+                setSearchText(text);
+              }}
+            />
+          </View>}
+          {!showSearchBar && <Text style={styles.heading}>Career insights</Text>}
+          {/* <Icons name='search' _color={COLOR.SECONDARY_300} press={() => { setShowSearchBar(currentValue => !currentValue) }} /> */}
+          {showSearchBar && <Icons name='close' _color={COLOR.SECONDARY_300} press={() => {setShowSearchBar(currentValue => !currentValue)}} />}
+        </View>
+        <CategorySection setFilteredItems={setCategory} categories={['All', 'Saved', 'Archived']} />
       </View>
-      <Carousel
-        loop
-        width={width}
-        height={height}
-        data={codeTips}
-        mode='parallax'
-        panGestureHandlerProps={{
-          activeOffsetX: [-10, 10]
-        }}
-        // onSnapToItem={(index) => console.log('current index: ', index)}
-        renderItem={({ item, index }) => (
-          <View style={styles.renderItemView}>
-            <View style={styles.tipTitleView}>
-              <View style={styles.categoryView}>
-                <Text style={styles.titleName}>
-                  {item?.Category}
-                </Text>
-              </View>
-              <View />
-            </View>
-            <View
-              style={
-                styles.tipContentView
-              }
-            >
-              <Text
-                numberOfLines={3}
-                style={{
-                  ...styles.tipTitle,
-                  fontFamily: "RalewayBold"
-                }}
-              >
-                # {item?.Title}
-              </Text>
-              <Text
-                style={{
-                  ...styles.tipContent,
-                }}
-              >
-                {item?.details?.replace(/```([^`]*)```/g, '')}
-              </Text>
-              <View style={styles.tipFooter}>
-                <View style={styles.codeDescriptionStyle}>
-                  <CodeHighlighter
-                    hljsStyle={atomOneDarkReasonable}
-                    containerStyle={styles.codeSnippet}
-                    textStyle={styles.code}
-                    language={`${item?.Category?.toLowerCase()}`}
-                  >
-                    {extractCodeSnippet(item?.details)}
-                  </CodeHighlighter>
-                </View>
-              </View>
-            </View >
-          </View>
-        )}
-      />
-
-      {/* <View
-        style={styles.contentContainer}
-      >
-        <ScrollView
-          bounces={false}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollableCodeTips}
-        >
-          {
-            codeTips?.map((codeTip: any, index: number) => {
-              return (
-                <ExpandableItemList
-                  key={index}
-                  title={codeTip.Title}
-                  index={index}
-                  sourceName={codeTip?.Credit}
-                  content={codeTip?.details?.replace(/```([^`]*)```/g, '')}
-                  snippet={extractCodeSnippet(codeTip?.details)}
-                  sourceLink={codeTip.Link}
-                  expandedIndex={expandedIndex}
-                  onToggleExpand={handleToggleExpand}
-                  PL={codeTip?.Category}
-                />
-              )
-            })
-          }
-        </ScrollView>
-      </View> */}
+      {isLoading && (<View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+        <ActivityIndicator
+          size='large'
+          color={COLOR.PRIMARY_300}
+        />
+      </View>)}
+      {!isLoading && <Carousel data={carouselData}/>}
+      
+      <FloatingButton
+        title='Ask'
+        borderRadius={25}
+        press={function () {
+          Alert.alert('Feature update', 'Feature coming soon',
+            [{ text: 'ok', style: 'cancel', onPress(value) { } }], { onDismiss() { }, cancelable: true, })
+        }} />
     </View>
   );
 }
@@ -126,63 +102,47 @@ export default CodeTips
 const styles = StyleSheet.create({
   codeTipsContainer: {
     flex: 1,
-    backgroundColor: COLOR.WHITE,
-  },
-  contentContainer: {
-    flex: 1,
-    marginTop: 10
-  },
-  showCodeTip: {
-    flex: 1,
-  },
-  scrollableCodeTips: {
-
+    backgroundColor: COLOR.SECONDARY_50,
   },
   renderItemView: {
     flex: 1,
-    borderWidth: 0.2,
-    padding: 10,
-    borderRadius: 10
+    margin: 5,
+    elevation: 0.5,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: COLOR.WHITE,
   },
   tipTitle: {
-    color: COLOR.B_300,
+    fontFamily: 'RalewayBold',
+    color: COLOR.SECONDARY_300,
     fontSize: FONTSIZE.HEADING_4,
-    // textAlign: 'center',
-    fontFamily:'RalewayBold'
   },
   tipContent: {
-    color: COLOR.B_300,
-    fontSize: FONTSIZE.HEADING_5,
+    lineHeight: 30,
+    color: COLOR.SECONDARY_300,
     fontFamily: 'ComfortaaBold',
-    lineHeight:30
-  },
-  tipContentView: {
-    flex:1,
-    // borderWidth: 1,
-    padding:10
-  },
-  tipFooter: {
-    
+    fontSize: FONTSIZE.HEADING_5,
   },
   tipTitleView: {
-    marginBottom: 10,
-    justifyContent:'flex-start'
+    justifyContent: 'flex-start'
   },
   titleName: {
     textTransform: 'capitalize',
-    fontSize:FONTSIZE.TITLE_1
+    fontSize: FONTSIZE.TITLE_1
   },
   categoryView: {
-    padding:10
   },
-  codeSnippet: {
-    paddingHorizontal:20
+  renderHtml: {
+    flex: 1
   },
-  codeDescriptionStyle: {
-    
+  categories: {
+    fontFamily: 'ComfortaaLight',
+    textTransform: 'lowercase'
   },
-  code: {
-    fontFamily: 'RalewayBold',
-    fontSize:FONTSIZE.BODY
+  heading: {
+    // textAlign: 'center',
+    fontFamily: 'RalewaySemiBold',
+    fontSize: FONTSIZE.TITLE_1
   }
 });

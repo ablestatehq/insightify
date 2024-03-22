@@ -1,11 +1,14 @@
 import React from 'react';
 import TalentIcon from './Talent';
-import {COLOR} from '../../constants/contants';
-import {MaterialIcons, Foundation, MaterialCommunityIcons} from '@expo/vector-icons';
+import { COLOR } from '../../constants/contants';
+import { MaterialIcons, MaterialCommunityIcons, Fontisto, AntDesign, Ionicons, FontAwesome, EvilIcons } from '@expo/vector-icons';
 
 interface IconName {
   name: string // 'Deck' | 'Sky' | 'Talent' | 'More',
-  isActive: boolean//true | false,
+  isActive?: boolean//true | false,
+  size?: number
+  press?: () => void
+  _color?: string
 }
 
 const SIZE = {
@@ -13,18 +16,71 @@ const SIZE = {
   MEDIUM: 20,
   SMALL: 15
 }
-const Icon: React.FC<IconName> = ({name, isActive}) => {
+const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
   switch (name) {
     case 'Explore':
-      return <Foundation name="clipboard-notes" size={24} color={isActive ? COLOR.ORANGE_300 : COLOR.B_300} />
-        // : <Ionicons name="book-outline" size={SIZE.MEDIUM} color={COLOR.B_300} />
+      return <Fontisto
+        name="spinner-refresh"
+        size={size ? size : 24}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300}
+        onPress={press}
+      />
     case 'Level up':
-      return <MaterialCommunityIcons name="stairs-up" size={24} color={isActive ? COLOR.ORANGE_300 : COLOR.B_300} />
+      return <MaterialCommunityIcons
+        name="stairs-up"
+        size={size ? size : 24}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300}
+        onPress={press}
+      />
     case 'Talent':
-      return <TalentIcon width={SIZE.HIGHEST} height={SIZE.HIGHEST} color={isActive ? COLOR.ORANGE_300 : COLOR.B_300} />
+      return <TalentIcon
+        width={SIZE.HIGHEST}
+        height={SIZE.HIGHEST}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300}
+      />
     case 'More':
-      return <MaterialIcons name="more-horiz" size={SIZE.MEDIUM} color={isActive ? COLOR.ORANGE_300 : COLOR.B_300} />
+      return <MaterialIcons
+        name="more-horiz"
+        size={SIZE.MEDIUM}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300}
+        onPress={press}
+      />
+    case 'Share':
+      return <AntDesign
+        size={24}
+        name="sharealt"
+        color={"black"}
+        onPress={press}
+      />
+    case 'report':
+      return <Ionicons
+        name={isActive ? "flag" : "flag-outline"}
+        size={size ? size : 24}
+        color={COLOR.PRIMARY_300}
+        onPress={press}
+      />
+    case 'close':
+      return <AntDesign
+        name='closecircle'
+        size={size ? size : 24}
+        color={COLOR.PRIMARY_300}
+        onPress={press}
+      />
+    case 'clipboard':
+      return <FontAwesome
+        name="clipboard"
+        size={size ? size : 24}
+        color={_color ? _color : COLOR.PRIMARY_300}
+        onPress={press}
+      />
+    case 'search':
+      return <EvilIcons
+        name="search"
+        size={size ? size : 24}
+        color={_color ? _color : COLOR.PRIMARY_300}
+        onPress={press}
+      />
   }
-}
+};
 
 export default React.memo(Icon)

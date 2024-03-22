@@ -5,7 +5,7 @@ import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { contactPressed } from '../Contacthandlers';
 import { COLOR, FONTSIZE } from '../../../constants/contants';
-import Header from '../../NewsDetails/helperComponents/Header';
+import Header from '../../../components/Headers/Header';
 
 const Contact = () => {
   const navigation = useNavigation();
@@ -25,7 +25,7 @@ const Contact = () => {
           <Feather
             name="smartphone"
             size={20}
-            color={COLOR.B_300}
+            color={COLOR.SECONDARY_300}
           />
           <Text style={styles.contactText}>
             +256756085187
@@ -37,7 +37,7 @@ const Contact = () => {
           <MaterialCommunityIcons
             name="email-outline"
             size={20}
-            color={COLOR.B_300}
+            color={COLOR.SECONDARY_300}
           />
           <Text style={styles.contactText}>
             grow@ablestate.africa
@@ -56,7 +56,7 @@ const Contact = () => {
             <Feather
               name="twitter"
               size={20}
-              color={COLOR.B_300}
+              color={COLOR.SECONDARY_300}
             />
             <Text style={styles.socialText}>
               Twitter{'\n'}
@@ -68,7 +68,7 @@ const Contact = () => {
             style={styles.socialContainer}>
             <Feather
               name="linkedin"
-              color={COLOR.B_300}
+              color={COLOR.SECONDARY_300}
               size={20}
             />
             <Text style={styles.socialText}>
@@ -81,7 +81,7 @@ const Contact = () => {
             style={styles.socialContainer}>
             <Feather
               name="instagram"
-              color={COLOR.B_300}
+              color={COLOR.SECONDARY_300}
               size={20}
             />
             <Text style={styles.socialText}>
@@ -95,7 +95,7 @@ const Contact = () => {
             <Feather
               name="youtube"
               size={20}
-              color={COLOR.B_300}
+              color={COLOR.SECONDARY_300}
             />
             <Text style={styles.socialText}>
               YouTube{'\n'}
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     fontSize: FONTSIZE.TITLE_2,
     fontFamily: "ComfortaaSemiBold",
-    color: COLOR.B_300,
+    color: COLOR.SECONDARY_300,
   },
   socialMediaContainer: {
     padding: 10,
