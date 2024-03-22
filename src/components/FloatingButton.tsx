@@ -9,14 +9,21 @@ interface FloatingButtonProps {
   bgColor?: string
   textColor?: string
   press?: () => void
+  buttonPosition: {
+    bottom?: number
+    right?: number
+    left?: number
+    top?: number
+}
 }
 
-const FloatingButton: React.FC<FloatingButtonProps> = ({ title, borderRadius, bgColor, textColor, press }) => {
+const FloatingButton: React.FC<FloatingButtonProps> = ({title, borderRadius, bgColor, textColor, press,buttonPosition}) => {
 
   return (
     <Pressable
       style={{
         ...styles.container,
+        ...buttonPosition,
         padding: title ? 5 : 10,
         paddingHorizontal: title ? 15 : 10,
         borderRadius: borderRadius ? borderRadius : 100,
@@ -37,8 +44,6 @@ export default FloatingButton
 
 const styles = StyleSheet.create({
   container: {
-    right: 20,
-    bottom: 5,
     elevation: 3,
     position: 'absolute',
     alignItems: 'center',
