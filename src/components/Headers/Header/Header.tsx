@@ -9,7 +9,7 @@ interface HeaderProps {
   title?: string
 }
 
-const Header:React.FC = (
+const Header: React.FC = (
   {
     title,
   }: HeaderProps
@@ -30,24 +30,24 @@ const Header:React.FC = (
           paddingHorizontal: 10,
           alignItems: 'center',
           gap: 30,
-          justifyContent:'space-between'
+          justifyContent: 'space-between'
         }}
       >
         <Ionicons
           name="menu"
           size={30}
-          color={COLOR.B_300}
+          color={COLOR.SECONDARY_300}
           onPress={openDrawer}
         />
         {title && <Text style={styles.text}>{title}</Text>}
         <View style={styles.headerIcons}>
           {/* <View>
             <View style={styles.notificationDot}/>
-            <Ionicons name="md-notifications-outline" size={30} color={COLOR.B_300} />
+            <Ionicons name="md-notifications-outline" size={30} color={COLOR.SECONDARY_300} />
           </View> */}
           <Ionicons
             name="person-circle-outline"
-            color={COLOR.B_300}
+            color={COLOR.SECONDARY_300}
             size={30}
           />
         </View>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10
   },
   text: {
-    color: COLOR.B_300,
+    color: COLOR.SECONDARY_300,
     fontSize: FONTSIZE.HEADING_5,
     marginRight: 10
   },

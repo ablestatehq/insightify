@@ -1,4 +1,4 @@
-import { RouteProp } from "@react-navigation/native"
+import {RouteProp} from "@react-navigation/native"
 
 type userModal = {
   email: string
@@ -23,7 +23,7 @@ type RootStackParamList = {
     publishedAt: string,
     featured_image: string,
     articleContent: string,
-  };
+  }
   More: undefined
   Share: undefined
   SignUp: undefined
@@ -36,21 +36,27 @@ type RootStackParamList = {
     opportunityID?: string
   }
   OpportunityList: undefined;
+  Forgot: undefined
+  Reset: {
+    email: string
+  }
 }
 
-type DetailsScreenProps = RouteProp<RootStackParamList, 'Details'>
 type LoginScreenProps = RouteProp<RootStackParamList, 'Login'>
+type ResetScreenProps = RouteProp<RootStackParamList, 'Reset'>
+type DetailsScreenProps = RouteProp<RootStackParamList, 'Details'>
 
 // interface for TalentSubmissionForm
 type TalentSubmissionForm = {
-  Client: string // Client name
-  Email: string
-  Phone: string
-  Message: string // Message left
-  Need: string // Looking for
-  Heads?: string // Quantity needed.
-  Company?:string
+  need: string[]// Looking for
+  email: string
+  phone: string
+  heads?: string// Quantity needed.
+  client: string// Client name
+  company?:string
+  message: string// Message left
 }
+
 interface ExpandableListItemProps {
   PL?: string
   snippet?: any
@@ -97,15 +103,18 @@ type LoginDetails = {
 }
 
 type OpportunityItemCardProps = {
-  id:string
-  title: string
-  description: string
-  link: string
-  expireDate: string
-  type: string
-  location: string
-  createdAt: string
-  bookmarked: boolean
+  id?:string
+  link?: string
+  type?: string
+  title?: string
+  location?: string
+  opportunity?: any
+  createdAt?: string
+  expireDate?: string
+  description?: string
+  bookmarked?: boolean
+  showModal?: () => void
+  showReportModal: () => void
 }
 
 type OpportunitiesFormType = {
@@ -121,14 +130,39 @@ type OpportunitiesFormType = {
 type NotificationType = {
   tokenID: string
   tokenValue: string 
-  userOrDeviceID: string
+  deviceID: string
   subscription: boolean
   platform: string
+  serialNumber: string
+  model: string
+  manafacturer: string
+  releaseDate?: string
+}
+
+interface MemberInfo{
+  email: string;
+  country: string;
+  phoneNumber: string;
+  primaryRole: string[];
+  isWhatsAppPhone: boolean;
+}
+
+interface ProfileType {
+  // photo: string;
+  firstName: string;
+  lastName: string;
+  gender: string;
+  skills: string[];
+  isAvailable: boolean;
+  primaryDomain: string;
+  secondaryDomain: string;
 }
 
 export {
+  MemberInfo,
   userModal,
   ArticleType,
+  ProfileType,
   FeedbackObject,
   NewsRouteParams,
   HomeDisplayProps,
@@ -136,6 +170,7 @@ export {
   NotificationType,
   RootStackParamList,
   DetailsScreenProps,
+  ResetScreenProps,
   TalentSubmissionForm,
   OpportunitiesFormType,
   ExpandableListItemProps,

@@ -15,6 +15,10 @@ import OnBoard from '../screens/OpportunityStack/onBoardSharing/OnBoard';
 import { retrieveLocalData } from '../utils/localStorageFunctions';
 import { Loader } from '../components';
 import Notification from '../screens/Notifications/Notification';
+import Forgot from '../screens/AuthScreens/Login/component/Forgot';
+import ResetPassword from '../screens/AuthScreens/Login/component/ResetPassword';
+import Otp from '../screens/AuthScreens/Login/component/Otp';
+import Profile from '../screens/Profile';
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +57,10 @@ const MainStackNavigator = () => {
       <Stack.Screen name='Contact' component={Contact} />
       <Stack.Screen name='Feedback' component={FeedBack} />
       <Stack.Screen name='Notification' component={Notification} />
+      <Stack.Screen name='Forgot' component={Forgot} />
+      <Stack.Screen name='Reset' component={ResetPassword} />
+      <Stack.Screen name='Otp' component={Otp} />
+      <Stack.Screen name='Profile' component={Profile} />
     </Stack.Navigator>
   )
 }

@@ -1,0 +1,116 @@
+import React, { useState } from 'react'
+import { Modal, Pressable, StatusBar, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native'
+import Button from '../Button'
+import { storeData } from '../../../api/strapiJSAPI'
+import { COLOR, FONTSIZE } from '../../constants/contants'
+import Icons from '../../assets/icons'
+
+interface FormModalProps {
+  visible: boolean
+  onSubmit: () => void
+  resourceId: number
+  type: string
+  author?: number
+  // resourceTitle: string
+}
+const FormModal: React.FC<FormModalProps> = ({ visible, onSubmit, resourceId, type, author }) => {
+  const [comment, setComment] = useState<string>('');
+  const handleSubmit = async () => {
+    if (comment.length === 0) return;
+    const response = await storeData('comments', {
+      comment,
+      resourceId,
+      type,
+      author
+    });
+    if (response.data) {
+      ToastAndroid.show('Report successfully submitted', 5000)
+    } else {
+      ToastAndroid.show('Request failed', 5000)
+    }
+    onSubmit()
+  };
+
+  return (
+    <Modal transparent visible={visible}>
+      <View style={styles.modal}>
+        <View style={styles.container}>
+          <Pressable style={styles.close} onPress={onSubmit}>
+            <Icons name='close' size={25} />
+          </Pressable>
+          <Text style={styles.headTextStyle}>What's happening?</Text>
+          <View style={styles.inputView}>
+            <TextInput
+              placeholder=''
+              numberOfLines={5}
+              multiline style={styles.input}
+              onChangeText={text => setComment(text)}
+            />
+          </View>
+          <Button
+            title='Submit a report'
+            btn={styles.buttonStyle}
+            textStyle={styles.buttonTextStyle}
+            handlePress={handleSubmit}
+          />
+        </View>
+      </View>
+      <StatusBar backgroundColor={COLOR.NEUTRAL_2} />
+    </Modal>
+  )
+}
+
+export default React.memo(FormModal)
+
+const styles = StyleSheet.create({
+  modal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLOR.NEUTRAL_1
+  },
+  heading: {
+    color: COLOR.SECONDARY_300,
+    fontFamily: 'RalewayBold'
+  },
+  container: {
+    backgroundColor: COLOR.WHITE,
+    width: '80%',
+    padding: 20,
+    borderRadius: 5
+  },
+  buttonStyle: {
+    backgroundColor: COLOR.PRIMARY_300,
+    borderRadius: 5,
+    padding: 5
+  },
+  buttonTextStyle: {
+    color: COLOR.WHITE,
+    fontFamily: 'ComfortaaBold',
+    textAlign: 'center'
+  },
+  inputView: {
+    padding: 5,
+    borderWidth: 1,
+    borderColor: COLOR.PRIMARY_300,
+    marginVertical: 20,
+  },
+  input: {
+    fontFamily: 'ComfortaaSemiBold',
+    // fontSize: 16,
+    // paddingVertical:5
+    // borderWidth: 1,
+    textAlign: 'justify',
+    textAlignVertical: 'top'
+  },
+  headTextStyle: {
+    fontFamily: 'ComfortaaBold',
+    fontSize: FONTSIZE.TITLE_2,
+    // marginTop:20
+  },
+  close: {
+    position: 'absolute',
+    top: -5,
+    right: -5
+  }
+})

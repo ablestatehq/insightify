@@ -4,8 +4,8 @@ import React, {
   useEffect,
 } from 'react';
 import socket from '../../../api/socket';
-import { getStrapiData } from '../../../api/strapiJSAPI';
-import { retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions';
+import {getMe, getStrapiData} from '../../../api/strapiJSAPI';
+import {retrieveLocalData, storeToLocalStorage} from '../../utils/localStorageFunctions';
 
 
 interface AppContextProviderProps {
@@ -13,8 +13,14 @@ interface AppContextProviderProps {
 }
 
 interface AppContextType {
+  jwt: string
+  setJwt: React.Dispatch<React.SetStateAction<string>>
+  user: any
+  setUser: React.Dispatch<React.SetStateAction<any>>
   isLoading: boolean
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  isInCommunity: boolean
+  setIsInCommunity: React.Dispatch<React.SetStateAction<boolean>>
   codeTips: any[]
   setCodeTips: React.Dispatch<React.SetStateAction<any[]>>
   isLoggedIn: boolean
@@ -28,8 +34,14 @@ interface AppContextType {
 }
 
 export const AppContext = createContext<AppContextType>({
+  jwt: '',
+  setJwt: () => { },
+  user: {},
+  setUser: () => { },
   isLoading: true,
   setIsLoading: () => { },
+  isInCommunity: false,
+  setIsInCommunity: () => { },
   codeTips: [],
   setCodeTips: () => { },
   isLoggedIn: false,
@@ -40,7 +52,7 @@ export const AppContext = createContext<AppContextType>({
   setIsNotificationEnabled: () => { },
   notifications: [],
   setNotifications: () => { },
-});
+})
 
 const AppContextProvider = (
   {
@@ -49,56 +61,113 @@ const AppContextProvider = (
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [user, setUser] = useState<any>({});
+  const [jwt, setJwt] = useState<string>('');
   const [opportunities, setOpportunities] = useState<any[]>([]);
   const [codeTips, setCodeTips] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
 
+  const [isInCommunity, setIsInCommunity] = useState<boolean>(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // get me 
+        const user_ = await getMe();
+
+        if (user_.ok) {
+          console.log(user_.jwt)
+          console.log(user_.data);
+          setIsLoggedIn(true);
+          setUser(user_.data);
+          setJwt(user_.jwt);
+        }
+
         // fetch remote data from the api 
         const techTips = await getStrapiData('tech-tips');
         const oppos = await getStrapiData('opportunities');
-        // console.log(techTips)
-        // fetch local data 
+        const sent_notifications = await getStrapiData('sent-notifications');
+
+        // console.log(oppos[5].Description)
+        const inCommunity = await retrieveLocalData('joined_comm');
         const localNotification = await retrieveLocalData('notifications');
-        const bookmarked_opportunities = await retrieveLocalData('opportunities'); // check for bookmarks
-        const { isPushNotificationEnabled } = await retrieveLocalData('tokens');
+        const local_opportunities = await retrieveLocalData('opportunities');
+        const loacl_techTips = await retrieveLocalData('techTips');
+        const pushNotificationResponse = await retrieveLocalData('tokens');
+
+        // console.log("This is it",local_opportunities[0].id)
+        if (pushNotificationResponse) {
+          const { isPushNotificationEnabled } = pushNotificationResponse;
+          setIsNotificationEnabled(isPushNotificationEnabled);
+        }
 
         // When there is a response from the database.
         if (oppos) {
-          const updatedOpportunity = oppos.map((opp: any) => {
-            return ({
-              ...opp,
-              bookmarked: bookmarked_opportunities ? bookmarked_opportunities.includes(opp.$id) : false
-            })
-          })
+          setOpportunities(prev => {
+            const updatedOpportunity = oppos.map((opp: any) => {
+              return ({
+                ...opp,
+                bookmarked: local_opportunities?.find((local_opp: any) => local_opp.id == opp.id)?.bookmarked ?? false
+              })
+            });
 
-          // Sort the opportunites to bring the lasted notifications first.
-          const sortedOpportunities = updatedOpportunity.sort((a: any, b: any) => {
-            const dateA = new Date(a?.publishedAt)
-            const dateB = new Date(b?.publishedAt)
+            // Sort the opportunites to bring the lasted notifications first.
+            const sortedOpportunities = updatedOpportunity.sort((a: any, b: any) => {
+              const dateA = new Date(a?.publishedAt)
+              const dateB = new Date(b?.publishedAt)
 
-            return (dateB as any) - (dateA as any)
+              return (dateB as any) - (dateA as any)
+            });
+
+            const newOpportunities = [...prev, ...sortedOpportunities];
+            storeToLocalStorage('opportunities', newOpportunities)
+
+            return newOpportunities
           });
-
-          setOpportunities([...sortedOpportunities]);
+          
+        } else {
+          setOpportunities(prev => [...prev, ...local_opportunities]);
         }
 
+        // tech tips 
         if (techTips) {
-          setCodeTips(prev => [...prev, ...techTips]);
+          setCodeTips(prev => {
+            const updatedCodeTip = techTips.map((tip: any) => {
+              return ({
+                ...tip,
+                bookmarked: loacl_techTips?.find((local_tip: any) => local_tip.id == tip.id)?.bookmarked ?? false
+              })
+            });
+
+            // Sort the opportunites to bring the lasted notifications first.
+            const sortedCodeTips = updatedCodeTip.sort((a: any, b: any) => {
+              const dateA = new Date(a?.publishedAt)
+              const dateB = new Date(b?.publishedAt)
+
+              return (dateB as any) - (dateA as any)
+            });
+
+            const newCodeTips = [...prev, ...sortedCodeTips];
+            storeToLocalStorage('techTips', newCodeTips)
+
+            return newCodeTips
+          });
+        } else {
+          setCodeTips(prev => [...prev, ...loacl_techTips]);
         }
-        setIsNotificationEnabled(isPushNotificationEnabled);
+
+        // notifications
         if (localNotification) {
-          // console.log(localNotification)
-          setNotifications(prev => [...prev, ...localNotification])
+          setNotifications(prev => [...prev, ...localNotification]);
         }
-      } catch (error: any) {
-        alert(`error occured while fetching data ${error}`);
-      } finally {
-        setIsLoading(false);
+        // inCommunity
+        if(inCommunity){
+          setIsInCommunity(inCommunity.isJoined);
+        }
       }
+      catch (error: any) { }
+      finally { setIsLoading(false) }
     }
 
     fetchData();
@@ -138,8 +207,14 @@ const AppContextProvider = (
 
 
   const contextValue: AppContextType = {
+    user,
+    setUser,
+    jwt,
+    setJwt,
     isLoading,
     setIsLoading,
+    isInCommunity,
+    setIsInCommunity,
     codeTips,
     setCodeTips,
     isLoggedIn,
@@ -151,6 +226,7 @@ const AppContextProvider = (
     notifications,
     setNotifications,
   };
+
 
   return (
     <AppContext.Provider value={contextValue}>

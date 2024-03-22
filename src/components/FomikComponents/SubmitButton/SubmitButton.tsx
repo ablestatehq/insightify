@@ -1,15 +1,17 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { useFormikContext } from 'formik'
-import { COLOR } from '../../../constants/contants'
+import {useFormikContext} from 'formik'
+import {COLOR} from '../../../constants/contants'
+import {ActivityIndicator, Pressable, Text} from 'react-native'
 
-interface SubmitButtonProp{
+interface SubmitButtonProp {
   handleSubmit: () => void,
   btnText?: string,
-  button?:any
+  button?: any
 }
-const SubmitButton:React.FC<SubmitButtonProp> = ({handleSubmit, btnText, button}) => {
-  const { isSubmitting, } = useFormikContext<any>()
+
+const SubmitButton: React.FC<SubmitButtonProp> = ({handleSubmit, btnText, button}) => {
+  const {isSubmitting} = useFormikContext<any>()
+  
   return (
     <Pressable
       onPress={handleSubmit}
@@ -17,7 +19,7 @@ const SubmitButton:React.FC<SubmitButtonProp> = ({handleSubmit, btnText, button}
         ...button,
         opacity: isSubmitting ? 0.5 : 1,
         flexDirection: 'row',
-        gap:5
+        gap: 5
       }}
       disabled={isSubmitting}
     >
@@ -42,18 +44,3 @@ const SubmitButton:React.FC<SubmitButtonProp> = ({handleSubmit, btnText, button}
 }
 
 export default SubmitButton
-
-// const styles = StyleSheet.create({
-//   button: {
-//     flexDirection: "row",
-//     alignContent: "center",
-//     justifyContent: "center",
-//     gap: 5,
-//     alignSelf: 'center',
-//     backgroundColor: COLOR.B_300,
-//     padding: 5,
-//     borderRadius: 5,
-//     width: '95%',
-//     margin:10
-//   }
-// })

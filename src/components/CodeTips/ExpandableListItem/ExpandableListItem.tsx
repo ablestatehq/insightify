@@ -5,11 +5,9 @@ import {
 } from 'react-native';
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
-import CodeHighlighter from "react-native-code-highlighter";
 import { COLOR, FONTSIZE } from '../../../constants/contants';
 import { ExpandableListItemProps } from '../../../utils/types';
 import onShare, { handleLinkPress } from '../../../utils/onShare';
-import { atomOneDarkReasonable } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 const ExpandableListItem: React.FC<ExpandableListItemProps> = (
   {
@@ -84,7 +82,7 @@ const ExpandableListItem: React.FC<ExpandableListItemProps> = (
             <Feather
               name="chevron-down"
               size={20}
-              color={COLOR.B_300}
+              color={COLOR.SECONDARY_300}
             />
           )
         }
@@ -93,7 +91,7 @@ const ExpandableListItem: React.FC<ExpandableListItemProps> = (
             <Feather
               name="chevron-up"
               size={20}
-              color={COLOR.B_300}
+              color={COLOR.SECONDARY_300}
             />
           )
         }
@@ -122,14 +120,14 @@ const ExpandableListItem: React.FC<ExpandableListItemProps> = (
       {
         expand && snippet !== "" && (
           <View style={styles.codeDescriptionStyle}>
-            <CodeHighlighter
+            {/* <CodeHighlighter
               hljsStyle={atomOneDarkReasonable}
               containerStyle={styles.codeSnippet}
               textStyle={styles.text}
               language={`${PL?.toLowerCase()}`}
             >
               {snippet}
-            </CodeHighlighter>
+            </CodeHighlighter> */}
           </View>
         )
       }
@@ -157,7 +155,7 @@ const ExpandableListItem: React.FC<ExpandableListItemProps> = (
             <Feather
               name="share-2"
               size={20}
-              color={COLOR.B_300}
+              color={COLOR.SECONDARY_300}
             />
             <Text style={{ fontSize: FONTSIZE.TITLE_2 }}>Share tip</Text>
           </Pressable>
@@ -199,7 +197,7 @@ const styles = StyleSheet.create({
   },
   itemLink: {
     // fontSize: FONTSIZE.BODY,
-    color: COLOR.B_300,
+    color: COLOR.SECONDARY_300,
   },
   itemContent: {
     fontSize: FONTSIZE.BODY,
@@ -222,7 +220,7 @@ const styles = StyleSheet.create({
   titleViewStyle: {
     flex: 1,
     flexDirection: 'column',
-    gap:50
+    gap: 50
   },
   linkStyle: {
     bottom: 0,

@@ -1,19 +1,26 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-async function storeToLocalStorage(key:string, value: any) {
-  const jsonArticles = JSON.stringify(value);
-  try {
-    await AsyncStorage.setItem(`${key}`, jsonArticles, function () {
-      
-    })
-      .then(response => {
-
-      })
-      .catch(error => {
-      
-      });
-  } catch (error) {
-    
+async function storeToLocalStorage(key: string, value: any) {
+  
+  const stringified_data = JSON.stringify(value);
+  const retrieve_data = await AsyncStorage.getItem(key)
+    .catch(error => console.error('Error: ', error));
+  
+  if (retrieve_data) {
+    if (stringified_data != retrieve_data) {
+        try {
+          await AsyncStorage.setItem(`${key}`, stringified_data, function () { })
+            .catch(error => {console.error(error)});
+        } catch (error) {
+          console.error('Error: ', error);
+      }
+    }
+  } else {
+    try {
+      await AsyncStorage.setItem(`${key}`, stringified_data);
+    } catch (error) {
+      console.error("Error occuring",error)
+    }
   }
 }
 
@@ -21,9 +28,8 @@ async function retrieveLocalData(key:string) {
   try {
     const res = await AsyncStorage.getItem(`${key}`);
     if (res) {
-      return JSON.parse(res)
+      return JSON.parse(res);
     }
-    return
   } catch (error) {
     
   }
@@ -32,9 +38,7 @@ async function retrieveLocalData(key:string) {
 async function clearLocalData(key:string) {
   try {
     await AsyncStorage.removeItem(`${key}`);
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
 export {

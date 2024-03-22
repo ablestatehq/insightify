@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 import Selectable from './components/Selectable'
 import { FeedbackObject } from '../../../utils/types'
-import { APPWRITE_FEEDBACK_COLLECTION_ID } from '@env'
-import DatabaseService from '../../../appwrite/appwrite'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
-import Header from '../../NewsDetails/helperComponents/Header'
+import Header from '../../../components/Headers/Header'
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native'
 import { storeData } from '../../../../api/strapiJSAPI'
 
@@ -58,7 +56,6 @@ const FeedBack = () => {
       suggestion: suggestionText
     }
     const response = await storeData('suggestions', newFeedback)
-    console.log(response)
     if (response) {
       setSuggestionText('')
       setSelectedImprovement(null)
@@ -81,7 +78,7 @@ const FeedBack = () => {
             marginBottom: 10,
             fontFamily: 'ComfortaaBold',
             fontSize: FONTSIZE.TITLE_2,
-            color: COLOR.B_300
+            color: COLOR.SECONDARY_300
           }}
           >
             What should we improve to serve you better?
@@ -142,7 +139,7 @@ const styles = StyleSheet.create({
   },
   suggestions: {
     borderRadius: 10,
-    backgroundColor: COLOR.B_50,
+    backgroundColor: COLOR.SECONDARY_50,
     textAlign: 'left',
     textAlignVertical: 'top',
     padding: 10,
@@ -157,7 +154,7 @@ const styles = StyleSheet.create({
   submitBtn: {
     padding: 5,
     alignItems: 'center',
-    backgroundColor: COLOR.ORANGE_300,
+    backgroundColor: COLOR.SECONDARY_300,
     borderRadius: 5,
     marginTop: 20,
     bottom: 20,

@@ -106,7 +106,7 @@ const Style = StyleSheet.create({
     width: PAGE_WIDTH,
     alignItems: 'center',
     justifyContent: 'center',
-    gap:10
+    gap: 10
   },
   container: {
     flex: 1,
@@ -122,22 +122,22 @@ const Style = StyleSheet.create({
   square: {
     height: SIZE,
     width: SIZE,
-    backgroundColor: COLOR.B_300,
+    backgroundColor: COLOR.SECONDARY_300,
     position: "absolute",
     justifyContent: 'center',
     alignSelf: 'center',
     top: SIZE / 3,
   },
   text: {
-    color: COLOR.B_300,
+    color: COLOR.SECONDARY_300,
     textAlign: "center",
     width: PAGE_WIDTH - 120,
     textTransform: 'uppercase',
     fontSize: FONTSIZE.TITLE_1,
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
   text2: {
-    color: COLOR.B_300,
+    color: COLOR.SECONDARY_300,
     textAlign: "center",
     width: PAGE_WIDTH - 120,
     fontSize: FONTSIZE.TITLE_2,

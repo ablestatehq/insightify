@@ -1,24 +1,23 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Formik, FormikHelpers } from 'formik'
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
-import DatabaseService from '../../../appwrite/appwrite'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
-import { environments } from '../../../constants/environments'
 import { AppContext } from '../../../helper/context/AppContext'
 
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { SignUpWith, InputText, SubmitButton } from '../../../components'
+import { SignUpWith, InputText, SubmitButton, CustomModal } from '../../../components'
+import { signUp } from '../../../../api/auth'
 
-const {
-  APPWRITE_DATABASE_ID,
-  APPWRITE_USER_COLLECTION_ID
-} = environments;
 const SignUp = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { isLoggedIn, setIsLoggedIn } = useContext(AppContext);
+
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
+  const [modalTitle, setModalTitle] = useState<string>('');
 
   const signUpFormInitValues = {
     name: '',
@@ -27,51 +26,21 @@ const SignUp = () => {
     con_password: ''
   }
 
-  const handleSignUpWithEmailAndPassword = async (values: any, formikHelpers: FormikHelpers<any>) => {
+  const handleSignup = async (values: any, formikHelpers: FormikHelpers<any>) => {
     try {
-      // Signing up
-      const signUpResponse = await DatabaseService.createAccountWithEmail(
-        values.email,
-        values.password
-      ).then(data => data);
+      const signUpResponse = await signUp(values)
 
-      // Log in the user after successful sign-up
-      if (signUpResponse) {
-        const createdUser = await DatabaseService.storeDBdata(APPWRITE_USER_COLLECTION_ID, {
-          email: values.email,
-          firstName: values.name.split(' ')[0],
-          lastName: values.name.split(' ')[1]
-        });
-
-        if (createdUser) {
-          const loggedIn = await DatabaseService.loginWithEmailAndPassword(signUpResponse.email, values.password);
-          formikHelpers.resetForm({ values: signUpFormInitValues })
-          setIsLoggedIn(true);
-          navigation.goBack();
-          navigation.goBack();
-        }
-      } else {
-        // console.log(signUpResponse);
+      if (signUpResponse?.jwt) {
+        formikHelpers.resetForm()
+        navigation.goBack()
       }
     } catch (error) {
-      // console.log('Sign-up or login error:', error);
-      Alert.alert(
-        'Sign-up or login failed',
-        'An error occurred during sign-up or login.',
-        [
-          {
-            text: 'OK',
-            onPress: () => { },
-            style: 'cancel',
-          },
-        ],
-        {
-          cancelable: true,
-          onDismiss: () => { },
-        }
-      );
+      setShowModal(true);
+      setModalTitle('Sign-up or login failed');
+      setModalMessage('An error occurred during sign-up or login.');
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -90,7 +59,7 @@ const SignUp = () => {
         <View style={styles.loginView}>
           <Formik
             initialValues={signUpFormInitValues}
-            onSubmit={handleSignUpWithEmailAndPassword}
+            onSubmit={handleSignup}
           >
             {({ handleSubmit }) => (
               <ScrollView>
@@ -126,6 +95,12 @@ const SignUp = () => {
           </Formik>
           {/* <SignUpWith /> */}
         </View>
+        <CustomModal
+          title={modalTitle}
+          message={modalMessage}
+          cancelText='Ok'
+          cancel={function (): void { setShowModal(false) }}
+          visibility={showModal} />
       </View>
     </View>
   )
@@ -141,7 +116,6 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'RalewayBold',
     fontSize: FONTSIZE.HEADING_3,
-    // textAlign: 'center'
   },
   contentContainer: {
     paddingHorizontal: 20
@@ -156,7 +130,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 5,
     alignSelf: 'center',
-    backgroundColor: COLOR.B_300,
+    backgroundColor: COLOR.SECONDARY_300,
     padding: 5,
     borderRadius: 5,
     width: '95%',

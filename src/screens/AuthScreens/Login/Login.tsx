@@ -1,38 +1,53 @@
-import { Formik } from 'formik'
-import React, { useContext } from 'react'
-import { AntDesign } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native'
-import DatabaseService from '../../../appwrite/appwrite'
-import { COLOR, FONTSIZE } from '../../../constants/contants'
-import { AppContext } from '../../../helper/context/AppContext'
-import { SignUpWith, InputText, SubmitButton } from '../../../components'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Alert, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { LoginScreenProps } from '../../../utils/types';
-import { handleBookmark } from '../../../helper/functions/handleFunctions';
+import {Formik} from 'formik'
+import React, {useContext, useState} from 'react'
+import {AntDesign} from '@expo/vector-icons';
+import {useNavigation, useRoute} from '@react-navigation/native'
+import {COLOR, FONTSIZE} from '../../../constants/contants'
+import {AppContext} from '../../../helper/context/AppContext'
+import {InputText, SubmitButton, CustomModal} from '../../../components'
+import {NativeStackNavigationProp} from '@react-navigation/native-stack'
+import {KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import {login} from '../../../../api/auth';
+import {LoginScreenProps} from '../../../utils/types';
+import {handleBookmark} from '../../../helper/functions/handleFunctions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login: React.FC = () => {
   const route = useRoute<LoginScreenProps>();
 
-  const { title, opportunityID } = route.params;
+  const {title, opportunityID} = route.params;
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  const { setIsLoggedIn, opportunities, setOpportunities } = useContext(AppContext);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
+  const [modalTitle, setModalTitle] = useState<string>('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+
+  const {setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser} = useContext(AppContext);
 
   const loginFormInitValues = {
     email: '',
     password: ''
   }
 
-  const handleLoginWithEmailAndPassword = async (values: any) => {
+  const handleLogin = async (values: any) => {
     try {
-      const response = await DatabaseService.loginWithEmailAndPassword(values.email, values.password)
-      if (response) {
-        setIsLoggedIn(true);
+      const response = await login(values.email, values.password);
 
+      if (response?.jwt) {
+        await AsyncStorage.setItem('user_token',
+          JSON.stringify({
+            token: response?.jwt,
+            ...response.user
+          }));
+        
+        setJwt(response?.jwt)
+        setUser(response.user)
+        setIsLoggedIn(true);
+        
         if (opportunityID) {
-          handleBookmark(opportunityID,opportunities, setOpportunities )
-          navigation.navigate('Deck');
+          handleBookmark(opportunityID, opportunities, setOpportunities)
+          navigation.goBack()
         } else {
           if (title) {
             navigation.navigate('Share');
@@ -41,23 +56,13 @@ const Login: React.FC = () => {
             navigation.goBack();
           }
         }
-
       } else {
-        Alert.alert("Request failed", "Login request failed", [
-          {
-            style: 'cancel',
-            text: 'Try again',
-            onPress: () => { }
-          }
-        ],
-          {
-            cancelable: true,
-            onDismiss: () => { }
-          })
+        setShowModal(true);
+        setModalTitle('Login Error');
+        setModalMessage('Login Failed');
       }
-    } catch (error) {
-    }
-  };
+    } catch (error) { }
+  }
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -72,9 +77,9 @@ const Login: React.FC = () => {
         <View style={styles.loginView}>
           <Formik
             initialValues={loginFormInitValues}
-            onSubmit={handleLoginWithEmailAndPassword}
+            onSubmit={handleLogin}
           >
-            {({ handleSubmit }) => (
+            {({handleSubmit}) => (
               <View style={styles.loginScroll}>
                 <ScrollView>
                   <InputText
@@ -91,17 +96,18 @@ const Login: React.FC = () => {
                   <SubmitButton
                     btnText='Login'
                     handleSubmit={() => handleSubmit()}
-                    button={styles.button} />
+                    button={styles.button}
+                  />
                   <View>
-                    <Text style={styles.footerText}>Forgot password?</Text>
+                    <Pressable onPress={() => {navigation.navigate('Forgot')}}>
+                      <Text style={styles.footerText}>Forgot password?</Text>
+                    </Pressable>
                     <View style={styles.footer}>
                       <Text style={styles.footerText}>Don't have an account?</Text>
                       <TouchableOpacity
-                        onPress={() => {
-                          navigation.navigate('SignUp')
-                        }}
+                        onPress={() => {navigation.navigate('SignUp')}}
                       >
-                        <Text style={styles.signUpText}> Sign up</Text>
+                        <Text style={styles.signUpText}>Sign up</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -111,10 +117,16 @@ const Login: React.FC = () => {
           </Formik>
           {/* <SignUpWith /> */}
         </View>
+        <CustomModal
+          title={modalTitle}
+          message={modalMessage}
+          cancelText='ok'
+          cancel={function (): void {setShowModal(false)}}
+          visibility={showModal} />
       </View>
     </KeyboardAvoidingView>
   )
-}
+};
 
 export default Login;
 
@@ -162,7 +174,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 5,
     alignSelf: 'center',
-    backgroundColor: COLOR.B_300,
+    backgroundColor: COLOR.SECONDARY_300,
     padding: 5,
     borderRadius: 5,
     width: '95%',

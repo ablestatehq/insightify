@@ -1,51 +1,43 @@
-import React from 'react'
-import { Formik, FormikHelpers } from 'formik'
+import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
+import { Formik, FormikHelpers } from 'formik'
 import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+// import InputText from '../../../components/FomikComponents/InputText/InputText'
+// import SubmitButton from '../../../components/FomikComponents/SubmitButton/SubmitButton'
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { CustomModal, SubmitButton, InputText } from '../../../components'
+import { storeData } from '../../../../api/strapiJSAPI'
 import { ShareSchema } from '../../../utils/validations'
-import DatabaseService from '../../../appwrite/appwrite'
 import { OpportunitiesFormType } from '../../../utils/types'
 import { COLOR, FONTSIZE } from '../../../constants/contants'
-import { environments } from '../../../constants/environments'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import InputText from '../../../components/FomikComponents/InputText/InputText'
-import SubmitButton from '../../../components/FomikComponents/SubmitButton/SubmitButton'
-import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, ToastAndroid, View } from 'react-native'
-import { TagInput } from '../../../components'
 
-const {
-  APPWRITE_DATABASE_ID,
-  APPWRITE_OPPORTUNITIES_COLLECTION_ID
-} = environments;
 const Share = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
+  const [modalTitle, setModalTitle] = useState<string>('');
+  const [date, setDate] = useState<Date | undefined>(new Date());
+
 
   const handleOpportunitySubmission = async (values: any, formikHelpers: FormikHelpers<any>) => {
     try {
       const data: OpportunitiesFormType = {
         ...values
       }
-      // console.log(data)
-      const response =
-        await DatabaseService.storeDBdata(
-          APPWRITE_OPPORTUNITIES_COLLECTION_ID,
-          data
-        )
-          .then(response => response)
-          .catch(error => {
-            console.log(error);
-          });
-      if (response) {
-        ToastAndroid.show('Request successfully sent', 5000);
+      const response = await storeData('opportunities', data);
+      if (response.data != null) {
+        // ToastAndroid.show('Request successfully sent', 5000);
         formikHelpers.resetForm({
           values: formInitialValues
         });
 
+        setShowModal(true);
+        setModalTitle('Opportunity submission');
+        setModalMessage('Opportunity has been submitted successfully. \nIt will reviewed by our team.')
       }
-    } catch (error) {
-
-    }
+    } catch (error) { }
   };
 
   const formInitialValues = {
@@ -56,13 +48,8 @@ const Share = () => {
     expireDate: "",
     description: "",
     companyName: "",
-    // tag: [],
-    // category:'' // category of the opportunity.
   }
 
-  const handleTagAddition = (newTag: string) => {
-    console.log('New tag added:', newTag);
-  };
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -79,7 +66,7 @@ const Share = () => {
         <Text
           style={styles.text}
         >
-          Opportunity Hub Form
+          Submit tech opportunity
         </Text>
         <View />
       </View >
@@ -100,7 +87,7 @@ const Share = () => {
                 placeholder='Title'
               />
               <InputText
-                label='Description'
+                label='Opportunity Overview'
                 isMultiLine={true}
                 fieldName='description'
                 placeholder='Provide a simple description of the opportunity'
@@ -125,14 +112,18 @@ const Share = () => {
                 fieldName='type'
                 placeholder='Type e.g Coding, Product Manager'
               />
-              {/* <TagInput
-                onAddTag={handleTagAddition}
-              /> */}
+
+              {/**Make this a calendor */}
               <InputText
                 label='Expiry Date'
                 fieldName='expireDate'
                 placeholder='e.g YYYY-MM-DD'
               />
+              {/* <DateInput
+                date={date as Date}
+                setDate={setDate}
+              /> */}
+              
               <SubmitButton
                 handleSubmit={() => handleSubmit()}
                 button={styles.buttonStyle}
@@ -140,6 +131,12 @@ const Share = () => {
             </ScrollView>
           )}
         </Formik>
+        <CustomModal
+          title={modalTitle}
+          message={modalMessage}
+          cancelText='Ok'
+          cancel={function (): void { setShowModal(false) }}
+          visibility={showModal} />
       </View>
     </KeyboardAvoidingView>
   )
@@ -175,7 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 5,
     alignSelf: 'center',
-    backgroundColor: COLOR.B_300,
+    backgroundColor: COLOR.SECONDARY_300,
     padding: 5,
     borderRadius: 5,
     width: '95%',

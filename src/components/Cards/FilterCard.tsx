@@ -1,10 +1,10 @@
 import Button from '../Button';
 import TagCard from './TagCard';
-import { Feather } from '@expo/vector-icons';
-import { COLOR, FONTSIZE } from '../../constants/contants';
-import { AppContext } from '../../helper/context/AppContext';
-import React, { useContext, useState, useEffect } from 'react';
-import { Modal, StyleSheet, Text, View, Animated, ScrollView } from 'react-native';
+import {Feather} from '@expo/vector-icons';
+import {COLOR, FONTSIZE} from '../../constants/contants';
+import {AppContext} from '../../helper/context/AppContext';
+import React, {useContext, useState, useEffect} from 'react';
+import {Modal, StyleSheet, Text, View, Animated, ScrollView, TouchableWithoutFeedback} from 'react-native';
 
 interface FilterCardProps {
   cardVisible?: boolean
@@ -67,65 +67,69 @@ const FilterCard: React.FC<FilterCardProps> =
         onRequestClose={handlePress}
         statusBarTranslucent
       >
-        <Animated.View style={[styles.modalContainer]}>
-          <Animated.View style={styles.nothingContainer} />
-          <View style={styles.contentStyles}>
-            <View style={styles.filterHeaderStyles}>
-              <Feather
-                name="x"
-                size={20}
-                color={COLOR.B_300}
-                onPress={handlePress}
-              />
-              <Text style={styles.filterText}>Filter your search</Text>
-              <View />
-            </View>
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-            >
-              {
-                opportunityCategories.length > 0 ?
-                  <View style={styles.tagStyles}>
-                    {
-                      opportunityCategories.map((_, index: number) => (
-                        <TagCard
-                          title={_.category}
-                          key={index}
-                          setActive={setFilteredItems}
-                          filteredItems={filteredItems}
-                          isActive={filteredItems.includes(_.category)}
-                          itemCount={_.categoryCount}
-                        />
-                      ))
-                    }
-                  </View>
-                  :
-                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontFamily: 'ComfortaaBold' }}>No tags available</Text>
-                  </View>
-              }
-            </ScrollView>
-            <View style={styles.filterFooter}>
-              {opportunityCategories.length > 0 && <Button
-                title='reset'
-                btn={styles.buttonStyles}
-                textStyle={styles.textStyle}
-                handlePress={handleReset}
+        <TouchableWithoutFeedback onPress={handlePress}>
+          <View style={styles.modalContainer}>
+            <View style={styles.nothingContainer} />
+            <TouchableWithoutFeedback>
+              <View style={styles.contentStyles}>
+                <View style={styles.filterHeaderStyles}>
+                  <Feather
+                    name="x"
+                    size={20}
+                    color={COLOR.SECONDARY_300}
+                    onPress={handlePress}
+                  />
+                  <Text style={styles.filterText}>Filter your search</Text>
+                  <View />
+                </View>
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                >
+                  {
+                    opportunityCategories.length > 0 ?
+                      <View style={styles.tagStyles}>
+                        {
+                          opportunityCategories.map((_, index: number) => (
+                            <TagCard
+                              title={_.category}
+                              key={index}
+                              setActive={setFilteredItems}
+                              filteredItems={filteredItems}
+                              isActive={filteredItems.includes(_.category)}
+                              itemCount={_.categoryCount}
+                            />
+                          ))
+                        }
+                      </View>
+                      :
+                      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontFamily: 'ComfortaaBold' }}>No tags available</Text>
+                      </View>
+                  }
+                </ScrollView>
+                <View style={styles.filterFooter}>
+                  {opportunityCategories.length > 0 && <Button
+                    title='reset'
+                    btn={styles.buttonStyles}
+                    textStyle={styles.textStyle}
+                    handlePress={handleReset}
 
-              />}
-              {(filteredCount as number) > 0 &&
-                <Text
-                  style={{
-                    fontFamily: 'ComfortaaBold',
-                    fontSize: FONTSIZE.TITLE_2
-                  }}
-                >{`Results(${filteredCount})`}
-                </Text>}
-            </View>
+                  />}
+                  {(filteredCount as number) > 0 &&
+                    <Text
+                      style={{
+                        fontFamily: 'ComfortaaBold',
+                        fontSize: FONTSIZE.TITLE_2
+                      }}
+                    >{`Results(${filteredCount})`}
+                    </Text>}
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-        </Animated.View>
+        </TouchableWithoutFeedback>
       </Modal>
-    )
+    );
   }
 
 export default FilterCard
@@ -162,7 +166,7 @@ const styles = StyleSheet.create({
     marginLeft: 20
   },
   buttonStyles: {
-    backgroundColor: COLOR.ORANGE_300,
+    backgroundColor: COLOR.PRIMARY_300,
     padding: 5,
     borderRadius: 50,
     alignSelf: 'flex-start',
