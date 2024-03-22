@@ -77,8 +77,6 @@ const AppContextProvider = (
         const user_ = await getMe();
 
         if (user_.ok) {
-          console.log(user_.jwt)
-          console.log(user_.data);
           setIsLoggedIn(true);
           setUser(user_.data);
           setJwt(user_.jwt);

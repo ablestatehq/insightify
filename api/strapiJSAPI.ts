@@ -186,9 +186,9 @@ async function uploadImage(img: string, id: number, ref: string, field: string, 
   const formData = new FormData();
   console.log("This is the uri: ",formData)
   formData.append('files', blob);
-  // formData.append('refId', id.toString());
-  // formData.append('ref', ref);
-  // formData.append('field', field);
+  formData.append('refId', id.toString());
+  formData.append('ref', ref);
+  formData.append('field', field);
 
   try {
     const response = await fetch(`https://insightify-admin.ablestate.cloud/upload`, {
