@@ -36,7 +36,7 @@ const FormModal: React.FC<FormModalProps> = ({ visible, onSubmit, resourceId, ty
       <View style={styles.modal}>
         <View style={styles.container}>
           <Pressable style={styles.close} onPress={onSubmit}>
-            <Icons name='close' size={25} />
+            <Icons name='close' size={25} _color={COLOR.SECONDARY_200} />
           </Pressable>
           <Text style={styles.headTextStyle}>What's happening?</Text>
           <View style={styles.inputView}>
@@ -80,9 +80,10 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   buttonStyle: {
-    backgroundColor: COLOR.PRIMARY_300,
+    backgroundColor: COLOR.SECONDARY_300,
     borderRadius: 5,
-    padding: 5
+    paddingBottom: 5,
+    paddingTop:2
   },
   buttonTextStyle: {
     color: COLOR.WHITE,
@@ -92,14 +93,11 @@ const styles = StyleSheet.create({
   inputView: {
     padding: 5,
     borderWidth: 1,
-    borderColor: COLOR.PRIMARY_300,
+    borderColor: COLOR.SECONDARY_75,
     marginVertical: 20,
   },
   input: {
     fontFamily: 'ComfortaaSemiBold',
-    // fontSize: 16,
-    // paddingVertical:5
-    // borderWidth: 1,
     textAlign: 'justify',
     textAlignVertical: 'top'
   },
