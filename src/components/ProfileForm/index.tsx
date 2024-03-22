@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+import React, {useContext} from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { AntDesign, FontAwesome, MaterialIcons as Icon } from '@expo/vector-icons';
-import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
-import { View, StyleSheet, TextInput, Modal, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Text, Image, ToastAndroid, Switch, TouchableOpacity } from "react-native";
+import {AntDesign} from '@expo/vector-icons';
+import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
+import {View, StyleSheet, TextInput, Modal, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Text, ToastAndroid, TouchableOpacity} from "react-native";
 
 import Button from '../Button';
 import {ProfileType} from '../../utils/types';
@@ -134,7 +134,7 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
                     valueField='value'
                     value={values?.gender as string}
                     placeholder='Gender'
-                    iconStyle={{ width: 15, height: 15 }}
+                    iconStyle={{width: 15, height: 15}}
                     placeholderStyle={{
                       color: COLOR.SECONDARY_75,
                     }}
