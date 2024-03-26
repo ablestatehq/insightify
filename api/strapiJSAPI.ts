@@ -2,11 +2,13 @@ import {environments} from '../src/constants/environments'
 import {clearLocalData, retrieveLocalData} from "../src/utils/localStorageFunctions";
 
 
-const {STRAPI_TOKEN, STRAPI_BASE_URL,STRAPI_TALENT_FORM_API_KEY, BASE_URL} = environments;
+const {STRAPI_TOKEN, STRAPI_BASE_URL,STRAPI_TALENT_FORM_API_KEY} = environments;
+
 /**
  * @name getMe
  * @returns
  */
+
 async function getMe() {
   const url = `${STRAPI_BASE_URL}/users/me?populate=*`;
   const authToken = await retrieveLocalData('user_token')
