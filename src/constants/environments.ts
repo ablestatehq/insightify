@@ -1,3 +1,10 @@
+import {STRAPI_BASE_URL, STRAPI_TOKEN, STRAPI_TALENT_FORM_API_KEY, BASE_URL} from '@env'
+// export const environments = {
+//   BASE_URL: BASE_URL,
+//   STRAPI_TOKEN: STRAPI_TOKEN,
+//   STRAPI_BASE_URL: STRAPI_BASE_URL,
+//   STRAPI_TALENT_FORM_API_KEY: STRAPI_TALENT_FORM_API_KEY,
+// }
 export const environments = {
   BASE_URL: process.env.BASE_URL,
   STRAPI_TOKEN: process.env.STRAPI_TOKEN,
