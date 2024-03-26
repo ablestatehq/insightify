@@ -1,23 +1,22 @@
 import React, {useState, useRef, useContext} from 'react';
 import {View, Text, ScrollView, StyleSheet, NativeSyntheticEvent} from 'react-native';
 
-import {CodeSnippet, FormModal, TipFooter, HTMLText} from '../../../../components';
+import {CodeSnippet, FormModal, TipFooter, HTMLText, CommentSection} from '../../../../components';
 
 import RenderHtml from 'react-native-render-html';
 
-import {AntDesign} from '@expo/vector-icons';
 import {AppContext} from '../../../../helper/context/AppContext';
-import {COLOR, DIMEN, FONTSIZE} from '../../../../constants/contants';
-import {bookmarkCodeTips} from '../../../../helper/functions/handleFunctions';
+import {COLOR, DIMEN, FONTSIZE } from '../../../../constants/contants';
+import { bookmarkCodeTips } from '../../../../helper/functions/handleFunctions';
 
-const {SCREENWIDTH} = DIMEN;
+const { SCREENWIDTH } = DIMEN;
 
 interface CorouselProps {
   data: any[],
 }
 
 function Index({ data }: CorouselProps) {
-  
+
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isCarouselReady, setIsCarouselReady] = useState<boolean>(false);
@@ -56,7 +55,7 @@ function Index({ data }: CorouselProps) {
 
   return (
     <View style={styles.container}>
-      <View style={{flex:1, justifyContent: 'center', alignItems: 'center', padding:10}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 10 }}>
         {data.length > 0 ? (
           <ScrollView
             ref={scrollViewRef}
@@ -132,12 +131,13 @@ function Index({ data }: CorouselProps) {
                     resourceId={item?.id}
                     author={user?.id}
                   />
+                  {/* <CommentSection wantsToComment={true} comments={[]} resourceId={item?.id} /> */}
                 </View >
               </View>
             ))}
           </ScrollView>
-        ) : (<View style={{flex: 1, justifyContent:'center', alignItems:'center'}}>
-            <Text style={{fontFamily:'ComfortaaBold'}}>No tips found</Text>
+        ) : (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontFamily: 'ComfortaaBold' }}>No tips found</Text>
         </View>)
         }
       </View>
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.SECONDARY_50,
   },
   renderItemView: {
-    width:SCREENWIDTH - 30,
+    width: SCREENWIDTH - 30,
     margin: 5,
     elevation: 0.5,
     borderRadius: 10,
