@@ -1,11 +1,8 @@
 import * as Updates from 'expo-updates';
 import {Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {useContext, useEffect, useRef, useState} from 'react';
 import {MainStackNavigator} from './src/routes/StackNavigator';
-import {generateTransactionRef} from './src/helper/functions/functions';
-import AppContextProvider, {AppContext} from './src/helper/context/AppContext';
-import {Device, NotificationController, Notifications} from './src/helper/functions/notifications';
+import AppContextProvider from './src/helper/context/AppContext';
 
 import usePushNotifications from './src/helper/customHooks/usePushNotification';
 
