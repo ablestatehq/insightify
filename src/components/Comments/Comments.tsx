@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, {useContext} from 'react'
 import {FontAwesome, Ionicons} from '@expo/vector-icons';
 import {COLOR, FONTSIZE} from '../../constants/contants';
 import {StyleSheet, Text, TextInput, View, Image} from 'react-native'
@@ -26,7 +26,7 @@ const Comments = function ({wantsToComment, comments, resourceId}:CommentsProps)
       type: 'Tech Tip',
       author: isLoggedIn ? user?.id : null
     }
-    // console.log(data);
+
     const response = await storeData('comments', data)
     if (response.ok) {
       

@@ -25,6 +25,7 @@ interface ProfileFormProps {
 export default function ProfileForm({ handleClose, visible, profilePhoto, setProfilePhoto }: ProfileFormProps) {
 
   const {user, jwt, setUser} = useContext(AppContext);
+  
   const initialProfile: ProfileType = {
     firstName: user?.firstName ?? '',
     lastName: user?.lastName ?? '',
@@ -47,17 +48,17 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
         return;
       }
 
-      const imageResponse = await uploadImage(profilePhoto as string, user.id, 'user', 'photo', jwt);
+      // const imageResponse = await uploadImage(profilePhoto as string, user.id, 'user', 'photo', jwt);
       
-      console.log(imageResponse)
-      if (imageResponse.error && profilePhoto) {
-        await storeToLocalStorage('profilePicture', {profilePhoto});
-      }
+      // if (imageResponse.error && profilePhoto) {
+      //   await storeToLocalStorage('profilePicture', {profilePhoto});
+      // }
+
       setUser(response?.data);
 
       ToastAndroid.show('Successfully submitted your profile.', 5000);
       handleClose();
-    } catch (error) {console.log(error)}
+    } catch (error) {}
   };
 
   const handleChange = (key: keyof ProfileType, value: unknown) => {
@@ -149,11 +150,11 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
                     valueField='value'
                     value={values?.primaryDomain as string}
                     placeholder='Primary domain of expertize'
-                    iconStyle={{ width: 15, height: 15 }}
+                    iconStyle={{width: 15, height: 15}}
                     placeholderStyle={{
                       color: COLOR.SECONDARY_75,
                     }}
-                    onChange={function (item) { handleChange('primaryDomain', item.value) }}
+                    onChange={function (item){handleChange('primaryDomain', item.value)}}
                   />
                 </View>
                 <View style={{ borderWidth: 1, margin: 5, borderRadius: 5, paddingHorizontal: 5, borderColor: COLOR.SECONDARY_100, paddingVertical: 5 }}>
@@ -163,7 +164,7 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
                     valueField='value'
                     value={values?.secondaryDomain as string}
                     placeholder='Secondary domain of expertize'
-                    iconStyle={{ width: 15, height: 15 }}
+                    iconStyle={{width: 15, height: 15}}
                     placeholderStyle={{
                       color: COLOR.SECONDARY_75,
                     }}
@@ -171,7 +172,15 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
                   />
                 </View>
 
-                <View style={{ borderWidth: 1, margin: 5, borderRadius: 5, paddingHorizontal: 5, borderColor: COLOR.SECONDARY_100, paddingVertical: 5 }}>
+                <View
+                  style={{
+                    borderWidth: 1,
+                    margin: 5,
+                    borderRadius: 5,
+                    paddingHorizontal: 5,
+                    borderColor: COLOR.SECONDARY_100,
+                    paddingVertical: 5
+                  }}>
                   <MultiSelect
                     style={styles.dropdown}
                     placeholderStyle={styles.placeholderStyle}
@@ -202,13 +211,6 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10, justifyContent: 'space-between' }}>
                   <Text>Are you available? </Text>
-                  {/* <Switch
-                    style={{ borderWidth: 1 }}
-                    thumbColor={values?.isAvailable ? COLOR.SECONDARY_300 : COLOR.SECONDARY_50}
-                    trackColor={{ true: COLOR.GREY_300, false: COLOR.SECONDARY_300 }}
-                    value={values?.isAvailable as boolean}
-                    onValueChange={(changedValue) => handleChange('isAvailable', changedValue as boolean)}
-                  /> */}
                   <CheckBox
                     checkBoxToggle={values?.isAvailable as boolean}
                     handleCheckBoxToggle={function (): void {

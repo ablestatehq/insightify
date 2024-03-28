@@ -28,16 +28,18 @@ const usePushNotifications = () => {
             model: Device.modelName,
             manafacturer: Device.manufacturer,
           };
+
           const checkDBToken = await getStrapiData('notification-tokens');
-  
+
           if (!checkDBToken.includes(token)) {
             setIsNotificationEnabled(true);
             await storeData('notification-tokens', tokenData);
-            await storeToLocalStorage('tokens', {pushToken: token, isPushNotificationEnabled: true});
+            await storeToLocalStorage('tokens', { pushToken: token, isPushNotificationEnabled: true });
+          } else {
+            // If the expoToken exists in the database.
+            
           }
         }
-
-
       } catch (error) {}
     };
 

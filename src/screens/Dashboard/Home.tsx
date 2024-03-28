@@ -7,8 +7,9 @@ import {
 } from 'react-native';
 
 // constants
-import { COLOR } from '../../constants/contants'
+import {COLOR} from '../../constants/contants'
 import OpportunityList from '../OpportunityStack/OpportunityList/OpportunityList';
+import {environments} from '../../constants/environments';
 
 const Home = () => {
   return (
@@ -33,6 +34,5 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flex: 1,
-    // paddingVertical: 10,
   }
 })

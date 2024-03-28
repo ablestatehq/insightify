@@ -39,17 +39,16 @@ function JoinCommunityModal({visible, setVisible, setIsInCommunity}: JoinCommuni
     if (memberInfo.country != '' &&
       memberInfo.email != '' &&
       memberInfo.phoneNumber != '') {
-      console.log(memberInfo)
       try {
         const response = await storeData('community-members', memberInfo);
-        // console.log(response)
+
         if (response.data) {
-          ToastAndroid.show('You\'ve successfully joined our community. \n You will receive a comfirmation email.', 5000);
           setIsInCommunity(true);
           setVisible(false);
           setMemberInfo(initialMemberInfo);
           setCountry('Country');
-          await storeToLocalStorage('joined_comm', { isJoined: true })
+          await storeToLocalStorage('joined_comm', {isJoined: true})
+          ToastAndroid.show('You\'ve successfully joined our community. \n You will receive a comfirmation email.', 5000);
         } else { }
       } catch (error) { }
     }

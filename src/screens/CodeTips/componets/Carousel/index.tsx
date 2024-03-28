@@ -1,33 +1,29 @@
 import React, {useState, useRef, useContext} from 'react';
 import {View, Text, ScrollView, StyleSheet, NativeSyntheticEvent} from 'react-native';
 
-import {CodeSnippet, FormModal, TipFooter, HTMLText, CommentSection} from '../../../../components';
+import {CodeSnippet, FormModal, TipFooter, HTMLText} from '../../../../components';
 
 import RenderHtml from 'react-native-render-html';
 
 import {AppContext} from '../../../../helper/context/AppContext';
-import {COLOR, DIMEN, FONTSIZE } from '../../../../constants/contants';
-import { bookmarkCodeTips } from '../../../../helper/functions/handleFunctions';
+import {COLOR, DIMEN, FONTSIZE} from '../../../../constants/contants';
+import {bookmarkCodeTips} from '../../../../helper/functions/handleFunctions';
 
-const { SCREENWIDTH } = DIMEN;
+const {SCREENWIDTH} = DIMEN;
 
 interface CorouselProps {
   data: any[],
 }
 
-function Index({ data }: CorouselProps) {
+function Index({data}: CorouselProps) {
 
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isCarouselReady, setIsCarouselReady] = useState<boolean>(false);
 
-  const { codeTips, setCodeTips, user } = useContext(AppContext);
+  const {codeTips, setCodeTips, user} = useContext(AppContext);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
 
-  const handleLayoutReady = () => {
-    setIsCarouselReady(true);
-  }
-
+  // Render html tag renderers
   const renderers = {
     code: CodeSnippet,
     p: HTMLText
@@ -37,18 +33,6 @@ function Index({ data }: CorouselProps) {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
     const index = Math.round(contentOffsetX / scrollViewWidth);
     setCurrentIndex(index);
-  };
-
-  const handleNext = () => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ x: (currentIndex + 1) * scrollViewWidth - 30, animated: true });
-    }
-  };
-
-  const handlePrev = () => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ x: (currentIndex - 1) * scrollViewWidth - 30, animated: true });
-    }
   };
 
   const scrollViewWidth = SCREENWIDTH;
@@ -94,7 +78,7 @@ function Index({ data }: CorouselProps) {
                         tagsStyles={{
                           p: {
                             fontFamily: 'LatoRegular',
-                            fontSize: FONTSIZE.TITLE_1,
+                            fontSize: FONTSIZE.BODY,
                             textAlign: 'justify',
                             paddingVertical: 5
                           },
@@ -107,17 +91,18 @@ function Index({ data }: CorouselProps) {
                           },
                           li: {
                             fontFamily: 'LatoRegular',
-                            fontSize: FONTSIZE.TITLE_1
+                            fontSize: FONTSIZE.BODY
                           },
                           strong: {
                             fontFamily: 'LatoRegular',
-                            fontSize: FONTSIZE.TITLE_1
+                            fontSize: FONTSIZE.BODY
                           }
                         }}
                       />
                     </ScrollView>
                   </View>
                   <TipFooter
+                    id={item?.id}
                     source_url_text={item?.source_url_text}
                     source_url={item?.source_url}
                     bookmarked={item?.bookmarked}
@@ -131,7 +116,6 @@ function Index({ data }: CorouselProps) {
                     resourceId={item?.id}
                     author={user?.id}
                   />
-                  {/* <CommentSection wantsToComment={true} comments={[]} resourceId={item?.id} /> */}
                 </View >
               </View>
             ))}
@@ -195,7 +179,7 @@ const styles = StyleSheet.create({
   tipTitle: {
     fontFamily: 'RalewayBold',
     color: COLOR.SECONDARY_300,
-    fontSize: FONTSIZE.HEADING_4,
+    fontSize: FONTSIZE.TITLE_1,
   },
   tipContent: {
     lineHeight: 30,
@@ -209,7 +193,7 @@ const styles = StyleSheet.create({
   },
   titleName: {
     textTransform: 'capitalize',
-    fontSize: FONTSIZE.TITLE_1
+    fontSize: FONTSIZE.TITLE_2
   },
   categoryView: {
     // padding: 10

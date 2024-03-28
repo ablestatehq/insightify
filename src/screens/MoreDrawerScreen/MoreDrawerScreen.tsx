@@ -1,9 +1,9 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, {useContext, useMemo, useState} from 'react';
 import {Image, Pressable, StatusBar, StyleSheet, Switch, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {Entypo, SimpleLineIcons, Ionicons, FontAwesome, Feather, MaterialIcons} from '@expo/vector-icons';
+import {Entypo, SimpleLineIcons, Ionicons, Feather, MaterialIcons} from '@expo/vector-icons';
 
 import onShare from '../../utils/onShare';
 import {COLOR, FONTSIZE} from '../../constants/contants';
@@ -12,11 +12,21 @@ import {getDataId, updateStrapiData, uploadImage} from '../../../api/strapiJSAPI
 import {CustomModal, JoinCommunity, ProfileForm} from '../../components';
 import {clearLocalData, retrieveLocalData, storeToLocalStorage} from '../../utils/localStorageFunctions';
 
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
+const LOGOUT_MESSAGE = "Are you sure you want to log out?"
 const MoreDrawerScreen = () => {
-  const {isLoggedIn, setIsLoggedIn, isNotificationEnabled, setIsNotificationEnabled, setUser, user, isInCommunity, setIsInCommunity, jwt} = useContext(AppContext);
+  const {
+    isLoggedIn,
+    setIsLoggedIn,
+    isNotificationEnabled,
+    setIsNotificationEnabled,
+    setUser, user, isInCommunity,
+    setIsInCommunity,
+  } = useContext(AppContext);
+
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+
   const [modal, setModal] = useState<boolean>(false);
   const [joinVisible, setJoinVisible] = useState<boolean>(false);
   const [showProfileCard, setShowProfileCard] = useState<boolean>(false);
@@ -31,14 +41,13 @@ const MoreDrawerScreen = () => {
     setIsNotificationEnabled(!isNotificationEnabled);
     const tokens = await retrieveLocalData('tokens');
     if (tokens) {
-      const { pushToken, isPushNotificationEnabled } = tokens;
+      const {pushToken, isPushNotificationEnabled} = tokens;
 
       const id = await getDataId('notification-tokens', 'tokenID', pushToken);
 
       if (id) {
-        await storeToLocalStorage('tokens', { pushToken, "isPushNotificationEnabled": !isPushNotificationEnabled });
-        await updateStrapiData('notification-tokens', id[0]?.id, { subscription: !isPushNotificationEnabled });
-
+        await storeToLocalStorage('tokens', {pushToken, "isPushNotificationEnabled": !isPushNotificationEnabled});
+        await updateStrapiData('notification-tokens', id[0]?.id, {subscription: !isPushNotificationEnabled});
       }
     }
   }
@@ -78,25 +87,10 @@ const MoreDrawerScreen = () => {
     setIsLoggedIn(false);
   };
   
-  // useEffect(() => {
-  //   const getProfileImage = async function () {
-  //     const image = await retrieveLocalData('profileImageData').catch(error => console.error(error))
-  //     console.log("This is what I have to do",image);
-  //     if (image && isLoggedIn) {
-  //       const response = await uploadImage(image, user?.id, 'user', 'photo', jwt);
-  //       if (!response.error) {
-  //         clearLocalData('profileImageData');
-  //       }
-  //       setProfilePhoto(image);
-  //     }
-  //   }
-  //   getProfileImage();
-  // },[])
-  
   return (
     <View style={styles.container}>
       {/* Account  */}
-      <View style={{ ...styles.contentContainer, elevation:1}}>
+      <View style={[styles.contentContainer, {elevation:1, margin:5, marginHorizontal:10}]}>
         <View style={{
           paddingHorizontal: 10,
           justifyContent: 'center',
@@ -115,7 +109,7 @@ const MoreDrawerScreen = () => {
                 alignItems: 'center',
                 marginTop: 10,
                 marginBottom: 5,
-                gap:10
+                gap:5
               }}
               onPress={userProfile.operations}>
               <Text style={{
@@ -125,7 +119,7 @@ const MoreDrawerScreen = () => {
               }}>
                 {userProfile.completed}
               </Text>
-              {(userProfile.completed && isLoggedIn) && <MaterialCommunityIcons name="account-edit-outline" size={15} color={COLOR.SECONDARY_300} onPress={()=>{setShowProfileCard(true)}}/>}
+              {(userProfile.completed && isLoggedIn) && <MaterialCommunityIcons name="account-edit" size={15} color={COLOR.SECONDARY_300} onPress={()=>{setShowProfileCard(true)}}/>}
             </Pressable>
             {isLoggedIn &&
               (<Pressable onPress={function () {setModal(true) }} style={{}}>
@@ -137,13 +131,17 @@ const MoreDrawerScreen = () => {
         {!isInCommunity ?
           (<Pressable style={{ padding: 5, borderTopWidth: 1, borderTopColor: COLOR.SECONDARY_50 }} onPress={() => setJoinVisible(!joinVisible)}>
             <Text style={{ textAlign: 'center', color: COLOR.SECONDARY_300 }}>Join our Community</Text>
-          </Pressable>) :
+          </Pressable>):
           (<View>
-            {/* <Text style={{textAlign:'center'}}>Community member</Text> */}
+            {/* <Text style={{textAlign:'center'}}>Ablestate community member</Text> */}
           </View>)
         }
       </View>
-      <View style={{paddingLeft:20}}>
+      {/* Verson number */}
+      <View style={{ marginHorizontal:10, marginBottom:10}}>
+        <Text style={{ fontSize: FONTSIZE.SMALL, fontFamily: 'ComfortaaLight', opacity: 0.5, textAlign: 'center' }}>Version 0.0.9.1 Beta</Text>
+      </View>
+      <View style={{marginHorizontal:10}}>
         {/* Notifications  */}
         <Text style={styles.textHeading}>Notification</Text>
         <View >
@@ -254,49 +252,11 @@ const MoreDrawerScreen = () => {
             />
           </Pressable>
         </View>
-        {/* Show application version. */}
-        <View style={styles.contentContainer}>
-          <Pressable
-            style={styles.itemContainer}>
-            <View style={styles.iconContainer}>
-              <View>
-                <Text style={styles.text}>Version</Text>
-                <Text style={{ fontSize: FONTSIZE.BODY, fontFamily: 'ComfortaaLight', opacity: 0.5 }}>0.0.9.1 Beta</Text>
-              </View>
-            </View>
-          </Pressable>
-        </View>
 
-        {/* Sign in or out  */}
-        {/* <View style={{
-        ...styles.itemContainer,
-        marginTop: 10,
-        borderRadius: 10,
-      }}>
-        <Pressable style={styles.iconContainer}
-          onPress={() => {
-            if (isLoggedIn) {
-              setModal(true);
-            } else {
-              navigation.navigate('Login', { title: '' });
-            }
-          }}
-        >
-          <AntDesign name={isLoggedIn ? "logout" : "login"} size={15} color={COLOR.SECONDARY_300} />
-          <Text
-            style={{
-              ...styles.text,
-              fontSize: FONTSIZE.BODY
-            }}
-          >
-            {isLoggedIn ? 'Logout' : 'Login'}
-          </Text>
-        </Pressable>
-      </View> */}
       </View>
       <CustomModal
         title={isLoggedIn ? 'Logout' : ''}
-        message={isLoggedIn ? 'Do you want to logout' : ''}
+        message={isLoggedIn ? LOGOUT_MESSAGE : ''}
         cancel={function (): void {setModal(false)}}
         accept={handleLoginLogout}
         visibility={modal} />
@@ -313,7 +273,7 @@ const MoreDrawerScreen = () => {
         profilePhoto={profilePhoto}
         setProfilePhoto={setProfilePhoto}
       />
-      <StatusBar backgroundColor={COLOR.SECONDARY_50}/>
+      <StatusBar backgroundColor={COLOR.WHITE}/>
     </View>
   );
 }
@@ -327,7 +287,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.WHITE,
   },
   contentContainer: {
-    borderRadius: 10,
+    borderRadius: 5,
     paddingVertical: 5,
     margin: 10,
     backgroundColor: COLOR.WHITE,

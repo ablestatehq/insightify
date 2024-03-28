@@ -5,18 +5,18 @@ import {View, Text} from 'react-native';
 import {Loader} from '../components';
 
 // helper 
-import {fontsLoading } from '../assets/fonts/fonts';
-import { COLOR, FONTSIZE } from '../constants/contants';
-import { AppContext } from '../helper/context/AppContext';
+import {fontsLoading} from '../assets/fonts/fonts';
+import {COLOR, FONTSIZE} from '../constants/contants';
+import {AppContext} from '../helper/context/AppContext';
 
 // screens 
 import Home from '../screens/Dashboard/Home';
 import CodeTips from '../screens/CodeTips/CodeTips';
 import FindTalent from '../screens/FindTalent/FindTalent';
 
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import MoreDrawerScreen from '../screens/MoreDrawerScreen/MoreDrawerScreen';
 import Icon from '../assets/icons';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
+import MoreDrawerScreen from '../screens/MoreDrawerScreen/MoreDrawerScreen';
 
 const Tab = createBottomTabNavigator();
 
