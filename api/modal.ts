@@ -1,0 +1,33 @@
+export const MODALS = {
+  comments: `query {
+    comments{
+      data{
+        id,
+        attributes{
+          comment,
+          resourceId,
+          type,
+          author{
+            data{
+              id,
+              attributes{
+                username,
+                isAvailable,
+                firstName,
+                lastName,
+                createdAt,
+                photo{
+                  data{
+                    attributes{
+                      url
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }`,
+}

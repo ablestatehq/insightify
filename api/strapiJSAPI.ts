@@ -1,5 +1,6 @@
 import {environments} from '../src/constants/environments'
 import {clearLocalData, retrieveLocalData} from "../src/utils/localStorageFunctions";
+import { MODALS } from './modal';
 
 
 const {STRAPI_TOKEN, STRAPI_BASE_URL,STRAPI_TALENT_FORM_API_KEY} = environments;
@@ -95,7 +96,9 @@ function getStrapiData(endpoint: string) {
       .then(response => response.json())
       .then(data => {
         if (endpoint == 'notification-tokens') {
-          return data.data.map((res: any) => res.attributes.tokenID)
+          return data.data.map((res: any) => {
+            return res.attributes.tokenID
+          })
         }
         return data?.data?.map((res:any) => {
          return {id: res.id, ...res.attributes}
@@ -217,6 +220,27 @@ async function uploadImage(img: string, id: number, ref: string, field: string, 
   }
 }
 
+// async function findAll(endpoint: keyof typeof MODALS) {
+//   try {
+//     const options = {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization':`Bearer ${STRAPI_TOKEN}`
+//       },
+//       body: JSON.stringify({
+//         query: MODALS[endpoint]
+//       })
+//     }
+//     const response = await fetch('https://insightify-admin.ablestate.cloud/graphql', options);
+//     const data = await response.json();
+
+//     console.log("Data: ", data);
+//     return data;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 export {
   getMe,
   storeData,
