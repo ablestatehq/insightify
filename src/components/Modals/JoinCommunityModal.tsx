@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, {useContext} from 'react';
 import Button from '../Button';
 import Input from '../TagInput/Input';
 import {PRIMARY_ROLES} from '../../utils/Enums';
@@ -24,14 +24,6 @@ interface JoinCommunityModalProps {
     isWhatsAppPhone: false
   };
 };
-
-// const initialMemberInfo = {
-//   email: '',
-//   country: '',
-//   phoneNumber: '',
-//   primaryRole: [],
-//   isWhatsAppPhone: false
-// };
 
 function JoinCommunityModal({ visible, setVisible, setIsInCommunity, initialMemberInfo }: JoinCommunityModalProps) {
   const [memberInfo, setMemberInfo] = React.useState<MemberInfo>(initialMemberInfo);
@@ -92,16 +84,16 @@ function JoinCommunityModal({ visible, setVisible, setIsInCommunity, initialMemb
                 </Text>
                 <View>
                   <Input
-                    styles={{ inputFocused: styles.inputFocused, input: styles.input }}
+                    styles={{inputFocused: styles.inputFocused, input: styles.input}}
                     value={memberInfo.email}
-                    handleChange={function (text) { handleChange('email', text) }}
+                    handleChange={function (text) {handleChange('email', text)}}
                     placeHolder={'Email'}
                   />
                 </View>
 
-                <View style={{ borderWidth: 1, borderColor: COLOR.SECONDARY_100, borderRadius: 5, marginVertical: 5, padding: 10 }}>
+                <View style={{borderWidth: 1, borderColor: COLOR.SECONDARY_100, borderRadius: 5, marginVertical: 5, padding: 10}}>
                   <TouchableOpacity
-                    style={{ paddingHorizontal: 5, borderRightColor: COLOR.SECONDARY_100 }}
+                    style={{paddingHorizontal: 5, borderRightColor: COLOR.SECONDARY_100}}
                     onPress={() => setShowCountry(true)}
                   >
                     <Text style={{ fontFamily: 'ComfortaaBold' }}>
@@ -113,9 +105,9 @@ function JoinCommunityModal({ visible, setVisible, setIsInCommunity, initialMemb
                     lang={'en'}
                     itemTemplate={(props) => (
                       <Pressable onPress={props.onPress}
-                        style={{ padding: 10, backgroundColor: COLOR.GREY_50, flexDirection: 'row', gap: 10, margin: 5, borderRadius: 10 }}>
-                        <Text style={{ fontFamily: 'ComfortaaBold', paddingHorizontal: 10 }}>{props.item.dial_code}</Text>
-                        <Text style={{ fontFamily: 'ComfortaaBold', paddingHorizontal: 10, textAlign: 'justify' }}>{props.name}</Text>
+                        style={{padding: 10, backgroundColor: COLOR.GREY_50, flexDirection: 'row', gap: 10, margin: 5, borderRadius: 10 }}>
+                        <Text style={{fontFamily: 'ComfortaaBold', paddingHorizontal: 10 }}>{props.item.dial_code}</Text>
+                        <Text style={{fontFamily: 'ComfortaaBold', paddingHorizontal: 10, textAlign: 'justify' }}>{props.name}</Text>
                       </Pressable>)}
                     enableModalAvoiding={true}
                     style={{ itemsList: { width: '100%', height: '50%' } }}

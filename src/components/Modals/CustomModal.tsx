@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.NEUTRAL_2
   },
   contentContainer: {
-    width: '90%',
+    width: '75%',
     padding: 10,
     borderRadius: 5,
     paddingHorizontal: 20,
