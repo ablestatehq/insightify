@@ -14,10 +14,19 @@ interface FloatingButtonProps {
     right?: number
     left?: number
     top?: number
+    marginRight?: number
 }
 }
 
-const FloatingButton: React.FC<FloatingButtonProps> = ({title, borderRadius, bgColor, textColor, press,buttonPosition}) => {
+const FloatingButton: React.FC<FloatingButtonProps> =
+  ({
+    title,
+    borderRadius,
+    bgColor,
+    textColor,
+    press,
+    buttonPosition
+  }) => {
 
   return (
     <Pressable
@@ -31,10 +40,12 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({title, borderRadius, bgC
       }}
       onPress={press}
     >
-      {title && <Text style={{
+      {title && <Text
+        style={{
         ...styles.text,
         color: textColor ? textColor : COLOR.WHITE
-      }}>{title}</Text>}
+        }}
+      >{title}</Text>}
       {!title && <Feather name="plus" size={24} color={COLOR.WHITE} />}
     </Pressable>
   )

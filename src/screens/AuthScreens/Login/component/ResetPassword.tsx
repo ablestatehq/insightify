@@ -1,13 +1,13 @@
-import { Text, TextInput, View, StyleSheet } from "react-native"
-import { useState } from "react";
-import { Feather } from "@expo/vector-icons";
+import {Text, TextInput, View, StyleSheet} from "react-native"
+import {useState} from "react";
+import {Feather} from "@expo/vector-icons";
 import Header from "../../../../components/Headers/Header";
-import { COLOR, FONTSIZE } from "../../../../constants/contants";
-import { Button } from "../../../../components";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { ResetScreenProps } from "../../../../utils/types";
-import { resetPassword } from "../../../../../api/auth";
+import {COLOR, FONTSIZE} from "../../../../constants/contants";
+import {Button} from "../../../../components";
+import {useNavigation, useRoute} from "@react-navigation/native";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {ResetScreenProps } from "../../../../utils/types";
+import {resetPassword} from "../../../../../api/auth";
 
 const ResetPassword = () => {
   // set password hooks

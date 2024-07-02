@@ -8,8 +8,6 @@ function useFilter(category:string, data:any[], filteredItems: string[]) {
     const publisedAt = new Date(opp.publishedAt);
     const currentDate = new Date();
 
-    // console.log('PublishedAt: ', publisedAt);
-    // console.log('CurrentDate: ', currentDate)
     const lifespan = (currentDate as any) - (publisedAt as any);
     
     // console.log("Lifespan: ", lifespan);
@@ -57,21 +55,28 @@ function useFilter(category:string, data:any[], filteredItems: string[]) {
   useEffect(() => {
     try {
       setStillLoading(true);
-      const filtered = filteredItems.length > 0 ? data.filter(opp => {
-        return filteredItems.includes(opp.Category);
-      }) : activeData;
-    if (category == 'All') {
-      setFilteredData([...filtered])
+      if (category == 'All') {
+        const filtered = filteredItems.length > 0 ?
+          activeData.filter(opp => filteredItems.includes(opp.Category)) :
+          activeData;
+        setFilteredData([...filtered]);
     } else if (category == 'Saved') {
       setFilteredData(currentData => {
-        return []
+        const saved_data = data?.filter(item => item.bookmarked === true);
+        const filtered = filteredItems.length > 0 ?
+          saved_data.filter(data => filteredItems.includes(data.Category)) :
+          saved_data
+        return [...filtered];
       });
     } else if (category == 'For you') {
       setFilteredData(currentData => {
         return []
       });
-    } else if (category == 'Archived') {
-      setFilteredData([...archivedOpp])
+      } else if (category == 'Archived') {
+        const filtered = filteredItems.length > 0 ?
+          archivedOpp.filter(opp => filteredItems.includes(opp.Category)) :
+          archivedOpp;
+      setFilteredData([...filtered])
     } else { }
     } catch (error) { }
     finally {

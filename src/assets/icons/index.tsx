@@ -22,14 +22,14 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
       return <Fontisto
         name="spinner-refresh"
         size={size ? size : 24}
-        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
     case 'Level up':
       return <MaterialCommunityIcons
         name="stairs-up"
         size={size ? size : 24}
-        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
     case 'Talent':
@@ -42,7 +42,7 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
       return <MaterialIcons
         name="more-horiz"
         size={SIZE.MEDIUM}
-        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
     case 'Share':

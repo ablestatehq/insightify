@@ -13,7 +13,6 @@ import Icons from '../../assets/icons';
 import {AppContext} from '../../helper/context/AppContext';
 import {CategorySection, FloatingButton} from '../../components';
 
-
 const CodeTips = () => {
 
   const {codeTips} = useContext(AppContext);
@@ -66,14 +65,26 @@ const CodeTips = () => {
           {showSearchBar && <View style={{flex: 1, borderWidth: 1, borderColor: COLOR.SECONDARY_50, paddingHorizontal: 10, borderRadius: 5, padding: 2}}>
             <TextInput
               placeholder='search'
-              onChangeText={text => {
-                setSearchText(text);
-              }}
+              onChangeText={text => setSearchText(text)}
             />
           </View>}
           {!showSearchBar && <Text style={styles.heading}>Career insights</Text>}
-          {/* <Icons name='search' _color={COLOR.SECONDARY_300} press={() => { setShowSearchBar(currentValue => !currentValue) }} /> */}
-          {showSearchBar && <Icons name='close' _color={COLOR.SECONDARY_300} press={() => {setShowSearchBar(currentValue => !currentValue)}} />}
+          <Icons
+            name='search'
+            _color={COLOR.SECONDARY_300}
+            press={() => {
+              if (showSearchBar) {
+                console.log('Start searching!!!');
+              } else {
+                setShowSearchBar(currentValue => !currentValue)
+              }
+            }}
+          />
+          {showSearchBar && <Icons
+            name='close'
+            _color={COLOR.SECONDARY_300}
+            press={() => { setShowSearchBar(currentValue => !currentValue) }}
+          />}
         </View>
         <CategorySection setFilteredItems={setCategory} categories={['All', 'Saved', 'Archived']} />
       </View>
@@ -84,17 +95,6 @@ const CodeTips = () => {
         />
       </View>)}
       {!isLoading && <Carousel data={carouselData}/>}
-      
-      {/* <FloatingButton
-        title='Ask'
-        borderRadius={25}
-        press={function () {
-          Alert.alert('Feature update', 'Feature coming soon',
-            [{ text: 'ok', style: 'cancel', onPress(value) { } }], { onDismiss() { }, cancelable: true, });
-        } } buttonPosition={{
-          right: 10,
-          top: 100
-        }} /> */}
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 
 import {
   View,
@@ -9,9 +9,10 @@ import {
 // constants
 import {COLOR} from '../../constants/contants'
 import OpportunityList from '../OpportunityStack/OpportunityList/OpportunityList';
-import {environments} from '../../constants/environments';
+import {CodeTipSkelton} from '../../components/Skelton';
 
 const Home = () => {
+
   return (
     <SafeAreaView
       style={styles.container}
@@ -21,6 +22,7 @@ const Home = () => {
       >
         <OpportunityList />
       </View>
+      
     </SafeAreaView >
   );
 }

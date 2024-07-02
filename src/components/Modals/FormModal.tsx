@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { Modal, Pressable, StatusBar, StyleSheet, Text, TextInput, ToastAndroid, TouchableWithoutFeedback, View } from 'react-native'
+import React, {useState} from 'react'
+import {Modal, Pressable, StatusBar, StyleSheet, Text, TextInput, ToastAndroid, TouchableWithoutFeedback, View} from 'react-native'
 import Button from '../Button'
-import { storeData } from '../../../api/strapiJSAPI'
-import { COLOR, FONTSIZE } from '../../constants/contants'
+import {storeData} from '../../../api/strapiJSAPI'
+import {COLOR, FONTSIZE} from '../../constants/contants'
 import Icons from '../../assets/icons'
 
 interface FormModalProps {

@@ -1,13 +1,19 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useContext, useState} from 'react';
 import {StyleSheet, View, StatusBar, Text, FlatList} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 import {COLOR} from '../../../constants/contants';
-import {AppContext} from '../../../helper/context/AppContext';
-// import useOpportunities from '../../../helper/customHooks/useOpportunities';
-import {OpportunityCard, OpportunityHeader, FloatingButton, FilterCard, CategorySection, FormModal} from '../../../components'
 import useFilter from '../../../helper/customHooks/useFilter';
+import {AppContext} from '../../../helper/context/AppContext';
+import {
+  OpportunityCard,
+  OpportunityHeader,
+  FloatingButton,
+  FilterCard,
+  CategorySection,
+  FormModal
+} from '../../../components';
 
 const OpportunityList = () => {
 
@@ -25,7 +31,7 @@ const OpportunityList = () => {
     setShowCard(!showCard);
   }
 
-  const renderOpportunity = useCallback(({ item, index }: { item: any, index: number }) => (
+  const renderOpportunity = useCallback(({item, index}: {item: any, index: number}) => (
     <OpportunityCard
       opportunity={item}
       key={index}
@@ -35,6 +41,7 @@ const OpportunityList = () => {
 
   const [opps, isLoading] = useFilter(category, opportunities, filteredItems);
 
+  // console.log(opps);
   return (
     <View style={styles.container}>
       <StatusBar barStyle='dark-content' backgroundColor={COLOR.WHITE} />
@@ -63,20 +70,24 @@ const OpportunityList = () => {
           resourceId={resourceId}
           type={'Opportunity'}
           author={user?.id}
-          onSubmit={() => {setShowReportModal(!showReportModal)}}
+          onSubmit={() => { setShowReportModal(!showReportModal) }}
         />
       </View>
 
-      <FloatingButton press={function () {
-        if (isLoggedIn) {
-          navigation.navigate('Share');
-        } else {
-          navigation.navigate('Login', { title: 'Login to share\nan Opportunity' });
-        }
-      } } buttonPosition={{
-        bottom: 20,
-        right: 0,
-      }} />
+      <FloatingButton
+        press={function () {
+          if (isLoggedIn) {
+            navigation.navigate('Share');
+          } else {
+            navigation.navigate('Login', { title: 'Login to share\nan Opportunity' });
+          }
+        }}
+        buttonPosition={{
+          bottom: 20,
+          right: 0,
+          marginRight: 10
+        }}
+      />
       {showCard && <FilterCard
         handleCardVisibility={showFilterCard}
         setFilteredItems={setFilteredItems}

@@ -20,7 +20,7 @@ function Index({data}: CorouselProps) {
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const {codeTips, setCodeTips, user} = useContext(AppContext);
+  const {codeTips, setCodeTips, user, comments} = useContext(AppContext);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
 
   // Render html tag renderers
@@ -108,6 +108,7 @@ function Index({data}: CorouselProps) {
                     bookmarked={item?.bookmarked}
                     handleBookmark={function (): void { bookmarkCodeTips(item?.id, codeTips, setCodeTips) }}
                     onSubmitReport={function (): void { setShowReportModal(!showReportModal) }}
+                    comments={comments}
                   />
                   <FormModal
                     type={'Tech Tip'}
@@ -120,28 +121,11 @@ function Index({data}: CorouselProps) {
               </View>
             ))}
           </ScrollView>
-        ) : (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontFamily: 'ComfortaaBold' }}>No tips found</Text>
+        ) : (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={{fontFamily: 'ComfortaaBold'}}>No tips found</Text>
         </View>)
         }
       </View>
-      {/* <View style={styles.navigation}>
-        <AntDesign
-          size={24}
-          name="arrowleft"
-          color={COLOR.SECONDARY_300}
-          style={[styles.navText, currentIndex === 0 && { opacity: 0.5 }]}
-          onPress={handlePrev}
-        />
-        <AntDesign
-          size={24}
-          name="arrowright"
-          color={COLOR.SECONDARY_300}
-          style={[styles.navText, currentIndex === data.length - 1 && { opacity: 0.5 }]}
-          onPress={handleNext}
-        />
-      </View> */}
-
     </View>
   );
 }

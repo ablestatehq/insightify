@@ -51,7 +51,7 @@ type TalentSubmissionForm = {
   need: string[]// Looking for
   email: string
   phone: string
-  heads?: string// Quantity needed.
+  heads?: number// Quantity needed.
   client: string// Client name
   company?:string
   message: string// Message left

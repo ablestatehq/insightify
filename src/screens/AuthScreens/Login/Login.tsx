@@ -6,11 +6,13 @@ import {COLOR, FONTSIZE} from '../../../constants/contants'
 import {AppContext} from '../../../helper/context/AppContext'
 import {InputText, SubmitButton, CustomModal} from '../../../components'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
-import {KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {login} from '../../../../api/auth';
 import {LoginScreenProps} from '../../../utils/types';
 import {handleBookmark} from '../../../helper/functions/handleFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import { storeToLocalStorage } from '../../../utils/localStorageFunctions';
+// import {sendConfirmationEmail} from '../../../../api/strapiJSAPI';
 
 const Login: React.FC = () => {
   const route = useRoute<LoginScreenProps>();
@@ -18,12 +20,12 @@ const Login: React.FC = () => {
   const {title, opportunityID} = route.params;
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
+  const [modalTitle, setModalTitle] = useState<string>('');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>('');
-  const [modalTitle, setModalTitle] = useState<string>('');
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
-  const {setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser} = useContext(AppContext);
+  const {setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser, community} = useContext(AppContext);
 
   const loginFormInitValues = {
     email: '',
@@ -41,10 +43,14 @@ const Login: React.FC = () => {
             ...response.user
           }));
         
-        setJwt(response?.jwt)
-        setUser(response.user)
+        setJwt(response?.jwt);
+        const isMember = community.some((member) => member.email == response?.user?.email);
+        setUser((prev:any) => ({...response?.user,isMember}))
         setIsLoggedIn(true);
+        // console.log("This is what I have for now!",community)
         
+        storeToLocalStorage('isMember', {isMember});
+
         if (opportunityID) {
           handleBookmark(opportunityID, opportunities, setOpportunities)
           navigation.goBack()
@@ -61,7 +67,7 @@ const Login: React.FC = () => {
         setModalTitle('Login Error');
         setModalMessage('Login Failed');
       }
-    } catch (error) { }
+    } catch (error) {console.log('')}
   }
 
   return (
@@ -107,7 +113,7 @@ const Login: React.FC = () => {
                       <TouchableOpacity
                         onPress={() => {navigation.navigate('SignUp')}}
                       >
-                        <Text style={styles.signUpText}>Sign up</Text>
+                        <Text style={styles.signUpText}> Sign up</Text>
                       </TouchableOpacity>
                     </View>
                   </View>

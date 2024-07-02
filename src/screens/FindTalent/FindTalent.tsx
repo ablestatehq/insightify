@@ -33,21 +33,27 @@ const FindTalent = () => {
     email: '',
     phone: '',
     message: '', // Message left
-    need: selectedItem, // Looking for
-    heads: '', // Number of developers need.
+    need: '', // Looking for
+    heads: 0, // Number of developers need.
     company: ''
   }
 
   const serviceAvailable = [
-    { label: 'New software developer', value: 1 },
-    { label: 'Product Manager', value: 2 },
-    { label: 'Marketing Manager', value: 3 },
-    { label: 'Mobile developer', value: 4 }
-  ]
+    { label: 'New software developer', value: 'New software developer' },
+    { label: 'Product Manager', value: 'Product Manager' },
+    { label: 'Marketing Manager', value: 'Marketing Manager' },
+    { label: 'Mobile developer', value: 'Mobile developer' }
+  ];
+  
   // submit request form.
   const submitTalentRequestForm = async (values: TalentSubmissionForm, formikHelpers: FormikHelpers<any>) => {
+    const data = {
+      ...values,
+      heads: Number(values.heads)
+    };
+    const submissionResponse = await storeData('talent-requests', data);
 
-    const submissionResponse = await storeData('talent-requests', values)
+    console.log(submissionResponse);
     if (submissionResponse.data != null) {
       setShowModal(true);
       setModalTitle('Talent Request');
@@ -130,17 +136,17 @@ const FindTalent = () => {
                 data={serviceAvailable}
                 labelField='label'
                 valueField='value'
-                value={selectedItem}
+                value={values.need}
                 placeholder='Select service'
-                iconStyle={{ width: 15, height: 15 }}
+                iconStyle={{width: 15, height: 15}}
                 placeholderStyle={{
                   color: COLOR.SECONDARY_75,
                 }}
-                onChange={function (item) { setSelectedItem(item.label) }}
+                onChange={function (item) {values.need = item.label}}
               />
             </View>
 
-            {values.need.includes('NewDeveloper') &&
+            {values.need.includes('New software developer') &&
               <InputText
                 fieldName='heads'
                 label='How many developers may you need?'

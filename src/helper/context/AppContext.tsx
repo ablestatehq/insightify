@@ -3,10 +3,9 @@ import React, {
   createContext,
   useEffect,
 } from 'react';
-import socket from '../../../api/socket';
-import {getMe, getStrapiData} from '../../../api/strapiJSAPI';
+import {getMe} from '../../../api/strapiJSAPI';
 import {retrieveLocalData, storeToLocalStorage} from '../../utils/localStorageFunctions';
-
+import {getData} from '../../../api/grapiql';
 
 interface AppContextProviderProps {
   children: React.ReactNode;
@@ -19,8 +18,8 @@ interface AppContextType {
   setUser: React.Dispatch<React.SetStateAction<any>>
   isLoading: boolean
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
-  isInCommunity: boolean
-  setIsInCommunity: React.Dispatch<React.SetStateAction<boolean>>
+  // isInCommunity: boolean
+  // setIsInCommunity: React.Dispatch<React.SetStateAction<boolean>>
   codeTips: any[]
   setCodeTips: React.Dispatch<React.SetStateAction<any[]>>
   isLoggedIn: boolean
@@ -30,7 +29,11 @@ interface AppContextType {
   isNotificationEnabled: boolean
   setIsNotificationEnabled: React.Dispatch<React.SetStateAction<boolean>>
   notifications: any[],
-  setNotifications: React.Dispatch<React.SetStateAction<Notification[]>>
+  setNotifications: React.Dispatch<React.SetStateAction<any[]>>,
+  comments: any[],
+  setComments: React.Dispatch<React.SetStateAction<any[]>>,
+  community: any[],
+  setCommunity: React.Dispatch<React.SetStateAction<any[]>>,
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -40,8 +43,6 @@ export const AppContext = createContext<AppContextType>({
   setUser: () => { },
   isLoading: true,
   setIsLoading: () => { },
-  isInCommunity: false,
-  setIsInCommunity: () => { },
   codeTips: [],
   setCodeTips: () => { },
   isLoggedIn: false,
@@ -52,6 +53,10 @@ export const AppContext = createContext<AppContextType>({
   setIsNotificationEnabled: () => { },
   notifications: [],
   setNotifications: () => { },
+  comments:[],
+  setComments: () => { },
+  community: [],
+  setCommunity: () => {},
 })
 
 const AppContextProvider = (
@@ -67,34 +72,34 @@ const AppContextProvider = (
   const [codeTips, setCodeTips] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
-
-  const [isInCommunity, setIsInCommunity] = useState<boolean>(false);
+  const [comments, setComments] = useState<any[]>([]);
+  const [community, setCommunity] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // get me 
+        const inCommunity = await retrieveLocalData('isMember');
         const user_ = await getMe();
 
         if (user_.ok) {
           setIsLoggedIn(true);
-          setUser(user_.data);
+          setUser((prev: any) => ({...user_.data, isMember: inCommunity.isMember}));
           setJwt(user_.jwt);
         }
 
-        // fetch remote data from the api 
-        const techTips = await getStrapiData('tech-tips');
-        const oppos = await getStrapiData('opportunities');
-        const sent_notifications = await getStrapiData('sent-notifications');
+        const oppos = (await getData('opportunities')).data;
+        const techTips = (await getData('techTips')).data;
+        const comments_ = (await getData('comments')).data;
+        const sent_notifications = (await getData('sentNotifications')).data
+        const community_members = (await getData('communityMembers')).data
+        const tokens = await getData('notificationTokens');
 
-        // console.log(oppos[5].Description)
-        const inCommunity = await retrieveLocalData('joined_comm');
         const localNotification = await retrieveLocalData('notifications');
         const local_opportunities = await retrieveLocalData('opportunities');
         const loacl_techTips = await retrieveLocalData('techTips');
         const pushNotificationResponse = await retrieveLocalData('tokens');
+        const profilePicture = await retrieveLocalData('profilePicture');
 
-        // console.log("This is it",local_opportunities[0].id)
         if (pushNotificationResponse) {
           const { isPushNotificationEnabled } = pushNotificationResponse;
           setIsNotificationEnabled(isPushNotificationEnabled);
@@ -110,21 +115,13 @@ const AppContextProvider = (
               })
             });
 
-            // Sort the opportunites to bring the lasted notifications first.
-            const sortedOpportunities = updatedOpportunity.sort((a: any, b: any) => {
-              const dateA = new Date(a?.publishedAt)
-              const dateB = new Date(b?.publishedAt)
-
-              return (dateB as any) - (dateA as any)
-            });
-
-            const newOpportunities = [...prev, ...sortedOpportunities];
-            storeToLocalStorage('opportunities', newOpportunities)
-
-            return newOpportunities
+            const newOpportunities = [...prev, ...updatedOpportunity];
+            storeToLocalStorage('opportunities', newOpportunities);
+            return newOpportunities;
           });
           
-        } else {
+        }
+        else {
           setOpportunities(prev => [...prev, ...local_opportunities]);
         }
 
@@ -138,69 +135,39 @@ const AppContextProvider = (
               })
             });
 
-            // Sort the opportunites to bring the lasted notifications first.
-            const sortedCodeTips = updatedCodeTip.sort((a: any, b: any) => {
-              const dateA = new Date(a?.publishedAt)
-              const dateB = new Date(b?.publishedAt)
-
-              return (dateB as any) - (dateA as any)
-            });
-
-            const newCodeTips = [...prev, ...sortedCodeTips];
+            const newCodeTips = [...prev, ...updatedCodeTip];
             storeToLocalStorage('techTips', newCodeTips)
 
             return newCodeTips
           });
-        } else {
+        }
+        else {
           setCodeTips(prev => [...prev, ...loacl_techTips]);
+        }
+
+        if (comments_) {
+          setComments(_prev => [..._prev, ...comments_]);
         }
 
         // notifications
         if (localNotification) {
           setNotifications(prev => [...prev, ...localNotification]);
         }
-        // inCommunity
-        if(inCommunity){
-          setIsInCommunity(inCommunity.isJoined);
+        // // inCommunity
+        // if(inCommunity){
+        //   setIsInCommunity(inCommunity.isMember);
+        // }
+
+        if (community_members) {
+          setCommunity(prev => [...prev, ...community_members]);
         }
       }
       catch (error: any) { }
-      finally { setIsLoading(false) }
+      finally {setIsLoading(false)}
     }
 
     fetchData();
 
-    const s = socket.connect();
-
-    s.on('notifications', async (notes: any) => {
-      if (notes.data.model != 'talent-request') {
-        const localNotifications = await retrieveLocalData('notifications');
-        if (localNotifications) {
-          if (!localNotifications.some((element: any) => (element.notification_data.data.entry.id == notes.data.entry.id && element.notification_data.data.model == notes.data.model))) {
-            setNotifications(prev => [...prev, {
-              'notification_data': notes,
-              'status': 'UNREAD'
-            }]);
-            await storeToLocalStorage('notifications', [...localNotifications, {
-              'notification_data': notes,
-              'status': 'UNREAD'
-            }])
-          }
-        } else {
-          setNotifications(prev => [...prev, {
-            'notification_data': notes,
-            'status': 'UNREAD'
-          }]);
-          await storeToLocalStorage('notifications', [{
-            'notification_data': notes,
-            'status': 'UNREAD'
-          }])
-        }
-      }
-    })
-
-    return () => {
-    }
   }, []);
 
 
@@ -211,8 +178,8 @@ const AppContextProvider = (
     setJwt,
     isLoading,
     setIsLoading,
-    isInCommunity,
-    setIsInCommunity,
+    // isInCommunity,
+    // setIsInCommunity,
     codeTips,
     setCodeTips,
     isLoggedIn,
@@ -223,8 +190,11 @@ const AppContextProvider = (
     setIsNotificationEnabled,
     notifications,
     setNotifications,
+    comments,
+    setComments,
+    community,
+    setCommunity
   };
-
 
   return (
     <AppContext.Provider value={contextValue}>

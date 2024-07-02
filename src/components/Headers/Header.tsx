@@ -20,7 +20,7 @@ const Header = (
       style={styles.container}
     >
       <Ionicons
-        name="chevron-back"
+        name="arrow-back"
         size={24}
         color="black"
         onPress={() => {
@@ -49,8 +49,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 20
+    paddingHorizontal: 10
   },
   text: {
     fontSize: FONTSIZE.TITLE_1,

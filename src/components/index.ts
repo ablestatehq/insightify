@@ -21,3 +21,4 @@ export {default as SubmitButton} from './FomikComponents/SubmitButton/SubmitButt
 export {default as ExpandableItemList} from './CodeTips/ExpandableListItem/ExpandableListItem'
 export {default as CommentSection} from './Comments/Comments'
 export {default as IconLabel} from './IconLabelPair'
+export {default as ProfileCard} from './Cards/ProfileCard/ProfileCard';

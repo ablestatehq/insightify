@@ -1,5 +1,5 @@
 import React from "react";
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icons from "../assets/icons";
 import {COLOR, FONTSIZE} from "../constants/contants";
 
@@ -8,17 +8,17 @@ interface IconLabelPairProps{
   color?: string
   iconName: string
   iconLabel: string
-  onPress?: () => void
+  press?: () => void
 }
-function IconLabelPair({iconName, iconLabel, color, onPress, size}:IconLabelPairProps) {
+function IconLabelPair({iconName, iconLabel, color, press, size}:IconLabelPairProps) {
   return (
-    <Pressable style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={styles.container} onPress={press}>
       <Icons name={iconName as string} size={size} _color={color}/>
       <Text style={{
         ...styles.labeText,
         color: color,
       }}>{iconLabel}</Text>
-    </Pressable>
+    </TouchableOpacity>
   )
 }
 
@@ -28,16 +28,15 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
+    gap: 2,
     paddingHorizontal: 5,
-    backgroundColor: COLOR.SECONDARY_50,
+    backgroundColor: COLOR.PRIMARY_50,
     borderRadius: 5,
     paddingVertical:5
   },
   labeText: {
     fontFamily: 'ComfortaaBold',
-    fontSize: FONTSIZE.BODY,
+    fontSize: FONTSIZE.SMALL,
     textAlignVertical: 'center',
-    
   }
 })
