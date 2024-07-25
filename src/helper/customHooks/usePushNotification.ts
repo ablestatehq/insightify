@@ -138,7 +138,7 @@ const usePushNotifications = () => {
     }
   };
 
-  const { setNotifications, setIsNotificationEnabled } = useContext(AppContext);
+  const {setNotifications, setIsNotificationEnabled} = useContext(AppContext);
   
   useEffect(() => {
 
