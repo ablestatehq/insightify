@@ -6,6 +6,27 @@ type userModal = {
   firstName: string
 }
 
+interface UserProfile {
+  blocked: boolean;
+  confirmed: boolean;
+  createdAt: string;
+  email: string;
+  expoPushToken: string | null;
+  firstName: string | null;
+  gender: string | null;
+  id: number;
+  isAvailable: boolean;
+  lastName: string | null;
+  photo: string | null;
+  primaryDomain: string | null;
+  provider: string;
+  secondaryDomain: string | null;
+  skills: string | null;
+  updatedAt: string;
+  username: string;
+}
+
+
 type NewsRouteParams = {
   title: string
   content: string
@@ -39,13 +60,21 @@ type RootStackParamList = {
   Forgot: undefined
   Reset: {
     email: string
-  }
+  },
+  ChatRoom: undefined;
+  Talent: undefined;
+  ProductDetail: ProductData;
+  Explore: {
+    tag?: string;
+    targetIndex?: number
+  };
+  ProductList: undefined;
 }
 
 type LoginScreenProps = RouteProp<RootStackParamList, 'Login'>
 type ResetScreenProps = RouteProp<RootStackParamList, 'Reset'>
 type DetailsScreenProps = RouteProp<RootStackParamList, 'Details'>
-
+type OpportunityListProps = RouteProp<RootStackParamList, 'Explore'>
 // interface for TalentSubmissionForm
 type TalentSubmissionForm = {
   need: string[]// Looking for
@@ -158,11 +187,27 @@ interface ProfileType {
   secondaryDomain: string;
 }
 
+type TechTip = {
+  
+};
+
+type ProductData = {
+  verified: boolean;
+  name: string;
+  developer?: string;
+  description: string;
+  image?: string;
+  demo?: string;
+  views: number;
+  tagLine: string[]
+}
 export {
   MemberInfo,
   userModal,
+  ProductData,
   ArticleType,
   ProfileType,
+  UserProfile,
   FeedbackObject,
   NewsRouteParams,
   HomeDisplayProps,
@@ -175,4 +220,5 @@ export {
   OpportunitiesFormType,
   ExpandableListItemProps,
   OpportunityItemCardProps,
+  OpportunityListProps
 }
