@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react';
-import { COLOR } from '../../../constants/contants';
+import { COLOR } from '../../../constants/constants';
 import Header from '../../../components/Headers/Header';
 import RenderHtml from 'react-native-render-html';
-import {retrieveLocalData, storeToLocalStorage} from '../../../utils/localStorageFunctions';
-import {SafeAreaView, ScrollView, StyleSheet, View, Text, useWindowDimensions, StatusBar} from 'react-native';
-import {environments} from '../../../constants/environments';
+import { retrieveLocalData, storeToLocalStorage } from '../../../utils/localStorageFunctions';
+import { SafeAreaView, ScrollView, StyleSheet, View, useWindowDimensions, StatusBar } from 'react-native';
+import { environments } from '../../../constants/environments';
+import { FONT_NAMES } from '../../../assets/fonts/fonts';
 
-const {STRAPI_BASE_URL} = environments;
+const { STRAPI_BASE_URL } = environments;
 
 const Privacy = () => {
   const [content, setContent] = React.useState('');
 
   useEffect(() => {
     const fetch_data = async () => {
-
       const local_privacy_content = await retrieveLocalData('privacy_content');
-      console.log('Local data: ', local_privacy_content);
+      // console.log('Local data: ', local_privacy_content);
       if (local_privacy_content) {
         setContent(local_privacy_content);
       } else {
@@ -29,7 +29,7 @@ const Privacy = () => {
             return local_privacy_content ?? results?.data.attributes?.body;
           })
         } catch (error) {
-          
+
         }
       }
 
@@ -38,8 +38,8 @@ const Privacy = () => {
     fetch_data();
   }, [content]);
 
-  const {width} = useWindowDimensions();
-  
+  const { width } = useWindowDimensions();
+
   return (
     <SafeAreaView style={styles.container}>
       <Header title='Privacy Policy' />
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'justify',
-    fontFamily: 'RalewayMedium'
+    fontFamily: FONT_NAMES.Title
   },
   scroll: {
     padding: 10
