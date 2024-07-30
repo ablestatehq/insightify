@@ -1,3 +1,5 @@
+import { UserProfile } from "../../utils/types";
+
 export function resourceAge(date: Date) {
   const publishedAt = new Date(date);
   const currentDate = new Date();
@@ -101,4 +103,15 @@ export function generateDate(_date_: string) {
     date: formattedDate,
     time: formattedTime
   }
+}
+
+export function isProfileComplete(user: UserProfile): boolean {
+  return (
+    user.email !== null &&
+    user.firstName !== null &&
+    user.lastName !== null &&
+    user.primaryDomain !== null &&
+    user.skills !== null &&
+    user.gender !== null
+  )
 }
