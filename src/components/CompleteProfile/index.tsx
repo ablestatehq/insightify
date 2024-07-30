@@ -26,8 +26,8 @@ const Index = ({handleClose}: CompleteProfileProps) => {
           {/* <View style={styles.halfBorderOverlay} /> */}
         </View>
         <View style={styles.textView}>
-          <Text style={styles.title}>Complete your profile</Text>
-          <Text style={styles.description}>Complete a few missing steps to have a greate profile</Text>
+          <Text style={styles.title}>Unlock work opportunities</Text>
+          <Text style={styles.description}>Complete a few missing steps to have a great profile.</Text>
         </View>
       </View>
       <Button
@@ -50,12 +50,13 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 1,
     marginVertical: 10,
+    paddingHorizontal: 15
   },
   pictureView: {
-    flexDirection: 'row',
     gap: 10,
-    marginBottom: 15,
     margin: 5,
+    marginBottom: 15,
+    flexDirection: 'row',
   },
   avatar_view: {
     borderWidth: 5,
@@ -70,11 +71,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: FONT_NAMES.Heading,
-    fontSize: FONTSIZE.TITLE_1,
+    fontSize: FONTSIZE.TITLE_2,
   },
   description: {
     fontFamily: FONT_NAMES.Body,
-    fontSize: FONTSIZE.TITLE_2,
+    fontSize: FONTSIZE.BODY,
   },
   buttonText: {
     fontFamily: FONT_NAMES.Title,
@@ -95,11 +96,8 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 5,
-    // backgroundColor: COLOR.GREY_100,
     backgroundColor: COLOR.WHITE,
     padding: 10,
-    // alignSelf: 'flex-start',
-    // paddingHorizontal:10
   },
   close: {
     position: 'absolute',
