@@ -1,24 +1,26 @@
-import React from 'react'
+import React from 'react';
+import { useFonts } from 'expo-font';
 import { View, Text } from 'react-native';
 
 // components 
 import { Loader } from '../components';
 
 // helper 
-import { fontsLoading } from '../assets/fonts/fonts';
-import { COLOR, FONTSIZE } from '../constants/contants';
+// import {fontsLoading} from '../assets/fonts/fonts';
+import { COLOR, FONTSIZE } from '../constants/constants';
 import { AppContext } from '../helper/context/AppContext';
 
 // screens 
 import Home from '../screens/Dashboard/Home';
 import CodeTips from '../screens/CodeTips/CodeTips';
-import FindTalent from '../screens/FindTalent/FindTalent';
+import Explore from '../screens/Explore'
 
 import Icon from '../assets/icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
+import { FONT_FILES, FONT_NAMES } from '../assets/fonts/fonts';
 
-const Tab = createBottomTabNavigator();
+const { Screen, Navigator } = createBottomTabNavigator();
 
 const screenOptionStyle = {
   headerShown: false,
@@ -46,7 +48,7 @@ const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
     <Text
       style={{
         color: focused ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300,
-        fontFamily: 'RalewayBold',
+        fontFamily: FONT_NAMES.Title,
         fontSize: FONTSIZE.BODY
       }}
     >{text}</Text>
@@ -55,16 +57,18 @@ const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
 
 const BottomTabNavigator = () => {
 
-  const { fontsLoaded, fontError } = fontsLoading();
+  const [fontsLoaded] = useFonts(FONT_FILES);
+  // const { fontsLoaded, fontError } = fontsLoading();
 
-  const { isLoading, isLoggedIn } = React.useContext(AppContext);
+  const { isLoading } = React.useContext(AppContext);
+  // || (!fontsLoaded && !fontError) 
 
-  return isLoading || (!fontsLoaded && !fontError) ? <Loader message='Loading...' /> : (
-    <Tab.Navigator
+  return isLoading || !fontsLoaded ? <Loader message='Loading...' /> : (
+    <Navigator
       screenOptions={{
         ...screenOptionStyle,
         tabBarLabelStyle: {
-          fontFamily: 'RalewayBold',
+          fontFamily: FONT_NAMES.Title,
           fontSize: FONTSIZE.TITLE_1,
           textAlign: 'center',
         },
@@ -80,16 +84,25 @@ const BottomTabNavigator = () => {
         }
       }}
     >
-      <Tab.Screen
-        name='Explore'
+      <Screen
+        name='Dashboard'
         component={Home}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ focused }) => <CustomItemTab text='Home' focused={focused} />
+        }}
+
+      />
+      <Screen
+        name='Explore'
+        component={Explore}
+        initialParams={{}}
         options={{
           tabBarLabel: 'Explore',
           tabBarIcon: ({ focused }) => <CustomItemTab text='Explore' focused={focused} />
         }}
-
       />
-      <Tab.Screen
+      <Screen
         name='LevelUp'
         component={CodeTips}
         options={{
@@ -97,15 +110,7 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({ focused }) => <CustomItemTab text='Level up' focused={focused} />
         }}
       />
-      <Tab.Screen
-        name='Talent'
-        component={FindTalent}
-        options={{
-          tabBarLabel: 'Talent',
-          tabBarIcon: ({ focused }) => <CustomItemTab text='Talent' focused={focused} />,
-        }}
-      />
-      <Tab.Screen
+      <Screen
         name='More'
         component={SettingsScreen}
         options={{
@@ -113,7 +118,7 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({ focused }) => <CustomItemTab text='More' focused={focused} />,
         }}
       />
-    </Tab.Navigator>
+    </Navigator>
   )
 }
 

@@ -20,6 +20,10 @@ import ResetPassword from '../screens/AuthScreens/Login/component/ResetPassword'
 import Otp from '../screens/AuthScreens/Login/component/Otp';
 import Profile from '../screens/Profile';
 import ChatRoom from '../screens/ChatScreen/ChatScreen'
+import FindTalent from '../screens/FindTalent/FindTalent';
+import Product from '../screens/Product';
+import Explore from '../screens/Explore'
+import ProductList from '../screens/ProductList';
 
 const Stack = createNativeStackNavigator();
 
@@ -63,6 +67,10 @@ const MainStackNavigator = () => {
       <Stack.Screen name='Otp' component={Otp} />
       <Stack.Screen name='Profile' component={Profile} />
       <Stack.Screen name='ChatRoom' component={ChatRoom} />
+      <Stack.Screen name='Talent' component={FindTalent} />
+      <Stack.Screen name='ProductDetail' component={Product} />
+      <Stack.Screen name='Explore' component={Explore} />
+      <Stack.Screen name='ProductList' component={ProductList} />
     </Stack.Navigator>
   )
 }
