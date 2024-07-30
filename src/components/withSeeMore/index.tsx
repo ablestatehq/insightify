@@ -1,6 +1,6 @@
 import React from "react";
 import {View, StyleSheet} from 'react-native';
-import {SeeMore} from "..";
+import SeeMore from "../SeeMore";
 
 interface WithSeeMoreProps<P> {
   Component: React.ComponentType<P>
