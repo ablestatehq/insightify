@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import Selectable from './components/Selectable'
 import { FeedbackObject } from '../../../utils/types'
-import { COLOR, FONTSIZE } from '../../../constants/contants'
+import { COLOR, FONTSIZE } from '../../../constants/constants'
 import Header from '../../../components/Headers/Header'
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native'
 import { storeData } from '../../../../api/strapiJSAPI'
+import { FONT_NAMES } from '../../../assets/fonts/fonts'
 
 const FeedBack = () => {
   const [selectedImprovement, setSelectedImprovement] = useState<string | null>(null);
@@ -76,7 +77,7 @@ const FeedBack = () => {
         <View>
           <Text style={{
             marginBottom: 10,
-            fontFamily: 'ComfortaaBold',
+            fontFamily: FONT_NAMES.Heading,
             fontSize: FONTSIZE.TITLE_2,
             color: COLOR.SECONDARY_300
           }}
@@ -117,7 +118,7 @@ const FeedBack = () => {
                   color={COLOR.WHITE}
                   size='small'
                 />}
-              <Text style={{ color: COLOR.WHITE, fontFamily: 'ComfortaaBold' }}>{isSubmitting ? '' : 'SEND'}</Text>
+              <Text style={{ color: COLOR.WHITE, fontFamily: FONT_NAMES.Heading }}>{isSubmitting ? '' : 'SEND'}</Text>
             </View>
           )}
         </Pressable>

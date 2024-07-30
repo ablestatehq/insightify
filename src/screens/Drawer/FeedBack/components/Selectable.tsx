@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { COLOR } from '../../../../constants/contants'
+import { COLOR } from '../../../../constants/constants'
+import { FONT_NAMES } from '../../../../assets/fonts/fonts'
 
 interface SelectableProps {
   handleClick?: () => void
@@ -37,6 +38,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10
   },
   text: {
-    fontFamily: 'ComfortaaBold'
+    fontFamily: FONT_NAMES.Heading
   }
 })
