@@ -1,70 +1,45 @@
-import React, {useState, useEffect, useContext, useRef} from 'react';
-import {View, Text, TextInput, FlatList, StyleSheet, Pressable} from 'react-native';
-import {getStrapiData} from '../../../api/strapiJSAPI';
-import {COLOR, FONTSIZE} from '../../constants/contants';
-import {Ionicons} from '@expo/vector-icons';
-import {ProfileCard} from '../../components';
+import React, {useContext} from 'react';
+import {View, TextInput, FlatList, StyleSheet, Pressable } from 'react-native';
+import {Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Headers/Header';
-import { AppContext } from '../../helper/context/AppContext';
+import {COLOR} from '../../constants/constants';
+import {AppContext} from '../../helper/context/AppContext';
+import Message from '../../components/Cards/Message';
+import useChat from '../../helper/customHooks/useChat';
 
 const ChatScreen = () => {
-  const {user, community} = useContext(AppContext)
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
-  const flatListRef = useRef(null);
+  const {user, jwt} = useContext(AppContext);
+  const {
+    messages,
+    newMessage,
+    setNewMessage,
+    handleSendMessage,
+    handleDeleteMessage,
+    flatListRef,
+    errorMessage,
+    hasMoreMessages,
+    loadMessages,
+  } = useChat(user.id, jwt);
 
-
-  const fetchMessages = async () => {
-    try {
-      const data = await getStrapiData('group-messages');
-      setMessages(data);
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchMessages();
-  }, []);
+  const renderMessage = ({ item }: any) => (
+    <Message isSent={item.sender.data.id === user.id} message={item?.content} />
+  );
   
   return (
     <View style={styles.container}>
-      <Header />
-      <View style={{paddingVertical: 5, padding: 10}}>
-        <Text style={{fontFamily: 'ComfortaaBold', fontSize: FONTSIZE.TITLE_1}}>Community chat</Text>
-        <View style={{margin: 5, flexDirection: 'row'}}>
-          {community.slice(0,15).map((member, index) => (
-            <View
-              key={index}
-              // eslint-disable-next-line react-native/no-inline-styles
-              style={{
-                marginLeft: index === 0 ? 0 : -5,
-              }}>
-              <ProfileCard text={member.email.slice(0,2).toUpperCase()} key={index} />
-            </View>
-          ))}
+      <View>
+        <View style={styles.contentHeader}>
+          <Header title='Chat' />
         </View>
       </View>
       <FlatList
-        data={messages}
+        data={messages.reverse()}
         ref={flatListRef}
-        keyExtractor={(item: {id: string, message: string}) => item?.id.toString()}
+        inverted
         showsVerticalScrollIndicator={false}
-        style={{ paddingHorizontal: 10 }}
-        renderItem={({ item }) => {
-          return (
-            <View style={styles.messageContainer}>
-              <Text style={styles.sender}>{item?.message}</Text>
-              <Text>{item?.message}</Text>
-            </View>
-          )
-        }}
-        ListEmptyComponent={() => (
-          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center',}}>
-            <Text style={{fontFamily: 'ComfortaaBold' }}>Chat empty</Text>
-          </View>
-        )}
-        onContentSizeChange={() => flatListRef.current}
+        renderItem={renderMessage}
+        onEndReached={() => {loadMessages()}}
+        onEndReachedThreshold={0.1}
       />
       <View style={styles.inputContainer}>
         <TextInput
@@ -73,17 +48,18 @@ const ChatScreen = () => {
           onChangeText={setNewMessage}
           placeholder="Type your message..."
         />
-        <Pressable style={{
-          backgroundColor: COLOR.SECONDARY_300,
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: 40,
-          height: 40,
-          borderRadius: 30,
-          paddingLeft: 5,
-          padding: 2.5,
-        }}
-          onPress={() =>{}}
+        <Pressable
+          style={{
+            backgroundColor: COLOR.SECONDARY_300,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: 40,
+            height: 40,
+            borderRadius: 30,
+            paddingLeft: 5,
+            padding: 2.5,
+          }}
+          onPress={handleSendMessage}
         >
           <Ionicons name="send" size={18} color="white" />
         </Pressable>
@@ -98,20 +74,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: COLOR.WHITE
+    backgroundColor: COLOR.WHITE,
+  },
+  contentHeader: {
+    width: '80%',
   },
   messageContainer: {
     flexDirection: 'row',
     marginBottom: 10,
+    padding: 10,
+    borderRadius: 10,
   },
-  sender: {
-    fontWeight: 'bold',
-    marginRight: 5,
-  },
+  content:{},
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal:10
+    paddingHorizontal: 10,
   },
   input: {
     flex: 1,
