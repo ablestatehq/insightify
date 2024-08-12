@@ -3,7 +3,9 @@ import {useState, useEffect, useRef, useCallback} from 'react';
 import {
   sendReaction,
   deleteMessageSearch,
-  fetchMessages, sendMessage, updateMessage
+  fetchMessages, sendMessage, updateMessage,
+  loadMessagesFromLocalStorage,
+  saveMessagesToLocalStorage
 } from '../../lib/services/messageService';
 import {createClientSocket} from '../../lib/socket';
 import {Socket} from 'socket.io-client';
@@ -118,6 +120,7 @@ const useChat = (userId: number, jwt: string) => {
         }
         return msgs;
       });
+      saveMessagesToLocalStorage(messageMap)
     } finally {
       setReplyingTo(null)
       setNewMessage('');
@@ -144,7 +147,6 @@ const useChat = (userId: number, jwt: string) => {
     const id = messageMap.get(key)?.id;
     const reactionId = await sendReaction(emoji, userId, jwt, id);
     console.log(reactionId?.data.id)
-    // First create the react entry
     // update the message
     await updateMessage(id, {messageReactions: reactionId?.data?.id}, jwt)
   }
@@ -158,8 +160,17 @@ const useChat = (userId: number, jwt: string) => {
   }, []);
 
   useEffect(() => {
-    loadMessages();
-  }, []);
+  const initializeChat = async () => {
+    const cachedMessages = await loadMessagesFromLocalStorage();
+    if (cachedMessages) {
+      setMessageMap(JSON.parse(cachedMessages));
+    } else {
+      await loadMessages(); 
+    }
+  };
+
+  initializeChat();
+}, []);
 
   useEffect(() => {
     const newMsgs = Array.from(messageMap.keys()).reverse();
@@ -169,6 +180,7 @@ const useChat = (userId: number, jwt: string) => {
   useEffect(() => {
     setupSocket();
   }, []);
+
 
   return {
     messages,
