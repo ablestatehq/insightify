@@ -5,6 +5,8 @@ import {
   deleteMessageSearch,
   fetchMessages, sendMessage,
 } from '../../lib/services/messageService';
+import {createClientSocket} from '../../lib/socket';
+import {Socket} from 'socket.io-client';
 
 type Message = {
   id?: number;
@@ -15,33 +17,36 @@ type Message = {
   replyTo: {data: Array<any>} | null;
   sender: {data: {id: number}};
   status: string;
+  createdAt: string;
 };
 
 const useChat = (userId: number, jwt: string) => {
-  const [messageMap, setMessageMap] = useState<{[key: number]: any}>({});
+  const [messageMap, setMessageMap] = useState<Map<string, any>>(new Map);
   const [messages, setMessages] = useState<any[]>([]);
   const textInputRef = useRef<TextInput | null>(null);
   const [newMessage, setNewMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [refreshing, setRefreshing] = useState(true);
   const [hasMoreMessages, setHasMoreMessages] = useState(true);
-  const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [modalVisibility, setModalVisibility] = useState<boolean>(false);
   const [start, setStart] = useState<number>(0);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   const loadMessages = useCallback(async () => {
     try {
-      // setRefreshing(true);
       const response = await fetchMessages(jwt, start, 25);
-      const messagesMap = {};
-      const messageArr: any[] = []
-      // console.log(response?.data);
+      const messagesMap = new Map<string, any>();
+
       response?.data?.forEach((msg: Message) => {
-        messagesMap[msg?.id] = msg;
-        messageArr.push(msg);
+        messagesMap.set(msg.createdAt, msg);
       });
-      setMessageMap((prev) => ({...prev, ...messagesMap}));
-      setMessages(prev => [...prev, ...messageArr.reverse()]);
+
+      setMessageMap((prev) => new Map([
+        ...Array.from(prev.entries()),
+        ...Array.from(messagesMap.entries())
+      ]));
+
       if (response?.data.length === response?.total) {
         setHasMoreMessages(false);
       }
@@ -52,57 +57,97 @@ const useChat = (userId: number, jwt: string) => {
     }
   }, []);
 
-  const handleDeleteMessage = useCallback((id: number) => {
-    setMessageMap((prev) => {
-      const newMap = {...prev};
-      delete newMap[id];
+  const addToMap = async (message: any) => {
+    // set the new message to the message map;
+    const key = message?.attributes?.createdAt;
+    const msg = message?.attributes;
+    setMessageMap((prev_map) => {
+      const newMap = new Map(prev_map);
+      newMap.set(key, msg);
       return newMap;
+    })
+  }
+
+  const handleDeleteMessage = useCallback(async (key: string) => {
+    // Update messageMap
+    setMessageMap(prev => {
+      const msgs = new Map(prev);
+      msgs.delete(key);
+      return msgs;
     });
-    // const newArr = Object.values(messageMap);
-    // setMessages(prev => [...newArr.reverse()]);
     // Delete also from the server
-    deleteMessageSearch(jwt, id);
+    try {
+      await deleteMessageSearch(jwt, messageMap.get(key).id);
+    } catch (error) {
+      setErrorMessage('Failed to delete message. Please try again.');
+    }
   }, []);
 
-  const handleSendMessage = async (replyingTo: number | null) => {
+  // real time.
+  const setupSocket = useCallback(() => {
+    const clientSocket = createClientSocket(jwt);
+    setSocket(clientSocket);
+    clientSocket.on('connect', () => {
+      // console.log('In the online users: ')
+      clientSocket.on('onlineUsers', (data) => {console.log(data)});
+    })
+
+    clientSocket.on('message:create', ({data}) => {
+      // console.log('Data created in socket.io', data);
+      addToMap(data)
+    })
+  }, [socket]);
+
+
+  const handleSendMessage = async (replyingTo: string | null) => {
+    
     if (!newMessage.trim()) return;
 
-    const temporaryId = Math.floor(Math.random() * 1000000);
-    const newMsg: Message = {
-      id: temporaryId,
-      content: newMessage,
-      sender: {data: { id: userId }},
-      replyTo: replyingTo ? {data: [{ id: replyingTo}]} : null,
-      status: 'sending',
-    };
+    // const timeCreated = new Date().toISOString()
 
-    setMessageMap((prev) => ({[temporaryId]: newMsg, ...prev}));
-    setMessages((prev) => [...prev, newMsg]);
+    // const newMsg: Message = {
+    //   content: newMessage,
+    //   sender: {data:{id: userId}},
+    //   replyTo: replyingTo !== null ? {data: [{ id: replyingTo }]} : null,
+    //   status: 'sending',
+    //   createdAt: timeCreated
+    // };
+    // const msg = new Map()
+    // setMessageMap((prevMap) => {
+    //   const msgs = new Map(prevMap);
+    //   console.log('This is the new message: ',newMsg);
+    //   if (!msgs.has(timeCreated)) {
+    //     msgs.set(timeCreated, newMsg);
+    //   }
+    //   return msgs;
+    // });
+    // console.log('Before saving to the database: ', messageMap.size);
     try {
-      const savedMsg = await sendMessage(newMessage, userId, jwt, replyingTo);
-      if (savedMsg.data) {
-        setReplyingTo(null);
-        setMessageMap((prev) => {
-          const newMap = {...prev};
-          delete newMap[temporaryId];
-          return {[savedMsg.id]: savedMsg?.data?.attributes, ...newMap};
-        });
-        // Update the message list
-        setMessages(prev_ => {
-          const removeLast = [...prev_];
-          removeLast.pop();
-          removeLast.push(savedMsg?.data?.attributes);
-          return removeLast;
-        });
-      }
+      const savedMsg = await sendMessage(newMessage, userId, jwt, messageMap.get(replyingTo as string)?.id);
+      // if (savedMsg.data) {
+      //   setReplyingTo(null);
+      //   setMessageMap((prevMsg) => {
+      //     const msgs = new Map(prevMsg);
+      //     console.log('Here we are updating the messagae', savedMsg.data);
+      //     if (msgs.has(timeCreated)) {
+      //       msgs.set(timeCreated, savedMsg.data.data)
+      //     }
+      //     return msgs;
+      //   });
+      //   console.log('Hashmap size: ', messageMap.size);
+      // }
     } catch (error) {
-      setReplyingTo(null);
-      setMessageMap((prev) => {
-        const newMap = {...prev};
-        newMap[temporaryId].status = 'failed';
-        return newMap;
-      });
+      console.error('There is an error while saving to the database',error)
+      // setReplyingTo(null);
+      // setMessageMap((prev) => {
+      //   const msgs = new Map(prev);
+      //   if (msgs.has(timeCreated)) {
+      //     msgs.set(timeCreated, { ...newMsg, status: 'failed' });
+      //   }
+      //   return msgs
+      // })
     } finally {
+      setReplyingTo(null)
       setNewMessage('');
     }
   };
@@ -111,8 +156,8 @@ const useChat = (userId: number, jwt: string) => {
     setModalVisibility(!modalVisibility);
   };
 
-  const onReply = async (id: number) => {
-    setReplyingTo(id);
+  const onReply = async (key: string) => {
+    setReplyingTo(key);
     setTimeout(() => {
       textInputRef.current?.focus();
     }, 10);
@@ -140,6 +185,15 @@ const useChat = (userId: number, jwt: string) => {
 
   useEffect(() => {
     loadMessages();
+  }, []);
+
+  useEffect(() => {
+    const newMsgs = Array.from(messageMap.keys()).reverse();
+    setMessages(newMsgs);
+  }, [messageMap]);
+
+  useEffect(() => {
+    setupSocket();
   }, []);
 
   return {
