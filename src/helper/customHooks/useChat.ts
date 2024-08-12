@@ -108,8 +108,8 @@ const useChat = (userId: number, jwt: string) => {
       const msg = new Map();
       const newMsg: Message = {
         content: newMessage,
-        sender: { data: { id: userId } },
-        replyTo: replyingTo !== null ? { data: [{ id: replyingTo }] } : null,
+        sender: {data: {id: userId }},
+        replyTo: replyingTo !== null ? {data: [{ id: replyingTo }]} : null,
         status: 'sending',
         createdAt: timeCreated
       };
