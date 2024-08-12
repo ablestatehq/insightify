@@ -1,30 +1,150 @@
 import React from "react";
-import MessageTail from '../MessageTail'
-import {TouchableOpacity, View, Text} from "react-native";
-import {COLOR} from "../../../constants/constants";
+import MessageTail from '../MessageTail';
+import ReactionModal from "../ReactionModal";
+import {COLOR, DIMEN} from "../../../constants/constants";
+import {TouchableOpacity, View, Text, StyleSheet} from "react-native";
 
 interface MessageProps {
-  message: any,
-  isSent: boolean
+  userId: number
+  id: number;
+  // msgMapID: string
+  replies: any;
+  sender: any,
+  replyTo: any;
+  createdAt: any;
+  content: string;
+  receiptDetails: any;
+  messageReactions: any;
+  onReply: (msgMapID: string) => void;
+  onReaction: (emoji: string) => void;
+  onDelete: () => void;
 }
-export default function Message({message, isSent}: MessageProps) {
+
+export default function Message({
+  userId,
+  content,
+  receiptDetails,
+  sender,
+  replyTo,
+  messageReactions,
+  onReaction,
+  onDelete,
+  onReply,
+  createdAt
+}: MessageProps) {
+
+  const emojiReactions: {[key: string] : string} = {
+    like: '👍',
+    love: '❤️',
+    laugh: '😂',
+    surprised: '😮',
+    sad: '😢',
+    angry: '😡'
+  };
+  const [modalVisible, setModalVisible] = React.useState<boolean>(false);
+  const [modalPosition, setModalPosition] = React.useState<{top: number; left?: number, right?: number}>({top: 0});
+  const messageRef = React.useRef<TouchableOpacity | null>(null);
+
+  const isSent = sender?.data?.id === userId;
+  // console.log(replyTo?.data[0])
+  const handleLongPress = () => {
+    messageRef.current?.measure((fx, fy, width, height, px, py) => {
+      if (isSent) {
+        console.log('width', )
+        setModalPosition({top: py + height, right: fx + 10});
+        setModalVisible(true);
+      } else {
+        setModalPosition({top: py + height, left: px})
+        setModalVisible(true);
+      }
+    });
+  }
+  // console.log(modalPosition);
   return (
-    <TouchableOpacity style={{
-      flexDirection: isSent ? 'row' : 'row-reverse',
-      marginVertical: 10,
+    <View style={{
+      // marginVertical: 10,
+      marginBottom: messageReactions?.data ? 20 : 10,
+      alignSelf: isSent ? 'flex-end' : 'flex-start'
     }}>
-      <MessageTail isSent={isSent} />
-      <View style={{
-        backgroundColor: isSent ? COLOR.PRIMARY_50 : COLOR.GREY_50,
-        borderRadius: 10,
-        padding: 10,
-      }}>
-        <Text style={{
-          // textAlign: isSent ? 'left' : 'right',
-          color: '#333333',
-          borderRadius: 10,
-        }}>{message}</Text>
+      <TouchableOpacity
+        ref={messageRef}
+        onLongPress={handleLongPress}
+      >
+        <MessageTail isSent={isSent} />
+        <View style={[messageStyles.message, {
+          backgroundColor: isSent ? COLOR.PRIMARY_50 : COLOR.WHITE,
+        }]}>
+          <Text style={messageStyles.senderStyle}>{sender.data?.id === userId ? 'You' : sender.data?.attributes.username}</Text>
+          {replyTo?.data && <View style={[
+            messageStyles.replyMessageContainer,
+            { backgroundColor: isSent ? COLOR.P_TRANSPARENT_10 : COLOR.GREY_50 }]}>
+            <Text style={messageStyles.replyTo}>{replyTo?.data[0]?.id == userId ?
+              'You' :
+              replyTo?.data?.attributes.sender?.data?.attributes?.username}</Text>
+            <Text numberOfLines={2} style={messageStyles.replyText}>
+              {replyTo?.data?.attributes?.content}
+            </Text>
+          </View>}
+          <Text
+            style={[
+              messageStyles.messageText,
+              {
+                color: COLOR.GREY_300,
+                // color: isSent ? COLOR.WHITE : COLOR.GREY_300
+              }]}>{content}</Text>
+        </View>
+      </TouchableOpacity>
+      <View style={[messageStyles.reactionsContainer,
+      {bottom: -16, right: 4}]}>
+        {messageReactions?.data && messageReactions?.data.slice(0,10).map((reaction: any, index: number) => (
+          <Text key={index} style={[messageStyles.reaction, {marginLeft: index === 0 ? 0 : -10}]}>{emojiReactions[reaction?.attributes.type]}</Text>
+        ))}
       </View>
-    </TouchableOpacity>
+      <ReactionModal
+        msgKey={createdAt}
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        deleteMessage={onDelete}
+        onReply={onReply}
+        onReaction={onReaction}
+        modalPosition={modalPosition}
+      />
+    </View>
   );
 };
+
+const messageStyles = StyleSheet.create({
+  reaction: {
+    // marginBottom: 10,
+  },
+  reactionsContainer: {
+    alignSelf: 'flex-start',
+    position: 'absolute',
+    flexDirection: 'row',
+  },
+  message: {
+    padding: 5,
+    borderRadius: 10,
+  },
+  messageText: {
+    borderRadius: 10,
+    marginVertical: DIMEN.PADDING.ES,
+    margin: DIMEN.PADDING.SM,
+  },
+  replyMessageContainer: {
+    backgroundColor: COLOR.P_TRANSPARENT_10,
+    // margin: 5,
+    opacity: 0.9,
+    padding: 5,
+    borderRadius: DIMEN.PADDING.SM,
+    borderLeftWidth: 3,
+    borderLeftColor: COLOR.SECONDARY_200,
+  },
+  replyText: {
+    color: COLOR.GREY_100,
+  },
+  replyTo: {
+    color: COLOR.PRIMARY_400,
+  },
+  senderStyle: { fontSize: DIMEN.PADDING.ME, paddingRight: 10, padding: 5, color: COLOR.PRIMARY_100 }
+})
