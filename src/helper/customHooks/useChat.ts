@@ -3,7 +3,7 @@ import {useState, useEffect, useRef, useCallback} from 'react';
 import {
   sendReaction,
   deleteMessageSearch,
-  fetchMessages, sendMessage,
+  fetchMessages, sendMessage, updateMessage
 } from '../../lib/services/messageService';
 import {createClientSocket} from '../../lib/socket';
 import {Socket} from 'socket.io-client';
@@ -57,8 +57,7 @@ const useChat = (userId: number, jwt: string) => {
     }
   }, []);
 
-  const addToMap = async (message: any) => {
-    // set the new message to the message map;
+  const addToMessageMap = async (message: any) => {
     const key = message?.attributes?.createdAt;
     const msg = message?.attributes;
     setMessageMap((prev_map) => {
@@ -69,15 +68,15 @@ const useChat = (userId: number, jwt: string) => {
   }
 
   const handleDeleteMessage = useCallback(async (key: string) => {
-    // Update messageMap
-    setMessageMap(prev => {
-      const msgs = new Map(prev);
-      msgs.delete(key);
-      return msgs;
-    });
     // Delete also from the server
     try {
-      await deleteMessageSearch(jwt, messageMap.get(key).id);
+      await deleteMessageSearch(jwt, messageMap.get(key)?.id);
+       // Update messageMap
+      setMessageMap(prev => {
+        const msgs = new Map(prev);
+        msgs.delete(key);
+        return msgs;
+      });
     } catch (error) {
       setErrorMessage('Failed to delete message. Please try again.');
     }
@@ -88,64 +87,37 @@ const useChat = (userId: number, jwt: string) => {
     const clientSocket = createClientSocket(jwt);
     setSocket(clientSocket);
     clientSocket.on('connect', () => {
-      // console.log('In the online users: ')
-      clientSocket.on('onlineUsers', (data) => {console.log(data)});
+      clientSocket.on('onlineUsers', (data) => { console.log(data) });
     })
 
-    clientSocket.on('message:create', ({data}) => {
-      // console.log('Data created in socket.io', data);
-      addToMap(data)
+    clientSocket.on('message:create', ({ data }) => {
+      addToMessageMap(data)
     })
   }, [socket]);
 
 
   const handleSendMessage = async (replyingTo: string | null) => {
-    
     if (!newMessage.trim()) return;
-
-    // const timeCreated = new Date().toISOString()
-
-    // const newMsg: Message = {
-    //   content: newMessage,
-    //   sender: {data:{id: userId}},
-    //   replyTo: replyingTo !== null ? {data: [{ id: replyingTo }]} : null,
-    //   status: 'sending',
-    //   createdAt: timeCreated
-    // };
-    // const msg = new Map()
-    // setMessageMap((prevMap) => {
-    //   const msgs = new Map(prevMap);
-    //   console.log('This is the new message: ',newMsg);
-    //   if (!msgs.has(timeCreated)) {
-    //     msgs.set(timeCreated, newMsg);
-    //   }
-    //   return msgs;
-    // });
-    // console.log('Before saving to the database: ', messageMap.size);
     try {
-      const savedMsg = await sendMessage(newMessage, userId, jwt, messageMap.get(replyingTo as string)?.id);
-      // if (savedMsg.data) {
-      //   setReplyingTo(null);
-      //   setMessageMap((prevMsg) => {
-      //     const msgs = new Map(prevMsg);
-      //     console.log('Here we are updating the messagae', savedMsg.data);
-      //     if (msgs.has(timeCreated)) {
-      //       msgs.set(timeCreated, savedMsg.data.data)
-      //     }
-      //     return msgs;
-      //   });
-      //   console.log('Hashmap size: ', messageMap.size);
-      // }
+      // textInputRef.current?.clear;
+      await sendMessage(newMessage, userId, jwt, messageMap.get(replyingTo as string)?.id);
     } catch (error) {
-      console.error('There is an error while saving to the database',error)
-      // setReplyingTo(null);
-      // setMessageMap((prev) => {
-      //   const msgs = new Map(prev);
-      //   if (msgs.has(timeCreated)) {
-      //     msgs.set(timeCreated, { ...newMsg, status: 'failed' });
-      //   }
-      //   return msgs
-      // })
+      const timeCreated = new Date().toISOString();
+      const msg = new Map();
+      const newMsg: Message = {
+        content: newMessage,
+        sender: { data: { id: userId } },
+        replyTo: replyingTo !== null ? { data: [{ id: replyingTo }] } : null,
+        status: 'sending',
+        createdAt: timeCreated
+      };
+      setMessageMap((prevMap) => {
+        const msgs = new Map(prevMap);
+        if (!msgs.has(timeCreated)) {
+          msgs.set(timeCreated, newMsg);
+        }
+        return msgs;
+      });
     } finally {
       setReplyingTo(null)
       setNewMessage('');
@@ -167,12 +139,14 @@ const useChat = (userId: number, jwt: string) => {
     setReplyingTo(null);
   }
 
-  const onReaction = async (id: number, emoji: any) => {
+  const onReaction = async (key: string, emoji: any) => {
     // Update the user screen
+    const id = messageMap.get(key)?.id;
     const reactionId = await sendReaction(emoji, userId, jwt, id);
+    console.log(reactionId?.data.id)
     // First create the react entry
     // update the message
-    // updateMessage(id, {messageReactions: reactionId}, )
+    await updateMessage(id, {messageReactions: reactionId?.data?.id}, jwt)
   }
 
   const handleEndReached = useCallback(async () => {
