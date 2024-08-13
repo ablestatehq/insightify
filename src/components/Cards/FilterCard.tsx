@@ -1,10 +1,11 @@
 import Button from '../Button';
 import TagCard from './TagCard';
-import {Feather} from '@expo/vector-icons';
-import {COLOR, FONTSIZE} from '../../constants/contants';
-import {AppContext} from '../../helper/context/AppContext';
-import React, {useContext, useState, useEffect} from 'react';
-import {Modal, StyleSheet, Text, View, Animated, ScrollView, TouchableWithoutFeedback} from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { COLOR, FONTSIZE } from '../../constants/constants';
+import { AppContext } from '../../helper/context/AppContext';
+import React, { useContext, useState, useEffect } from 'react';
+import { Modal, StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { FONT_NAMES } from '../../assets/fonts/fonts';
 
 interface FilterCardProps {
   cardVisible?: boolean
@@ -103,7 +104,7 @@ const FilterCard: React.FC<FilterCardProps> =
                       </View>
                       :
                       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontFamily: 'ComfortaaBold' }}>No tags available</Text>
+                        <Text style={{ fontFamily: FONT_NAMES.Heading }}>No tags available</Text>
                       </View>
                   }
                 </ScrollView>
@@ -118,7 +119,7 @@ const FilterCard: React.FC<FilterCardProps> =
                   {(filteredCount as number) > 0 &&
                     <Text
                       style={{
-                        fontFamily: 'ComfortaaBold',
+                        fontFamily: FONT_NAMES.Heading,
                         fontSize: FONTSIZE.TITLE_2
                       }}
                     >{`Results(${filteredCount})`}
@@ -156,13 +157,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingVertical: 10,
     gap: 25,
-    top: -15
   },
   filterText: {
     // flex:1,
     // textAlign: 'center',
     fontSize: FONTSIZE.TITLE_2,
-    fontFamily: 'ComfortaaBold',
+    fontFamily: FONT_NAMES.Heading,
     marginLeft: 20
   },
   buttonStyles: {
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   textStyle: {
     color: COLOR.WHITE,
     textAlign: 'center',
-    fontFamily: 'ComfortaaBold',
+    fontFamily: FONT_NAMES.Heading,
     fontSize: FONTSIZE.TITLE_2,
     textTransform: 'uppercase'
   },

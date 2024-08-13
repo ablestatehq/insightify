@@ -1,6 +1,7 @@
 import React from 'react'
-import { COLOR } from '../../constants/contants'
-import { Pressable, StyleSheet, Text } from 'react-native'
+import {COLOR } from '../../constants/constants'
+import {Pressable, StyleSheet, Text } from 'react-native'
+import { FONT_NAMES } from '../../assets/fonts/fonts'
 
 interface TagCardProps {
   title?: string
@@ -46,7 +47,7 @@ const TagCard: React.FC<TagCardProps> =
         <Text
           style={{
             color: isActive ? COLOR.WHITE : COLOR.SECONDARY_300,
-            fontFamily: 'RalewayBold'
+            fontFamily: FONT_NAMES.Title
           }}
         >
           {title}
@@ -54,7 +55,7 @@ const TagCard: React.FC<TagCardProps> =
         {<Text
           style={{
             color: isActive ? COLOR.WHITE : COLOR.SECONDARY_300,
-            fontFamily: 'RalewayBold'
+            fontFamily: FONT_NAMES.Title
           }}
         >{`(${itemCount})`}</Text>}
       </Pressable>

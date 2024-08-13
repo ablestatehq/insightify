@@ -1,8 +1,9 @@
 import React, { useContext } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { COLOR, FONTSIZE } from '../../constants/contants'
+import { COLOR, FONTSIZE } from '../../constants/constants'
 import { retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions'
 import { AppContext } from '../../helper/context/AppContext'
+import { FONT_NAMES } from '../../assets/fonts/fonts'
 
 interface NotificationCardProps {
   id?: string
@@ -20,14 +21,14 @@ const NotificationCard: React.FC<NotificationCardProps> = (
     model,
     status,
   }) => {
-  const {setNotifications} = useContext(AppContext);
+  const { setNotifications } = useContext(AppContext);
   return (
     <Pressable
       style={{
         ...styles.notificationCard,
         backgroundColor: status == 'READ' ? COLOR.WHITE : COLOR.SECONDARY_75,
         borderRadius: 5,
-        opacity: status == 'READ'? 0.7:1,
+        opacity: status == 'READ' ? 0.7 : 1,
         // borderWidth: 
       }}
       onPress={async function () {
@@ -82,11 +83,11 @@ const styles = StyleSheet.create({
 
   },
   textHeading: {
-    fontFamily: 'ComfortaaBold',
+    fontFamily: FONT_NAMES.Heading,
     color: COLOR.SECONDARY_300
   },
   text: {
-    fontFamily: 'RalewaySemiBold'
+    fontFamily: FONT_NAMES.Title
   },
   modelText: {
     paddingBottom: 5,

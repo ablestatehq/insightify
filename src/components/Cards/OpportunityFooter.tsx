@@ -1,9 +1,10 @@
 import React from 'react'
 import Icons from '../../assets/icons';
-import {Ionicons} from '@expo/vector-icons';
-import {StyleSheet, View, Text} from 'react-native';
-import {COLOR, FONTSIZE} from '../../constants/contants';
-import {resourceAge} from '../../helper/functions/functions';
+import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, View, Text } from 'react-native';
+import { COLOR, FONTSIZE } from '../../constants/constants';
+import { resourceAge } from '../../helper/functions/functions';
+import { FONT_NAMES } from '../../assets/fonts/fonts';
 
 interface OpportunityFooterProps {
   link: string
@@ -13,8 +14,15 @@ interface OpportunityFooterProps {
   showReportModal: () => void
   publishedDate?: string
 }
-const OpportunityFooter: React.FC<OpportunityFooterProps> = ({bookmarked, handleBookmark, link, showReportModal, publishedDate, location}) => {
-  
+const OpportunityFooter: React.FC<OpportunityFooterProps> = ({
+  bookmarked,
+  handleBookmark,
+  link,
+  showReportModal,
+  publishedDate,
+  location,
+}) => {
+
   const opportunityLifeSpan = resourceAge(publishedDate as unknown as Date);
 
   return (
@@ -53,11 +61,11 @@ export default OpportunityFooter
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
     paddingVertical: 5,
     gap: 20,
     borderTopWidth: 0.5,
-    borderTopColor:COLOR.SECONDARY_50
+    borderTopColor: COLOR.SECONDARY_50
   },
   mentionStyle: {
     flex: 1,
@@ -86,6 +94,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: FONTSIZE.BODY,
-    fontFamily: 'RalewayMedium',
+    fontFamily: FONT_NAMES.Title,
   },
 })

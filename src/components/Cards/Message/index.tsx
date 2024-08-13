@@ -17,7 +17,7 @@ interface MessageProps {
   messageReactions: any;
   onReply: (msgMapID: string) => void;
   onReaction: (emoji: string) => void;
-  onDelete: () => void;
+  onDelete: (key: string) => void;
 }
 
 export default function Message({
@@ -46,11 +46,12 @@ export default function Message({
   const messageRef = React.useRef<TouchableOpacity | null>(null);
 
   const isSent = sender?.data?.id === userId;
+
+  // const 
   // console.log(replyTo?.data[0])
   const handleLongPress = () => {
     messageRef.current?.measure((fx, fy, width, height, px, py) => {
       if (isSent) {
-        console.log('width', )
         setModalPosition({top: py + height, right: fx + 10});
         setModalVisible(true);
       } else {
@@ -74,7 +75,7 @@ export default function Message({
         <View style={[messageStyles.message, {
           backgroundColor: isSent ? COLOR.PRIMARY_50 : COLOR.WHITE,
         }]}>
-          <Text style={messageStyles.senderStyle}>{sender.data?.id === userId ? 'You' : sender.data?.attributes.username}</Text>
+          <Text style={messageStyles.senderStyle}>{sender?.data?.id === userId ? 'You' : sender?.data?.attributes.username}</Text>
           {replyTo?.data && <View style={[
             messageStyles.replyMessageContainer,
             { backgroundColor: isSent ? COLOR.P_TRANSPARENT_10 : COLOR.GREY_50 }]}>

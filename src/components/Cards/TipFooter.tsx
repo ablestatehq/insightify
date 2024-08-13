@@ -1,11 +1,11 @@
 import React from 'react'
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Icon from '../../assets/icons';
 import OpenLink from '../../utils/OpenLink';
 import IconLabelPair from '../IconLabelPair';
-import {COLOR, FONTSIZE} from '../../constants/contants';
-import {CommentSection} from '..';
+import { COLOR, FONTSIZE } from '../../constants/constants';
+import { CommentSection } from '..';
 import Comments from '../Comments/Comments';
 
 interface TipFooterProps {
@@ -31,7 +31,7 @@ const TipFooter: React.FC<TipFooterProps> = ({
 }) => {
   // State
   const [openComments, setOpenComments] = React.useState<boolean>(false);
-  
+
   // Footer functions
   const openSourceLink = () => {
     OpenLink(source_url as string)
@@ -125,6 +125,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: COLOR.PRIMARY_300,
-    fontSize:FONTSIZE.SMALL
+    fontSize: FONTSIZE.SMALL
   }
 })

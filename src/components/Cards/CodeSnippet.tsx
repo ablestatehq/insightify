@@ -1,17 +1,18 @@
 import React from 'react'
-import {StyleSheet, View, Text, ToastAndroid, Pressable} from 'react-native';
+import { StyleSheet, View, Text, ToastAndroid, Pressable } from 'react-native';
 
 import CodeHighlighter from 'react-native-code-highlighter';
-import {atomOneDark} from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 import * as Clipboard from 'expo-clipboard';
 
-import {COLOR, FONTSIZE} from '../../constants/contants';
-import {CustomBlockRenderer} from 'react-native-render-html';
+import { COLOR, FONTSIZE } from '../../constants/constants';
+import { CustomBlockRenderer } from 'react-native-render-html';
+import { FONT_NAMES } from '../../assets/fonts/fonts';
 
-const CodeSnippet: CustomBlockRenderer = ({TDefaultRenderer, ...props}) => {
+const CodeSnippet: CustomBlockRenderer = ({ TDefaultRenderer, ...props }) => {
 
-  const {tnode} = props;
+  const { tnode } = props;
   const code = tnode.domNode.firstChild?.data;
 
   const copyToClipboard = async () => {
@@ -26,11 +27,11 @@ const CodeSnippet: CustomBlockRenderer = ({TDefaultRenderer, ...props}) => {
       borderRadius: 20,
       backgroundColor: COLOR.CODEBACKGROUND,
       paddingRight: 2,
-      overflow:'hidden'
+      overflow: 'hidden'
     }}>
       <TDefaultRenderer
         {...props}
-        style={{ padding: 10, width:'auto'}}
+        style={{ padding: 10, width: 'auto' }}
       >
         <CodeHighlighter
           hljsStyle={atomOneDark}
@@ -38,10 +39,10 @@ const CodeSnippet: CustomBlockRenderer = ({TDefaultRenderer, ...props}) => {
             fontSize: 15,
             fontFamily: 'monospace',
             backgroundColor: COLOR.CODEBACKGROUND,
-            borderWidth:0
+            borderWidth: 0
           }}
           customStyle={{ borderRadius: 10 }}
-          scrollViewProps={{ scrollEnabled: true, horizontal:true, nestedScrollEnabled:true}}
+          scrollViewProps={{ scrollEnabled: true, horizontal: true, nestedScrollEnabled: true }}
         >
           {code}
         </CodeHighlighter>
@@ -49,7 +50,7 @@ const CodeSnippet: CustomBlockRenderer = ({TDefaultRenderer, ...props}) => {
       <Pressable
         style={{ position: 'absolute', right: 10, bottom: 10, elevation: 10 }}
         onPress={copyToClipboard}>
-        <View style={{width: 50, height:25, backgroundColor:COLOR.WHITE, opacity:0.5, borderRadius:10, position:'absolute', top:-7}}/>
+        <View style={{ width: 50, height: 25, backgroundColor: COLOR.WHITE, opacity: 0.5, borderRadius: 10, position: 'absolute', top: -7 }} />
         <View
           style={{
             width: 50,
@@ -58,7 +59,7 @@ const CodeSnippet: CustomBlockRenderer = ({TDefaultRenderer, ...props}) => {
             opacity: 0.95,
             borderRadius: 10,
             elevation: 5,
-            justifyContent:'center'
+            justifyContent: 'center'
           }}>
           <Text style={{ textAlign: 'center', fontSize: FONTSIZE.SMALL, }}>COPY</Text></View>
       </Pressable>
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   code: {
-    fontFamily: 'RalewayBold',
+    fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.BODY,
   },
   tipFooter: {

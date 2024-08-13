@@ -1,8 +1,9 @@
-import { View } from "react-native";
+import {View} from "react-native";
 
 interface MessageTail {
   isSent: boolean;
 }
+
 export default ({isSent}: MessageTail) => {
   return (
     <View
@@ -13,8 +14,7 @@ export default ({isSent}: MessageTail) => {
         width: 10,
         height: 10,
         backgroundColor: 'transparent',
-        borderStyle: 'solid',
-        borderTopWidth: 10,
+        borderTopWidth: 50,
         borderRightWidth: 10,
         borderBottomWidth: 10,
         [isSent ? 'borderRightColor' : 'borderLeftColor']: '#FFFFFF',
