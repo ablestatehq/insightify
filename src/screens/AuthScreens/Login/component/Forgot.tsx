@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../../../../components/Headers/Header";
 import { Button } from "../../../../components";
-import { COLOR } from "../../../../constants/contants";
+import { COLOR } from "../../../../constants/constants";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { forgotRequest } from "../../../../../api/auth";
 

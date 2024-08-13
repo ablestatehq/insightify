@@ -1,23 +1,24 @@
-import {Formik} from 'formik'
-import React, {useContext, useState} from 'react'
-import {AntDesign} from '@expo/vector-icons';
-import {useNavigation, useRoute} from '@react-navigation/native'
-import {COLOR, FONTSIZE} from '../../../constants/contants'
-import {AppContext} from '../../../helper/context/AppContext'
-import {InputText, SubmitButton, CustomModal} from '../../../components'
-import {NativeStackNavigationProp} from '@react-navigation/native-stack'
-import {login} from '../../../../api/auth';
-import {LoginScreenProps} from '../../../utils/types';
-import {handleBookmark} from '../../../helper/functions/handleFunctions';
+import { Formik } from 'formik'
+import React, { useContext, useState } from 'react'
+import { AntDesign } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { COLOR, FONTSIZE } from '../../../constants/constants'
+import { AppContext } from '../../../helper/context/AppContext'
+import { InputText, SubmitButton, CustomModal } from '../../../components'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { login } from '../../../../api/auth';
+import { LoginScreenProps } from '../../../utils/types';
+import { handleBookmark } from '../../../helper/functions/handleFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { storeToLocalStorage } from '../../../utils/localStorageFunctions';
+import { FONT_NAMES } from '../../../assets/fonts/fonts';
 // import {sendConfirmationEmail} from '../../../../api/strapiJSAPI';
 
 const Login: React.FC = () => {
   const route = useRoute<LoginScreenProps>();
 
-  const {title, opportunityID} = route.params;
+  const { title, opportunityID } = route.params;
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const [modalTitle, setModalTitle] = useState<string>('');
@@ -25,7 +26,7 @@ const Login: React.FC = () => {
   const [modalMessage, setModalMessage] = useState<string>('');
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
-  const {setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser, community} = useContext(AppContext);
+  const { setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser, community } = useContext(AppContext);
 
   const loginFormInitValues = {
     email: '',
@@ -42,14 +43,13 @@ const Login: React.FC = () => {
             token: response?.jwt,
             ...response.user
           }));
-        
+
         setJwt(response?.jwt);
         const isMember = community.some((member) => member.email == response?.user?.email);
-        setUser((prev:any) => ({...response?.user,isMember}))
+        setUser((prev: any) => ({ ...response?.user, isMember }))
         setIsLoggedIn(true);
         // console.log("This is what I have for now!",community)
-        
-        storeToLocalStorage('isMember', {isMember});
+        storeToLocalStorage('isMember', { isMember });
 
         if (opportunityID) {
           handleBookmark(opportunityID, opportunities, setOpportunities)
@@ -67,7 +67,7 @@ const Login: React.FC = () => {
         setModalTitle('Login Error');
         setModalMessage('Login Failed');
       }
-    } catch (error) {console.log('')}
+    } catch (error) { console.log('') }
   }
 
   return (
@@ -85,7 +85,7 @@ const Login: React.FC = () => {
             initialValues={loginFormInitValues}
             onSubmit={handleLogin}
           >
-            {({handleSubmit}) => (
+            {({ handleSubmit }) => (
               <View style={styles.loginScroll}>
                 <ScrollView>
                   <InputText
@@ -105,13 +105,13 @@ const Login: React.FC = () => {
                     button={styles.button}
                   />
                   <View>
-                    <Pressable onPress={() => {navigation.navigate('Forgot')}}>
+                    <Pressable onPress={() => { navigation.navigate('Forgot') }}>
                       <Text style={styles.footerText}>Forgot password?</Text>
                     </Pressable>
                     <View style={styles.footer}>
                       <Text style={styles.footerText}>Don't have an account?</Text>
                       <TouchableOpacity
-                        onPress={() => {navigation.navigate('SignUp')}}
+                        onPress={() => { navigation.navigate('SignUp') }}
                       >
                         <Text style={styles.signUpText}> Sign up</Text>
                       </TouchableOpacity>
@@ -127,7 +127,7 @@ const Login: React.FC = () => {
           title={modalTitle}
           message={modalMessage}
           cancelText='ok'
-          cancel={function (): void {setShowModal(false)}}
+          cancel={function (): void { setShowModal(false) }}
           visibility={showModal} />
       </View>
     </KeyboardAvoidingView>
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: FONTSIZE.HEADING_3,
-    fontFamily: 'RalewayBold',
+    fontFamily: FONT_NAMES.Title,
   },
   contentContainer: {
     flex: 1,
@@ -164,11 +164,11 @@ const styles = StyleSheet.create({
     // padding: 5
   },
   footerText: {
-    fontFamily: 'RalewayRegular',
+    fontFamily: FONT_NAMES.Body,
     textAlign: 'center'
   },
   signUpText: {
-    fontFamily: 'RalewaySemiBold'
+    fontFamily: FONT_NAMES.Title
   },
   footer: {
     flexDirection: 'row',

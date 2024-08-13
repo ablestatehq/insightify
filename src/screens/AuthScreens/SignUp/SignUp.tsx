@@ -1,20 +1,21 @@
-import React, {useContext, useState} from 'react'
-import {Formik, FormikHelpers} from 'formik'
-import {ScrollView, StyleSheet, Text, View} from 'react-native'
+import React, { useContext, useState } from 'react'
+import { Formik, FormikHelpers } from 'formik'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
-import {COLOR, FONTSIZE} from '../../../constants/contants'
-import {AppContext} from '../../../helper/context/AppContext'
+import { COLOR, FONTSIZE } from '../../../constants/constants'
+import { AppContext } from '../../../helper/context/AppContext'
 
-import {Ionicons} from '@expo/vector-icons';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {InputText, SubmitButton, CustomModal} from '../../../components';
-import {signUp} from '../../../../api/auth'
-import {sendConfirmationEmail} from '../../../../api/strapiJSAPI';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { InputText, SubmitButton, CustomModal } from '../../../components';
+import { signUp } from '../../../../api/auth'
+import { sendConfirmationEmail } from '../../../../api/strapiJSAPI';
+import { FONT_NAMES } from '../../../assets/fonts/fonts'
 
 const SignUp = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const {isLoggedIn, setIsLoggedIn} = useContext(AppContext);
+  const { isLoggedIn, setIsLoggedIn } = useContext(AppContext);
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>('');
@@ -64,7 +65,7 @@ const SignUp = () => {
             initialValues={signUpFormInitValues}
             onSubmit={handleSignup}
           >
-            {({handleSubmit}) => (
+            {({ handleSubmit }) => (
               <ScrollView>
                 <InputText
                   label='Name'
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   text: {
-    fontFamily: 'RalewayBold',
+    fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.HEADING_3,
   },
   contentContainer: {

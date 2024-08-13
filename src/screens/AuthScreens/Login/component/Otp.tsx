@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useState, useRef } from "react";
 import Header from "../../../../components/Headers/Header";
 import { Button } from "../../../../components";
-import { COLOR, FONTSIZE } from "../../../../constants/contants";
+import { COLOR, FONTSIZE } from "../../../../constants/constants";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export default function Otp() {
