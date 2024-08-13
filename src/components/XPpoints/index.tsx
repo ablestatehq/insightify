@@ -1,8 +1,8 @@
 import React from 'react'
 import {StyleSheet, Text, View} from 'react-native';
 import {FontAwesome6} from '@expo/vector-icons';
-import { COLOR } from '../../constants/constants';
-import { FONT_NAMES } from '../../assets/fonts/fonts';
+import {COLOR} from '../../constants/constants';
+import {FONT_NAMES} from '../../assets/fonts/fonts';
 
 interface XPpointProps {
   number: number
