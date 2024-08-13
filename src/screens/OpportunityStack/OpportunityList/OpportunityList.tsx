@@ -1,26 +1,29 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useContext, useState} from 'react';
-import {StyleSheet, View, StatusBar, Text, FlatList} from 'react-native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useCallback, useContext, useState } from 'react';
+import { StyleSheet, View, StatusBar, Text, FlatList } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import {COLOR} from '../../../constants/contants';
+import { COLOR } from '../../../constants/constants';
 import useFilter from '../../../helper/customHooks/useFilter';
-import {AppContext} from '../../../helper/context/AppContext';
+import { AppContext } from '../../../helper/context/AppContext';
 import {
   OpportunityCard,
   OpportunityHeader,
   FloatingButton,
   FilterCard,
   CategorySection,
-  FormModal
+  FormModal,
+  Loader
 } from '../../../components';
+import { FONT_NAMES } from '../../../assets/fonts/fonts';
 
 const OpportunityList = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const {opportunities, notifications, user, isLoggedIn} = useContext(AppContext);
-  
-  const [category, setCategory] = useState<string>('All');
+  const { opportunities, notifications, user, isLoggedIn } = useContext(AppContext);
+  const route = useRoute();
+  const {tag} = route.params;
+  const [category, setCategory] = useState<string>(tag ? tag : 'All');
   const [filteredItems, setFilteredItems] = useState<string[]>([]);
   const [showCard, setShowCard] = useState<boolean>(false);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
@@ -31,17 +34,15 @@ const OpportunityList = () => {
     setShowCard(!showCard);
   }
 
-  const renderOpportunity = useCallback(({item, index}: {item: any, index: number}) => (
+  const renderOpportunity = useCallback(({ item, index }: { item: any, index: number }) => (
     <OpportunityCard
       opportunity={item}
       key={index}
-      showReportModal={function (): void {setShowReportModal(true)}}
+      showReportModal={function (): void { setShowReportModal(true) }}
     />
   ), []);
 
   const [opps, isLoading] = useFilter(category, opportunities, filteredItems);
-
-  // console.log(opps);
   return (
     <View style={styles.container}>
       <StatusBar barStyle='dark-content' backgroundColor={COLOR.WHITE} />
@@ -125,12 +126,12 @@ const styles = StyleSheet.create({
 
   },
   noMatcheStyle: {
-    fontFamily: 'RalewayRegular',
+    fontFamily: FONT_NAMES.Body,
     textAlign: 'center',
-    textAlignVertical:'center'
+    textAlignVertical: 'center'
   },
   noTextStylesContainer: {
-    flex:1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     // borderWidth:1

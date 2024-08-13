@@ -1,10 +1,10 @@
 import React from 'react'
 import { Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import { AntDesign, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
-import { COLOR } from '../../../constants/contants'
+import { COLOR } from '../../../constants/constants'
 import onShare from '../../../utils/onShare'
 
-interface LikeSourceSectionProps{
+interface LikeSourceSectionProps {
   sourceName: string
   sourceLink: string
 }
@@ -12,7 +12,7 @@ const LikeSourceSection = (
   {
     sourceName,
     sourceLink
-  }:LikeSourceSectionProps
+  }: LikeSourceSectionProps
 ) => {
   const [favorite, setFavorite] = React.useState<boolean>(false);
 
@@ -34,7 +34,7 @@ const LikeSourceSection = (
       }
     }
   }
-  
+
   return (
     <View
       style={styles.sourceContainer}

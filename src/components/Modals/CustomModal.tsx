@@ -1,7 +1,8 @@
 import { Modal, StatusBar, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'react'
-import { COLOR, FONTSIZE } from '../../constants/contants'
+import { COLOR, FONTSIZE } from '../../constants/constants'
 import Button from '../Button'
+import { FONT_NAMES } from '../../assets/fonts/fonts'
 
 interface CustomModalProps {
   title: string
@@ -52,14 +53,14 @@ const CustomModal: React.FC<CustomModalProps> = (
                   <Button
                     title={acceptText ?? 'Accept'}
                     handlePress={accept}
-                    textStyle={[styles.btnText, {color: COLOR.SECONDARY_300}]}
-                  btn={[styles.btn, {backgroundColor: COLOR.GREY_50}]}
+                    textStyle={[styles.btnText, { color: COLOR.SECONDARY_300 }]}
+                    btn={[styles.btn, { backgroundColor: COLOR.GREY_50 }]}
                   />}
                 {cancel &&
                   <Button
                     title={cancelText ?? 'Cancel'}
                     handlePress={cancel}
-                    textStyle={[styles.btnText, {color:COLOR.SECONDARY_300}]}
+                    textStyle={[styles.btnText, { color: COLOR.SECONDARY_300 }]}
                     btn={styles.btn}
                   />}
               </View>
@@ -89,14 +90,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.WHITE,
   },
   heading: {
-    fontFamily: 'RalewayBold',
+    fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.TITLE_1,
     color: COLOR.SECONDARY_300,
   },
   message: {
     fontSize: FONTSIZE.TITLE_2,
     marginTop: 10,
-    fontFamily: 'RalewayMedium',
+    fontFamily: FONT_NAMES.Title,
     color: COLOR.SECONDARY_300
   },
   buttons: {
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   btnText: {
-    fontFamily: 'ComfortaaBold',
+    fontFamily: FONT_NAMES.Heading,
     color: COLOR.WHITE
   },
 });

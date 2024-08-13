@@ -10,7 +10,8 @@ import { CustomModal, SubmitButton, InputText } from '../../../components'
 import { storeData } from '../../../../api/strapiJSAPI'
 import { ShareSchema } from '../../../utils/validations'
 import { OpportunitiesFormType } from '../../../utils/types'
-import { COLOR, FONTSIZE } from '../../../constants/contants'
+import { COLOR, FONTSIZE } from '../../../constants/constants'
+import { FONT_NAMES } from '../../../assets/fonts/fonts'
 
 const Share = () => {
 
@@ -123,7 +124,7 @@ const Share = () => {
                 date={date as Date}
                 setDate={setDate}
               /> */}
-              
+
               <SubmitButton
                 handleSubmit={() => handleSubmit()}
                 button={styles.buttonStyle}
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     textAlign: 'center',
-    fontFamily: 'RalewayBold',
+    fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.TITLE_1,
   },
   header: {

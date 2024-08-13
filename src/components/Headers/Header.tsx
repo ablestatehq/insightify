@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons';
-import { FONTSIZE } from '../../constants/contants';
+import { COLOR, FONTSIZE } from '../../constants/constants';
 import { useNavigation } from '@react-navigation/native';
+import { FONT_NAMES } from '../../assets/fonts/fonts';
 
 interface HeaderProps {
   title?: string
@@ -21,7 +22,7 @@ const Header = (
     >
       <Ionicons
         name="arrow-back"
-        size={24}
+        size={20}
         color="black"
         onPress={() => {
           navigation.goBack()
@@ -31,7 +32,7 @@ const Header = (
         style={[
           styles.text,
           {
-            fontFamily: 'RalewayBold'
+            fontFamily: FONT_NAMES.Title
           }
         ]}
       >
@@ -49,9 +50,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    // borderWidth: 1,
+    // borderColor: COLOR.DANGER
   },
   text: {
-    fontSize: FONTSIZE.TITLE_1,
+    fontSize: FONTSIZE.TITLE_2,
+    // paddingBottom: 2.5
   }
 })

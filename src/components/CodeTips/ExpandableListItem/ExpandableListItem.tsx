@@ -5,9 +5,10 @@ import {
 } from 'react-native';
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
-import { COLOR, FONTSIZE } from '../../../constants/contants';
+import { COLOR, FONTSIZE } from '../../../constants/constants';
 import { ExpandableListItemProps } from '../../../utils/types';
 import onShare, { handleLinkPress } from '../../../utils/onShare';
+import { FONT_NAMES } from '../../../assets/fonts/fonts';
 
 const ExpandableListItem: React.FC<ExpandableListItemProps> = (
   {
@@ -55,7 +56,7 @@ const ExpandableListItem: React.FC<ExpandableListItemProps> = (
             numberOfLines={3}
             style={{
               ...styles.itemTitle,
-              fontFamily: "RalewayBold"
+              fontFamily: FONT_NAMES.Title
             }}
           >
             {title}

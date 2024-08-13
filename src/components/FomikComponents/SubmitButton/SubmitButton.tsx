@@ -1,7 +1,8 @@
 import React from 'react'
-import {useFormikContext} from 'formik'
-import {COLOR} from '../../../constants/contants'
-import {ActivityIndicator, Pressable, Text} from 'react-native'
+import { useFormikContext } from 'formik'
+import { COLOR } from '../../../constants/constants'
+import { ActivityIndicator, Pressable, Text } from 'react-native'
+import { FONT_NAMES } from '../../../assets/fonts/fonts'
 
 interface SubmitButtonProp {
   handleSubmit: () => void,
@@ -9,9 +10,9 @@ interface SubmitButtonProp {
   button?: any
 }
 
-const SubmitButton: React.FC<SubmitButtonProp> = ({handleSubmit, btnText, button}) => {
-  const {isSubmitting} = useFormikContext<any>()
-  
+const SubmitButton: React.FC<SubmitButtonProp> = ({ handleSubmit, btnText, button }) => {
+  const { isSubmitting } = useFormikContext<any>()
+
   return (
     <Pressable
       onPress={handleSubmit}
@@ -34,7 +35,7 @@ const SubmitButton: React.FC<SubmitButtonProp> = ({handleSubmit, btnText, button
         style={{
           color: COLOR.WHITE,
           textAlign: 'center',
-          fontFamily: "ComfortaaBold"
+          fontFamily: FONT_NAMES.Heading
         }}
       >
         {btnText ?? 'SEND'}

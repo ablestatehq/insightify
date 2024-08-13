@@ -1,9 +1,10 @@
-import React, {useState} from 'react'
-import {Modal, Pressable, StatusBar, StyleSheet, Text, TextInput, ToastAndroid, TouchableWithoutFeedback, View} from 'react-native'
+import React, { useState } from 'react'
+import { Modal, Pressable, StatusBar, StyleSheet, Text, TextInput, ToastAndroid, TouchableWithoutFeedback, View } from 'react-native'
 import Button from '../Button'
-import {storeData} from '../../../api/strapiJSAPI'
-import {COLOR, FONTSIZE} from '../../constants/contants'
+import { storeData } from '../../../api/strapiJSAPI'
+import { COLOR, FONTSIZE } from '../../constants/constants'
 import Icons from '../../assets/icons'
+import { FONT_NAMES } from '../../assets/fonts/fonts'
 
 interface FormModalProps {
   visible: boolean
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: COLOR.SECONDARY_300,
-    fontFamily: 'RalewayBold'
+    fontFamily: FONT_NAMES.Title
   },
   container: {
     backgroundColor: COLOR.WHITE,
@@ -87,11 +88,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.SECONDARY_300,
     borderRadius: 5,
     paddingBottom: 5,
-    paddingTop:2
+    paddingTop: 2
   },
   buttonTextStyle: {
     color: COLOR.WHITE,
-    fontFamily: 'ComfortaaBold',
+    fontFamily: FONT_NAMES.Heading,
     textAlign: 'center'
   },
   inputView: {
@@ -101,12 +102,12 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   input: {
-    fontFamily: 'ComfortaaSemiBold',
+    fontFamily: FONT_NAMES.Title,
     textAlign: 'justify',
     textAlignVertical: 'top'
   },
   headTextStyle: {
-    fontFamily: 'ComfortaaBold',
+    fontFamily: FONT_NAMES.Heading,
     fontSize: FONTSIZE.TITLE_2,
     // marginTop:20
   },

@@ -1,8 +1,9 @@
 import React from 'react'
-import {useFormikContext} from 'formik'
-import {Feather} from '@expo/vector-icons'
-import {COLOR, FONTSIZE} from '../../../constants/contants'
-import {StyleSheet, Text, TextInput, View} from 'react-native'
+import { useFormikContext } from 'formik'
+import { Feather } from '@expo/vector-icons'
+import { COLOR, FONTSIZE } from '../../../constants/constants'
+import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { FONT_NAMES } from '../../../assets/fonts/fonts'
 
 interface InputTextProps {
   label?: string
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
   },
   inputText: {
     paddingHorizontal: 5,
-    fontFamily: 'ComfortaaBold',
+    fontFamily: FONT_NAMES.Heading,
   },
   viewContainerTextInput: {
     padding: 5,
@@ -89,11 +90,11 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: COLOR.DANGER,
-    fontFamily: 'RalewayMedium'
+    fontFamily: FONT_NAMES.Title
   },
   labelText: {
     marginBottom: 5,
-    fontFamily: "RalewayBold",
+    fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.TITLE_2,
   }
 })

@@ -1,5 +1,5 @@
 // import React from 'react'
-// import { COLOR, FONTSIZE } from '../../../constants/contants'
+// import { COLOR, FONTSIZE } from '../../../constants/constants'
 // import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 // // import {DateTimePickerAndroid} from "@react-native-community/datetimepicker";
 // import { AntDesign } from '@expo/vector-icons';
@@ -77,7 +77,7 @@
 //   },
 //   inputText: {
 //     paddingHorizontal: 5,
-//     fontFamily: 'ComfortaaBold',
+//     fontFamily: FONT_NAMES.Heading,
 //   },
 //   viewContainerTextInput: {
 //     padding: 5,
@@ -89,11 +89,11 @@
 //   },
 //   errorText: {
 //     color: COLOR.DANGER,
-//     fontFamily: 'RalewayMedium'
+//     fontFamily: FONT_NAMES.Title
 //   },
 //   labelText: {
 //     marginBottom: 5,
-//     fontFamily: "RalewayBold",
+//     fontFamily: FONT_NAMES.Title,
 //     fontSize: FONTSIZE.TITLE_2,
 //   }
 // })
