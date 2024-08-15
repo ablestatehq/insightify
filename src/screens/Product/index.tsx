@@ -1,24 +1,22 @@
 import React from 'react'
-import Header from '../../components/Headers/Header';
 
-import {Ionicons, Octicons} from '@expo/vector-icons';
-import {FONT_NAMES} from '../../assets/fonts/fonts'
+import {Ionicons} from '@expo/vector-icons';
 import {RootStackParamList} from '../../utils/types'
 import {COLOR, DIMEN, FONTSIZE} from '../../constants/constants'
 import {environments} from '../../constants/environments'
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native'
-import {StyleSheet, View, ImageBackground, StatusBar, Text, ScrollView, TouchableOpacity, Image} from 'react-native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, ImageBackground} from 'react-native'
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 const {BASE_URL} = environments;
 
 const Index = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
-  const {description, tagline, developers, name, media} = route.params;
+  const {description, tagline, developers, name, media, status, id} = route.params;
 
   const [currentIndex, setCurrentIndex] = React.useState(0);
-
+  console.log(status);
   React.useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % (media?.data.length ? media?.data?.length : 0));
@@ -30,87 +28,63 @@ const Index = () => {
   const getImage = (url: string) => ({ uri: `${BASE_URL}${url}` });
 
   return (
-    <ScrollView style={productStyles.container}>
-      <View style={productStyles.header}>
-        <TouchableOpacity style={productStyles.iconButton}>
-          <Ionicons
-            name="arrow-back"
-            productImages={20}
-            color={COLOR.PRIMARY_400}
-            onPress={() => {
-              navigation.goBack()
-            }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity style={productStyles.iconButton}>
-          <Ionicons
-            name='heart-outline'
-            productImages={20}
-            color={COLOR.PRIMARY_400}
-            onPress={() => {
-              navigation.goBack()
-            }}
-          />
-        </TouchableOpacity>
-      </View>
-
+    <ScrollView contentContainerStyle={productStyles.container}>
       <View style={productStyles.imageContainer}>
-        <Image
+        <ImageBackground
           resizeMethod='resize'
           resizeMode='cover'
-          source={getImage(media?.data[currentIndex].attributes?.url)}
+          source={getImage(media?.data[0].attributes?.url)}
           style={productStyles.productImage}
-        />
-        {/* <View style={productStyles.thumbnailContainer}>
-          <Image
-            resizeMethod='resize'
-            resizeMode='cover'
-            source={getImage(media?.data[0].attributes?.url)} style={productStyles.thumbnail} />
-          <Image
-            resizeMethod='resize'
-            resizeMode='cover'
-            source={getImage(media?.data[1].attributes?.url)} style={productStyles.thumbnail} />
-          <Image
-            resizeMethod='resize'
-            resizeMode='cover'
-            source={getImage(media?.data[2].attributes?.url)} style={productStyles.thumbnail} />
-        </View> */}
+        >
+          <View style={productStyles.header}>
+            <TouchableOpacity style={productStyles.iconButton}
+              onPress={() => {
+                navigation.goBack()
+              }}>
+              <Ionicons
+                name="arrow-back"
+                productImages={25}
+                color={COLOR.WHITE}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={productStyles.iconButton}>
+              <Ionicons
+                name='heart-outline'
+                productImages={25}
+                color={COLOR.WHITE}
+              />
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
       </View>
 
       <View style={productStyles.detailsContainer}>
-        {/* <Text style={productStyles.productType}>Software product</Text> */}
         <Text style={productStyles.productType}>{name}</Text>
-
-        {/* <View style={productStyles.tabContainer}>
-          <TouchableOpacity style={productStyles.tabButton}>
-            <Text style={productStyles.tabText}>Description</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={productStyles.tabButton}>
-            <Text style={productStyles.tabText}>Review</Text>
-          </TouchableOpacity>
-        </View> */}
-
         <Text style={productStyles.productDescription}>
           {description}
         </Text>
 
+        <Text style={productStyles.productName}>Technologies</Text>
+        {tagline?.trim() && (
+          <View style={productStyles.tagViewStyles}>
+            {tagline?.split(',').map((tag, index) => (
+              tag.trim() && <Text style={productStyles.productDescription} key={index}>#{tag.trim()}</Text>
+            ))}
+          </View>
+        )}
         <Text style={productStyles.productName}>Developed by</Text>
         <View style={productStyles.developerInfor}>
-          <Image source={getImage(media?.data[currentIndex].attributes?.url)} style={productStyles.storeImage} />
+          <Image source={getImage(media?.data[currentIndex].attributes?.url)} style={productStyles.developerImage} />
           <View>
             <Text style={productStyles.storeName}>Ablestate</Text>
-            <Text style={productStyles.storeCertified}>verified</Text>
+            <Text style={productStyles.storeCertified}>{status}</Text>
           </View>
-          {/* <TouchableOpacity style={productStyles.followButton}>
-            <Text style={productStyles.followText}>Following</Text>
-          </TouchableOpacity> */}
         </View>
 
         <Text style={productStyles.productImagesLabel}>Gallery</Text>
         <View style={productStyles.productImagesContainer}>
           {media?.data?.map((productImage, index) => (
             <TouchableOpacity key={index} style={productStyles.productImagesButton}>
-              {/* <Text style={productStyles.productImagesText}>{productImage}</Text> */}
               <Image
                 resizeMethod='resize'
                 resizeMode='cover'
@@ -139,25 +113,23 @@ const productStyles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: DIMEN.PADDING.ME,
   },
   iconButton: {
     padding: DIMEN.PADDING.ME,
-  },
-  icon: {
-    width: 24,
-    height: 24,
+    marginHorizontal: 5,
+    backgroundColor: COLOR.NEUTRAL_1,
+    borderRadius: 100,
   },
   imageContainer: {
     flex: 1,
-    // alignItems: 'center',
-    marginBottom: 10,
+    margin: 10,
+    borderRadius: 10,
+    overflow: 'hidden'
   },
   productImage: {
-    width: '100%',
-    // height: 200,
     flex: 1,
-    borderWidth: 1,
+    // borderWidth: 1,
+    borderRadius: 10
   },
   thumbnailContainer: {
     flexDirection: 'row',
@@ -187,7 +159,7 @@ const productStyles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 5,
   },
-  storeImage: {
+  developerImage: {
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -201,13 +173,13 @@ const productStyles = StyleSheet.create({
     color: COLOR.GREY_100,
   },
   followButton: {
-    backgroundColor: '#000',
+    backgroundColor: COLOR.GREY_400,
     padding: 5,
     borderRadius: 5,
     marginLeft: 'auto',
   },
   followText: {
-    color: '#FFF',
+    color: COLOR.WHITE,
     fontSize: 14,
   },
   productImagesLabel: {
@@ -221,7 +193,6 @@ const productStyles = StyleSheet.create({
   productImagesButton: {
     borderWidth: 1,
     borderColor: COLOR.WHITE,
-    // padding: DIMEN.PADDING.ME,
     borderRadius: 5,
     marginRight: 10,
   },
@@ -238,11 +209,11 @@ const productStyles = StyleSheet.create({
   tabText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#000',
+    color: COLOR.GREY_400,
   },
   productDescription: {
     fontSize: 14,
-    color: '#888',
+    color: COLOR.GREY_100,
   },
   buyButton: {
     backgroundColor: COLOR.GREY_200,
@@ -253,8 +224,12 @@ const productStyles = StyleSheet.create({
     marginHorizontal: 20,
   },
   buyButtonText: {
-    color: '#FFF',
+    color: COLOR.WHITE,
     fontSize: 18,
-    fontWeight: 'bold',
   },
+  tagViewStyles: {
+    flexDirection: 'row',
+    gap: 10,
+    flexWrap: 'wrap'
+  }
 });
