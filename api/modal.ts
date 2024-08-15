@@ -122,5 +122,36 @@ export const MODALS = {
       }
     }
   }
-}`
+  }`,
+  'products':`query {
+    products {
+      data{
+        id
+        attributes{
+          name
+          tagline
+          description
+          createdAt
+          media{
+            data{
+              id
+              attributes{
+                url
+              }
+            }
+          }
+          tutorial {
+            data{
+              id
+            }
+          }
+          developers{
+            data{
+              id
+            }
+          }
+        }
+      }
+    }
+  }`
 }
