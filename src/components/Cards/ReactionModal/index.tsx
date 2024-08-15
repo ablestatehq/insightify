@@ -15,7 +15,6 @@ interface ReactionModalProps {
 const Index = ({ visible, onClose, msgKey, onReaction, onReply, deleteMessage, modalPosition}: ReactionModalProps) => {
   const emojis = ['👍', '❤️', '😂', '😮', '😢', '😡'];
   const onOpenEmojiPicker = () => {};
-  console.log(modalPosition);
   return (
     <Modal transparent visible={visible} animationType="fade">
       <TouchableWithoutFeedback onPress={onClose}>
