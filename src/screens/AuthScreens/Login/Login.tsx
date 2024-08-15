@@ -46,7 +46,6 @@ const Login: React.FC = () => {
           }));
 
         setJwt(response?.jwt);
-        // [{ "country": "UG", "createdAt": "2024-06-11T09:07:41.307Z", "email": "enockmale97@gmail.com", "id": 22, "isWhatsAppPhone": true, "phoneNumber": "0758585390", "primaryRole": ["Mentor"] }]
         const is_community_member = await getFilteredData('community-members', 'email', '$eq', response?.user.email);
         const isMember = is_community_member.length > 0;
         console.log('Community feedback: ', is_community_member)
