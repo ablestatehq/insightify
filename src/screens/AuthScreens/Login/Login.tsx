@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { storeToLocalStorage } from '../../../utils/localStorageFunctions';
 import { FONT_NAMES } from '../../../assets/fonts/fonts';
+import { getFilteredData } from '../../../../api/strapiJSAPI';
 // import {sendConfirmationEmail} from '../../../../api/strapiJSAPI';
 
 const Login: React.FC = () => {
@@ -26,7 +27,7 @@ const Login: React.FC = () => {
   const [modalMessage, setModalMessage] = useState<string>('');
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
-  const { setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser, community } = useContext(AppContext);
+  const {setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser} = useContext(AppContext);
 
   const loginFormInitValues = {
     email: '',
@@ -45,10 +46,12 @@ const Login: React.FC = () => {
           }));
 
         setJwt(response?.jwt);
-        const isMember = community.some((member) => member.email == response?.user?.email);
+        // [{ "country": "UG", "createdAt": "2024-06-11T09:07:41.307Z", "email": "enockmale97@gmail.com", "id": 22, "isWhatsAppPhone": true, "phoneNumber": "0758585390", "primaryRole": ["Mentor"] }]
+        const is_community_member = await getFilteredData('community-members', 'email', '$eq', response?.user.email);
+        const isMember = is_community_member.length > 0;
+        console.log('Community feedback: ', is_community_member)
         setUser((prev: any) => ({ ...response?.user, isMember }))
         setIsLoggedIn(true);
-        // console.log("This is what I have for now!",community)
         storeToLocalStorage('isMember', { isMember });
 
         if (opportunityID) {
