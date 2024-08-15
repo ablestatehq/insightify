@@ -57,8 +57,8 @@ const Index = ({ visible, onClose, msgKey, onReaction, onReply, deleteMessage, m
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    borderWidth: 2,
-    borderColor: COLOR.PRIMARY_300,
+    // borderWidth: 2,
+    // borderColor: COLOR.PRIMARY_300,
   },
   modalContainer: {
     position: 'absolute',
@@ -66,8 +66,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     marginVertical: DIMEN.PADDING.SM,
-    borderWidth: 1,
-    borderColor: COLOR.PRIMARY_100,
+    // borderWidth: 1,
+    // borderColor: COLOR.PRIMARY_100,
   },
   emojiContainer: {
     flexDirection: 'row',
