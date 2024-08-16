@@ -77,7 +77,7 @@ type DetailsScreenProps = RouteProp<RootStackParamList, 'Details'>
 type OpportunityListProps = RouteProp<RootStackParamList, 'Explore'>
 // interface for TalentSubmissionForm
 type TalentSubmissionForm = {
-  need: string[]// Looking for
+  need: string[]
   email: string
   phone: string
   heads?: number// Quantity needed.
@@ -187,19 +187,24 @@ interface ProfileType {
   secondaryDomain: string;
 }
 
-type TechTip = {
-  
-};
+interface ViewCount {
+  [id: string]: number;
+}
 
 type ProductData = {
-  verified: boolean;
   name: string;
-  developer?: string;
+  id: number;
+  verified?: boolean;
   description: string;
-  image?: string;
+  media?: {data: any[]};
+  developers?: {data: any[]};
   demo?: string;
-  views: number;
-  tagLine: string[]
+  views?: number;
+  tagline?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  status?: string;
+  tutorial?: any
 }
 export {
   MemberInfo,
