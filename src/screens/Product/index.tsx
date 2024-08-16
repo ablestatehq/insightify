@@ -1,5 +1,6 @@
 import React from 'react'
 
+import awardXP from '../../utils/awardXP';
 import {Ionicons} from '@expo/vector-icons';
 import {RootStackParamList} from '../../utils/types'
 import {COLOR, DIMEN, FONTSIZE} from '../../constants/constants'
@@ -7,16 +8,22 @@ import {environments} from '../../constants/environments'
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native'
 import {StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, ImageBackground} from 'react-native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import { AppContext } from '../../helper/context/AppContext';
 
 const {BASE_URL} = environments;
+const AWARD = {
+  'FIRST': 5,
+  'SECOND': 3,
+  'THIRD': 1
+}
 
 const Index = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
   const {description, tagline, developers, name, media, status, id} = route.params;
-
+  const {user, jwt, setXp} = React.useContext(AppContext);
   const [currentIndex, setCurrentIndex] = React.useState(0);
-  console.log(status);
+
   React.useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % (media?.data.length ? media?.data?.length : 0));
@@ -24,6 +31,12 @@ const Index = () => {
 
     return () => clearInterval(interval);
   }, [media?.data?.length]);
+
+  React.useEffect(() => {
+    awardXP(AWARD, id, jwt, user?.id).then(xps => {
+      setXp(prev => prev + xps);
+    }).catch(error => {console.error(error)});
+  }, []);
 
   const getImage = (url: string) => ({ uri: `${BASE_URL}${url}` });
 
