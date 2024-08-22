@@ -55,7 +55,7 @@ function useFilter(category:string, data:any[], filteredItems: string[]) {
   useEffect(() => {
     try {
       setStillLoading(true);
-      if (category == 'All') {
+      if (category == 'Recent') {
         const filtered = filteredItems.length > 0 ?
           activeData.filter(opp => filteredItems.includes(opp.Category)) :
           activeData;
@@ -72,7 +72,7 @@ function useFilter(category:string, data:any[], filteredItems: string[]) {
       setFilteredData(currentData => {
         return []
       });
-      } else if (category == 'Archived') {
+      } else if (category == 'All') {
         const filtered = filteredItems.length > 0 ?
           archivedOpp.filter(opp => filteredItems.includes(opp.Category)) :
           archivedOpp;

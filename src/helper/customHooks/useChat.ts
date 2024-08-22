@@ -40,6 +40,11 @@ const useChat = (userId: number, jwt: string) => {
       const response = await fetchMessages(jwt, start, 25);
       const messagesMap = new Map<string, any>();
 
+      // Sort messages based on createdAt (latest first)
+      response?.data?.sort((a: Message, b: Message) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
       response?.data?.forEach((msg: Message) => {
         messagesMap.set(msg.createdAt, msg);
       });
@@ -71,14 +76,14 @@ const useChat = (userId: number, jwt: string) => {
 
   const handleDeleteMessage = useCallback(async (key: string) => {
     // Delete also from the server
+    const msgID = messageMap.get(key)?.id;
+    setMessageMap(prev => {
+      const msgs = new Map(prev);
+      msgs.delete(key);
+      return msgs;
+    });
     try {
-      await deleteMessageSearch(jwt, messageMap.get(key)?.id);
-       // Update messageMap
-      setMessageMap(prev => {
-        const msgs = new Map(prev);
-        msgs.delete(key);
-        return msgs;
-      });
+      await deleteMessageSearch(jwt, msgID);
     } catch (error) {
       setErrorMessage('Failed to delete message. Please try again.');
     }
@@ -173,12 +178,19 @@ const useChat = (userId: number, jwt: string) => {
 }, []);
 
   useEffect(() => {
-    const newMsgs = Array.from(messageMap.keys()).reverse();
+    const newMsgs = Array.from(messageMap.keys()).sort((a: string, b: string) =>
+      new Date(b).getTime() - new Date(a).getTime()
+      );
     setMessages(newMsgs);
   }, [messageMap]);
 
   useEffect(() => {
     setupSocket();
+
+    return () => {
+      socket?.off('connect');
+      socket?.off('message:create');
+    }
   }, []);
 
 

@@ -17,7 +17,7 @@ class NotificationHandler{
 
   async registerForPushNotifications() {
     let token;
-
+    // let newToken;
     if (Platform.OS == 'android') {
       Notifications.setNotificationChannelAsync('default', {
         name: 'default',
@@ -40,6 +40,8 @@ class NotificationHandler{
        }
 
        try {
+        //  newToken = await Notifications.getDevicePushTokenAsync();
+        //  console.log("Token: ",newToken);
          token = await Notifications.getExpoPushTokenAsync({
            projectId: Constants?.expoConfig?.extra?.eas?.projectId,
          });
@@ -49,6 +51,17 @@ class NotificationHandler{
      }
     console.log('Push notification: ',token?.data);
       return token?.data;
+  }
+
+  async schedulePushNotification(title: string, body: string, data: string, secs:number) {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: title,
+        body: body,
+        data: {data},
+      },
+      trigger: {seconds: secs},
+    });
   }
 }
 

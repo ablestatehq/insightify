@@ -23,7 +23,7 @@ export function resourceAge(date: Date) {
       const weeks = Math.floor(days / 7);
       if (weeks >= 4) {
         const months = Math.floor(weeks / 4);
-        return `${months}m`
+        return `${months}mo`
       }
       else return `${weeks}w`
     }
@@ -31,9 +31,9 @@ export function resourceAge(date: Date) {
   } else if( hours != 0){
     return `${hours}hr`
   } else if (minutes != 0) {
-    return `${minutes}min`
+    return `${minutes}m`
   } else {
-    return `${seconds}sec`
+    return `${seconds}s`
   }
 }
 
@@ -114,4 +114,7 @@ export function isProfileComplete(user: UserProfile): boolean {
     user.skills !== null &&
     user.gender !== null
   )
+}
+
+export function awardPoints(userId: number, productId: number, interactionType: string) {
 }
