@@ -47,8 +47,6 @@ export default function Message({
 
   const isSent = sender?.data?.id === userId;
 
-  // const 
-  // console.log(replyTo?.data[0])
   const handleLongPress = () => {
     messageRef.current?.measure((fx, fy, width, height, px, py) => {
       if (isSent) {
@@ -60,10 +58,9 @@ export default function Message({
       }
     });
   }
-  // console.log(modalPosition);
+
   return (
     <View style={{
-      // marginVertical: 10,
       marginBottom: messageReactions?.data ? 20 : 10,
       alignSelf: isSent ? 'flex-end' : 'flex-start'
     }}>
@@ -91,7 +88,6 @@ export default function Message({
               messageStyles.messageText,
               {
                 color: COLOR.GREY_300,
-                // color: isSent ? COLOR.WHITE : COLOR.GREY_300
               }]}>{content}</Text>
         </View>
       </TouchableOpacity>

@@ -1,56 +1,106 @@
 import React, {useContext} from 'react';
-import {View, TextInput, FlatList, StyleSheet, Pressable } from 'react-native';
-import {Ionicons } from '@expo/vector-icons';
+import {Ionicons} from '@expo/vector-icons';
+import {COLOR, DIMEN} from '../../constants/constants';
 import Header from '../../components/Headers/Header';
-import {COLOR} from '../../constants/constants';
-import {AppContext} from '../../helper/context/AppContext';
 import Message from '../../components/Cards/Message';
 import useChat from '../../helper/customHooks/useChat';
+import {AppContext} from '../../helper/context/AppContext';
+import Octicons from '@expo/vector-icons/Octicons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+
+import {
+  View, FlatList, StyleSheet,
+  Pressable, ActivityIndicator,
+} from 'react-native';
+import {SendCard} from '../../components';
 
 const ChatScreen = () => {
   const {user, jwt} = useContext(AppContext);
   const {
+    // refs
+    textInputRef,
+    // states
+    messageMap,
     messages,
+    onCloseReply,
+    replyingTo,
+    refreshing,
     newMessage,
+    modalVisibility,
+    handleModalVisibility,
+    // set data
     setNewMessage,
+    // handle data
     handleSendMessage,
     handleDeleteMessage,
-    flatListRef,
-    errorMessage,
-    hasMoreMessages,
-    loadMessages,
+    handleEndReached,
+    onReaction,
+    onReply,
   } = useChat(user.id, jwt);
 
-  const renderMessage = ({ item }: any) => (
-    <Message isSent={item.sender.data.id === user.id} message={item?.content} />
-  );
+  const renderMessage = React.useCallback(({item, index}: {item: string, index:number}) => {
+    const msg = messageMap.get(item);
+    return (
+      <Message
+        userId={user.id}
+        onReaction={onReaction}
+        onReply={onReply}
+        onDelete={handleDeleteMessage}
+        {...msg}
+      />
+    );
+  }, [messageMap, user.id, onReaction, onReply, handleDeleteMessage]);
   
   return (
     <View style={styles.container}>
       <View>
         <View style={styles.contentHeader}>
-          <Header title='Chat' />
+          <View style={{flex: 1}}>
+            <Header title='Chat' backgroundColor={COLOR.WHITE} />
+          </View>
+          {modalVisibility &&
+            <View>
+              <Pressable onPress={() => {
+                handleModalVisibility();
+              }}>
+                <Octicons name="reply" size={15} color="black" />
+              </Pressable>
+              <Pressable>
+                <AntDesign name="delete" size={15} color="black" />
+              </Pressable>
+            </View>
+          }
         </View>
       </View>
-      <FlatList
-        data={messages.reverse()}
-        ref={flatListRef}
-        inverted
-        showsVerticalScrollIndicator={false}
-        renderItem={renderMessage}
-        onEndReached={() => {loadMessages()}}
-        onEndReachedThreshold={0.1}
-      />
+      <View style={{flex: 1, padding: 15}}>
+        {refreshing && (
+          <View style={{alignItems: 'center', padding: 5, backgroundColor:'Transparent'}}>
+            <ActivityIndicator size="small" color={COLOR.PRIMARY_200} />
+          </View>
+        )}
+        <FlatList
+          data={messages}
+          inverted
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item) => item}
+          renderItem={renderMessage}
+          onEndReached={handleEndReached}
+          onEndReachedThreshold={0.0}
+        />
+      </View>
       <View style={styles.inputContainer}>
-        <TextInput
-          style={{ ...styles.input, borderRadius: 100, paddingHorizontal: 15 }}
-          value={newMessage}
-          onChangeText={setNewMessage}
-          placeholder="Type your message..."
+        <SendCard
+          replyingTo={replyingTo}
+          messageMap={messageMap}
+          closeReply={onCloseReply}
+          userId={user.id}
+          textInputRef={textInputRef}
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
         />
         <Pressable
           style={{
-            backgroundColor: COLOR.SECONDARY_300,
+            backgroundColor: COLOR.PRIMARY_300,
             justifyContent: 'center',
             alignItems: 'center',
             width: 40,
@@ -59,7 +109,7 @@ const ChatScreen = () => {
             paddingLeft: 5,
             padding: 2.5,
           }}
-          onPress={handleSendMessage}
+          onPress={() => handleSendMessage(replyingTo as string)}
         >
           <Ionicons name="send" size={18} color="white" />
         </Pressable>
@@ -73,11 +123,21 @@ export default ChatScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: COLOR.WHITE,
+    backgroundColor: COLOR.GREY_50,
   },
   contentHeader: {
-    width: '80%',
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: COLOR.WHITE,
+    paddingRight: DIMEN.PADDING.ME,
+    justifyContent: 'space-between',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    borderRadius: 5,
+    gap: 10,
+    padding: 5,
   },
   messageContainer: {
     flexDirection: 'row',
@@ -85,18 +145,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
-  content:{},
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-  },
-  input: {
-    flex: 1,
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: COLOR.GREY_50,
-    borderRadius: 5,
-    padding: 5,
-  },
+  content: {},
+
+  
 });
