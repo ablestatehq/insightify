@@ -3,19 +3,20 @@ import {
   StatusBar, TextInput,
   StyleSheet, ActivityIndicator,
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 // constants
-import {COLOR, FONTSIZE} from '../../constants/contants';
+import { COLOR, FONTSIZE } from '../../constants/constants';
 
 import Carousel from './componets/Carousel'
 import Icons from '../../assets/icons';
-import {AppContext} from '../../helper/context/AppContext';
-import {CategorySection, FloatingButton} from '../../components';
+import { AppContext } from '../../helper/context/AppContext';
+import { CategorySection, FloatingButton } from '../../components';
+import { FONT_NAMES } from '../../assets/fonts/fonts';
 
 const CodeTips = () => {
 
-  const {codeTips} = useContext(AppContext);
+  const { codeTips } = useContext(AppContext);
   // const [showReportModal, setShowReportModal] = useState<boolean>(false);
 
   // const [isCarouselReady, setIsCarouselReady] = useState<boolean>(false);
@@ -26,7 +27,7 @@ const CodeTips = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
 
-  const savedTips = codeTips.filter(saved =>  saved.bookmarked == true);
+  const savedTips = codeTips.filter(saved => saved.bookmarked == true);
   const archivedTips = codeTips.map(tip => {
 
     const timestamp1 = new Date(tip.publishedAt);
@@ -42,13 +43,13 @@ const CodeTips = () => {
       return tip
     }
   });
-  
+
   useEffect(() => {
     setIsLoading(true);
     if (category == 'Archived') {
       setCarouselData([...archivedTips.filter(tip => tip)]);
       setIsLoading(false)
-    } else if(category == 'Saved'){
+    } else if (category == 'Saved') {
       setCarouselData([...savedTips.filter(tip => tip)]);
       setIsLoading(false)
     } else {
@@ -60,9 +61,9 @@ const CodeTips = () => {
   return (
     <View style={styles.codeTipsContainer}>
       <StatusBar backgroundColor={COLOR.WHITE} />
-      <View style={{paddingHorizontal: 20, backgroundColor: COLOR.WHITE}}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10, gap: 20}}>
-          {showSearchBar && <View style={{flex: 1, borderWidth: 1, borderColor: COLOR.SECONDARY_50, paddingHorizontal: 10, borderRadius: 5, padding: 2}}>
+      <View style={{ paddingHorizontal: 20, backgroundColor: COLOR.WHITE }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10, gap: 20 }}>
+          {showSearchBar && <View style={{ flex: 1, borderWidth: 1, borderColor: COLOR.SECONDARY_50, paddingHorizontal: 10, borderRadius: 5, padding: 2 }}>
             <TextInput
               placeholder='search'
               onChangeText={text => setSearchText(text)}
@@ -88,13 +89,13 @@ const CodeTips = () => {
         </View>
         <CategorySection setFilteredItems={setCategory} categories={['All', 'Saved', 'Archived']} />
       </View>
-      {isLoading && (<View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+      {isLoading && (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator
           size='large'
           color={COLOR.PRIMARY_300}
         />
       </View>)}
-      {!isLoading && <Carousel data={carouselData}/>}
+      {!isLoading && <Carousel data={carouselData} />}
     </View>
   );
 }
@@ -116,14 +117,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.WHITE,
   },
   tipTitle: {
-    fontFamily: 'RalewayBold',
+    fontFamily: FONT_NAMES.Title,
     color: COLOR.SECONDARY_300,
     fontSize: FONTSIZE.HEADING_4,
   },
   tipContent: {
     lineHeight: 30,
     color: COLOR.SECONDARY_300,
-    fontFamily: 'ComfortaaBold',
+    fontFamily: FONT_NAMES.Heading,
     fontSize: FONTSIZE.HEADING_5,
   },
   tipTitleView: {
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     // textAlign: 'center',
-    fontFamily: 'RalewaySemiBold',
+    fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.TITLE_1
   }
 });

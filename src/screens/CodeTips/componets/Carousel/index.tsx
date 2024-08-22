@@ -1,26 +1,27 @@
-import React, {useState, useRef, useContext} from 'react';
-import {View, Text, ScrollView, StyleSheet, NativeSyntheticEvent} from 'react-native';
+import React, { useState, useRef, useContext } from 'react';
+import { View, Text, ScrollView, StyleSheet, NativeSyntheticEvent } from 'react-native';
 
-import {CodeSnippet, FormModal, TipFooter, HTMLText} from '../../../../components';
+import { CodeSnippet, FormModal, TipFooter, HTMLText } from '../../../../components';
 
 import RenderHtml from 'react-native-render-html';
 
-import {AppContext} from '../../../../helper/context/AppContext';
-import {COLOR, DIMEN, FONTSIZE} from '../../../../constants/contants';
-import {bookmarkCodeTips} from '../../../../helper/functions/handleFunctions';
+import { AppContext } from '../../../../helper/context/AppContext';
+import { COLOR, DIMEN, FONTSIZE } from '../../../../constants/constants';
+import { bookmarkCodeTips } from '../../../../helper/functions/handleFunctions';
+import { FONT_NAMES } from '../../../../assets/fonts/fonts';
 
-const {SCREENWIDTH} = DIMEN;
+const { SCREENWIDTH } = DIMEN;
 
 interface CorouselProps {
   data: any[],
 }
 
-function Index({data}: CorouselProps) {
+function Index({ data }: CorouselProps) {
 
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const {codeTips, setCodeTips, user, comments} = useContext(AppContext);
+  const { codeTips, setCodeTips, user, comments } = useContext(AppContext);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
 
   // Render html tag renderers
@@ -73,11 +74,11 @@ function Index({data}: CorouselProps) {
                       <RenderHtml
                         contentWidth={100}
                         source={{ html: item?.details }}
-                        defaultTextProps={{ style: { fontFamily: 'LatoRegular' } }}
+                        defaultTextProps={{ style: { fontFamily: FONT_NAMES.Body } }}
                         renderers={renderers}
                         tagsStyles={{
                           p: {
-                            fontFamily: 'LatoRegular',
+                            fontFamily: FONT_NAMES.Body,
                             fontSize: FONTSIZE.BODY,
                             textAlign: 'justify',
                             paddingVertical: 5
@@ -90,11 +91,11 @@ function Index({data}: CorouselProps) {
                             textAlign: 'justify'
                           },
                           li: {
-                            fontFamily: 'LatoRegular',
+                            fontFamily: FONT_NAMES.Body,
                             fontSize: FONTSIZE.BODY
                           },
                           strong: {
-                            fontFamily: 'LatoRegular',
+                            fontFamily: FONT_NAMES.Body,
                             fontSize: FONTSIZE.BODY
                           }
                         }}
@@ -121,8 +122,8 @@ function Index({data}: CorouselProps) {
               </View>
             ))}
           </ScrollView>
-        ) : (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text style={{fontFamily: 'ComfortaaBold'}}>No tips found</Text>
+        ) : (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontFamily: FONT_NAMES.Heading }}>No tips found</Text>
         </View>)
         }
       </View>
@@ -161,14 +162,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.WHITE,
   },
   tipTitle: {
-    fontFamily: 'RalewayBold',
+    fontFamily: FONT_NAMES.Title,
     color: COLOR.SECONDARY_300,
     fontSize: FONTSIZE.TITLE_1,
   },
   tipContent: {
     lineHeight: 30,
     color: COLOR.SECONDARY_300,
-    fontFamily: 'ComfortaaBold',
+    fontFamily: FONT_NAMES.Heading,
     fontSize: FONTSIZE.HEADING_5,
   },
   tipTitleView: {
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     // textAlign: 'center',
-    fontFamily: 'RalewaySemiBold',
+    fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.TITLE_1
   }
 });
