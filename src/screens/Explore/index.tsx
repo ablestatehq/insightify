@@ -1,13 +1,16 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {View, StatusBar, FlatList, StyleSheet, Text} from 'react-native';
-import {useFocusEffect, useNavigation, useRoute} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {FloatingButton, FormModal, CategorySection, FilterCard, OpportunityCard, OpportunityHeader} from '../../components';
-import {COLOR} from '../../constants/constants';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { View, StatusBar, FlatList, StyleSheet, Text } from 'react-native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { COLOR } from '../../constants/constants';
 import useFilter from '../../helper/customHooks/useFilter';
-import {AppContext} from '../../helper/context/AppContext';
-import {OpportunityListProps} from '../../utils/types';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
+import { AppContext } from '../../helper/context/AppContext';
+import { OpportunityListProps } from '../../utils/types';
+import { FONT_NAMES } from '../../assets/fonts/fonts';
+import {
+  EmptyState, FloatingButton, FormModal, CategorySection,
+  FilterCard, OpportunityCard, OpportunityHeader
+} from '../../components';
 
 const OpportunityList = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -28,18 +31,10 @@ const OpportunityList = () => {
     setFilteredItems([]);
   }, [tag]);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (filteredOpportunities.length === 0) {
-        setCategory('Archived');
-      }
-    }, [filteredOpportunities])
-  );
-
   const toggleFilterCard = () => setShowFilterCard(!showFilterCard);
 
   const renderOpportunity = useCallback(
-    ({ item }: { item: any }) => (
+    ({item }: { item: any }) => (
       <OpportunityCard
         opportunity={item}
         showReportModal={() => setShowReportModal(true)}
@@ -76,11 +71,7 @@ const OpportunityList = () => {
           renderItem={renderOpportunity}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <View style={styles.noTextContainer}>
-              <Text style={styles.noMatchText}>No opportunities found</Text>
-            </View>
-          }
+          ListEmptyComponent={<EmptyState />}
         />
 
         <FormModal
@@ -95,7 +86,7 @@ const OpportunityList = () => {
       {/* Floating Button */}
       <FloatingButton
         press={handleFloatingButtonPress}
-        buttonPosition={{bottom: 20, right: 10}}
+        buttonPosition={{ bottom: 20, right: 10 }}
       />
 
       {/* Filter Card */}
@@ -127,6 +118,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0.5,
   },
   scrollContent: {
+    flex: 1,
     padding: 5,
     paddingBottom: 25,
   },
