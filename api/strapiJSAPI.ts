@@ -1,8 +1,7 @@
-import * as FileSystem from 'expo-file-system';
 import {environments} from '../src/constants/environments'
 import {clearLocalData, retrieveLocalData} from "../src/utils/localStorageFunctions";
 
-const {STRAPI_TOKEN, STRAPI_BASE_URL,STRAPI_TALENT_FORM_API_KEY} = environments;
+const {STRAPI_TOKEN, STRAPI_BASE_URL,STRAPI_TALENT_FORM_API_KEY, BASE_URL} = environments;
 
 /**
  * @name getMe
@@ -257,26 +256,20 @@ async function getDataId(endpoint: string, attribute: string, attributeValue: an
  * @param img 
  * @returns
  */
-async function uploadImage(imgUri: string, jwt: string, refId: string, ref: string, source: string, field: string) {
+async function uploadImage(formData: FormData, jwt: string) {
+  console.log(`${BASE_URL}/api/upload`);
   try {
-    const uploading = await
-      FileSystem.uploadAsync(
-        `https://insightify-admin.ablestate.cloud/api/upload/?refId=${refId}&ref=${ref}&source=${source}&field=${field}`,
-        `${imgUri}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${jwt}`
-          },
-          uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-          fieldName: "files",
-        });
-
-    const imageBlob = await fetch(imgUri);
-    const blob = await imageBlob.blob();
-    
+    const response = await fetch(`${BASE_URL}/api/upload`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${jwt}`
+      },
+      body: formData
+    });
+    const uploading = await response.json();
     return uploading
   } catch (error) {
-    console.log(JSON.stringify(error, null,2))
+    console.error(JSON.stringify(error, null, 2));
     return null
   }
 }

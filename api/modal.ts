@@ -132,6 +132,7 @@ export const MODALS = {
           tagline
           description
           createdAt
+          status
           media{
             data{
               id
