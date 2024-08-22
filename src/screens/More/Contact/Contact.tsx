@@ -4,8 +4,9 @@ import { SafeAreaView, StyleSheet, View, Text, Pressable } from 'react-native'
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { contactPressed } from '../Contacthandlers';
-import { COLOR, FONTSIZE } from '../../../constants/contants';
+import { COLOR, FONTSIZE } from '../../../constants/constants';
 import Header from '../../../components/Headers/Header';
+import { FONT_NAMES } from '../../../assets/fonts/fonts';
 
 const Contact = () => {
   const navigation = useNavigation();
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.WHITE
   },
   contactText: {
-    fontFamily: 'ComfortaaSemiBold',
+    fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.TITLE_2
   },
   contactView: {
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
   socialText: {
     flexDirection: 'column',
     fontSize: FONTSIZE.TITLE_2,
-    fontFamily: "ComfortaaSemiBold",
+    fontFamily: FONT_NAMES.Title,
     color: COLOR.SECONDARY_300,
   },
   socialMediaContainer: {
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
     fontSize: FONTSIZE.SMALL
   },
   introText: {
-    fontFamily: 'ComfortaaBold',
+    fontFamily: FONT_NAMES.Heading,
     fontSize: FONTSIZE.HEADING_5,
     marginBottom: 20
   }
