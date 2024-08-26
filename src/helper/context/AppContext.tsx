@@ -76,7 +76,6 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
   const [comments, setComments] = useState<any[]>([]);
   const [community, setCommunity] = useState<any[]>([]);
-  const [xPoints, setXPoints] = useState<number>(0);
 
   useEffect(() => {
     fetchInitialData();
@@ -87,9 +86,8 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       const inCommunity = await retrieveLocalData('isMember');
       const user_ = await getMe();
       if (user_.ok) {
+        setXp(user_.data.totalXP ? user_.data.totalXP : 0);
         setIsLoggedIn(true);
-        // console.log(user);
-        setXPoints(user.totalGems ? user.totalGems : 0);
         if (inCommunity) {
           setUser((prev: any) => ({ ...user_.data, isMember: inCommunity.isMember }));
           setJwt(user_.jwt);
