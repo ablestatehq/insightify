@@ -56,7 +56,7 @@ type RootStackParamList = {
     title?: string
     opportunityID?: string
   }
-  OpportunityList: undefined;
+  // OpportunityList: undefined;
   Forgot: undefined
   Reset: {
     email: string
