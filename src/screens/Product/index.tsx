@@ -8,7 +8,8 @@ import {environments} from '../../constants/environments'
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native'
 import {StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, ImageBackground} from 'react-native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import { AppContext } from '../../helper/context/AppContext';
+import {AppContext} from '../../helper/context/AppContext';
+import {clearLocalData} from '../../utils/localStorageFunctions';
 
 const {BASE_URL} = environments;
 const AWARD = {
@@ -21,7 +22,7 @@ const Index = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
   const {description, tagline, developers, name, media, status, id} = route.params;
-  const {user, jwt, setXp} = React.useContext(AppContext);
+  const {user, jwt, setXp, xp} = React.useContext(AppContext);
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
   React.useEffect(() => {
@@ -33,13 +34,18 @@ const Index = () => {
   }, [media?.data?.length]);
 
   React.useEffect(() => {
+    // clearLocalData('award-token');
     awardXP(AWARD, id, jwt, user?.id).then(xps => {
-      setXp(prev => prev + xps);
+      console.log('xps: ', xps);
+      if (xps) {
+        setXp(prev => prev + xps);
+      }
     }).catch(error => {console.error(error)});
   }, []);
 
-  const getImage = (url: string) => ({ uri: `${BASE_URL}${url}` });
+  const getImage = (url: string) => ({uri: `${BASE_URL}${url}`});
 
+  console.log('Product screen: ', xp);
   return (
     <ScrollView contentContainerStyle={productStyles.container}>
       <View style={productStyles.imageContainer}>
@@ -107,9 +113,9 @@ const Index = () => {
         </View>
       </View>
 
-      <TouchableOpacity style={productStyles.buyButton}>
+      {/* <TouchableOpacity style={productStyles.buyButton} onPress={() => {OpenLink()}}>
         <Text style={productStyles.buyButtonText}>Tour product</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </ScrollView>
   );
   
@@ -229,12 +235,13 @@ const productStyles = StyleSheet.create({
     color: COLOR.GREY_100,
   },
   buyButton: {
-    backgroundColor: COLOR.GREY_200,
-    padding: DIMEN.PADDING.ME,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: COLOR.SECONDARY_400,
+    padding: DIMEN.PADDING.SM,
+    // alignItems: 'center',
+    // justifyContent: 'center',
     borderRadius: 5,
     marginHorizontal: 20,
+    alignSelf: 'flex-end'
   },
   buyButtonText: {
     color: COLOR.WHITE,
