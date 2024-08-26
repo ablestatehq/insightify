@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { FONT_NAMES } from '../../assets/fonts/fonts';
+import { COLOR, FONTSIZE } from '../../constants/constants';
 
 const Index = () => (
   <View style={styles.container}>
@@ -17,7 +18,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   noMatchText: {
-    fontFamily: FONT_NAMES.Body,
+    fontFamily: FONT_NAMES.Heading,
+    fontSize: FONTSIZE.TITLE_2,
+    color: COLOR.SECONDARY_75,
     textAlign: 'center',
   },
 });
