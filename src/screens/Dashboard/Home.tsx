@@ -9,12 +9,16 @@ import {
 
 // constants
 import {COLOR} from '../../constants/constants'
-import {CompleteProfile, OpportunityItem, ProductCard, SeeMore, TipCard, XPpoint, Fragment} from '../../components';
+import {
+  SeeMore, TipCard, XPpoint, Fragment,
+  CompleteProfile, OpportunityItem, ProductCard,
+} from '../../components';
+
 import {AppContext} from '../../helper/context/AppContext';
-import {ProductData, RootStackParamList} from '../../utils/types';
+import {RootStackParamList} from '../../utils/types';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import { isProfileComplete } from '../../helper/functions/functions';
+import {isProfileComplete} from '../../helper/functions/functions';
 
 const renderTip = ({item, index}:{item: any, index: number}) =>
   <TipCard
@@ -26,33 +30,23 @@ const renderTip = ({item, index}:{item: any, index: number}) =>
   />
 
 const Home = () => {
-  const {opportunities, codeTips, isLoggedIn, user} = useContext(AppContext);
+  const {opportunities, codeTips, isLoggedIn, user, products, xp} = useContext(AppContext);
+
   const opportunityIndex = Math.floor(Math.random() * ((opportunities.length - 1) - 0 + 1)) + 0;
   const [showCompleteProfile, setShowCompleteProfile] = useState(true);
-  const [product, setProduct] = useState<ProductData>({
-    verified: false,
-    name: 'Insightify',
-    developer: 'Ablestate',
-    description: `Insightify is mobile application designed to empower individuals in the field of technology. It offers a wealth of resources aimed at helping users realize their full potential in the dynamic world of coding and development. Through informative hints, hands-onopportunities, and curated learning paths, Insightify enables developers of all skill levels to flourish and grow.`, 
-    image: 'undefined',
-    demo: 'string',
-    views: 0,
-    tagLine: ['react-native', 'strapi.js', 'express.js'],
-  });
 
-  // Call this function to start monitoring network changes
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
+  
   return (
     <View style={styles.container}>
-      <XPpoint number={5} />
+      <XPpoint number={xp} />
       <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
         {/* Product showcase section  */}
         <Fragment
           Component={ProductCard}
           onPress={() => navigation.navigate('ProductList')}
           title={'Featured Product'}
-          {...product}
+          {...products[0]}
         />
         {isLoggedIn && !isProfileComplete(user) && showCompleteProfile &&
           <CompleteProfile handleClose={() => {setShowCompleteProfile(false)}} />}
@@ -73,7 +67,7 @@ const Home = () => {
           <FlatList
             data={codeTips.slice(0, 3)}
             renderItem={renderTip}
-            keyExtractor={(item, index) => item?.id.toString()}
+            keyExtractor={(item) => item?.id.toString()}
             horizontal
             showsHorizontalScrollIndicator={false}
           />

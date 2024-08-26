@@ -36,7 +36,6 @@ const Index = () => {
   React.useEffect(() => {
     // clearLocalData('award-token');
     awardXP(AWARD, id, jwt, user?.id).then(xps => {
-      console.log('xps: ', xps);
       if (xps) {
         setXp(prev => prev + xps);
       }
@@ -45,7 +44,6 @@ const Index = () => {
 
   const getImage = (url: string) => ({uri: `${BASE_URL}${url}`});
 
-  console.log('Product screen: ', xp);
   return (
     <ScrollView contentContainerStyle={productStyles.container}>
       <View style={productStyles.imageContainer}>

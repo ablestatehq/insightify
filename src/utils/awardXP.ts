@@ -4,9 +4,7 @@ import {retrieveLocalData, storeToLocalStorage} from "./localStorageFunctions";
   // Give points to the user for viewing the product.
 const awardXP = async (AWARD: any, itemID: number, authToken: string, userID: number) => {
   const award = await retrieveLocalData('award-token');
-  console.log('Award: ', award);
-  if (award) {
-    console.log('Another try: ', award[itemID]);
+  if (award && award[itemID]) {
     if (award[itemID] !== 'THIRD') {
       await storeData(
         'rewards',
@@ -23,8 +21,7 @@ const awardXP = async (AWARD: any, itemID: number, authToken: string, userID: nu
       return AWARD[award[itemID] === 'FIRST' ? 'SECOND' : 'THIRD'] ?? 0
     }
   } else {
-    console.log('First time here: ', AWARD['FIRST']);
-    await storeToLocalStorage('award-token', {[itemID]: 'FIRST'});
+    await storeToLocalStorage('award-token', {...award, [itemID]: 'FIRST'});
     return AWARD['FIRST'] ?? 0;
   }
 }
