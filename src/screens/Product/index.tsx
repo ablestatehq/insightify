@@ -9,7 +9,7 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native'
 import {StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, ImageBackground} from 'react-native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppContext} from '../../helper/context/AppContext';
-import {clearLocalData} from '../../utils/localStorageFunctions';
+import {FONT_NAMES} from '../../assets/fonts/fonts';
 
 const {BASE_URL} = environments;
 const AWARD = {
@@ -18,31 +18,21 @@ const AWARD = {
   'THIRD': 1
 }
 
+const getImage = (url: string) => ({ uri: `${BASE_URL}${url}` });
+
 const Index = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
-  const {description, tagline, developers, name, media, status, id} = route.params;
+  const {description, tagline, developers, name, media, status, id, totalViews} = route.params;
   const {user, jwt, setXp, xp} = React.useContext(AppContext);
-  const [currentIndex, setCurrentIndex] = React.useState(0);
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % (media?.data.length ? media?.data?.length : 0));
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, [media?.data?.length]);
-
-  React.useEffect(() => {
-    // clearLocalData('award-token');
     awardXP(AWARD, id, jwt, user?.id).then(xps => {
       if (xps) {
         setXp(prev => prev + xps);
       }
     }).catch(error => {console.error(error)});
   }, []);
-
-  const getImage = (url: string) => ({uri: `${BASE_URL}${url}`});
 
   return (
     <ScrollView contentContainerStyle={productStyles.container}>
@@ -64,19 +54,20 @@ const Index = () => {
                 color={COLOR.WHITE}
               />
             </TouchableOpacity>
-            <TouchableOpacity style={productStyles.iconButton}>
+            {/* <TouchableOpacity style={productStyles.iconButton}>
               <Ionicons
                 name='heart-outline'
                 productImages={25}
                 color={COLOR.WHITE}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </ImageBackground>
       </View>
 
       <View style={productStyles.detailsContainer}>
         <Text style={productStyles.productType}>{name}</Text>
+        {totalViews && <Text style={productStyles.totalViews}>{totalViews} views</Text>}
         <Text style={productStyles.productDescription}>
           {description}
         </Text>
@@ -91,10 +82,10 @@ const Index = () => {
         )}
         <Text style={productStyles.productName}>Developed by</Text>
         <View style={productStyles.developerInfor}>
-          <Image source={getImage(media?.data[currentIndex].attributes?.url)} style={productStyles.developerImage} />
+          <Image source={getImage(media?.data[0].attributes?.url)} style={productStyles.developerImage} />
           <View>
-            <Text style={productStyles.storeName}>Ablestate</Text>
-            <Text style={productStyles.storeCertified}>{status}</Text>
+            <Text style={productStyles.developerName}>Ablestate</Text>
+            <Text style={productStyles.developerStatus}>{status}</Text>
           </View>
         </View>
 
@@ -103,9 +94,11 @@ const Index = () => {
           {media?.data?.map((productImage, index) => (
             <TouchableOpacity key={index} style={productStyles.productImagesButton}>
               <Image
-                resizeMethod='resize'
                 resizeMode='cover'
-                source={getImage(media?.data[2].attributes?.url)} style={productStyles.thumbnail} />
+                resizeMethod='resize'
+                source={getImage(productImage.attributes?.url)}
+                style={productStyles.thumbnail}
+              />
             </TouchableOpacity>
           ))}
         </View>
@@ -128,6 +121,7 @@ const productStyles = StyleSheet.create({
     backgroundColor: COLOR.WHITE,
   },
   header: {
+    paddingTop: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -145,7 +139,6 @@ const productStyles = StyleSheet.create({
   },
   productImage: {
     flex: 1,
-    // borderWidth: 1,
     borderRadius: 10
   },
   thumbnailContainer: {
@@ -156,6 +149,7 @@ const productStyles = StyleSheet.create({
     width: 50,
     height: 50,
     marginRight: 5,
+    borderRadius: 5,
   },
   detailsContainer: {
     paddingHorizontal: DIMEN.PADDING.ELG,
@@ -163,7 +157,7 @@ const productStyles = StyleSheet.create({
   productType: {
     fontSize: FONTSIZE.HEADING_5,
     fontWeight: 'bold',
-    marginBottom: 5,
+    // marginBottom: 5,
   },
   productName: {
     fontSize: FONTSIZE.TITLE_2,
@@ -182,11 +176,11 @@ const productStyles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 10,
   },
-  storeName: {
+  developerName: {
     fontSize: 16,
     fontWeight: 'bold',
   },
-  storeCertified: {
+  developerStatus: {
     color: COLOR.GREY_100,
   },
   followButton: {
@@ -249,5 +243,11 @@ const productStyles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     flexWrap: 'wrap'
+  },
+  totalViews: {
+    fontSize: FONTSIZE.SMALL,
+    fontFamily: FONT_NAMES.Body,
+    opacity: 0.5,
+    marginBottom: 10,
   }
 });

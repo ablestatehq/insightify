@@ -123,36 +123,42 @@ export const MODALS = {
     }
   }
   }`,
-  'products':`query {
-    products {
-      data{
-        id
-        attributes{
-          name
-          tagline
-          description
-          createdAt
-          status
-          media{
-            data{
-              id
-              attributes{
-                url
-              }
+  'products':`query{
+  products{
+    data{
+      id
+      attributes{
+        name
+        tagline
+        description
+        createdAt
+        status
+        totalViews
+        media{
+          data{
+            id
+            attributes{
+              url
             }
           }
-          tutorial {
-            data{
-              id
-            }
+        }
+        tutorial{
+          data{
+            id
           }
-          developers{
-            data{
-              id
+        }
+        developers{
+          data{
+            id
+            attributes{
+              firstName
+              lastName
             }
           }
         }
       }
     }
-  }`
+  }
+  }
+`
 }

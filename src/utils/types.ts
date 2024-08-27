@@ -199,7 +199,7 @@ type ProductData = {
   media?: {data: any[]};
   developers?: {data: any[]};
   demo?: string;
-  views?: number;
+  totalViews?: number;
   tagline?: string;
   createdAt?: string;
   updatedAt?: string;
