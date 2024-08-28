@@ -75,7 +75,6 @@ const CodeTips = () => {
             _color={COLOR.SECONDARY_300}
             press={() => {
               if (showSearchBar) {
-                console.log('Start searching!!!');
               } else {
                 setShowSearchBar(currentValue => !currentValue)
               }

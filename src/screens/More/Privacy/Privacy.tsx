@@ -15,7 +15,6 @@ const Privacy = () => {
   useEffect(() => {
     const fetch_data = async () => {
       const local_privacy_content = await retrieveLocalData('privacy_content');
-      // console.log('Local data: ', local_privacy_content);
       if (local_privacy_content) {
         setContent(local_privacy_content);
       } else {
@@ -23,7 +22,6 @@ const Privacy = () => {
           const response = await fetch(`${STRAPI_BASE_URL}/insightify-privacy-policy`)
           const results = await response.json();
 
-          console.log("Results received: ", results);
           setContent(prev => {
             storeToLocalStorage('privacy_content', results?.data.attributes?.body)
             return local_privacy_content ?? results?.data.attributes?.body;

@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 
-import { Dot } from './Dot'
-import { Page } from './Page'
-import { useNavigation } from '@react-navigation/native'
-import { COLOR, DIMEN } from '../../constants/constants'
-import { Pressable, StyleSheet, Text } from 'react-native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { storeToLocalStorage } from '../../utils/localStorageFunctions'
-import Animated, { useSharedValue, useAnimatedScrollHandler } from 'react-native-reanimated'
+import {Dot} from './Dot'
+import {Page} from './Page'
+import {useNavigation} from '@react-navigation/native'
+import {COLOR, DIMEN} from '../../constants/constants'
+import {Pressable, StyleSheet, Text} from 'react-native'
+import {NativeStackNavigationProp} from '@react-navigation/native-stack'
+import {storeToLocalStorage} from '../../utils/localStorageFunctions'
+import Animated, {useSharedValue, useAnimatedScrollHandler} from 'react-native-reanimated'
 
 
-const { SCREENWIDTH: PAGE_WITH, SCREENHEIGHT: PAGE_HEIGHT } = DIMEN
+const {SCREENWIDTH: PAGE_WITH, SCREENHEIGHT: PAGE_HEIGHT} = DIMEN
 
 const OnBoard = () => {
 
@@ -42,8 +42,7 @@ const OnBoard = () => {
 
   // handle Translation on scroll event
   const scrollHandler = useAnimatedScrollHandler((event) => {
-    const { contentOffset } = event;
-    // console.log(currentIndex)
+    const {contentOffset} = event;
     translateX.value = contentOffset.x;
   });
 
@@ -87,7 +86,7 @@ const OnBoard = () => {
         snapToInterval={PAGE_WITH}
         style={styles.onBoardContainer}
         keyExtractor={(item, index) => item.des}
-        renderItem={({ item, index }) => {
+        renderItem={({item, index}) => {
           return (
             <Page
               title={item}

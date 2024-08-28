@@ -8,7 +8,7 @@ const Index = () => {
     <View style={styles.container}>
       <Header />
       <ProfileForm
-        handleClose={function () {console.log('works') } }
+        handleClose={function () {} }
         visible={false}
         profilePhoto={undefined}
         setProfilePhoto={function (value: React.SetStateAction<string | undefined>): void {

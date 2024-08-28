@@ -31,10 +31,8 @@ const SignUp = () => {
   const handleSignup = async (values: any, formikHelpers: FormikHelpers<any>) => {
     try {
       const signUpResponse = await signUp(values);
-      console.log('SignUpResponse: ', signUpResponse);
       if (signUpResponse) {
         // const emailValidationResponse = await sendConfirmationEmail(signUpResponse?.user?.email, '');
-        // console.log("Log email response: ", emailValidationResponse);
       }
       formikHelpers.resetForm();
       navigation.goBack();

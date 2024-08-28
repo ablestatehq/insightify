@@ -1,12 +1,12 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { View, StatusBar, FlatList, StyleSheet, Text } from 'react-native';
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { COLOR } from '../../constants/constants';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {View, StatusBar, FlatList, StyleSheet} from 'react-native';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {COLOR } from '../../constants/constants';
 import useFilter from '../../helper/customHooks/useFilter';
-import { AppContext } from '../../helper/context/AppContext';
-import { OpportunityListProps } from '../../utils/types';
-import { FONT_NAMES } from '../../assets/fonts/fonts';
+import {AppContext } from '../../helper/context/AppContext';
+import {OpportunityListProps } from '../../utils/types';
+import {FONT_NAMES } from '../../assets/fonts/fonts';
 import {
   EmptyState, FloatingButton, FormModal, CategorySection,
   FilterCard, OpportunityCard, OpportunityHeader

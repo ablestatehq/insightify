@@ -48,7 +48,6 @@ const Login: React.FC = () => {
         setJwt(response?.jwt);
         const is_community_member = await getFilteredData('community-members', 'email', '$eq', response?.user.email);
         const isMember = is_community_member.length > 0;
-        console.log('Community feedback: ', is_community_member)
         setUser((prev: any) => ({ ...response?.user, isMember }))
         setIsLoggedIn(true);
         storeToLocalStorage('isMember', { isMember });
@@ -69,7 +68,7 @@ const Login: React.FC = () => {
         setModalTitle('Login Error');
         setModalMessage('Login Failed');
       }
-    } catch (error) { console.log('') }
+    } catch (error) {}
   }
 
   return (

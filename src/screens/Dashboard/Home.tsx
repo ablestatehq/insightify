@@ -31,7 +31,7 @@ const renderTip = ({item, index}:{item: any, index: number}) =>
 
 const Home = () => {
   const {opportunities, codeTips, isLoggedIn, user, products, xp} = useContext(AppContext);
-
+  const randomIndex = Math.floor(Math.random() * products.length);
   const opportunityIndex = Math.floor(Math.random() * ((opportunities.length - 1) - 0 + 1)) + 0;
   const [showCompleteProfile, setShowCompleteProfile] = useState(true);
 
@@ -46,7 +46,7 @@ const Home = () => {
           Component={ProductCard}
           onPress={() => navigation.navigate('ProductList')}
           title={'Featured Product'}
-          {...products[0]}
+          {...products[randomIndex]}
         />
         {isLoggedIn && !isProfileComplete(user) && showCompleteProfile &&
           <CompleteProfile handleClose={() => {setShowCompleteProfile(false)}} />}

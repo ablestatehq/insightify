@@ -44,10 +44,8 @@ export default function Forgot() {
               && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
               const code = await forgotRequest(email)
               if (code) {
-                console.log(code)
                 // navigation.navigate('Reset', {email})
               } else {
-                console.log('Failed', code)
                 Alert.alert("Request Not Processed", "Reset password request failed", [
                   {
                     style: 'cancel',
