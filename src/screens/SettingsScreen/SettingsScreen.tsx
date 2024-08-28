@@ -1,9 +1,9 @@
-import React, {useContext, useMemo, useState} from 'react';
-import {Image, Pressable, StatusBar, StyleSheet, Switch, Text, View} from 'react-native';
+import React, {useContext} from 'react';
+import {Pressable, StatusBar, StyleSheet, Switch, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {Entypo, Ionicons, MaterialIcons, FontAwesome} from '@expo/vector-icons';
+import {Entypo, Ionicons, MaterialIcons} from '@expo/vector-icons';
 
 import onShare from '../../utils/onShare';
 import {COLOR, FONTSIZE} from '../../constants/constants';
@@ -14,7 +14,6 @@ import {retrieveLocalData, storeToLocalStorage} from '../../utils/localStorageFu
 import {FontAwesome5} from '@expo/vector-icons';
 import {RootStackParamList} from '../../utils/types';
 import {FONT_NAMES} from '../../assets/fonts/fonts';
-import { isProfileComplete } from '../../helper/functions/functions';
 import ProfileSection from '../../components/Cards/ProfileSection';
 
 
@@ -22,6 +21,7 @@ const SettingsScreen = () => {
   const {
     isNotificationEnabled,
     setIsNotificationEnabled,
+    isLoggedIn,
   } = useContext(AppContext);
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -29,7 +29,7 @@ const SettingsScreen = () => {
     setIsNotificationEnabled(!isNotificationEnabled);
     const tokens = await retrieveLocalData('tokens');
     if (tokens) {
-      const { pushToken, isPushNotificationEnabled } = tokens;
+      const {pushToken, isPushNotificationEnabled} = tokens;
       const id = await getDataId('notification-tokens', 'tokenID', pushToken);
       if (id) {
         await storeToLocalStorage('tokens', { pushToken, "isPushNotificationEnabled": !isPushNotificationEnabled });
@@ -42,14 +42,14 @@ const SettingsScreen = () => {
     <View style={styles.container}>
       {/* Account  */}
       <ProfileSection navigation={navigation} />
-      
-      <View style={{marginHorizontal: 10}}>
+
+      <View style={styles.main}>
         {/* Notifications  */}
         <Text style={styles.textHeading}>Notification</Text>
         <View style={styles.itemContainer}>
           <View style={styles.iconContainer}>
             <Ionicons
-              size={15} color={COLOR.SECONDARY_300}
+              size={15} color={COLOR.SECONDARY_100}
               name="notifications"
             />
             <Text style={styles.text}>Push notifications</Text>
@@ -70,26 +70,26 @@ const SettingsScreen = () => {
             style={styles.itemContainer}
           >
             <View style={styles.iconContainer}>
-              <FontAwesome5 name="hire-a-helper" size={15} color="black" />
+              <FontAwesome5 name="hire-a-helper" size={15} color={COLOR.SECONDARY_100} />
               <Text style={styles.text}>Hire</Text>
             </View>
             <Entypo
               size={15}
               name="chevron-thin-right"
-              color={COLOR.SECONDARY_300}
+              color={COLOR.SECONDARY_100}
             />
           </Pressable>
           <Pressable
             onPress={() => navigation.navigate('Contact')}
             style={styles.itemContainer}>
             <View style={styles.iconContainer}>
-              <Ionicons name="help-circle" size={18} color="black" />
+              <Ionicons name="help-circle" size={18} color={COLOR.SECONDARY_100} />
               <Text style={styles.text}>Help</Text>
             </View>
             <Entypo
               size={13}
               name="chevron-thin-right"
-              color={COLOR.SECONDARY_300}
+              color={COLOR.SECONDARY_100}
             />
           </Pressable>
           <Pressable
@@ -97,14 +97,13 @@ const SettingsScreen = () => {
             style={styles.itemContainer}
           >
             <View style={styles.iconContainer}>
-              <MaterialIcons name="headphones" size={16} color="black" />
-              {/* <SimpleLineIcons name="earphones" size={13} color={COLOR.SECONDARY_300} /> */}
+              <MaterialIcons name="headphones" size={16} color={COLOR.SECONDARY_100} />
               <Text style={styles.text}>Contact Us</Text>
             </View>
             <Entypo
               size={15}
               name="chevron-thin-right"
-              color={COLOR.SECONDARY_300}
+              color={COLOR.SECONDARY_100}
             />
           </Pressable>
           <Pressable
@@ -114,14 +113,14 @@ const SettingsScreen = () => {
               <MaterialIcons
                 name="feedback"
                 size={15}
-                color={COLOR.SECONDARY_300}
+                color={COLOR.SECONDARY_100}
               />
               <Text style={styles.text}>Your voice matters</Text>
             </View>
             <Entypo
               size={15}
               name="chevron-thin-right"
-              color={COLOR.SECONDARY_300}
+              color={COLOR.SECONDARY_100}
             />
           </Pressable>
         </View>
@@ -132,13 +131,13 @@ const SettingsScreen = () => {
             onPress={() => navigation.navigate('Privacy')}
             style={styles.itemContainer}>
             <View style={styles.iconContainer}>
-              <MaterialIcons name="privacy-tip" size={13} color={COLOR.SECONDARY_300} />
+              <MaterialIcons name="privacy-tip" size={13} color={COLOR.SECONDARY_100} />
               <Text style={styles.text}>Privacy Policy</Text>
             </View>
             <Entypo
               size={15}
               name="chevron-thin-right"
-              color={COLOR.SECONDARY_300}
+              color={COLOR.SECONDARY_100}
             />
           </Pressable>
         </View>
@@ -150,30 +149,28 @@ const SettingsScreen = () => {
             onPress={() => onShare('https://cutt.ly/insightify')}
             style={styles.itemContainer}>
             <View style={styles.iconContainer}>
-              <Entypo name="share" size={13} color={COLOR.SECONDARY_300} />
+              <Entypo name="share" size={13} color={COLOR.SECONDARY_100} />
               <View>
                 <Text style={styles.text}>Share</Text>
-                <Text style={{ fontSize: FONTSIZE.SMALL, fontFamily: FONT_NAMES.Heading }}>
+                {/* <Text style={{ fontSize: FONTSIZE.SMALL, fontFamily: FONT_NAMES.Heading }}>
                   Share this app with your friends
-                </Text>
+                </Text> */}
               </View>
             </View>
             <Entypo
               size={15}
               name="chevron-thin-right"
-              color={COLOR.SECONDARY_300}
+              color={COLOR.SECONDARY_100}
             />
           </Pressable>
         </View>
-
       </View>
-      
       <StatusBar backgroundColor={COLOR.WHITE} />
     </View>
   );
 }
 
-export default SettingsScreen
+export default SettingsScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -181,6 +178,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: COLOR.WHITE,
   },
+  main: { marginHorizontal: 10, marginVertical: 10 },
   contentContainer: {
     borderRadius: 5,
     paddingTop: 10,
@@ -202,13 +200,15 @@ const styles = StyleSheet.create({
   textHeading: {
     fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.TITLE_2,
-    opacity: 0.5,
+    // opacity: 0.5,
+    color: COLOR.SECONDARY_100,
     marginLeft: 10
   },
   text: {
     fontFamily: FONT_NAMES.Heading,
     fontSize: FONTSIZE.BODY,
-    color: COLOR.SECONDARY_300,
+    // opacity: 0.5
+    color: COLOR.SECONDARY_100
   },
   version: {
     position: 'absolute',
@@ -220,5 +220,9 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     fontFamily: FONT_NAMES.Heading,
     fontSize: FONTSIZE.BODY
+  },
+  showCaseProduct: {
+    justifyContent: 'center',
+    // alignItems: 'center'
   }
 })

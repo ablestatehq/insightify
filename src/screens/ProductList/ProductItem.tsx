@@ -3,8 +3,6 @@ import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import React, {useState} from "react";
 import {TouchableOpacity, View, StyleSheet, Text, Image} from "react-native";
 import {ProductData, RootStackParamList} from "../../utils/types";
-import Icons from "../../assets/icons";
-import {Ionicons} from "@expo/vector-icons";
 import {COLOR, FONTSIZE} from "../../constants/constants";
 import {environments} from "../../constants/environments";
 
@@ -16,7 +14,7 @@ const ProductItem = (props: ProductData) => {
     developers,
     description,
     media,
-    views,
+    totalViews,
     tagline,
     status
   } = props;
@@ -34,7 +32,7 @@ const ProductItem = (props: ProductData) => {
         developers,
         description,
         media,
-        views,
+        totalViews,
         status,
         tagline})}>
       <View style={styles.mainstyle}>

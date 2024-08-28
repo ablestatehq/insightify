@@ -1,10 +1,10 @@
-import React from 'react'
+import React from 'react';
 
 import awardXP from '../../utils/awardXP';
 import {Ionicons} from '@expo/vector-icons';
 import {RootStackParamList} from '../../utils/types'
-import {COLOR, DIMEN, FONTSIZE} from '../../constants/constants'
-import {environments} from '../../constants/environments'
+import {COLOR, DIMEN, FONTSIZE} from '../../constants/constants';
+import {environments} from '../../constants/environments';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native'
 import {StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, ImageBackground} from 'react-native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -24,8 +24,8 @@ const Index = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
   const {description, tagline, developers, name, media, status, id, totalViews} = route.params;
-  const {user, jwt, setXp, xp} = React.useContext(AppContext);
-
+  const {user, jwt, setXp} = React.useContext(AppContext);
+  
   React.useEffect(() => {
     awardXP(AWARD, id, jwt, user?.id).then(xps => {
       if (xps) {
@@ -34,6 +34,7 @@ const Index = () => {
     }).catch(error => {console.error(error)});
   }, []);
 
+  console.log(developers?.data)
   return (
     <ScrollView contentContainerStyle={productStyles.container}>
       <View style={productStyles.imageContainer}>
@@ -80,14 +81,16 @@ const Index = () => {
             ))}
           </View>
         )}
-        <Text style={productStyles.productName}>Developed by</Text>
-        <View style={productStyles.developerInfor}>
-          <Image source={getImage(media?.data[0].attributes?.url)} style={productStyles.developerImage} />
-          <View>
-            <Text style={productStyles.developerName}>Ablestate</Text>
-            <Text style={productStyles.developerStatus}>{status}</Text>
-          </View>
-        </View>
+        
+        {developers && developers?.data.length > 0 && <>
+          <Text style={productStyles.productName}>Developed by</Text>
+          <View style={productStyles.developerInfor}>
+            <Image source={getImage(media?.data[0].attributes?.url)} style={productStyles.developerImage} />
+            <View>
+              <Text style={productStyles.developerName}>Ablestate</Text>
+              <Text style={productStyles.developerStatus}>{status}</Text>
+            </View>
+          </View></>}
 
         <Text style={productStyles.productImagesLabel}>Gallery</Text>
         <View style={productStyles.productImagesContainer}>

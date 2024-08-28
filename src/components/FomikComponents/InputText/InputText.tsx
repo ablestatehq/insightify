@@ -2,7 +2,7 @@ import React from 'react'
 import { useFormikContext } from 'formik'
 import { Feather } from '@expo/vector-icons'
 import { COLOR, FONTSIZE } from '../../../constants/constants'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { KeyboardTypeOptions, StyleSheet, Text, TextInput, View } from 'react-native'
 import { FONT_NAMES } from '../../../assets/fonts/fonts'
 
 interface InputTextProps {
@@ -11,9 +11,10 @@ interface InputTextProps {
   placeholder?: string
   isMultiLine?: boolean
   isInputSecure?: boolean
+  keyboardType?: KeyboardTypeOptions
 }
 
-const InputText: React.FC<InputTextProps> = ({ label, placeholder, fieldName, isMultiLine, isInputSecure }) => {
+const InputText: React.FC<InputTextProps> = ({ label, placeholder, fieldName, isMultiLine, isInputSecure, keyboardType }) => {
   const { values, handleChange, errors, touched, setFieldTouched } = useFormikContext<any>();
 
   const [inputFocused, setInputFocused] = React.useState<boolean>(false);
@@ -56,6 +57,7 @@ const InputText: React.FC<InputTextProps> = ({ label, placeholder, fieldName, is
           onBlur={handleBlurInput}
           onFocus={handleFocus}
           // keyboardType='url'
+          keyboardType={keyboardType as KeyboardTypeOptions}
           secureTextEntry={visible}
         />
         {isInputSecure && <Feather
@@ -83,7 +85,8 @@ const styles = StyleSheet.create({
   viewContainerTextInput: {
     padding: 5,
     borderRadius: 5,
-    borderWidth: 0.5,
+    borderWidth: 1,
+    borderColor: COLOR.GREY_50,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
