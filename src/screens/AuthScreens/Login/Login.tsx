@@ -27,7 +27,7 @@ const Login: React.FC = () => {
   const [modalMessage, setModalMessage] = useState<string>('');
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
-  const {setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser} = useContext(AppContext);
+  const {setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser, setXp} = useContext(AppContext);
 
   const loginFormInitValues = {
     email: '',
@@ -48,7 +48,8 @@ const Login: React.FC = () => {
         setJwt(response?.jwt);
         const is_community_member = await getFilteredData('community-members', 'email', '$eq', response?.user.email);
         const isMember = is_community_member.length > 0;
-        setUser((prev: any) => ({ ...response?.user, isMember }))
+        setUser((prev: any) => ({...response?.user, isMember}));
+        setXp(response?.user.data.totalXP ? response?.user.data.totalXP : 0)
         setIsLoggedIn(true);
         storeToLocalStorage('isMember', { isMember });
 
