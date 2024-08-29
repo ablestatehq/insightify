@@ -71,21 +71,21 @@ const useChat = (userId: number, jwt: string) => {
       const newMap = new Map(prev_map);
       newMap.set(key, msg);
       return newMap;
-    })
+    });
   }
 
   const handleDeleteMessage = useCallback(async (key: string) => {
-  setMessageMap((prevMap) => {
-    const msgs = new Map(prevMap);
-    const msgID = msgs.get(key)?.id
-    msgs.delete(key);
-    try {
-      deleteMessageSearch(jwt, msgID).then(() => {}).catch(error => {})
-  } catch (error) {
-    setErrorMessage('Failed to delete message. Please try again.');
-  }
-    return msgs;
-  });
+    setMessageMap((prevMap) => {
+      const msgs = new Map(prevMap);
+      const msgID = msgs.get(key)?.id
+      msgs.delete(key);
+      try {
+        deleteMessageSearch(jwt, msgID).then(() => { }).catch(error => { })
+      } catch (error) {
+        setErrorMessage('Failed to delete message. Please try again.');
+      }
+      return msgs;
+    });
 }, [messageMap, jwt]);
 
 
@@ -97,8 +97,8 @@ const useChat = (userId: number, jwt: string) => {
       clientSocket.on('onlineUsers', (data) => {});
     })
 
-    clientSocket.on('message:create', ({ data }) => {
-      addToMessageMap(data)
+    clientSocket.on('message:create', ({data}) => {
+      addToMessageMap(data);
     })
   }, [socket]);
 
@@ -163,14 +163,14 @@ const useChat = (userId: number, jwt: string) => {
   }, []);
 
   useEffect(() => {
-  const initializeChat = async () => {
-    const cachedMessages = await loadMessagesFromLocalStorage();
-    if (cachedMessages) {
-      setMessageMap(JSON.parse(cachedMessages));
-    } else {
-      await loadMessages(); 
-    }
-  };
+    const initializeChat = async () => {
+      const cachedMessages = await loadMessagesFromLocalStorage();
+      if (cachedMessages) {
+        setMessageMap(JSON.parse(cachedMessages));
+      } else {
+        await loadMessages();
+      }
+    };
 
   initializeChat();
 }, []);
