@@ -21,6 +21,7 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
     setIsLoggedIn,
     setUser,
     user,
+    setXp
   } = React.useContext(AppContext);
 
   const [showProfileCard, setShowProfileCard] = React.useState<boolean>(false);
@@ -53,6 +54,7 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
     await clearLocalData('user_token');
     await clearLocalData('isMember');
     setModal(false);
+    setXp(0);
     setUser({});
     setIsLoggedIn(false);
   };
@@ -68,7 +70,7 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
         {!profilePhoto ? (
           <FontAwesome name="user-circle-o" size={50} color={COLOR.SECONDARY_300} />
         ) : (
-          <Image source={{uri: profilePhoto }} style={styles.profileImage} />
+          <Image source={{ uri: profilePhoto }} style={styles.profileImage} />
         )}
         <View style={styles.profileTextContainer}>
           <Pressable style={styles.profilePressable} onPress={userProfile.operations}>
@@ -92,17 +94,30 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
           )}
         </View>
       </View>
-
-      {userProfile.inCommunity ? (
-        <Pressable style={styles.communityButton} onPress={() => navigation.navigate('ChatRoom')}>
-          <Text style={styles.communityButtonText}>Community Chat</Text>
+      <View style={styles.joinProductStyle}>
+        {/* Add a product  */}
+        {isLoggedIn && <Pressable
+          onPress={() => { navigation.navigate('AddProduct') }}
+          style={styles.communityButton}>
+          <View style={styles.communityButtonText}>
+            <Text style={styles.communityButtonText}>Add a product</Text>
+          </View>
+        </Pressable>}
+        
+        <Pressable
+          style={styles.communityButton}
+          onPress={() => userProfile.inCommunity ?
+            navigation.navigate('ChatRoom') :
+            setJoinVisible(!joinVisible)}
+        >
+          <Text style={styles.communityButtonText}>
+            {userProfile.inCommunity ?
+              'Community Chat' :
+              'Join our Community'}
+          </Text>
         </Pressable>
-      ) : (
-        <Pressable style={styles.joinButton} onPress={() => setJoinVisible(!joinVisible)}>
-          <Text style={styles.joinButtonText}>Join our Community</Text>
-        </Pressable>
-      )}
 
+      </View>
       <ProfileForm
         visible={showProfileCard}
         handleClose={() => setShowProfileCard(!showProfileCard)}
@@ -129,12 +144,12 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
 
 const styles = StyleSheet.create({
   contentContainer: {
+    elevation: 1,
+    paddingTop: 10,
     borderRadius: 5,
-    paddingVertical: 10,
     marginVertical: 10,
     marginHorizontal: 10,
     backgroundColor: COLOR.SECONDARY_50,
-    elevation: 1,
   },
   profileContainer: {
     paddingHorizontal: 10,
@@ -178,26 +193,19 @@ const styles = StyleSheet.create({
   },
   communityButton: {
     padding: 5,
-    borderTopWidth: 1,
-    borderTopColor: COLOR.SECONDARY_50,
     backgroundColor: COLOR.SECONDARY_300,
+    flex: 1,
+    // borderRadius: 10,
   },
   communityButtonText: {
     textAlign: 'center',
     color: COLOR.WHITE,
     padding: 2,
   },
-  joinButton: {
-    padding: 5,
-    borderTopWidth: 1,
-    borderTopColor: COLOR.SECONDARY_50,
-    backgroundColor: COLOR.SECONDARY_300,
-  },
-  joinButtonText: {
-    textAlign: 'center',
-    color: COLOR.WHITE,
-    padding: 2,
-  },
+  joinProductStyle: {
+    flexDirection: 'row',
+    gap: 10,
+  }
 });
 
 export default ProfileSection;
