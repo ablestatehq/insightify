@@ -86,7 +86,7 @@ const OpportunityList = () => {
       {/* Floating Button */}
       <FloatingButton
         press={handleFloatingButtonPress}
-        buttonPosition={{ bottom: 20, right: 10 }}
+        buttonPosition={{bottom: 20, right: 10}}
       />
 
       {/* Filter Card */}
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0.5,
   },
   scrollContent: {
-    flex: 1,
+    // flex: 1,
     padding: 5,
     paddingBottom: 25,
   },
