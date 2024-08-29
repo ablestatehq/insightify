@@ -8,7 +8,6 @@ export default function useLocalStorage(key: string, initialValue: Record<string
       const item = AsyncStorage.getItem(key).then(data => data);
       if (item) {
         const _data = JSON.parse(item as unknown as string)
-        console.log(_data)
         return JSON.parse(item as unknown as string)
       }
     else

@@ -6,7 +6,6 @@ import {NotificationController} from '../functions/notifications';
 export const useNetworkStatus = async () => {
   try {
     // const now = new Date();
-    // console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
     notifyServerDeviceIsOnline();
     return BackgroundFetch.BackgroundFetchResult.NewData;
   } catch (error) {
@@ -40,7 +39,6 @@ const notifyServerDeviceIsOnline = async () => {
 
 export const registerBackgroundFetchAsync = async () => {
   try {
-    console.log('The task is registered.')
     await BackgroundFetch.registerTaskAsync(BGTASKS.CHECK_ONLINE_STATUS, {
       minimumInterval: 1* 60,
       stopOnTerminate: false,
@@ -52,10 +50,7 @@ export const registerBackgroundFetchAsync = async () => {
 
 export const unregisterBackgroundFetchAsync = async () => {
   try {
-    console.log('This is where it stops.')
     await BackgroundFetch.unregisterTaskAsync(BGTASKS.CHECK_ONLINE_STATUS);
-    // console.log('Background fetch unregistered');
   } catch (error) {
-    // console.log('Failed to unregister background fetch', error);
   }
 };

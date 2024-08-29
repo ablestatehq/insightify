@@ -10,7 +10,6 @@ function useFilter(category:string, data:any[], filteredItems: string[]) {
 
     const lifespan = (currentDate as any) - (publisedAt as any);
     
-    // console.log("Lifespan: ", lifespan);
     // get the number of days
     const seconds = Math.floor(lifespan / 1000);
 

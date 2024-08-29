@@ -35,6 +35,7 @@ const Index = ({
       {...item}
     />
   );
+
   return (
     <View style={{ flex: 1, padding: 15 }}>
       {refreshing && (

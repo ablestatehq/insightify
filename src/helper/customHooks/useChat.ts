@@ -75,26 +75,26 @@ const useChat = (userId: number, jwt: string) => {
   }
 
   const handleDeleteMessage = useCallback(async (key: string) => {
-    // Delete also from the server
-    const msgID = messageMap.get(key)?.id;
-    setMessageMap(prev => {
-      const msgs = new Map(prev);
-      msgs.delete(key);
-      return msgs;
-    });
+  setMessageMap((prevMap) => {
+    const msgs = new Map(prevMap);
+    const msgID = msgs.get(key)?.id
+    msgs.delete(key);
     try {
-      await deleteMessageSearch(jwt, msgID);
-    } catch (error) {
-      setErrorMessage('Failed to delete message. Please try again.');
-    }
-  }, []);
+      deleteMessageSearch(jwt, msgID).then(() => {}).catch(error => {})
+  } catch (error) {
+    setErrorMessage('Failed to delete message. Please try again.');
+  }
+    return msgs;
+  });
+}, [messageMap, jwt]);
+
 
   // real time.
   const setupSocket = useCallback(() => {
     const clientSocket = createClientSocket(jwt);
     setSocket(clientSocket);
     clientSocket.on('connect', () => {
-      clientSocket.on('onlineUsers', (data) => { console.log(data) });
+      clientSocket.on('onlineUsers', (data) => {});
     })
 
     clientSocket.on('message:create', ({ data }) => {
@@ -151,13 +151,11 @@ const useChat = (userId: number, jwt: string) => {
     // Update the user screen
     const id = messageMap.get(key)?.id;
     const reactionId = await sendReaction(emoji, userId, jwt, id);
-    console.log(reactionId?.data.id)
     // update the message
     await updateMessage(id, {messageReactions: reactionId?.data?.id}, jwt)
   }
 
   const handleEndReached = useCallback(async () => {
-    console.log(hasMoreMessages);
     if (hasMoreMessages) {
       setStart(prev => prev + 25);
       await loadMessages();

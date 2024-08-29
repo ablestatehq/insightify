@@ -92,9 +92,11 @@ function getStrapiData(endpoint: string, jwt?: string, start=0, limit=25) {
         options)
         .then(response => response.json())
         .then(data => {
+          // console.log('Date-1: ', data);
           const _data = data?.data?.map((res: any) => {
-            return { id: res.id, ...res.attributes }
+            return {id: res.id, ...res.attributes}
           });
+          // console.log('Data: ', _data);
           return {
             data: _data,
             error: null,
@@ -257,7 +259,6 @@ async function getDataId(endpoint: string, attribute: string, attributeValue: an
  * @returns
  */
 async function uploadImage(formData: FormData, jwt: string) {
-  console.log(`${BASE_URL}/api/upload`);
   try {
     const response = await fetch(`${BASE_URL}/api/upload`, {
       method: 'POST',
@@ -274,6 +275,21 @@ async function uploadImage(formData: FormData, jwt: string) {
   }
 }
 
+async function deleteImage(id: number, jwt: string) {
+  try {
+    const response = await fetch(`${BASE_URL}/api/upload/files/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${jwt}`
+      },
+    });
+    const deleting = await response.json();
+    return deleting;
+  } catch (error) {
+    console.error(JSON.stringify(error, null, 2));
+    return null
+  }
+}
 
 async function sendConfirmationEmail(email:string, jwt: string) {
   try {
@@ -288,7 +304,6 @@ async function sendConfirmationEmail(email:string, jwt: string) {
 
     const data = await (await fetch(`${STRAPI_BASE_URL}/auth/send-email-confirmation`, options)).json();
     if (data) {
-      console.log('Send email: ', data);
       return {
         data,
         error: null
@@ -338,6 +353,7 @@ export {
   storeData,
   getDataId,
   uploadImage,
+  deleteImage,
   getStrapiData,
   deteleteStrapiData,
   updateStrapiData,
