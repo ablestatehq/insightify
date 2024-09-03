@@ -113,13 +113,13 @@ const resetPassword = async (newPassword: string, code: string) => {
     const options = {
       method: 'POST',
       headers: {
-        'content-type':'appplication/json'
+        'content-type':'application/json'
       },
       body: JSON.stringify(payload)
     }
     const update = await
       fetch(`${BASE_URL}/api/auth/reset-password`, options);
-    return update.json()
+    return update.json();
   } catch (error) {
     
   }
