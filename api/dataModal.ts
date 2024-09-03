@@ -28,12 +28,10 @@ class DataModal {
         }
       };
 
-      console.log(options)
       const _data = fetch(this.GRAPHQL_URL as string, options)
         .then(response => response.json())
         .then(data => data)
-        .catch(error => console.log("This is the error",error));
-      console.log("Returned data: ",_data)
+        .catch(error => {});
 
       // if (!_data.data) {
       //   this.data = []

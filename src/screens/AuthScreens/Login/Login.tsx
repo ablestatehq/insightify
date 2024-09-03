@@ -106,7 +106,7 @@ const Login: React.FC = () => {
                     button={styles.button}
                   />
                   <View>
-                    <Pressable onPress={() => { navigation.navigate('Reset', {code: '1292'}) }}>
+                    <Pressable onPress={() => { navigation.navigate('Forgot') }}>
                       <Text style={styles.footerText}>Forgot password?</Text>
                     </Pressable>
                     <View style={styles.footer}>

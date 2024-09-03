@@ -1,22 +1,13 @@
+import { BASE_URL } from "@env";
 import {environments} from "../src/constants/environments";
 
 const {STRAPI_BASE_URL} = environments;
-
-interface PasswordDataObject {
-  jwt: string
-  password: string
-  currentPassword: string
-  passwordConfirm: string
-}
 
 const signUp = async (userData: any) => {
   const payload = {
     username: userData.email,
     email: userData.email,
     password: userData.password,
-    // firstName: userData?.firstName,
-    // lastName: userData?.lastName,
-    // phone:userData?.phonenumber
   }
 
   const options = {
@@ -42,7 +33,7 @@ async function updateUser(id: number, jwt: string, data_: unknown) {
     const response = await fetch(`${STRAPI_BASE_URL}/users/${id}`, {
       method: 'PUT',
       headers: {
-        'Content-Type':'application/json',
+        'Content-Type': 'application/json',
         'Authorization': `Bearer ${jwt}`
       },
       body: JSON.stringify(data_)
@@ -71,6 +62,23 @@ async function updateUser(id: number, jwt: string, data_: unknown) {
   }
 }
 
+async function setUserPhotoNULL(userId: number, jwt: string) {
+  try {
+    const options =  {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${jwt}`
+      },
+    body: JSON.stringify({photo: null})
+  }
+  const response = fetch(`${STRAPI_BASE_URL}/users/${userId}`, options)
+    .then(response => response.json())
+    .then(storedData => storedData)
+    .catch(error => console.error('This is the error',error));
+  } catch (error) {}
+}
+
 const login = async (identifier:string, password:string) => {
   const payload = {
   "identifier": identifier,
@@ -95,7 +103,7 @@ const login = async (identifier:string, password:string) => {
   }
 }
 
-const resetPassword = async (identifier: string, newPassword: string, code: string) => {
+const resetPassword = async (newPassword: string, code: string) => {
   const payload = {
     code,
     password: newPassword,
@@ -104,46 +112,41 @@ const resetPassword = async (identifier: string, newPassword: string, code: stri
   try {
     const options = {
       method: 'POST',
-      // headers: {
-      //   'content-type':'appplication/json'
-      // },
+      headers: {
+        'content-type':'appplication/json'
+      },
       body: JSON.stringify(payload)
     }
     const update = await
-      fetch(`${STRAPI_BASE_URL}/auth/local/reset-password`, options)
-        .then((response) => { console.log(response)})
-        .catch(error => { });
+      fetch(`${BASE_URL}/api/auth/reset-password`, options);
+    return update.json()
   } catch (error) {
     
   }
 }
 
+
 const forgotRequest = async (identifier: string,) => {
   const payload = {
     email: identifier
   }
+
   const options = {
     method: 'POST',
-    // headers: {
-    //   'content-type': 'application/json'
-    // },
-    // body: JSON.stringify(payload)
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify(payload)
   }
+
   try {
-    const response = await fetch(`${STRAPI_BASE_URL}/auth/local/forgot-password`, options)
-    // const data = await response.json()
-    .then(response => response.json())
-    .catch(error => console.error("Error message",error))
-    // if (response) {
-    //   console.log(data)
-      return response;
-    // }
-    return;
+    const response = await fetch(`${BASE_URL}/api/auth/forgot-password`, options)
+    const data = await response.json();
+    return data;
   } catch (error) {}
 }
 
-const changePassword = async (passwordData: PasswordDataObject) => {
-  const {currentPassword, password, passwordConfirm, jwt} = passwordData
+const changePassword = async (currentPassword: string, password: string, passwordConfirm: string, jwt: string) => {
   const options = {
     method: 'POST',
     headers: {
@@ -184,4 +187,4 @@ const emailConfirmation = async (email: string) => {
   } catch (error) {return false}
 };
 
-export {signUp, login, resetPassword, forgotRequest, changePassword, emailConfirmation, updateUser}
+export {signUp, login, resetPassword, forgotRequest, changePassword, emailConfirmation, updateUser, setUserPhotoNULL}
