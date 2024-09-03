@@ -36,7 +36,6 @@ const Home = () => {
   const [showCompleteProfile, setShowCompleteProfile] = useState(true);
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  
   return (
     <View style={styles.container}>
       <XPpoint number={xp} />
