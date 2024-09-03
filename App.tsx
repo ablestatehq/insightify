@@ -1,8 +1,7 @@
-import {useEffect} from 'react';
-import {Linking} from 'react-native';
 import * as Updates from 'expo-updates';
 import * as TaskManager from 'expo-task-manager';
-
+import * as Linking from 'expo-linking';
+import {useEffect} from 'react';
 import {MainStackNavigator} from './src/routes/StackNavigator';
 import AppContextProvider from './src/helper/context/AppContext';
 import usePushNotifications from './src/helper/customHooks/usePushNotification';
@@ -21,28 +20,17 @@ export default function App() {
 
   const [fontsLoaded] = useFonts(FONT_FILES);
   const {isUpdatePending} = Updates.useUpdates();
-  const navigationRef = useNavigationContainerRef<ParamListBase>();
+  const navigationRef = useNavigationContainerRef<ParamListBase>()
 
   useEffect(() => {
-    const handleDeepLink = async (event: {url: string}) => {
-      const {url} = event;
-      let data = await Linking.canOpenURL(url);
-      if (data) {
-        navigationRef.current?.navigate("Home");
-      }
-    };
-
-    // Add event listener for deep links
-    Linking.addEventListener('url', handleDeepLink);
-
     if (isUpdatePending) {
       Updates.reloadAsync();
     }
-
   }, [isUpdatePending]);
 
   // Register the push notification for the app.
   usePushNotifications();
+  const pre = Linking.createURL('/');
 
 
   TaskManager.defineTask(BGTASKS.CHECK_ONLINE_STATUS, useNetworkStatus);
@@ -53,8 +41,20 @@ export default function App() {
     };
   }, []);
 
+  const config = {
+    screens: {
+      Home: 'Home',
+      Reset: 'reset/:code',
+    },
+  };
+
+  const linking = {
+    prefixes: ['https://insightify.ablestate.africa', pre],
+    config,
+  };
+
   return (
-    <NavigationContainer ref={navigationRef} >
+    <NavigationContainer ref={navigationRef} linking={linking}>
       <AppContextProvider>
         <MainStackNavigator />
       </AppContextProvider>
