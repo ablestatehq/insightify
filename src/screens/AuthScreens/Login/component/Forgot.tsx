@@ -2,11 +2,16 @@ import { Text, TextInput, StyleSheet, View, StatusBar, TouchableOpacity, Alert }
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../../../../components/Headers/Header";
-import { Button } from "../../../../components";
+import { Button, InputText } from "../../../../components";
 import { COLOR } from "../../../../constants/constants";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { forgotRequest } from "../../../../../api/auth";
+import {Formik} from "formik";
+import { FONT_NAMES } from "../../../../assets/fonts/fonts";
 
+interface FormValues{
+  email: string;
+}
 export default function Forgot() {
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -15,74 +20,58 @@ export default function Forgot() {
   const [email, setEmail] = useState<string>("");
 
   // fonts to be used.
+  const initialValues: FormValues = {
+    email: ''
+  }
+
+  const onSubmit =  (values: FormValues) => {
+    forgotRequest(values.email)
+      .then(response => {
+        if (response.ok) {
+          navigation.navigate('Otp');
+        }
+      })
+      .catch(error => console.log('Something went wrong', error))
+  }
+
   return (
     <View
       style={styles.container}
     >
-      {/* include the header  */}
+      {/* header  */}
       <Header title="Forgot password" />
-      <View style={styles.contentContainer}>
-        <View style={styles.inputView}>
-          <Text style={styles.text}>
-            Enter email address
-          </Text>
-          <TextInput
-            style={styles.inputField}
-            placeholder="example@gmail.com"
-            onChangeText={(text) => {
-              setEmail(text)
-            }}
-          />
-        </View>
-        {/* send verification code  */}
-        <Button
-          title="Proceed"
-          textStyle={{ color: COLOR.WHITE }}
-          btn={{ ...styles.btn, backgroundColor: COLOR.SECONDARY_300 }}
-          handlePress={async () => {
-            if (email != ""
-              && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-              const code = await forgotRequest(email)
-              if (code) {
-                // navigation.navigate('Reset', {email})
-              } else {
-                Alert.alert("Request Not Processed", "Reset password request failed", [
-                  {
-                    style: 'cancel',
-                    text: 'Try again',
-                    onPress: () => { }
-                  }
-                ],
-                  {
-                    cancelable: true,
-                    onDismiss: () => { }
-                  })
-              }
-            }
-          }}
-        />
+      <Formik
+        initialValues={initialValues}
+        onSubmit={onSubmit}>
+        {({handleSubmit, handleChange}) => (
+          <View style={styles.contentContainer}>
+            <InputText
+              fieldName={"email"}
+              label="Enter email address"
+              placeholder="email address"
+            />
+            <Button
+              title="Proceed"
+              textStyle={{color: COLOR.WHITE }}
+              btn={{ ...styles.btn, backgroundColor: COLOR.SECONDARY_300}}
+              handlePress={handleSubmit}
+            />
 
-        <View
-          style={{
-            marginTop: 20
-          }}
-        >
-          <Text
-            style={{
-              textAlign: 'center',
-            }}
-          >Don't have an account?</Text>
-          <Button title="Sign up"
-            btn={{
-              ...styles.btn,
-              borderWidth: 1,
-              borderColor: COLOR.SECONDARY_300
-            }}
-            textStyle={{}}
-            handlePress={() => { navigation.navigate('SignUp') }}
-          />
-        </View>
-      </View>
+            <View
+              style={{
+                marginTop: 20
+              }}
+            >
+              <Text style={styles.signupText}>Don't have an account?</Text>
+              <Button title="Sign up"
+                btn={{...styles.btn, ...styles.signupBtn}}
+                textStyle={{}}
+                handlePress={() => { navigation.navigate('SignUp') }}
+              />
+            </View>
+          </View>
+        )}
+      </Formik>
       <StatusBar backgroundColor={COLOR.WHITE} barStyle="dark-content" />
     </View>
   );
@@ -95,7 +84,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    padding: 25
   },
   inputView: {
     width: '100%'
@@ -112,11 +100,19 @@ const styles = StyleSheet.create({
     fontFamily: ""
   },
   btn: {
-    width: "100%",
     flexDirection: "row",
     justifyContent: "center",
     borderRadius: 5,
-    margin: 5,
+    marginHorizontal: 10,
+    marginVertical: 5,
     padding: 5
+  },
+  signupText: {
+    textAlign: 'center',
+    fontFamily: FONT_NAMES.Title,
+  },
+  signupBtn: {
+    borderWidth: 1,
+    borderColor: COLOR.SECONDARY_300
   }
 })

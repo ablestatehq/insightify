@@ -1,6 +1,6 @@
-import { Formik } from 'formik'
+import {Formik} from 'formik'
 import React, { useContext, useState } from 'react'
-import { AntDesign } from '@expo/vector-icons';
+import {AntDesign } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { COLOR, FONTSIZE } from '../../../constants/constants'
 import { AppContext } from '../../../helper/context/AppContext'
@@ -14,7 +14,6 @@ import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, Touchabl
 import { storeToLocalStorage } from '../../../utils/localStorageFunctions';
 import { FONT_NAMES } from '../../../assets/fonts/fonts';
 import { getFilteredData } from '../../../../api/strapiJSAPI';
-// import {sendConfirmationEmail} from '../../../../api/strapiJSAPI';
 
 const Login: React.FC = () => {
   const route = useRoute<LoginScreenProps>();
@@ -107,7 +106,7 @@ const Login: React.FC = () => {
                     button={styles.button}
                   />
                   <View>
-                    <Pressable onPress={() => { navigation.navigate('Forgot') }}>
+                    <Pressable onPress={() => { navigation.navigate('Reset', {code: '1292'}) }}>
                       <Text style={styles.footerText}>Forgot password?</Text>
                     </Pressable>
                     <View style={styles.footer}>

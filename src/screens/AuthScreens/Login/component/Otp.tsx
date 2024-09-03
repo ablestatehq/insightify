@@ -1,10 +1,11 @@
-import { TextInput, View, StyleSheet, Text } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { useState, useRef } from "react";
+import {TextInput, View, StyleSheet, Text} from "react-native";
+import {useNavigation} from "@react-navigation/native";
+import {useState, useRef} from "react";
 import Header from "../../../../components/Headers/Header";
-import { Button } from "../../../../components";
-import { COLOR, FONTSIZE } from "../../../../constants/constants";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {Button} from "../../../../components";
+import {COLOR, FONTSIZE} from "../../../../constants/constants";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {FONT_NAMES} from "../../../../assets/fonts/fonts";
 
 export default function Otp() {
   // navigation hook 
@@ -49,54 +50,23 @@ export default function Otp() {
       <View
         style={styles.contentContainer}
       >
-        {/* Verification section Text input section */}
         <Text style={{
           ...styles.text,
           marginBottom: 10
         }}>
-          Enter Verification Code
+          We sent you an email!
         </Text>
-        <View
-          style={styles.roundedButtonContainer}
-        >
-          {
-            otp.map((item, index) => (
-              <TextInput
-                key={index}
-                ref={otpInputRefs[index]}
-                maxLength={1}
-                keyboardType="number-pad"
-                style={styles.inputField}
-                onChangeText={text => handleOtpChange(text, index)}
-              />
-            ))
-          }
-        </View>
-        {/* Resend section  */}
-        <View
-          style={styles.resendSection}
-        >
-          <Text style={styles.text}>
-            If you didn't receive the code
-          </Text>
-          <Button btn={styles.btn} textStyle={styles.btnText} title="Resend" handlePress={() => { }} />
-        </View>
-
-        <View>
-          <Button title="Verify" textStyle={{}} btn={{}} handlePress={() => { }} />
-        </View>
-        <View
-          style={{
-            marginTop: 20
-          }}
-        >
-          <Text
-            style={{
-              textAlign: 'center',
-            }}
-          >Do you have an account?</Text>
-          <Button title="Sign up" btn={{}} textStyle={{}} handlePress={() => { }} />
-        </View>
+        <Text style={{
+          ...styles.text,
+          marginBottom: 10
+        }}>
+          Please check your email and click on the link provided.
+        </Text>
+          {/* <Button
+          title="Verify"
+          textStyle={styles.verifyText}
+          btn={styles.verifyBtn}
+          handlePress={() => {console.log('Hello there')}} /> */}
       </View>
     </View>
   );
@@ -104,7 +74,8 @@ export default function Otp() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: COLOR.WHITE,
   },
   roundedButtonContainer: {
     flexDirection: "row",
@@ -117,7 +88,7 @@ const styles = StyleSheet.create({
     padding: 2,
     flexDirection: 'row',
     justifyContent: "center",
-    borderRadius: 5
+    borderRadius: 5,
   },
   btnText: {
     color: COLOR.SECONDARY_300
@@ -129,13 +100,15 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   text: {
-    fontFamily: "PoppinsRegular",
+    fontFamily: FONT_NAMES.Body,
     textAlign: "center"
   },
   contentContainer: {
     flex: 1,
     padding: 10,
-    marginTop: 50
+    marginTop: 50,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   inputField: {
     borderWidth: 1,
@@ -143,7 +116,16 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     textAlign: 'center',
-    fontFamily: "PoppinsBold",
+    fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.HEADING_5
+  },
+  verifyBtn: {
+    backgroundColor: COLOR.GOLD,
+    alignItems: 'center',
+    padding: 5,
+    borderRadius: 5,
+  },
+  verifyText: {
+    fontFamily: FONT_NAMES.Body,
   }
 })
