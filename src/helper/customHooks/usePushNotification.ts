@@ -47,7 +47,7 @@ const usePushNotifications = () => {
       setExpoPushToken(token as string);
       await handleTokenUpdate(token as string, storedToken);
     } catch (error) {
-      console.error('Error registering for push notifications:', error);
+      // console.error('Error registering for push notifications:', error);
     }
   };
   
@@ -141,11 +141,15 @@ const usePushNotifications = () => {
   const {setNotifications, setIsNotificationEnabled} = useContext(AppContext);
   
   useEffect(() => {
+    (async () => {
+      await registerForPushNotifications();
 
-    registerForPushNotifications();
-
-    notificationListener.current = Notifications.addNotificationReceivedListener(notificationReceivedHandler);
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(notificationResponseHandler);
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener(notificationReceivedHandler);
+      
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener(notificationResponseHandler);
+    })();
 
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current);

@@ -30,7 +30,7 @@ export default function App() {
 
   // Register the push notification for the app.
   usePushNotifications();
-  const pre = Linking.createURL('/');
+  const pre = Linking.createURL('');
 
 
   TaskManager.defineTask(BGTASKS.CHECK_ONLINE_STATUS, useNetworkStatus);
