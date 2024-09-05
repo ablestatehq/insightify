@@ -19,8 +19,6 @@ const Opportunities:React.FC<OpportunitiesProps> = ({data, category, filter_, ha
       ? data.filter((opp) => opp.bookmarked == true).filter((opp_) => filter_.includes(opp_.Category))
       : data.filter((opp) => filter_.includes(opp.Category));
   
-  console.log(filteredOpportunities)
-  console.log(category)
   return (
     <View style={styles.container}>
       <FlatList

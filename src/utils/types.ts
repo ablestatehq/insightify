@@ -59,7 +59,7 @@ type RootStackParamList = {
   // OpportunityList: undefined;
   Forgot: undefined
   Reset: {
-    email: string
+    code: string
   },
   ChatRoom: undefined;
   Talent: undefined;
@@ -206,7 +206,19 @@ type ProductData = {
   status?: string;
   tutorial?: any
 }
+
+type IDialogBox = {
+  title: string;
+  message: string;
+  visible: boolean;
+  error?: Error | null;
+  acceptText?: string;
+  cancelText: string;
+  onAccept?: () => void;
+  onReject: () => void;
+};
 export {
+  IDialogBox,
   MemberInfo,
   userModal,
   ProductData,

@@ -130,7 +130,6 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       }
 
       if (_products) {
-        console.log(_products);
         setProducts((prev) => [...prev, ..._products]);
       }
     } catch (error: any) {

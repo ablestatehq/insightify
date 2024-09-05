@@ -1,13 +1,13 @@
-import React, { useContext, useState } from 'react';
-import { TouchableOpacity, StyleSheet, Text, View, Image, Pressable } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, {useContext, useState} from 'react';
+import {TouchableOpacity, StyleSheet, Text, View, Image, Pressable} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import HTML from 'react-native-render-html';
-import { AntDesign } from '@expo/vector-icons';
+import {AntDesign} from '@expo/vector-icons';
 
 // Constants and Helpers
-import { COLOR, FONTSIZE } from '../../constants/constants';
-import { AppContext } from '../../helper/context/AppContext';
+import {COLOR, DIMEN, FONTSIZE } from '../../constants/constants';
+import {AppContext } from '../../helper/context/AppContext';
 import { OpportunityItemCardProps } from '../../utils/types';
 import { OpenLink, handleBookmark } from '../../helper/functions/handleFunctions';
 import { generateDate } from '../../helper/functions/functions';
@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     backgroundColor: COLOR.WHITE,
     borderRadius: 5,
+    margin: DIMEN.PADDING.SM,
   },
   headSection: {
     flexDirection: 'row',

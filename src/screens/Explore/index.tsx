@@ -1,22 +1,23 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {View, StatusBar, FlatList, StyleSheet} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {NativeStackNavigationProp } from '@react-navigation/native-stack';
-import {COLOR } from '../../constants/constants';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {COLOR} from '../../constants/constants';
 import useFilter from '../../helper/customHooks/useFilter';
-import {AppContext } from '../../helper/context/AppContext';
-import {OpportunityListProps } from '../../utils/types';
-import {FONT_NAMES } from '../../assets/fonts/fonts';
+import {AppContext} from '../../helper/context/AppContext';
+import {OpportunityListProps} from '../../utils/types';
+import {FONT_NAMES} from '../../assets/fonts/fonts';
 import {
   EmptyState, FloatingButton, FormModal, CategorySection,
   FilterCard, OpportunityCard, OpportunityHeader
 } from '../../components';
 
+
 const OpportunityList = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const { opportunities, user, isLoggedIn } = useContext(AppContext);
+  const {opportunities, user, isLoggedIn} = useContext(AppContext);
   const route = useRoute<OpportunityListProps>();
-  const { tag } = route.params;
+  const {tag} = route.params;
 
   const [category, setCategory] = useState<string>(tag || 'Recent');
   const [filteredItems, setFilteredItems] = useState<string[]>([]);
@@ -24,35 +25,28 @@ const OpportunityList = () => {
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
   const [resourceId, setResourceId] = useState<number>(0);
 
-  const [filteredOpportunities, isLoading] = useFilter(category, opportunities, filteredItems);
+  const [filteredOpportunities, isLoading] =
+    useFilter(category, opportunities, filteredItems);
 
-  useEffect(() => {
-    setCategory(tag || 'All');
-    setFilteredItems([]);
-  }, [tag]);
+  const toggleFilterCard = useCallback(() => setShowFilterCard(!showFilterCard), []);
 
-  const toggleFilterCard = () => setShowFilterCard(!showFilterCard);
-
-  const renderOpportunity = useCallback(
+  const renderOpportunity = 
     ({item }: { item: any }) => (
       <OpportunityCard
         opportunity={item}
         showReportModal={() => setShowReportModal(true)}
       />
-    ),
-    []
   );
 
-  const handleFloatingButtonPress = () => {
+  const handleFloatingButtonPress = useCallback(() => {
     const targetScreen = isLoggedIn ? 'Share' : 'Login';
     const params = isLoggedIn ? {} : { title: 'Login to share\nan Opportunity' };
     navigation.navigate(targetScreen, params);
-  };
+  }, []);
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLOR.WHITE} />
-
       {/* Search and Category Section */}
       <View style={styles.searchContainer}>
         <OpportunityHeader showFilterCard={toggleFilterCard} />
@@ -72,6 +66,10 @@ const OpportunityList = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={<EmptyState />}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+          removeClippedSubviews={true}
         />
 
         <FormModal
@@ -95,7 +93,7 @@ const OpportunityList = () => {
           handleCardVisibility={toggleFilterCard}
           setFilteredItems={setFilteredItems}
           filteredItems={filteredItems}
-          filteredCount={filteredOpportunities.length}
+          filteredCount={filteredOpportunities?.length}
         />
       )}
     </View>

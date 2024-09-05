@@ -1,89 +1,64 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState, useMemo } from 'react';
 
-function useFilter(category:string, data:any[], filteredItems: string[]) {
-  const [filteredData, setFilteredData] = useState<any[]>([]);
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+function getDateDifference(date1: Date, date2: Date): number {
+  const utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
+  const utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
+  return Math.floor((utc2 - utc1) / MS_PER_DAY);
+}
+
+function useFilter(category: string, data: any[], filteredItems: string[]) {
   const [stillLoading, setStillLoading] = useState<boolean>(true);
   
-  const archivedOpp = data.filter(opp => {
-    const publisedAt = new Date(opp.publishedAt);
-    const currentDate = new Date();
+  // avoid re-creating it on every render
+  const currentDate = useMemo(() => new Date(), []);
 
-    const lifespan = (currentDate as any) - (publisedAt as any);
-    
-    // get the number of days
-    const seconds = Math.floor(lifespan / 1000);
+  // only calculated once per data change
+  const {activeData, archivedOpp} = useMemo(() => {
+    return data.reduce(
+      (acc, opp) => {
+        const publishedAt = new Date(opp.publishedAt);
+        const days = getDateDifference(publishedAt, currentDate);
+        if (days <= 30) {
+          acc.activeData.push(opp);
+        } else {
+          acc.archivedOpp.push(opp);
+        }
+        return acc;
+      },
+      { activeData: [], archivedOpp: [] }
+    );
+  }, [data, currentDate]);
 
-    // Convert to minutes
-    const minutes = Math.floor(seconds / 60);
+  // filter data based on category and filteredItems
+  const filteredData = useMemo(() => {
+    const applyFilters = (dataSet: any[]) => {
+      return filteredItems.length > 0
+        ? dataSet.filter((opp) => filteredItems.includes(opp.Category))
+        : dataSet;
+    };
 
-    // Convert to hours
-    const hours = Math.floor(minutes / 60);
-
-    // Convert to days
-    const days = Math.floor(hours / 24);
-    
-    if (days > 30) {
-      return opp;
+    switch (category) {
+      case 'Recent':
+        return applyFilters(activeData);
+      case 'Saved':
+        return applyFilters(data.filter((item) => item.bookmarked === true));
+      case 'All':
+        return applyFilters(archivedOpp);
+      default:
+        return [];
     }
-  });
-
-  const activeData = data.filter(opp => {
-
-    const publisedAt = new Date(opp.publishedAt);
-    const currentDate = new Date();
-
-    const lifespan = (currentDate as any) - (publisedAt as any);
-    
-    // get the number of days
-    const seconds = Math.floor(lifespan / 1000);
-
-    // Convert to minutes
-    const minutes = Math.floor(seconds / 60);
-
-    // Convert to hours
-    const hours = Math.floor(minutes / 60);
-
-    // Convert to days
-    const days = Math.floor(hours / 24);
-    
-    if (days < 31) {
-      return opp;
-    }
-  });
+  }, [category, filteredItems, activeData, archivedOpp, data]);
 
   useEffect(() => {
-    try {
-      setStillLoading(true);
-      if (category == 'Recent') {
-        const filtered = filteredItems.length > 0 ?
-          activeData.filter(opp => filteredItems.includes(opp.Category)) :
-          activeData;
-        setFilteredData([...filtered]);
-    } else if (category == 'Saved') {
-      setFilteredData(currentData => {
-        const saved_data = data?.filter(item => item.bookmarked === true);
-        const filtered = filteredItems.length > 0 ?
-          saved_data.filter(data => filteredItems.includes(data.Category)) :
-          saved_data
-        return [...filtered];
-      });
-    } else if (category == 'For you') {
-      setFilteredData(currentData => {
-        return []
-      });
-      } else if (category == 'All') {
-        const filtered = filteredItems.length > 0 ?
-          archivedOpp.filter(opp => filteredItems.includes(opp.Category)) :
-          archivedOpp;
-      setFilteredData([...filtered])
-    } else { }
-    } catch (error) { }
-    finally {
+    setStillLoading(true);
+    setTimeout(() => {
       setStillLoading(false);
-    }
-  }, [category, filteredItems]);
-  
+    }, 100);
+  }, [filteredData]);
+
   return [filteredData, stillLoading] as const;
-};
+}
 
 export default useFilter;
