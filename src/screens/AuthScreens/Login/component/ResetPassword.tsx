@@ -31,7 +31,7 @@ const ResetPassword = () => {
               <View style={styles.textInputView}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="at least 8 digits"
+                  placeholder="*******"
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   value={values.password}

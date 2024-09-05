@@ -36,7 +36,8 @@ export const useResetPassword = () => {
     try {
       const { password } = values;
       const response = await resetPassword(password, code);
-      if (response.data) {
+      // alert(`${code}\n${JSON.stringify(response, null, 2)}`)
+      if (response.user) {
         setDialog({
           title: "Confirmation",
           message: "Password has been successfully updated",
