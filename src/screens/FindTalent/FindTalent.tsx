@@ -44,26 +44,27 @@ const FindTalent = () => {
   ];
 
   // submit request form.
-  const submitTalentRequestForm = async (values: TalentSubmissionForm, formikHelpers: FormikHelpers<any>) => {
-    const data = {
-      ...values,
-      heads: Number(values.heads)
-    };
-    const submissionResponse = await storeData('talent-requests', data);
+  const submitTalentRequestForm =
+    async (values: TalentSubmissionForm, formikHelpers: FormikHelpers<any>) => {
+      const data = {
+        ...values,
+        heads: Number(values.heads)
+      };
+      const submissionResponse = await storeData('talent-requests', data);
 
-    if (submissionResponse.data != null) {
-      setShowModal(true);
-      setModalTitle('Talent Request');
-      setModalMessage('Your talent request has been successfully submitted.')
-      formikHelpers.resetForm({
-        values: initialTalentFormValues
-      })
-    } else {
-      setShowModal(true);
-      setModalTitle('Talent Request Error');
-      setModalMessage('Your talent request has not been submitted....')
+      if (submissionResponse.data != null) {
+        setShowModal(true);
+        setModalTitle('Talent Request');
+        setModalMessage('Your talent request has been successfully submitted.')
+        formikHelpers.resetForm({
+          values: initialTalentFormValues
+        })
+      } else {
+        setShowModal(true);
+        setModalTitle('Talent Request Error');
+        setModalMessage('Your talent request has not been submitted....')
+      }
     }
-  }
   return (
     <View style={styles.container}>
       <Header title='Hire Talent' />
@@ -77,92 +78,94 @@ const FindTalent = () => {
           Start engaging our team to find the right solution for you.
         </Text>
       </View>
-      <Formik
-        initialValues={initialTalentFormValues}
-        onSubmit={submitTalentRequestForm}
-        validationSchema={TalentFormValidationSchema}
-      >
-        {(
-          {
-            values,
-            errors,
-            touched,
-            isSubmitting,
-            handleBlur,
-            handleSubmit,
-            handleChange,
-          }
-        ) => (
-          <KeyboardAvoidingView>
-            <ScrollView
-              contentContainerStyle={styles.formContainer}
-              showsVerticalScrollIndicator={false}
-            >
-              <InputText
-                label='Name'
-                fieldName='client'
-                placeholder='Enter your name e.g Gideon'
-              />
-
-              <InputText
-                label='Email'
-                fieldName='email'
-                placeholder='example@gmail.com'
-              />
-
-              <InputText
-                fieldName='phone'
-                label='Phone number'
-                placeholder='e.g 077777777'
-              />
-
-              <InputText
-                fieldName='company'
-                label='Company/Organisation'
-                placeholder='Company/Organisation'
-              />
-
-              <Text style={{
-                marginLeft: 10,
-                marginBottom: 5,
-                fontFamily: FONT_NAMES.Title,
-                fontSize: FONTSIZE.TITLE_2,
-              }}>I'm looking for</Text>
-              <View style={{ borderWidth: 1, margin: 5, borderRadius: 5, paddingHorizontal: 5, borderColor: COLOR.SECONDARY_100, paddingVertical: 5, marginLeft: 10 }}>
-                <Dropdown
-                  data={serviceAvailable}
-                  labelField='label'
-                  valueField='value'
-                  value={values.need}
-                  placeholder='Select service'
-                  iconStyle={{ width: 15, height: 15 }}
-                  placeholderStyle={{
-                    color: COLOR.SECONDARY_75,
-                  }}
-                  onChange={function (item) { values.need = item.label }}
-                />
-              </View>
-
-              {values.need.includes('New software developer') &&
+      <ScrollView showsHorizontalScrollIndicator={false}>
+        <Formik
+          initialValues={initialTalentFormValues}
+          onSubmit={submitTalentRequestForm}
+          validationSchema={TalentFormValidationSchema}
+        >
+          {(
+            {
+              values,
+              errors,
+              touched,
+              isSubmitting,
+              handleBlur,
+              handleSubmit,
+              handleChange,
+            }
+          ) => (
+            <KeyboardAvoidingView>
+              <ScrollView
+                contentContainerStyle={styles.formContainer}
+                showsVerticalScrollIndicator={false}
+              >
                 <InputText
-                  fieldName='heads'
-                  label='How many developers may you need?'
-                  placeholder='Enter number of developers'
-                />}
-              <InputText
-                isMultiLine={true}
-                fieldName='message'
-                label='Tell us more'
-                placeholder='Tell us more about your need'
-              />
-              <SubmitButton
-                button={styles.submit_button}
-                handleSubmit={() => handleSubmit()}
-              />
-            </ScrollView>
-          </KeyboardAvoidingView>
-        )}
-      </Formik>
+                  label='Name'
+                  fieldName='client'
+                  placeholder='Enter your name e.g Gideon'
+                />
+
+                <InputText
+                  label='Email'
+                  fieldName='email'
+                  placeholder='example@gmail.com'
+                />
+
+                <InputText
+                  fieldName='phone'
+                  label='Phone number'
+                  placeholder='e.g 077777777'
+                />
+
+                <InputText
+                  fieldName='company'
+                  label='Company/Organisation'
+                  placeholder='Company/Organisation'
+                />
+
+                <Text style={{
+                  marginLeft: 10,
+                  marginBottom: 5,
+                  fontFamily: FONT_NAMES.Title,
+                  fontSize: FONTSIZE.TITLE_2,
+                }}>I'm looking for</Text>
+                <View style={{ borderWidth: 1, margin: 5, borderRadius: 5, paddingHorizontal: 5, borderColor: COLOR.SECONDARY_100, paddingVertical: 5, marginLeft: 10 }}>
+                  <Dropdown
+                    data={serviceAvailable}
+                    labelField='label'
+                    valueField='value'
+                    value={values.need}
+                    placeholder='Select service'
+                    iconStyle={{ width: 15, height: 15 }}
+                    placeholderStyle={{
+                      color: COLOR.SECONDARY_75,
+                    }}
+                    onChange={function (item) { values.need = item.label }}
+                  />
+                </View>
+
+                {values.need.includes('New software developer') &&
+                  <InputText
+                    fieldName='heads'
+                    label='How many developers may you need?'
+                    placeholder='Enter number of developers'
+                  />}
+                <InputText
+                  isMultiLine={true}
+                  fieldName='message'
+                  label='Tell us more'
+                  placeholder='Tell us more about your need'
+                />
+                <SubmitButton
+                  button={styles.submit_button}
+                  handleSubmit={() => handleSubmit()}
+                />
+              </ScrollView>
+            </KeyboardAvoidingView>
+          )}
+        </Formik>
+      </ScrollView>
       <CustomModal
         title={modalTitle}
         message={modalMessage}
