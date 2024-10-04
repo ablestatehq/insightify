@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useMemo, useState} from 'react';
+import React, {useCallback, useContext, useState} from 'react';
 import {View, StatusBar, FlatList, StyleSheet} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -18,8 +18,7 @@ const OpportunityList = () => {
   const {opportunities, user, isLoggedIn} = useContext(AppContext);
   const route = useRoute<OpportunityListProps>();
   const {tag} = route.params;
-
-  const [category, setCategory] = useState<string>(tag || 'Recent');
+  const [category, setCategory] = useState<string>(tag ?? 'Recent');
   const [filteredItems, setFilteredItems] = useState<string[]>([]);
   const [showFilterCard, setShowFilterCard] = useState<boolean>(false);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
@@ -28,10 +27,12 @@ const OpportunityList = () => {
   const [filteredOpportunities, isLoading] =
     useFilter(category, opportunities, filteredItems);
 
-  const toggleFilterCard = useCallback(() => setShowFilterCard(!showFilterCard), []);
+  const toggleFilterCard = () => {
+    setShowFilterCard(!showFilterCard);
+  };
 
   const renderOpportunity = 
-    ({item }: { item: any }) => (
+    ({item}: {item: any}) => (
       <OpportunityCard
         opportunity={item}
         showReportModal={() => setShowReportModal(true)}
@@ -40,7 +41,7 @@ const OpportunityList = () => {
 
   const handleFloatingButtonPress = useCallback(() => {
     const targetScreen = isLoggedIn ? 'Share' : 'Login';
-    const params = isLoggedIn ? {} : { title: 'Login to share\nan Opportunity' };
+    const params = isLoggedIn ? {} : {title: 'Login to share\nan Opportunity'};
     navigation.navigate(targetScreen, params);
   }, []);
 

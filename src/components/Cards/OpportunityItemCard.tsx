@@ -1,18 +1,19 @@
 import React, {useContext, useState} from 'react';
-import {TouchableOpacity, StyleSheet, Text, View, Image, Pressable} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import OpportunityFooter from './OpportunityFooter';
+
 import HTML from 'react-native-render-html';
 import {AntDesign} from '@expo/vector-icons';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {TouchableOpacity, StyleSheet, Text, View, Image, Pressable} from 'react-native';
 
 // Constants and Helpers
 import {COLOR, DIMEN, FONTSIZE } from '../../constants/constants';
 import {AppContext } from '../../helper/context/AppContext';
 import { OpportunityItemCardProps } from '../../utils/types';
 import { OpenLink, handleBookmark } from '../../helper/functions/handleFunctions';
-import { generateDate } from '../../helper/functions/functions';
+import { generateDate, resourceAge } from '../../helper/functions/functions';
 import { environments } from '../../constants/environments';
-import OpportunityFooter from './OpportunityFooter';
 import { FONT_NAMES } from '../../assets/fonts/fonts';
 
 const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, showReportModal }) => {
@@ -45,6 +46,7 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, 
     setExpandable(prevState => !prevState);
   };
 
+  const opportunityLifeSpan = resourceAge(publishedAt);
   return (
     <View style={styles.container}>
       <View style={styles.headSection}>
@@ -59,8 +61,11 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, 
             )}
           </View>
           <View style={styles.titleContainer}>
-            <Text style={styles.heading}>{Title}</Text>
-            <Text style={styles.company}>{Company}</Text>
+            <Text numberOfLines={2} ellipsizeMode='tail' style={styles.heading}>{Title}</Text>
+            <Text style={styles.company}>
+              {Company} 
+              <Text style={styles.timeText}>  {opportunityLifeSpan}</Text>
+            </Text>
           </View>
         </View>
       </View>
@@ -95,10 +100,10 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, 
           if (isLoggedIn) {
             handleBookmark(id, opportunities, setOpportunities);
           } else {
-            navigation.navigate('Login', { title: 'Login to save \nthis Opportunity', opportunityID: id });
+            navigation.navigate('Login', {title: 'Login to save \nthis Opportunity', opportunityID: id});
           }
         }}
-        publishedDate={publishedAt}
+        // publishedDate={publishedAt}
         showReportModal={showReportModal}
         location={Location ?? 'Remote'}
       />
@@ -118,9 +123,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   logoContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 15,
+    padding: DIMEN.PADDING.SM,
   },
   logo: {
     width: 50,
@@ -129,7 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   logoImage: {
-    alignSelf: 'center',
+    // alignSelf: 'center',
     height: 40,
     width: 40,
   },
@@ -141,9 +148,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heading: {
-    fontSize: FONTSIZE.TITLE_2,
     fontFamily: FONT_NAMES.Title,
-    flexWrap: 'wrap',
   },
   company: {
     fontFamily: FONT_NAMES.Body,
@@ -177,6 +182,10 @@ const styles = StyleSheet.create({
     color: COLOR.SECONDARY_500,
   },
   coverImage: {},
+  timeText: {
+    color: COLOR.SECONDARY_100,
+    // opacity: 0.2,
+  },
 });
 
 export default React.memo(OpportunityItemCard);

@@ -12,15 +12,11 @@ const Index = (props: any) => {
   const {opportunity} = props;
   const {id, Title, company_logo} = opportunity;
   const {BASE_URL} = environments;
-  const overlayImage = {
-    Job: 'join_us_eee8c7c677.jpg',
-    Hackathon: 'hakathon_306c4cbc51.jpg',
-  }
 
   return (
     <Pressable
       style={styles.container}
-      onPress={() => navigation.navigate('Explore', {tag: 'All'})}>
+      onPress={() => navigation.navigate('Explore', {tag: 'Recent'})}>
       <View style={styles.overlay} />
       <Image
         source={{
@@ -43,20 +39,21 @@ export default Index
 
 const styles = StyleSheet.create({
   container: {
-    // width: '100%',
     borderRadius: 5,
     height: 200,
     justifyContent: 'center',
     alignItems: 'center',
+    flex: 1,
   },
   imageStyles: {
     width: '100%',
+    // flex:1,
     height: 200,
     position: 'absolute',
     borderRadius: 5,
   },
   overlay: {
-    backgroundColor: COLOR.P_TRANSPARENT_50,
+    backgroundColor: COLOR.P_TRANSPARENT_25,
     position: 'absolute',
     width: '100%',
     height: 200,
