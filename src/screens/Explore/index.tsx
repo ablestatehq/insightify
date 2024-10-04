@@ -41,7 +41,7 @@ const OpportunityList = () => {
 
   const handleFloatingButtonPress = useCallback(() => {
     const targetScreen = isLoggedIn ? 'Share' : 'Login';
-    const params = isLoggedIn ? {} : {title: 'Login to share\nan Opportunity'};
+    const params = isLoggedIn ? {} : {title: 'Explore'};
     navigation.navigate(targetScreen, params);
   }, []);
 
