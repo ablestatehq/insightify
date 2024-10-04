@@ -55,11 +55,15 @@ type RootStackParamList = {
   Login: {
     title?: string
     opportunityID?: string
+    // confirmation?: string
   }
   // OpportunityList: undefined;
   Forgot: undefined
   Reset: {
     code: string
+  },
+  ConfirmEmail: {
+    code?: string
   },
   ChatRoom: undefined;
   Talent: undefined;
@@ -73,6 +77,7 @@ type RootStackParamList = {
 
 type LoginScreenProps = RouteProp<RootStackParamList, 'Login'>
 type ResetScreenProps = RouteProp<RootStackParamList, 'Reset'>
+type ConfirmEmailScreenProps = RouteProp<RootStackParamList, 'ConfirmEmail'>
 type DetailsScreenProps = RouteProp<RootStackParamList, 'Details'>
 type OpportunityListProps = RouteProp<RootStackParamList, 'Explore'>
 // interface for TalentSubmissionForm
@@ -197,7 +202,7 @@ type ProductData = {
   verified?: boolean;
   description: string;
   media?: {data: any[]};
-  developers?: {data: any[]};
+  uploadedBy?: any;
   demo?: string;
   totalViews?: number;
   tagline?: string;
@@ -237,5 +242,6 @@ export {
   OpportunitiesFormType,
   ExpandableListItemProps,
   OpportunityItemCardProps,
+  ConfirmEmailScreenProps,
   OpportunityListProps
 }

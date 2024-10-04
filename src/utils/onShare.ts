@@ -1,4 +1,4 @@
-import { Share, Alert, Linking } from "react-native";
+import {Share, Linking} from "react-native";
 
 const onShare = async (message: string) => {
   try {
@@ -7,12 +7,9 @@ const onShare = async (message: string) => {
         message,
       }
     )
-
-    if (results.action === Share.sharedAction) {
-
-    }
+    if (results.action === Share.sharedAction) {}
   } catch (error: any) {
-    Alert.alert(error.message)
+    // Alert.alert(error.message)
   }
 }
 

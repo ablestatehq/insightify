@@ -17,14 +17,14 @@ const awardXP = async (AWARD: any, itemID: number, authToken: string, userID: nu
         })).json();
     
     // check the response from the endpoint
-    if (!views || !views.data) {
+    if (!views || !views?.data) {
       return;
     }
 
     // if the response is of the format we expoect, proceed
-    const viewCount = views.data.length || 0;
+    const viewCount = views?.data.length || 0;
     
-    if (award[itemID] && viewCount >= 3) {
+    if (award && award[itemID] && viewCount >= 3) {
       if (award[itemID] !== 'THIRD') {
         const newAwardType = award[itemID] === 'FIRST' ? 'SECOND' : 'THIRD';
         await storeData(
@@ -76,7 +76,6 @@ const awardXP = async (AWARD: any, itemID: number, authToken: string, userID: nu
         },
         authToken
       );
-      
       await storeToLocalStorage('award-token', { ...award, [itemID]: 'FIRST' });
       return AWARD['FIRST'] ?? 0;
     }
