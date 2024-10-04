@@ -1,26 +1,29 @@
-import React, { useContext, useState } from 'react'
-import { Formik, FormikHelpers } from 'formik'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import React from 'react'
+import {Formik, FormikHelpers} from 'formik'
+import {ScrollView, StyleSheet, Text, View} from 'react-native'
 
-import { COLOR, FONTSIZE } from '../../../constants/constants'
-import { AppContext } from '../../../helper/context/AppContext'
+import {COLOR, FONTSIZE} from '../../../constants/constants'
 
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { InputText, SubmitButton, CustomModal } from '../../../components';
-import { signUp } from '../../../../api/auth'
-import { sendConfirmationEmail } from '../../../../api/strapiJSAPI';
-import { FONT_NAMES } from '../../../assets/fonts/fonts'
+import {Ionicons} from '@expo/vector-icons';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {InputText, SubmitButton, Dialog} from '../../../components';
+import {signUp} from '../../../../api/auth'
+import {FONT_NAMES} from '../../../assets/fonts/fonts'
+import {IDialogBox, RootStackParamList} from '../../../utils/types'
 
 const SignUp = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const { isLoggedIn, setIsLoggedIn } = useContext(AppContext);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [modalMessage, setModalMessage] = useState<string>('');
-  const [modalTitle, setModalTitle] = useState<string>('');
-
+  const [dialog, setDialog] = React.useState<IDialogBox>({
+    visible: false,
+    title: '',
+    message: '',
+    cancelText: 'Try again',
+    onReject() {
+      setDialog({ ...dialog, visible: false })
+    },
+  })
   const signUpFormInitValues = {
     name: '',
     email: '',
@@ -35,11 +38,14 @@ const SignUp = () => {
         // const emailValidationResponse = await sendConfirmationEmail(signUpResponse?.user?.email, '');
       }
       formikHelpers.resetForm();
-      navigation.goBack();
+      navigation.navigate('ConfirmEmail', {});
     } catch (error) {
-      setShowModal(true);
-      setModalTitle('Sign-up or login failed');
-      setModalMessage('An error occurred during sign-up or login.');
+      setDialog((prev: IDialogBox) => ({
+        ...prev,
+        visible: true,
+        title: 'Sign-up or login failed',
+        message: 'An error occurred during sign-up or login.'
+      }))
     }
   };
 
@@ -97,12 +103,7 @@ const SignUp = () => {
           </Formik>
           {/* <SignUpWith /> */}
         </View>
-        <CustomModal
-          title={modalTitle}
-          message={modalMessage}
-          cancelText='Ok'
-          cancel={function (): void { setShowModal(false) }}
-          visibility={showModal} />
+        <Dialog {...dialog} />
       </View>
     </View>
   )
@@ -137,5 +138,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '95%',
     margin: 10
-  }
+  },
+  
 })

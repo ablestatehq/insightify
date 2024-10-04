@@ -1,28 +1,28 @@
 import React from 'react'
-import {Octicons} from '@expo/vector-icons';
-import {useNavigation} from '@react-navigation/native';
-import {FONT_NAMES} from '../../../assets/fonts/fonts';
-import {environments} from '../../../constants/environments';
-import {COLOR, FONTSIZE} from '../../../constants/constants';
-import {ProductData, RootStackParamList} from '../../../utils/types';
-import {Pressable, StyleSheet, View, Text, Image} from 'react-native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import { Octicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { FONT_NAMES } from '../../../assets/fonts/fonts';
+import { environments } from '../../../constants/environments';
+import { COLOR, FONTSIZE } from '../../../constants/constants';
+import { ProductData, RootStackParamList } from '../../../utils/types';
+import { Pressable, StyleSheet, View, Text, Image } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 
 const Index = (props: ProductData) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const {description, tagline, developers, name, tutorial, media} = props;
-  
+  const { description, tagline, uploadedBy, name, tutorial, media, status, totalViews } = props;
+  // console.log('Total',totalViews);
   return (
     <Pressable
       style={styles.container}
-      onPress={() => navigation.navigate('ProductDetail', {...props})}>
+      onPress={() => navigation.navigate('ProductDetail', { ...props})}>
       <View style={styles.verifiedSection}>
-        <Octicons name="verified" size={10} color={COLOR.WHITE} style={{padding: 5}} />
+        <Octicons name="verified" size={10} color={COLOR.WHITE} style={{ padding: 5 }} />
       </View>
       {media ?
         <Image
-          source={{uri: `${environments.BASE_URL}${media?.data[0]?.attributes.url}`}}
+          source={{ uri: `${environments.BASE_URL}${media?.data[0]?.attributes.url}` }}
           resizeMethod="resize"
           resizeMode="cover"
           style={styles.imageStyles}

@@ -1,49 +1,61 @@
-import { Text, TextInput, StyleSheet, View, StatusBar, TouchableOpacity, Alert } from "react-native";
-import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import {Text, StyleSheet, View, StatusBar} from "react-native";
+import React, {useCallback, useMemo, useState} from "react";
+import {useNavigation} from "@react-navigation/native";
 import Header from "../../../../components/Headers/Header";
-import { Button, InputText } from "../../../../components";
-import { COLOR } from "../../../../constants/constants";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { forgotRequest } from "../../../../../api/auth";
+import {Button, InputText} from "../../../../components";
+import {COLOR} from "../../../../constants/constants";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {forgotRequest} from "../../../../../api/auth";
 import {Formik} from "formik";
-import { FONT_NAMES } from "../../../../assets/fonts/fonts";
+import {FONT_NAMES} from "../../../../assets/fonts/fonts";
 
-interface FormValues{
+interface FormValues {
   email: string;
 }
-export default function Forgot() {
 
+export default function Forgot() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  // use hooks
-  const [email, setEmail] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  // Initial form values memoized to avoid unnecessary re-creations
+  const initialValues = useMemo(
+    () => ({
+      email: "",
+    }),
+    []
+  );
 
-  // fonts to be used.
-  const initialValues: FormValues = {
-    email: ''
-  }
+  // Memoize onSubmit handler
+  const onSubmit = useCallback((values: FormValues) => {
+    try {
+      setLoading(true);
+      forgotRequest(values.email)
+        .then((response) => {
+          console.log(loading)
+          if (response.ok) {
+            console.log("This is the response: ", response);
+            navigation.navigate("Otp");
+          }
+        })
+        .catch((error) => console.log("Something went wrong", error));
+    } catch (error) { }
+    finally {
+      setLoading(false)
+    }
+    
+  }, [navigation]);
 
-  const onSubmit =  (values: FormValues) => {
-    forgotRequest(values.email)
-      .then(response => {
-        if (response.ok) {
-          navigation.navigate('Otp');
-        }
-      })
-      .catch(error => console.log('Something went wrong', error))
-  }
+  // Memoize navigation for Sign Up button
+  const handleSignUpNavigation = useCallback(() => {
+    navigation.navigate("SignUp");
+  }, [navigation]);
 
   return (
-    <View
-      style={styles.container}
-    >
-      {/* header  */}
+    <View style={styles.container}>
+      {/* header */}
       <Header title="Forgot password" />
-      <Formik
-        initialValues={initialValues}
-        onSubmit={onSubmit}>
-        {({handleSubmit, handleChange}) => (
+      <Formik initialValues={initialValues} onSubmit={onSubmit}>
+        {({ handleSubmit }) => (
           <View style={styles.contentContainer}>
             <InputText
               fieldName={"email"}
@@ -52,21 +64,18 @@ export default function Forgot() {
             />
             <Button
               title="Proceed"
-              textStyle={{color: COLOR.WHITE }}
-              btn={{ ...styles.btn, backgroundColor: COLOR.SECONDARY_300}}
+              textStyle={{ color: COLOR.WHITE }}
+              isLoading={loading}
+              btn={{ ...styles.btn, backgroundColor: COLOR.SECONDARY_300 }}
               handlePress={handleSubmit}
             />
 
-            <View
-              style={{
-                marginTop: 20
-              }}
-            >
+            <View style={{ marginTop: 20 }}>
               <Text style={styles.signupText}>Don't have an account?</Text>
-              <Button title="Sign up"
-                btn={{...styles.btn, ...styles.signupBtn}}
-                textStyle={{}}
-                handlePress={() => { navigation.navigate('SignUp') }}
+              <Button
+                title="Sign up"
+                btn={{ ...styles.btn, ...styles.signupBtn }}
+                handlePress={handleSignUpNavigation}
               />
             </View>
           </View>
@@ -80,24 +89,10 @@ export default function Forgot() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLOR.WHITE
+    backgroundColor: COLOR.WHITE,
   },
   contentContainer: {
     flex: 1,
-  },
-  inputView: {
-    width: '100%'
-  },
-  inputField: {
-    padding: 5,
-    borderRadius: 5,
-    borderWidth: 1,
-    fontFamily: "",
-    paddingLeft: 10,
-    marginBottom: 10
-  },
-  text: {
-    fontFamily: ""
   },
   btn: {
     flexDirection: "row",
@@ -105,14 +100,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 10,
     marginVertical: 5,
-    padding: 5
+    padding: 5,
   },
   signupText: {
-    textAlign: 'center',
+    textAlign: "center",
     fontFamily: FONT_NAMES.Title,
   },
   signupBtn: {
     borderWidth: 1,
-    borderColor: COLOR.SECONDARY_300
-  }
-})
+    borderColor: COLOR.SECONDARY_300,
+  },
+});

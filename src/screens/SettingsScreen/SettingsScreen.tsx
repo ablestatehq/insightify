@@ -37,7 +37,7 @@ const SettingsScreen = () => {
       }
     }
   }
-
+  // console.log(isNotificationEnabled)
   return (
     <View style={styles.container}>
       {/* Account  */}

@@ -1,9 +1,40 @@
 import {View, StyleSheet, Text} from "react-native";
-import Header from "../../../../components/Headers/Header";
-import {COLOR, FONTSIZE} from "../../../../constants/constants";
-import {FONT_NAMES} from "../../../../assets/fonts/fonts";
+import {CommonActions, useNavigation, useRoute} from "@react-navigation/native";
+import {useEffect, useState} from "react";
+import Header from "../../../components/Headers/Header";
+import {COLOR, FONTSIZE} from "../../../constants/constants";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {FONT_NAMES} from "../../../assets/fonts/fonts";
+import {ConfirmEmailScreenProps, RootStackParamList} from "../../../utils/types";
+import {emailConfirmation} from "../../../../api/auth";
+import {Button, Loader} from "../../../components";
 
-export default function Otp() {
+export default function Index() {
+  // navigation hook 
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const route = useRoute<ConfirmEmailScreenProps>();
+  const [buttonText, setButtonText] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {code} = route.params;
+
+  useEffect(() => {
+    if (code) {
+      try {
+        setIsLoading(true)
+        emailConfirmation(code).then(response => {
+          if (response) {
+            navigation.navigate('Login', {title: '', opportunityID: ''});
+          } else {
+            setButtonText('Re-send email');
+          }
+        }).catch(error => {
+        })
+      } catch (error) {
+        
+      }finally{setIsLoading(false)}
+    }
+  }, [code]);
+
   return (
     // Enter the Otp here
     <View
@@ -30,12 +61,13 @@ export default function Otp() {
         }}>
           Please check your email and click on the link provided.
         </Text>
-          {/* <Button
-          title="Verify"
+        {code && buttonText ? <Button
+          title={buttonText}
           textStyle={styles.verifyText}
           btn={styles.verifyBtn}
-          handlePress={() => {console.log('Hello there')}} /> */}
+          handlePress={() => {}} /> : null}
       </View>
+      {isLoading ? <Loader /> : null}
     </View>
   );
 }
@@ -88,12 +120,13 @@ const styles = StyleSheet.create({
     fontSize: FONTSIZE.HEADING_5
   },
   verifyBtn: {
-    backgroundColor: COLOR.GOLD,
+    backgroundColor: COLOR.SECONDARY_300,
     alignItems: 'center',
     padding: 5,
     borderRadius: 5,
   },
   verifyText: {
     fontFamily: FONT_NAMES.Body,
+    color: COLOR.WHITE,
   }
 })

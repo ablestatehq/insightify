@@ -1,13 +1,14 @@
 import React from 'react';
 import {Image, Pressable, Text, View, StyleSheet} from 'react-native';
-import {FontAwesome, MaterialCommunityIcons} from '@expo/vector-icons';
-import {COLOR, FONTSIZE} from "../../../constants/constants";
+import {FontAwesome} from '@expo/vector-icons';
+import {COLOR, DIMEN, FONTSIZE} from "../../../constants/constants";
 import {AppContext} from '../../../helper/context/AppContext';
 import {isProfileComplete} from '../../../helper/functions/functions';
 import {FONT_NAMES} from '../../../assets/fonts/fonts';
 import ProfileForm from '../../ProfileForm';
-import {CustomModal, JoinCommunity} from '../..';
+import {Dialog, JoinCommunity} from '../..';
 import {clearLocalData, storeToLocalStorage} from '../../../utils/localStorageFunctions';
+import {IDialogBox} from '../../../utils/types';
 
 const LOGOUT_MESSAGE = "Are you sure you want to log out?";
 
@@ -15,7 +16,7 @@ interface ProfileSectionProps {
   navigation: any;
 }
 
-const ProfileSection = ({navigation}: ProfileSectionProps) => {
+const ProfileSection = ({ navigation }: ProfileSectionProps) => {
   const {
     isLoggedIn,
     setIsLoggedIn,
@@ -27,8 +28,20 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
   const [showProfileCard, setShowProfileCard] = React.useState<boolean>(false);
   const [modal, setModal] = React.useState<boolean>(false);
   const [joinVisible, setJoinVisible] = React.useState<boolean>(false);
-
-  const profilePhoto = user.photo ? `https://insightify-admin.ablestate.cloud${user.photo.url}` : undefined;
+  const [dialog, setDialog] = React.useState<IDialogBox>({
+    visible: false,
+    title: '',
+    message: '',
+    acceptText: 'Logout',
+    cancelText: 'Cancel',
+    onReject() {setDialog({...dialog, visible: false})},
+    onAccept() {
+      handleLoginLogout();
+    }
+  })
+  const profilePhoto = user.photo ?
+    `https://insightify-admin.ablestate.cloud${user.photo.url}`:
+    undefined;
 
   const userProfile = React.useMemo(() => {
     if (isLoggedIn) {
@@ -45,7 +58,7 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
       return {
         completed: 'Sign in',
         inCommunity: false,
-        operations: () => navigation.navigate('Login', { title: '' }),
+        operations: () => navigation.navigate('Login', {title: 'Settings'}),
       };
     }
   }, [isLoggedIn, user]);
@@ -53,15 +66,15 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
   const handleLoginLogout = async () => {
     await clearLocalData('user_token');
     await clearLocalData('isMember');
-    setModal(false);
+    setDialog({...dialog, visible: false})
     setXp(0);
     setUser({});
     setIsLoggedIn(false);
   };
 
   const handleJoinCommunity = () => {
-    setUser((prev: any) => ({...prev, isMember: true}));
-    storeToLocalStorage('isMember', {isMember: true});
+    setUser((prev: any) => ({ ...prev, isMember: true }));
+    storeToLocalStorage('isMember', { isMember: true });
   };
 
   return (
@@ -70,26 +83,25 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
         {!profilePhoto ? (
           <FontAwesome name="user-circle-o" size={50} color={COLOR.SECONDARY_300} />
         ) : (
-          <Image source={{ uri: profilePhoto }} style={styles.profileImage} />
+          <Image source={{uri: profilePhoto}} style={styles.profileImage} />
         )}
         <View style={styles.profileTextContainer}>
           <Pressable style={styles.profilePressable} onPress={userProfile.operations}>
             <Text style={[styles.profileText, userProfile.completed === 'Complete Profile' && styles.underlineText]}>
               {userProfile.completed}
             </Text>
-            {isLoggedIn && (
-              <MaterialCommunityIcons
-                name="account-edit"
-                size={15}
-                color={COLOR.SECONDARY_300}
-                style={styles.editIcon}
-                onPress={() => setShowProfileCard(true)}
-              />
-            )}
           </Pressable>
           {isLoggedIn && (
-            <Pressable onPress={() => setModal(true)} style={styles.logoutPressable}>
-              <Text style={styles.logoutText}>Logout</Text>
+            <Pressable
+              onPress={() =>
+                setDialog((prev: IDialogBox) => ({
+                  ...prev,
+                  visible: true,
+                  title: 'Log out',
+                  message: LOGOUT_MESSAGE,
+                }))}
+              style={styles.logoutPressable}>
+              <Text style={styles.logoutText}>Sign out</Text>
             </Pressable>
           )}
         </View>
@@ -104,7 +116,7 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
           </View>
         </Pressable>}
         
-        <Pressable
+       {isLoggedIn && <Pressable
           style={styles.communityButton}
           onPress={() => userProfile.inCommunity ?
             navigation.navigate('ChatRoom') :
@@ -115,7 +127,7 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
               'Community Chat' :
               'Join our Community'}
           </Text>
-        </Pressable>
+        </Pressable>}
 
       </View>
       <ProfileForm
@@ -131,13 +143,14 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
         setIsInCommunity={handleJoinCommunity}
       />
 
-      <CustomModal
+      {/* <CustomModal
         title={isLoggedIn ? 'Logout' : ''}
         message={isLoggedIn ? LOGOUT_MESSAGE : ''}
         cancel={() => setModal(false)}
         accept={handleLoginLogout}
         visibility={modal}
-      />
+      /> */}
+      <Dialog {...dialog} />
     </View>
   );
 };
@@ -145,9 +158,10 @@ const ProfileSection = ({navigation}: ProfileSectionProps) => {
 const styles = StyleSheet.create({
   contentContainer: {
     elevation: 1,
-    paddingTop: 10,
+    paddingTop: 15,
+    paddingVertical: 5,
     borderRadius: 5,
-    marginVertical: 10,
+    // marginVertical: 10,
     marginHorizontal: 10,
     backgroundColor: COLOR.SECONDARY_50,
   },
@@ -193,13 +207,16 @@ const styles = StyleSheet.create({
   },
   communityButton: {
     padding: 5,
-    backgroundColor: COLOR.SECONDARY_300,
+    // backgroundColor: COLOR.SECONDARY_300,
     flex: 1,
-    // borderRadius: 10,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: COLOR.SECONDARY_100,
+    marginHorizontal: DIMEN.PADDING.ME,
   },
   communityButtonText: {
     textAlign: 'center',
-    color: COLOR.WHITE,
+    color: COLOR.SECONDARY_300,
     padding: 2,
   },
   joinProductStyle: {
