@@ -1,7 +1,7 @@
 import Button from '../Button';
 import TagCard from './TagCard';
-import { Feather } from '@expo/vector-icons';
-import { COLOR, FONTSIZE } from '../../constants/constants';
+import {Feather } from '@expo/vector-icons';
+import {COLOR, DIMEN, FONTSIZE } from '../../constants/constants';
 import { AppContext } from '../../helper/context/AppContext';
 import React, { useContext, useState, useEffect } from 'react';
 import { Modal, StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback } from 'react-native';
@@ -23,9 +23,9 @@ const FilterCard: React.FC<FilterCardProps> =
     filteredItems,
     filteredCount,
   }) => {
-    const { opportunities } = useContext(AppContext);
+    const {opportunities} = useContext(AppContext);
     const [opportunityCategories, setOpportunityCategories] = useState<any[]>([]);
-
+    
     useEffect(() => {
       setOpportunityCategories(prevTags => {
         const updatedTags = opportunities.reduce((acc, opp) => {
@@ -78,6 +78,7 @@ const FilterCard: React.FC<FilterCardProps> =
                     name="x"
                     size={20}
                     color={COLOR.SECONDARY_300}
+                    style={{padding: 5}}
                     onPress={handlePress}
                   />
                   <Text style={styles.filterText}>Filter your search</Text>
@@ -159,25 +160,23 @@ const styles = StyleSheet.create({
     gap: 25,
   },
   filterText: {
-    // flex:1,
-    // textAlign: 'center',
     fontSize: FONTSIZE.TITLE_2,
     fontFamily: FONT_NAMES.Heading,
-    marginLeft: 20
+    marginLeft: 20,
   },
   buttonStyles: {
     backgroundColor: COLOR.PRIMARY_300,
     padding: 5,
-    borderRadius: 50,
+    borderRadius: DIMEN.PADDING.SM,
     alignSelf: 'flex-start',
-    width: '40%',
-    paddingBottom: 10,
+    paddingHorizontal: DIMEN.PADDING.ELG,
   },
   tagStyles: {
     flex: 1,
+    // borderWidth: 1,
     flexWrap: 'wrap',
     flexDirection: 'row',
-    gap: 10
+    gap: 5
   },
   textStyle: {
     color: COLOR.WHITE,
