@@ -11,7 +11,7 @@ const ProductItem = (props: ProductData) => {
     id,
     verified,
     name,
-    developers,
+    uploadedBy,
     description,
     media,
     totalViews,
@@ -29,12 +29,13 @@ const ProductItem = (props: ProductData) => {
         id,
         verified,
         name,
-        developers,
+        uploadedBy,
         description,
         media,
         totalViews,
         status,
-        tagline})}>
+        tagline
+      })}>
       <View style={styles.mainstyle}>
         <View style={styles.contentStyle}>
           <Text numberOfLines={3} style={styles.titleStyle}>

@@ -1,27 +1,31 @@
-import {View, TouchableOpacity, Text, StyleSheet, Image, ScrollView, KeyboardAvoidingView} from 'react-native';
-// import {useVideoPlayer, VideoView} from 'expo-video';
-import React, {useContext, useEffect, useState, useRef} from 'react';
+import {
+  View, TouchableOpacity,
+  Text, StyleSheet, Image, ScrollView,
+  KeyboardAvoidingView, ActivityIndicator,
+  Platform,
+} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
 import {FontAwesome} from '@expo/vector-icons';
 import * as Yup from 'yup';
 import * as ImagePicker from 'expo-image-picker';
-import {MultiSelect} from 'react-native-element-dropdown';
-import {Formik} from 'formik';
+import {Formik, FormikHelpers} from 'formik';
 import Header from '../../components/Headers/Header';
 import {AppContext} from '../../helper/context/AppContext';
 import {COLOR, FONTSIZE} from '../../constants/constants';
 
 import {environments} from '../../constants/environments';
-import {InputText} from '../../components';
+import {Dialog, InputText} from '../../components';
 import {FONT_NAMES} from '../../assets/fonts/fonts';
 import {storeData, uploadImage} from '../../../api/strapiJSAPI';
 import image_name_extension from '../../utils/imageName';
+import { IDialogBox } from '../../utils/types';
 
-const {STRAPI_BASE_URL} = environments;
+const { STRAPI_BASE_URL } = environments;
 // Form's data structure
 interface FormValues {
   name: string;
   description: string;
-  developers: string[];
+  uploadedBy: any;
   tagline: string;
   status: string;
 }
@@ -37,23 +41,26 @@ const Index: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [images, setImages] = useState<string[]>([]);
   const [tutorial, setTutorial] = useState<string | undefined>();
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  // const videoRef = useRef<VideoView>(null)
+  // const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  const [dialog, setDialog] = useState<IDialogBox>({
+    visible: false,
+    cancelText: '',
+    title: '',
+    message: '',
+    onReject() { },
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [isLoading, set]
+  const { jwt, user } = useContext(AppContext);
 
-  const {jwt, user} = useContext(AppContext);
-  
   // Initial values for the form
   const initialValues: FormValues = {
     name: '',
     description: '',
-    developers: [user?.id],
+    uploadedBy: user?.id,
     tagline: '',
-    status: 'Draft'
+    status: 'Published'
   };
-  // const player = useVideoPlayer(tutorial as string, player => {
-  //   player.loop = true;
-  //   player.play();
-  // });
 
   const fetchData = () => {
     const options = {
@@ -63,14 +70,14 @@ const Index: React.FC = () => {
         'Authorization': `Bearer ${jwt}`
       }
     }
-    
+
     fetch(`${STRAPI_BASE_URL}/${'users'}?`,
       options)
       .then(response => response.json())
       .then(data => {
         const data_ = data.map((user_: any) => {
           if (!user_.blocked) {
-            return {label: user_.email, value: user_.id}
+            return { label: user_.email, value: user_.id }
           }
         });
         setUsers(prev => [...prev, ...data_])
@@ -103,147 +110,134 @@ const Index: React.FC = () => {
     }
   };
 
+  const removeImage = (index: number) => {
+    setImages(images.filter((_, i) => i !== index));
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
 
-  const onSubmit = async (values: FormValues) => {
-    const response = await storeData('products', {...values}, jwt);
-    if (response.data && tutorial) {
-    }
-    if (response.data && images.length > 0) {
-      const formData = new FormData();
-      for (let img of images) {
-        const {name, extension } = image_name_extension(img);
-        formData.append('files', {
-          uri: img,
-          type: `image/${extension}`,
-          name,
+  const onSubmit = async (values: FormValues, formikHelpers: FormikHelpers<FormValues>) => {
+    try {
+      setIsLoading(true);
+      const response = await storeData('products', { ...values }, jwt);
+      if (response.data && images.length > 0) {
+        const formData = new FormData();
+        for (let img of images) {
+          const { name, extension } = image_name_extension(img);
+          formData.append('files', {
+            uri: img,
+            type: `image/${extension}`,
+            name,
+          });
+        }
+
+        formData.append('refId', response?.data?.id);
+        formData.append('ref', 'api::product.product');
+        formData.append('field', 'media');
+
+        await uploadImage(formData, jwt);
+        setDialog({
+          visible: true,
+          title: 'Product upload',
+          message: 'Your product has been uploaded successfully',
+          cancelText: 'Ok',
+          onReject: () => {
+            setDialog({ ...dialog, visible: false });
+            formikHelpers.resetForm();
+            setImages(prev => []);
+          }
         });
       }
-
-      formData.append('refId', response?.data?.id);
-      formData.append('ref', 'api::product.product');
-      formData.append('field', 'media');
-
-      await uploadImage(formData, jwt);
+    } catch (error) {
+      setDialog({
+        visible: true,
+        title: 'Upload Failed',
+        message: 'Please check your internet connection or try again later.',
+        cancelText: 'Try again',
+        onReject: () => setDialog({ ...dialog, visible: false })
+      });
+    }
+    finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Header title='Add product' />
-      <ScrollView contentContainerStyle={{marginTop: 15, paddingBottom: 20}}>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={onSubmit}
-        >
-          {({handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, touched}) => (
-            <KeyboardAvoidingView>
-              <InputText fieldName={'name'} label='Product Title'
-                placeholder='solution name'
-                isMultiLine={false}
-                isInputSecure={false}
-              />
-              <InputText fieldName={'type'} label='Product Type'
-                placeholder='e.g software'
-                isMultiLine={false}
-                isInputSecure={false}
-              />
-              <InputText fieldName={'link'} label='Product Link'
-                placeholder='Link to product'
-                keyboardType='url'
-                isMultiLine={false}
-                isInputSecure={false}
-              />
-              <InputText fieldName={'description'} label='Description'
-                placeholder='Tell us more ...'
-                isMultiLine={true}
-                isInputSecure={false}
-              />
-              <InputText fieldName={'tagline'} label='Technologies used'
-                placeholder='technologies ...'
-              />
-              <InputText fieldName={'developer'} label='Product developer'
-                placeholder="developer's name"
-              />
-              {/* <Text style={styles.developersText}>Developers</Text> */}
-              {/* list users so that a developer can be selected.  */}
-              {/* <View
-                style={{
-                  borderWidth: 1,
-                  marginVertical: 5,
-                  marginHorizontal: 10,
-                  borderRadius: 5,
-                  paddingHorizontal: 5,
-                  borderColor: COLOR.SECONDARY_50,
-                  paddingVertical: 5,
-                }}>
-                <MultiSelect
-                  style={styles.dropdown}
-                  placeholderStyle={styles.placeholderStyle}
-                  selectedTextStyle={styles.selectedTextStyle}
-                  inputSearchStyle={styles.inputSearchStyle}
-                  iconStyle={styles.iconStyle}
-                  data={users}
-                  labelField='label'
-                  valueField='value'
-                  search
-                  searchPlaceholder='Search...'
-                  placeholder='Select skills'
-                  value={users}
-                  onChange={function (item): void {
-                    // setSkills(item);
-                    // handleChange('skills', item);
-                  }}
-                  renderSelectedItem={(item, unSelect) => (
-                    <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
-                      <View style={styles.selectedStyle}>
-                        <Text style={styles.textSelectedStyle}>{item.label}</Text>
-                        <AntDesign color="black" name="delete" size={15} />
-                      </View>
-                    </TouchableOpacity>
-                  )}
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+      <View style={styles.container}>
+        <Header title='Add product' />
+        <ScrollView contentContainerStyle={{ marginTop: 15, paddingBottom: 20 }}>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={onSubmit}
+          >
+            {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, touched }) => (
+              <KeyboardAvoidingView>
+                <InputText fieldName={'name'} label='Product Title'
+                  placeholder='solution name'
+                  isMultiLine={false}
+                  isInputSecure={false}
                 />
-              </View> */}
-              <ScrollView contentContainerStyle={styles.imagePreviewContainer} horizontal>
-                <TouchableOpacity
-                  style={styles.imageUpload}
-                  onPress={handlePickImage}
-                >
-                  <FontAwesome name="cloud-upload" size={24} color={COLOR.GREY_50} />
-                  <Text>Add Images</Text>
-                </TouchableOpacity>
-                {images.map((imageUri, index) => (
-                  <Image key={index} source={{ uri: imageUri }} style={styles.imagePreview} />
-                ))}
-              </ScrollView>
-              {/* <TouchableOpacity style={styles.imageUpload} onPress={handleVideoPick}>
-                <FontAwesome name="cloud-upload" size={24} color={COLOR.GREY_100} />
-                <Text>Product video</Text>
-              </TouchableOpacity> */}
-              {/* {tutorial &&
-                <VideoView
-                  ref={videoRef}
-                  style={styles.video}
-                  player={player}
-                  allowsFullscreen
-                  allowsPictureInPicture
-                />} */}
-              {touched.tagline
-                && errors.tagline 
-                && <Text style={styles.errorText}>{errors.tagline}</Text>}
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.cancelButton} onPress={handleSubmit}>
-                  <Text style={styles.cancelButtonText}>Save product</Text>
-                </TouchableOpacity>
-              </View>
-            </KeyboardAvoidingView>
-          )}
-        </Formik>
-      </ScrollView>
-    </View>
+                <InputText fieldName={'type'} label='Product Type'
+                  placeholder='e.g software'
+                  isMultiLine={false}
+                  isInputSecure={false}
+                />
+                <InputText fieldName={'link'} label='Product Link'
+                  placeholder='Link to product'
+                  keyboardType='url'
+                  isMultiLine={false}
+                  isInputSecure={false}
+                />
+                <InputText fieldName={'description'} label='Description'
+                  placeholder='Tell us more ...'
+                  isMultiLine={true}
+                  isInputSecure={false}
+                />
+                <InputText fieldName={'tagline'} label='Technologies used'
+                  placeholder='technologies ...'
+                />
+                <InputText fieldName={'developer'} label='Product developer'
+                  placeholder="developer's name"
+                />
+                <ScrollView contentContainerStyle={styles.imagePreviewContainer} horizontal>
+                  <TouchableOpacity
+                    style={styles.imageUpload}
+                    onPress={handlePickImage}
+                  >
+                    <FontAwesome name="cloud-upload" size={24} color={COLOR.GREY_50} />
+                    <Text>Add Images</Text>
+                  </TouchableOpacity>
+                  {images.map((imageUri, index) => (
+                    <View key={index} style={styles.imageWrapper}>
+                      <Image source={{ uri: imageUri }} style={styles.imagePreview} />
+                      <TouchableOpacity onPress={() => removeImage(index)} style={styles.removeImageButton}>
+                        <FontAwesome name="trash" size={16} color={COLOR.DANGER} />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </ScrollView>
+                {touched.tagline
+                  && errors.tagline
+                  && <Text style={styles.errorText}>{errors.tagline}</Text>}
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity style={styles.cancelButton} onPress={handleSubmit}>
+                    {!isLoading ?
+                      <Text style={styles.cancelButtonText}>Save product</Text> :
+                      <ActivityIndicator size='small' color={COLOR.WHITE} />}
+                  </TouchableOpacity>
+                </View>
+              </KeyboardAvoidingView>
+            )}
+          </Formik>
+        </ScrollView>
+        <Dialog {...dialog} />
+      </View>
+    </KeyboardAvoidingView>
+
   );
 };
 
@@ -293,6 +287,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.SECONDARY_300,
     padding: 10,
     borderRadius: 5,
+    alignItems: 'center',
   },
   cancelButtonText: {
     color: COLOR.WHITE,
@@ -314,13 +309,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   video: {
-    
+
   },
-  imagePreview: {
-    height: 80,
-    width: 80,
-    borderRadius: 10,
-  },
+  // imagePreview: {
+  //   height: 80,
+  //   width: 80,
+  //   borderRadius: 10,
+  // },
   imagePreviewContainer: {
     // flex: 1,
     flexDirection: 'row',
@@ -371,12 +366,35 @@ const styles = StyleSheet.create({
     marginRight: 5,
     fontSize: 16,
   },
-  developersText: {
+  uploadedByText: {
     paddingHorizontal: 10,
     marginBottom: 5,
     fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.TITLE_2,
-  }
+  },
+  imagepreviewcontainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginVertical: 5,
+  },
+  imagePreview: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    margin: 5,
+  },
+  imageWrapper: {
+    position: 'relative',
+    marginRight: 10,
+  },
+  removeImageButton: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 5,
+  },
 });
 
 export default Index;
