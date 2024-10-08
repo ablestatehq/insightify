@@ -1,26 +1,42 @@
 import React from 'react'
 import {StyleSheet, Text, View} from 'react-native';
 import {FontAwesome6} from '@expo/vector-icons';
-import {COLOR} from '../../constants/constants';
+import {COLOR, DIMEN} from '../../constants/constants';
 import {FONT_NAMES} from '../../assets/fonts/fonts';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../utils/types';
+
 
 interface XPpointProps {
-  number: number
+  number: number;
+  navigation: NativeStackNavigationProp<RootStackParamList>
+  inCommunity: boolean;
 }
-const Index = ({number}: XPpointProps) => {
+const Index = ({number, navigation, inCommunity}: XPpointProps) => {
+  // const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
     <View style={styles.container}>
-      <FontAwesome6 name="bolt" size={12} color={COLOR.GOLD} />
-      <Text style={styles.points}>{number} XP</Text>
+      <View style={styles.xpView}>
+        <FontAwesome6 name="bolt" size={12} color={COLOR.GOLD} />
+        <Text style={styles.points}>{number} XP</Text>
+      </View>
+      {inCommunity && <Ionicons
+        name="chatbubbles-outline"
+        size={15}
+        color={COLOR.GOLD}
+        style={styles.icon}
+        onPress={() => navigation.navigate('ChatRoom')} />}
     </View>
   )
 }
 
-export default Index;
+export default React.memo(Index);
 
 const styles = StyleSheet.create({
   container: {
-    gap: 5,
+    gap: 10,
     borderRadius: 5,
     alignItems: 'center',
     flexDirection: 'row',
@@ -28,10 +44,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignSelf: 'flex-end',
     padding: 5,
-    // backgroundColor: COLOR.P_TRANSPARENT_10,
+  },
+  xpView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3.5
   },
   points: {
     fontFamily: FONT_NAMES.Title,
     color: COLOR.SILVER,
+  },
+  icon: {
+    paddingLeft: DIMEN.PADDING.ME
   }
 })
