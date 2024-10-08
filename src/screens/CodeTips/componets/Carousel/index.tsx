@@ -1,16 +1,16 @@
-import React, { useState, useRef, useContext } from 'react';
-import { View, Text, ScrollView, StyleSheet, NativeSyntheticEvent } from 'react-native';
+import React, {useState, useRef, useContext, useCallback} from 'react';
+import {View, Text, ScrollView, StyleSheet, NativeSyntheticEvent, ActivityIndicator} from 'react-native';
 
-import { CodeSnippet, FormModal, TipFooter, HTMLText } from '../../../../components';
+import {CodeSnippet, TipFooter, HTMLText} from '../../../../components';
 
 import RenderHtml from 'react-native-render-html';
 
-import { AppContext } from '../../../../helper/context/AppContext';
-import { COLOR, DIMEN, FONTSIZE } from '../../../../constants/constants';
-import { bookmarkCodeTips } from '../../../../helper/functions/handleFunctions';
-import { FONT_NAMES } from '../../../../assets/fonts/fonts';
+import {AppContext} from '../../../../helper/context/AppContext';
+import {COLOR, DIMEN, FONTSIZE} from '../../../../constants/constants';
+import {bookmarkCodeTips} from '../../../../helper/functions/handleFunctions';
+import {FONT_NAMES} from '../../../../assets/fonts/fonts';
 
-const { SCREENWIDTH } = DIMEN;
+const {SCREENWIDTH} = DIMEN;
 
 interface CorouselProps {
   data: any[],
@@ -21,7 +21,7 @@ function Index({ data }: CorouselProps) {
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const { codeTips, setCodeTips, user, comments } = useContext(AppContext);
+  const {codeTips, setCodeTips, comments} = useContext(AppContext);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
 
   // Render html tag renderers
@@ -30,17 +30,77 @@ function Index({ data }: CorouselProps) {
     p: HTMLText
   };
 
-  const handleScroll = (event: NativeSyntheticEvent<any>) => {
+  const handleScroll = useCallback((event: NativeSyntheticEvent<any>) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(contentOffsetX / scrollViewWidth);
+    const index = Math.round(contentOffsetX / SCREENWIDTH);
     setCurrentIndex(index);
+  }, []);
+
+
+  const tagsStyles = {
+    p: {
+      fontFamily: FONT_NAMES.Body,
+      fontSize: FONTSIZE.BODY,
+      textAlign: 'justify',
+      paddingVertical: 5
+    },
+    b: { fontWeight: 'bold' },
+    ul: {
+      listStyleType: 'none',
+      paddingHorizontal: 5,
+      paddingVertical: 1,
+      textAlign: 'justify'
+    },
+    li: {
+      fontFamily: FONT_NAMES.Body,
+      fontSize: FONTSIZE.BODY
+    },
+    strong: {
+      fontFamily: FONT_NAMES.Body,
+      fontSize: FONTSIZE.BODY
+    }
   };
 
-  const scrollViewWidth = SCREENWIDTH;
+  const MemoizedItem = React.memo(({item}: { item: any }) => (
+    <View style={styles.renderItemView}>
+      {item?.categories && (
+        <View style={styles.tipTitleView}>
+          <View style={styles.categoryView}>
+            <Text style={styles.titleName}>{item?.categories}</Text>
+          </View>
+          <View />
+        </View>
+      )}
+      <View style={{flex: 1}}>
+        {item?.tags && <Text style={styles.categories}>#{item?.tags.split(', ').join(' #')}</Text>}
+        <Text numberOfLines={3} style={styles.tipTitle}>{item?.title}</Text>
+        <View style={styles.renderHtml}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <RenderHtml
+              contentWidth={100}
+              source={{ html: item?.details }}
+              defaultTextProps={{ style: { fontFamily: FONT_NAMES.Body } }}
+              renderers={renderers}
+              tagsStyles={tagsStyles}
+            />
+          </ScrollView>
+        </View>
+        <TipFooter
+          id={item?.id}
+          source_url_text={item?.source_url_text}
+          source_url={item?.source_url}
+          bookmarked={item?.bookmarked}
+          handleBookmark={() => bookmarkCodeTips(item?.id, codeTips, setCodeTips)}
+          onSubmitReport={() => setShowReportModal(!showReportModal)}
+          comments={comments}
+        />
+      </View>
+    </View>
+  ));
 
   return (
     <View style={styles.container}>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 10 }}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: 10}}>
         {data.length > 0 ? (
           <ScrollView
             ref={scrollViewRef}
@@ -49,81 +109,13 @@ function Index({ data }: CorouselProps) {
             onScroll={handleScroll}
             scrollEventThrottle={16}
             showsHorizontalScrollIndicator={false}
-            onMomentumScrollEnd={() => { }}
           >
             {data?.map((item: any, index: number) => (
-              <View key={index} style={styles.renderItemView}>
-                {item?.categories && <View style={styles.tipTitleView}>
-                  <View style={styles.categoryView}>
-                    <Text style={styles.titleName}>
-                      {item?.categories}
-                    </Text>
-                  </View>
-                  <View />
-                </View>}
-                <View style={{ flex: 1 }}>
-                  {item?.tags && <Text style={styles.categories}>#{item?.tags.split(', ').join(' #')}</Text>}
-                  <Text
-                    numberOfLines={3}
-                    style={styles.tipTitle}
-                  >
-                    {item?.title}
-                  </Text>
-                  <View style={styles.renderHtml}>
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                      <RenderHtml
-                        contentWidth={100}
-                        source={{ html: item?.details }}
-                        defaultTextProps={{ style: { fontFamily: FONT_NAMES.Body } }}
-                        renderers={renderers}
-                        tagsStyles={{
-                          p: {
-                            fontFamily: FONT_NAMES.Body,
-                            fontSize: FONTSIZE.BODY,
-                            textAlign: 'justify',
-                            paddingVertical: 5
-                          },
-                          b: { fontWeight: 'bold' },
-                          ul: {
-                            listStyleType: 'none',
-                            paddingHorizontal: 5,
-                            paddingVertical: 1,
-                            textAlign: 'justify'
-                          },
-                          li: {
-                            fontFamily: FONT_NAMES.Body,
-                            fontSize: FONTSIZE.BODY
-                          },
-                          strong: {
-                            fontFamily: FONT_NAMES.Body,
-                            fontSize: FONTSIZE.BODY
-                          }
-                        }}
-                      />
-                    </ScrollView>
-                  </View>
-                  <TipFooter
-                    id={item?.id}
-                    source_url_text={item?.source_url_text}
-                    source_url={item?.source_url}
-                    bookmarked={item?.bookmarked}
-                    handleBookmark={function (): void { bookmarkCodeTips(item?.id, codeTips, setCodeTips) }}
-                    onSubmitReport={function (): void { setShowReportModal(!showReportModal) }}
-                    comments={comments}
-                  />
-                  <FormModal
-                    type={'Tech Tip'}
-                    visible={showReportModal}
-                    onSubmit={function (): void { setShowReportModal(!showReportModal) }}
-                    resourceId={item?.id}
-                    author={user?.id}
-                  />
-                </View >
-              </View>
+              <MemoizedItem item={item} key={index}/>
             ))}
           </ScrollView>
-        ) : (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontFamily: FONT_NAMES.Heading }}>No tips found</Text>
+        ) : (<View style={styles.loadingContainer}>
+          <ActivityIndicator size='large' color={COLOR.PRIMARY_300} />
         </View>)
         }
       </View>
@@ -187,14 +179,19 @@ const styles = StyleSheet.create({
     flex: 1
   },
   categories: {
-    fontFamily: 'ComfortaaLight',
+    fontFamily: FONT_NAMES.Body,
     textTransform: 'lowercase'
   },
   heading: {
     // textAlign: 'center',
     fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.TITLE_1
-  }
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default Index;

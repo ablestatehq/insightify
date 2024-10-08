@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React from 'react';
 import {
   StyleSheet,
   View,
@@ -8,17 +8,15 @@ import {
 } from 'react-native';
 
 // constants
-import {COLOR} from '../../constants/constants'
+import {COLOR, DIMEN} from '../../constants/constants'
 import {
   SeeMore, TipCard, XPpoint, Fragment,
   CompleteProfile, OpportunityItem, ProductCard,
+  ProfileForm,
 } from '../../components';
 
-import {RootStackParamList} from '../../utils/types';
-import {useNavigation} from '@react-navigation/native';
-import {AppContext} from '../../helper/context/AppContext';
 import {isProfileComplete} from '../../helper/functions/functions';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import useHomeLogic from './useHomeLogic';
 
 const renderTip = ({item, index}:{item: any, index: number}) =>
   <TipCard
@@ -30,17 +28,30 @@ const renderTip = ({item, index}:{item: any, index: number}) =>
   />
 
 const Home = () => {
-  const {opportunities, codeTips, isLoggedIn, user, products, xp} = useContext(AppContext);
-  const randomIndex = Math.floor(Math.random() * products.length);
-  const opportunityIndex = Math.floor(Math.random() * ((opportunities.length - 1) - 0 + 1)) + 0;
-  const [showCompleteProfile, setShowCompleteProfile] = useState(true);
-
-  
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
+  const {
+    // context
+    xp,
+    user,
+    isLoggedIn,
+    navigation,
+    opportunities,
+    products,
+    codeTips,
+    // consts
+    profilePhoto,
+    randomIndex,
+    opportunityIndex,
+    // state
+    showCompleteProfile,
+    showProfileCard,
+    setShowProfileCard,
+    // handlers
+    toggleCompleteProfileCard,
+    handleCompleteProfile
+  } = useHomeLogic();
   return (
     <View style={styles.container}>
-      <XPpoint number={xp} />
+      <XPpoint number={xp} navigation={navigation} inCommunity={user && user.isMember} />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Product showcase section  */}
           <Fragment
@@ -50,17 +61,19 @@ const Home = () => {
             {...products[randomIndex]}
           />
         {isLoggedIn && !isProfileComplete(user) && showCompleteProfile &&
-          <CompleteProfile handleClose={() => {setShowCompleteProfile(false)}} />}
+          <CompleteProfile
+          handleClose={toggleCompleteProfileCard}
+          setShowProfileCard={setShowProfileCard}
+          />}
         {/* Opprotunity section  */}
           <Fragment
             Component={OpportunityItem}
-            // onPress={() => navigation.navigate('Explore', {tag: 'Recent'})}
             opportunity={opportunities[opportunityIndex]}
             targetIndex={opportunityIndex}
             title={"Featured Opportunities"}
           />
 
-        <View style={{flex: 1}}>
+        <View style={styles.tipsView}>
           <View style={styles.techTipStyle}>
             <SeeMore title='Tech tips' />
           </View>
@@ -74,6 +87,12 @@ const Home = () => {
           />
         </View>
       </ScrollView>
+      <ProfileForm
+        visible={showProfileCard && isLoggedIn}
+        handleClose={handleCompleteProfile}
+        profilePhoto={profilePhoto}
+        setProfilePhoto={() => { }}
+      />
       <StatusBar backgroundColor={COLOR.WHITE} barStyle='dark-content'/>
     </View >
   );
@@ -92,5 +111,6 @@ const styles = StyleSheet.create({
   techTipStyle: {
     paddingHorizontal: 10,
     marginTop: 10,
-  }
+  },
+  tipsView: {flex: 1, paddingBottom: DIMEN.PADDING.LG, margin: DIMEN.PADDING.LG }
 })
