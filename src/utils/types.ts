@@ -73,6 +73,7 @@ type RootStackParamList = {
     targetIndex?: number
   };
   ProductList: undefined;
+  AddProduct: undefined;
 }
 
 type LoginScreenProps = RouteProp<RootStackParamList, 'Login'>

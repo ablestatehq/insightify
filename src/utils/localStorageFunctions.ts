@@ -4,23 +4,19 @@ async function storeToLocalStorage(key: string, value: any) {
   
   const stringified_data = JSON.stringify(value);
   const retrieve_data = await AsyncStorage.getItem(key)
-    .catch(error => console.error('Error: ', error));
+    .catch(error => {});
   
   if (retrieve_data) {
     if (stringified_data != retrieve_data) {
         try {
           await AsyncStorage.setItem(`${key}`, stringified_data, function () { })
-            .catch(error => {console.error(error)});
-        } catch (error) {
-          console.error('Error: ', error);
-      }
+            .catch(error => {});
+        } catch (error) {}
     }
   } else {
     try {
       await AsyncStorage.setItem(`${key}`, stringified_data);
-    } catch (error) {
-      console.error("Error occuring",error)
-    }
+    } catch (error) {}
   }
 }
 
@@ -30,9 +26,7 @@ async function retrieveLocalData(key:string) {
     if (res) {
       return JSON.parse(res);
     }
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
 async function clearLocalData(key:string) {

@@ -79,9 +79,7 @@ const awardXP = async (AWARD: any, itemID: number, authToken: string, userID: nu
       await storeToLocalStorage('award-token', { ...award, [itemID]: 'FIRST' });
       return AWARD['FIRST'] ?? 0;
     }
-  } catch (error) {
-    console.error('awardXP function error: ', error)
-  }
+  } catch (error) {}
 }
 
 export default awardXP;
