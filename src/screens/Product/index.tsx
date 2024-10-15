@@ -31,9 +31,8 @@ const Index = () => {
       if (xps) {
         setXp(prev => prev + xps);
       }
-    }).catch(error => { console.error(error) });
+    }).catch(error => {});
   }, []);
-// console.log(uploadedBy)
   return (
     <ScrollView contentContainerStyle={productStyles.container}>
       <View style={productStyles.imageContainer}>
