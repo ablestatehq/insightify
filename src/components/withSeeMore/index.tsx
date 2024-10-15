@@ -5,7 +5,7 @@ import SeeMore from "../SeeMore";
 interface WithSeeMoreProps<P> {
   Component: React.ComponentType<P>
   title: string
-  onPress: () => void;
+  onPress?: () => void;
 }
 
 function Index<P extends object>(props: WithSeeMoreProps<P> & P) {
@@ -20,9 +20,9 @@ function Index<P extends object>(props: WithSeeMoreProps<P> & P) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 10,
-    flex: 1,
-    marginTop: 15,
+    paddingHorizontal: 5,
+    // flex: 1,
+    marginTop: 5,
   }
 })
 export default Index;
