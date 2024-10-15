@@ -1,13 +1,15 @@
 import React from 'react'
 import {Ionicons} from '@expo/vector-icons';
 import {COLOR, DIMEN} from '../../../constants/constants';
-import {StyleSheet, Text, View, Platform, KeyboardAvoidingView, TextInput, Pressable} from 'react-native'
+import {
+  StyleSheet, Text, View, Platform,
+  KeyboardAvoidingView, TextInput, Pressable
+} from 'react-native'
 
 interface SendCardProps {
   replyingTo: string | null;
   messageMap: Map<string, any>;
   userId: number;
-  textInputRef: React.RefObject<TextInput | null> ;
   newMessage: any;
   setNewMessage: React.Dispatch<React.SetStateAction<any>>
   closeReply: () => void;
@@ -16,12 +18,11 @@ const Index = ({
   replyingTo,
   messageMap,
   userId,
-  textInputRef,
+  // textInputRef,
   newMessage,
   setNewMessage,
   closeReply,
 }: SendCardProps) => {
-  console.log(replyingTo)
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -37,11 +38,14 @@ const Index = ({
         </Pressable>
       </View>}
       <TextInput
-        ref={textInputRef}
         style={{ ...styles.input, borderRadius: 100, paddingHorizontal: 15}}
         placeholderTextColor={COLOR.GREY_300}
         value={newMessage}
         onChangeText={setNewMessage}
+        onEndEditing={(e: any) => {
+          setNewMessage(e.nativeEvent.text);
+          e.nativeEvent
+        }}
         placeholder="Type your message..."
       />
     </KeyboardAvoidingView>

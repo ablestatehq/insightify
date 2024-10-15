@@ -1,11 +1,9 @@
 import React from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 
-import Icon from '../../assets/icons';
 import OpenLink from '../../utils/OpenLink';
 import IconLabelPair from '../IconLabelPair';
-import { COLOR, FONTSIZE } from '../../constants/constants';
-import { CommentSection } from '..';
+import {COLOR, FONTSIZE} from '../../constants/constants';
 import Comments from '../Comments/Comments';
 
 interface TipFooterProps {
@@ -22,7 +20,6 @@ interface TipFooterProps {
 const TipFooter: React.FC<TipFooterProps> = ({
   id,
   source_url_text,
-  isCodeTip = false,
   bookmarked,
   handleBookmark,
   source_url,
@@ -44,24 +41,12 @@ const TipFooter: React.FC<TipFooterProps> = ({
   return (
     <View>
       <View style={[styles.footer, { justifyContent: source_url_text ? 'space-evenly' : 'flex-end' }]}>
-        {/* {!bookmarked && <Icon
-        name="heart-outline"
-        size={20}
-        _color={COLOR.PRIMARY_300}
-        press={handleBookmark} />}
-      {bookmarked && <Icon
-        name='heart'
-        size={20}
-        _color={COLOR.PRIMARY_300}
-        press={handleBookmark}
-      />} */}
-
         {!bookmarked && <IconLabelPair
           iconName='heart-outline'
           iconLabel='Save'
           press={handleBookmark}
           color={COLOR.PRIMARY_300}
-          size={15}
+          size={13}
         />}
 
         {bookmarked && <IconLabelPair
@@ -69,13 +54,12 @@ const TipFooter: React.FC<TipFooterProps> = ({
           iconLabel='Saved'
           press={handleBookmark}
           color={COLOR.PRIMARY_300}
-          size={15}
+          size={13}
         />}
-        {/* A user should be able to report anthing wrong with the tip/opportunity. */}
         <IconLabelPair
           iconName='report'
           iconLabel={'Report'}
-          size={15}
+          size={13}
           color={COLOR.PRIMARY_300}
           press={handleSubmit}
         />
@@ -83,13 +67,12 @@ const TipFooter: React.FC<TipFooterProps> = ({
         <IconLabelPair
           iconLabel='Comment'
           iconName='message'
-          size={13}
+          size={11}
           press={function () {
             setOpenComments(!openComments)
           }}
           color={COLOR.PRIMARY_300}
         />
-        {/* <Icon name='report' press={handleSubmit} size={20} /> */}
         {source_url &&
           <Pressable style={styles.inputView} onPress={openSourceLink}>
             <Text style={styles.text}>{source_url_text}</Text>

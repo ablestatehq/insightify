@@ -1,11 +1,11 @@
 import Button from '../Button';
 import TagCard from './TagCard';
 import {Feather } from '@expo/vector-icons';
-import {COLOR, DIMEN, FONTSIZE } from '../../constants/constants';
-import { AppContext } from '../../helper/context/AppContext';
-import React, { useContext, useState, useEffect } from 'react';
-import { Modal, StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback } from 'react-native';
-import { FONT_NAMES } from '../../assets/fonts/fonts';
+import {COLOR, DIMEN, FONTSIZE} from '../../constants/constants';
+import {AppContext} from '../../helper/context/AppContext';
+import React, {useContext, useState, useEffect} from 'react';
+import {Modal, StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback} from 'react-native';
+import {FONT_NAMES} from '../../assets/fonts/fonts';
 
 interface FilterCardProps {
   cardVisible?: boolean

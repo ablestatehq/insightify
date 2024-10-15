@@ -1,18 +1,18 @@
 import React from 'react';
 import {View, Modal, Pressable, StyleSheet, Text, TouchableWithoutFeedback} from 'react-native';
-import { COLOR, DIMEN } from '../../../constants/constants';
+import {DIMEN} from '../../../constants/constants';
 
 interface ReactionModalProps {
   visible: boolean;
   msgKey: string;
   modalPosition: any;
   onClose: () => void;
-  deleteMessage: (msgKey: string) => void;
-  onReply: (msgKey: string) => void;
+  // deleteMessage: (msgKey: string) => void;
+  // onReply: (msgKey: string) => void;
   onReaction: (msgKey: string, emoji: string) => void
 }
 
-const Index = ({ visible, onClose, msgKey, onReaction, onReply, deleteMessage, modalPosition}: ReactionModalProps) => {
+const Index = ({visible, onClose, msgKey, onReaction, modalPosition}: ReactionModalProps) => {
   const emojis = ['👍', '❤️', '😂', '😮', '😢', '😡'];
   const onOpenEmojiPicker = () => {};
   return (
@@ -31,20 +31,6 @@ const Index = ({ visible, onClose, msgKey, onReaction, onReply, deleteMessage, m
                   </Pressable>
                 ))}
               </View>
-              <View style={styles.optionsContainer}>
-                <Pressable style={styles.option} onPress={() => {
-                  onReply(msgKey);
-                  onClose();
-                }}>
-                  <Text>Reply</Text>
-                </Pressable>
-                <Pressable onPress={() => {
-                  deleteMessage(msgKey);
-                  onClose();
-                }} style={styles.option}>
-                  <Text>Delete</Text>
-                </Pressable>
-              </View>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -56,8 +42,6 @@ const Index = ({ visible, onClose, msgKey, onReaction, onReply, deleteMessage, m
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    // borderWidth: 2,
-    // borderColor: COLOR.PRIMARY_300,
   },
   modalContainer: {
     position: 'absolute',

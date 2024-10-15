@@ -12,7 +12,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 const Index = (props: ProductData) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { description, tagline, uploadedBy, name, tutorial, media, status, totalViews } = props;
-  // console.log('Total',totalViews);
   return (
     <Pressable
       style={styles.container}
