@@ -33,16 +33,16 @@ const OpportunityFooter: React.FC<OpportunityFooterProps> = ({bookmarked, handle
         <Text style={{ opacity: 0.5, textTransform: 'capitalize' }}>{opportunityLifeSpan}</Text>
         {!bookmarked && <Ionicons
           name="heart-outline"
-          size={20}
+          size={15}
           color={COLOR.PRIMARY_300}
           onPress={handleBookmark} />}
         {bookmarked && <Ionicons
           name='heart'
-          size={20}
+          size={15}
           color={COLOR.PRIMARY_300}
           onPress={handleBookmark}
         />}
-        <Icons name={'report'} size={20} press={showReportModal} />
+        <Icons name={'report'} size={15} press={showReportModal} />
       </View>
     </View>
   );

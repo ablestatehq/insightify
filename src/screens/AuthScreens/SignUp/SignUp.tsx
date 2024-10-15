@@ -1,19 +1,20 @@
-import React, { useContext, useState } from 'react'
-import { Formik, FormikHelpers } from 'formik'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, {useContext, useState} from 'react'
+import {Formik, FormikHelpers} from 'formik'
+import {ScrollView, StyleSheet, Text, View} from 'react-native'
 
-import { COLOR, FONTSIZE } from '../../../constants/contants'
-import { AppContext } from '../../../helper/context/AppContext'
+import {COLOR, FONTSIZE} from '../../../constants/contants'
+import {AppContext} from '../../../helper/context/AppContext'
 
-import { Ionicons } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { SignUpWith, InputText, SubmitButton, CustomModal } from '../../../components'
-import { signUp } from '../../../../api/auth'
+import {Ionicons} from '@expo/vector-icons';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {InputText, SubmitButton, CustomModal} from '../../../components';
+import {signUp} from '../../../../api/auth'
+import {sendConfirmationEmail} from '../../../../api/strapiJSAPI';
 
 const SignUp = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const { isLoggedIn, setIsLoggedIn } = useContext(AppContext);
+  const {isLoggedIn, setIsLoggedIn} = useContext(AppContext);
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>('');
@@ -23,17 +24,19 @@ const SignUp = () => {
     name: '',
     email: '',
     password: '',
-    con_password: ''
+    con_password: '',
   }
 
   const handleSignup = async (values: any, formikHelpers: FormikHelpers<any>) => {
     try {
-      const signUpResponse = await signUp(values)
-
-      if (signUpResponse?.jwt) {
-        formikHelpers.resetForm()
-        navigation.goBack()
+      const signUpResponse = await signUp(values);
+      console.log('SignUpResponse: ', signUpResponse);
+      if (signUpResponse) {
+        // const emailValidationResponse = await sendConfirmationEmail(signUpResponse?.user?.email, '');
+        // console.log("Log email response: ", emailValidationResponse);
       }
+      formikHelpers.resetForm();
+      navigation.goBack();
     } catch (error) {
       setShowModal(true);
       setModalTitle('Sign-up or login failed');
@@ -61,7 +64,7 @@ const SignUp = () => {
             initialValues={signUpFormInitValues}
             onSubmit={handleSignup}
           >
-            {({ handleSubmit }) => (
+            {({handleSubmit}) => (
               <ScrollView>
                 <InputText
                   label='Name'

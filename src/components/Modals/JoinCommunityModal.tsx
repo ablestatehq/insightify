@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import Button from '../Button';
 import Input from '../TagInput/Input';
 import {PRIMARY_ROLES} from '../../utils/Enums';
@@ -7,14 +7,20 @@ import {storeData} from '../../../api/strapiJSAPI';
 import {Dropdown} from 'react-native-element-dropdown';
 import {COLOR, FONTSIZE} from '../../constants/contants';
 import {storeToLocalStorage} from '../../utils/localStorageFunctions';
-import {KeyboardAvoidingView, Modal, Platform, Pressable, StyleProp, StyleSheet, Switch, Text, ToastAndroid, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native'
-import {CountryPicker, CountryItem} from 'react-native-country-codes-picker';
+import {
+  Modal,
+  StyleSheet, Text,
+  ToastAndroid, TouchableOpacity,
+  TouchableWithoutFeedback, View
+} from 'react-native';
 import CheckBox from '../CheckBox';
+import {CountryItem} from 'react-native-country-codes-picker';
+import CountryPickerModal from './CountryPickerModal';
 
 interface JoinCommunityModalProps {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>
-  setIsInCommunity: React.Dispatch<React.SetStateAction<boolean>>
+  setIsInCommunity: () => void
 };
 
 const initialMemberInfo = {
@@ -25,54 +31,64 @@ const initialMemberInfo = {
   isWhatsAppPhone: false
 };
 
-function JoinCommunityModal({visible, setVisible, setIsInCommunity}: JoinCommunityModalProps) {
+function JoinCommunityModal({ visible, setVisible, setIsInCommunity }: JoinCommunityModalProps) {
   const [memberInfo, setMemberInfo] = React.useState<MemberInfo>(initialMemberInfo);
   const [showCountryCode, setShowCountryCode] = React.useState<boolean>(false);
   const [showCountry, setShowCountry] = React.useState<boolean>(false);
   const [countryCode, setCountryCode] = React.useState<any>('+256');
   const [country, setCountry] = React.useState<string>('Country');
+
   const handleCloseModal = function () {
     setVisible(!visible);
   }
 
-  const handleSubmit = async function () {
+  const handleSubmit = useCallback(async function () {
+    // console.log('This is true')
     if (memberInfo.country != '' &&
       memberInfo.email != '' &&
       memberInfo.phoneNumber != '') {
-      console.log(memberInfo)
+      // console.log('The process is on')
       try {
         const response = await storeData('community-members', memberInfo);
-        // console.log(response)
+
         if (response.data) {
-          ToastAndroid.show('You\'ve successfully joined our community. \n You will receive a comfirmation email.', 5000);
-          setIsInCommunity(true);
+          setIsInCommunity();
           setVisible(false);
           setMemberInfo(initialMemberInfo);
           setCountry('Country');
-          await storeToLocalStorage('joined_comm', { isJoined: true })
+          await storeToLocalStorage('joined_comm', {isJoined: true})
+          ToastAndroid.show('You\'ve successfully joined our community. \n You will receive a comfirmation email.', 5000);
         } else { }
       } catch (error) { }
     }
-  }
+  }, []);
 
-  const handleChange = function (key: keyof MemberInfo, text: string | boolean | string[]) {
+  const handleChange = useCallback(function (key: keyof MemberInfo, text: string | boolean | string[]) {
     setMemberInfo(current => {
       return {
         ...current,
         [key]: text
       }
     })
-  }
+  }, []);
+
+  const handleCountryPicker = useCallback(function (item: CountryItem) {
+    handleChange('country', item.code);
+    setCountry(item.name['en']);
+    setCountryCode(item.dial_code);
+    setShowCountry(false);
+  }, []);
+
+  const handleCodePicker = useCallback((item: CountryItem) => {
+    setCountryCode(item.dial_code);
+    setShowCountryCode(false);
+  }, []);
 
   return (
     <Modal visible={visible}
       statusBarTranslucent animationType='fade'
       onRequestClose={handleCloseModal}
       transparent>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
         <TouchableWithoutFeedback onPress={handleCloseModal}>
           <View style={styles.modal}>
             <TouchableWithoutFeedback>
@@ -92,7 +108,7 @@ function JoinCommunityModal({visible, setVisible, setIsInCommunity}: JoinCommuni
                   />
                 </View>
 
-                <View style={{borderWidth: 1, borderColor: COLOR.SECONDARY_100, borderRadius: 5, marginVertical: 5, padding: 10}}>
+                <View style={{ borderWidth: 1, borderColor: COLOR.SECONDARY_100, borderRadius: 5, marginVertical: 5, padding: 10 }}>
                   <TouchableOpacity
                     style={{ paddingHorizontal: 5, borderRightColor: COLOR.SECONDARY_100 }}
                     onPress={() => setShowCountry(true)}
@@ -101,42 +117,33 @@ function JoinCommunityModal({visible, setVisible, setIsInCommunity}: JoinCommuni
                       {country}
                     </Text>
                   </TouchableOpacity>
-                  <CountryPicker
-                    show={showCountry}
-                    lang={'en'}
-                    pickerButtonOnPress={function (item: CountryItem) {
-                      handleChange('country', item.code);
-                      setCountry(item.name['en']);
-                      setCountryCode(item.dial_code);
-                      setShowCountry(false)
-                    }}
-                  />
+                  <CountryPickerModal isShow={showCountry} handlePickerChange={handleCountryPicker} />
                 </View>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: COLOR.SECONDARY_100, marginVertical: 5, borderRadius: 5}}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderWidth: 1,
+                borderColor: COLOR.SECONDARY_100,
+                marginVertical: 5,
+                borderRadius: 5,
+              }}>
+                  <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                     <TouchableOpacity
-                      style={{ borderRightWidth: 1, paddingHorizontal: 5, borderRightColor: COLOR.SECONDARY_100 }}
+                      style={{
+                        borderRightWidth: 1, paddingHorizontal: 5,
+                        borderRightColor: COLOR.SECONDARY_100
+                      }}
                       onPress={() => setShowCountryCode(true)} >
-                      <Text style={{ fontFamily: 'ComfortaaBold' }}>
+                      <Text style={{fontFamily: 'ComfortaaBold'}}>
                         {countryCode}
                       </Text>
-                    </TouchableOpacity>
-
-                    <CountryPicker
-                      show={showCountryCode}
-                      inputPlaceholder='Uganda'
-                      pickerButtonOnPress={(item) => {
-                        setCountryCode(item.dial_code);
-                        setShowCountryCode(false);
-                      }}
-                      lang={'en'}
-                      style={{itemsList:{width:'100%'}}}
-                    />
+                  </TouchableOpacity>
+                  <CountryPickerModal isShow={showCountryCode} handlePickerChange={handleCodePicker} />
                   </View>
                   <View style={{flex: 1}}>
                     <Input
-                      styles={{inputFocused: {padding: 5, borderRadius: 5}, input: {padding: 5, borderRadius: 5} }}
+                      styles={{inputFocused: {padding: 5, borderRadius: 5}, input: {padding: 5, borderRadius: 5}}}
                       value={memberInfo.phoneNumber}
                       handleChange={function (text) { handleChange('phoneNumber', text) }}
                       placeHolder={'Phone number'}
@@ -144,8 +151,8 @@ function JoinCommunityModal({visible, setVisible, setIsInCommunity}: JoinCommuni
                   </View>
                 </View>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent:'flex-end',gap:10, borderColor: COLOR.SECONDARY_100, marginVertical: 5, borderRadius: 5, paddingHorizontal:5 }}>
-                  <Text style={{fontSize:FONTSIZE.SMALL}}>Is this a WhatsApp number?</Text>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 10, borderColor: COLOR.SECONDARY_100, marginVertical: 5, borderRadius: 5, paddingHorizontal: 5 }}>
+                  <Text style={{fontSize: FONTSIZE.SMALL}}>Is this a WhatsApp number?</Text>
                   <CheckBox
                     checkBoxToggle={memberInfo.isWhatsAppPhone}
                     handleCheckBoxToggle={function (): void {
@@ -154,7 +161,7 @@ function JoinCommunityModal({visible, setVisible, setIsInCommunity}: JoinCommuni
                     }}
                   />
                 </View>
-                
+
                 <View style={{ borderWidth: 1, borderColor: COLOR.SECONDARY_100, borderRadius: 5, marginVertical: 5, padding: 5 }}>
                   <Dropdown
                     data={PRIMARY_ROLES}
@@ -162,7 +169,7 @@ function JoinCommunityModal({visible, setVisible, setIsInCommunity}: JoinCommuni
                     valueField='value'
                     value={memberInfo.country}
                     placeholder="What's your primary role"
-                    iconStyle={{width: 15, height: 15}}
+                    iconStyle={{ width: 15, height: 15 }}
                     placeholderStyle={{
                       color: COLOR.SECONDARY_75,
                     }}
@@ -179,7 +186,6 @@ function JoinCommunityModal({visible, setVisible, setIsInCommunity}: JoinCommuni
             </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -203,7 +209,7 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 5,
     backgroundColor: COLOR.SECONDARY_300,
-    marginVertical:5
+    marginVertical: 5
   },
   buttonText: {
     color: COLOR.WHITE,
@@ -227,7 +233,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 5,
     fontFamily: 'RalewayRegular',
-    borderColor: COLOR.SECONDARY_50
+    borderColor: COLOR.SECONDARY_300
   },
   inputFocused: {
     borderColor: COLOR.GREY_300,

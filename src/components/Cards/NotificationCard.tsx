@@ -7,7 +7,7 @@ import { AppContext } from '../../helper/context/AppContext'
 interface NotificationCardProps {
   id?: string
   title: string
-  // status: string
+  status: string
   model: string
   // desciption?: string
   expiryDate?: string
@@ -17,21 +17,24 @@ const NotificationCard: React.FC<NotificationCardProps> = (
     id,
     title,
     expiryDate,
-    model
+    model,
+    status,
   }) => {
-  const { setNotifications } = useContext(AppContext);
+  const {setNotifications} = useContext(AppContext);
   return (
     <Pressable
       style={{
         ...styles.notificationCard,
-        // backgroundColor: status == 'READ' ? COLOR.PRIMARY_75 : COLOR.PRIMARY_300,
-        // borderRadius: 5
+        backgroundColor: status == 'READ' ? COLOR.WHITE : COLOR.SECONDARY_75,
+        borderRadius: 5,
+        opacity: status == 'READ'? 0.7:1,
+        // borderWidth: 
       }}
       onPress={async function () {
         const notifications = await retrieveLocalData('notifications');
 
-        const findNotification = notifications.find((notification: any) => notification.notification_data.data.entry.id == id);
-        const index = notifications.indexOf(findNotification);
+        const findNotification = notifications?.find((notification: any) => notification.notification_data.id == id);
+        const index = notifications?.indexOf(findNotification);
         findNotification.status = 'READ'
         notifications[index] = findNotification;
 
@@ -64,11 +67,11 @@ export default NotificationCard
 
 const styles = StyleSheet.create({
   notificationCard: {
-    padding: 10,
+    padding: 5,
     marginVertical: 5,
     marginHorizontal: 10,
     borderBottomWidth: 1,
-    borderBottomColor: COLOR.SECONDARY_75
+    borderBottomColor: COLOR.SECONDARY_50
   },
   textContainer: {
     flexDirection: 'row',

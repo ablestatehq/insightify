@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+import React, {useContext} from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { AntDesign, FontAwesome, MaterialIcons as Icon } from '@expo/vector-icons';
-import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
-import { View, StyleSheet, TextInput, Modal, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Text, Image, ToastAndroid, Switch, TouchableOpacity } from "react-native";
+import {AntDesign, EvilIcons, FontAwesome} from '@expo/vector-icons';
+import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
+import {View, StyleSheet, TextInput, Modal, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Text, ToastAndroid, TouchableOpacity, Image, Pressable} from "react-native";
 
 import Button from '../Button';
 import {ProfileType} from '../../utils/types';
@@ -12,8 +12,13 @@ import {DOMAIN, SKILLS, GENDER} from '../../utils/Enums'
 import {updateUser} from '../../../api/auth';
 import {AppContext} from '../../helper/context/AppContext';
 import CheckBox from '../CheckBox';
-import {uploadImage} from '../../../api/strapiJSAPI';
+// import {uploadImage} from '../../../api/strapiJSAPI';
 import {storeToLocalStorage} from '../../utils/localStorageFunctions';
+import CustomModal from '../Modals/CustomModal';
+
+// import * as FileSystem from 'expo-file-system';
+import {uploadImage} from '../../../api/strapiJSAPI';
+// import { uploadImage } from '../../../api/grapiql';
 
 interface ProfileFormProps {
   visible: boolean
@@ -22,9 +27,10 @@ interface ProfileFormProps {
   setProfilePhoto: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
-export default function ProfileForm({ handleClose, visible, profilePhoto, setProfilePhoto }: ProfileFormProps) {
+export default function ProfileForm({handleClose, visible, profilePhoto, setProfilePhoto}: ProfileFormProps) {
 
   const {user, jwt, setUser} = useContext(AppContext);
+  
   const initialProfile: ProfileType = {
     firstName: user?.firstName ?? '',
     lastName: user?.lastName ?? '',
@@ -36,6 +42,16 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
   }
 
   const [skills, setSkills] = React.useState<string[]>([]);
+  
+  const [modalData, setModalData] = React.useState({
+    title: '',
+    message: '',
+    visible: false,
+    closeModal: function () {
+      setModalData(prev => ({...prev, visible: false}));
+      handleClose();
+    }
+  })
   const [values, setValues] = useLocalStorage('profileImageData', initialProfile as unknown as Record<string, unknown>);
 
   // handle submission
@@ -45,19 +61,39 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
       if (!response?.success) {
         ToastAndroid.show('Failed to submit profile', 5000);
         return;
-      }
+      };
+      if (profilePhoto) {
+        const formData = new FormData();
+        const blob = await (await fetch(profilePhoto as string)).blob();
 
-      const imageResponse = await uploadImage(profilePhoto as string, user.id, 'user', 'photo', jwt);
-      
-      console.log(imageResponse)
-      if (imageResponse.error && profilePhoto) {
-        await storeToLocalStorage('profilePicture', {profilePhoto});
+
+        formData.append("files",
+          blob,
+          'profile.jpg',
+        );
+        formData.append('refId', user?.id);
+        formData.append("source", "users-permissions")
+        formData.append("ref", "user")
+        formData.append("field", "photo")
+
+        // const imageResponse = await uploadImage(profilePhoto, jwt, user?.id, 'plugin::users-permissions.user', 'user', 'photo');
+        // console.log("Image response: ",imageResponse)
+        // console.log(imageResponse);
+        // if (!imageResponse) {
+        //   await storeToLocalStorage('profilePicture', { profilePhoto });
+        // }
       }
+    
+
       setUser(response?.data);
 
       ToastAndroid.show('Successfully submitted your profile.', 5000);
+      setModalData(prev => ({...prev, title: 'Profile updated!'}));
+      setModalData(prev => ({...prev, message: 'You have successfully updated your profile'}));
+      setModalData(prev => ({...prev, visible: true}));
       handleClose();
-    } catch (error) {console.log(error)}
+
+    } catch (error) {}
   };
 
   const handleChange = (key: keyof ProfileType, value: unknown) => {
@@ -84,12 +120,12 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
       transparent
       visible={visible}
       onRequestClose={function () {
-      handleClose();
-      ToastAndroid.show('Profile saved only on local', 5000);
+        handleClose();
+        ToastAndroid.show('Profile saved only on local', 5000);
       }}
     >
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <TouchableWithoutFeedback onPress={function () {
@@ -97,9 +133,15 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
           ToastAndroid.show('Profile saved', 5000);
         }}>
           <View style={styles.modal}>
+            <CustomModal
+              title={modalData.title}
+              message={modalData.message}
+              visibility={modalData.visible}
+              cancel={function () {modalData.closeModal()}}
+            />
             <TouchableWithoutFeedback>
               <View style={styles.container}>
-                {/* {!profilePhoto && (
+                {!profilePhoto && (
                   <FontAwesome
                     size={70}
                     name="user-circle-o"
@@ -109,11 +151,11 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
                   />
                 )}
                 {profilePhoto && (
-                  <View>
+                  <Pressable onPress={pickImage}>
                     <Image source={{uri: profilePhoto}} style={{width: 70, height: 70, alignSelf: 'center', borderRadius: 35}} />
-                  </View>
-                )} */}
-                <Text style={{fontFamily: 'ComfortaaBold', textAlign: 'center', marginVertical: 10}}>Complete your profile</Text>
+                  </Pressable>
+                )}
+                <Text style={{ fontFamily: 'ComfortaaBold', textAlign: 'center', marginVertical: 10 }}>Complete your profile</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="First Name"
@@ -127,18 +169,19 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
                   onChangeText={value => handleChange('lastName', value)}
                 />
 
-                <View style={{borderWidth: 1, margin: 5, borderRadius: 5, paddingHorizontal: 5, borderColor: COLOR.SECONDARY_100, paddingVertical: 5}}>
+                <View style={{ borderWidth: 1, margin: 5, borderRadius: 5, paddingHorizontal: 5, borderColor: COLOR.SECONDARY_100, paddingVertical: 5 }}>
                   <Dropdown
                     data={GENDER}
                     labelField='label'
                     valueField='value'
-                    value={values?.gender as string}
                     placeholder='Gender'
+                    value={values?.gender as string}
                     iconStyle={{ width: 15, height: 15 }}
                     placeholderStyle={{
                       color: COLOR.SECONDARY_75,
                     }}
                     onChange={function (item) { handleChange('gender', item.value) }}
+                    
                   />
                 </View>
 
@@ -154,6 +197,17 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
                       color: COLOR.SECONDARY_75,
                     }}
                     onChange={function (item) { handleChange('primaryDomain', item.value) }}
+                  // renderLeftIcon={() => values?.primaryDomain && (values?.primaryDomain as string).length > 0 ? (
+                  //   <EvilIcons
+                  //     style={styles.icon}
+                  //     color="black"
+                  //     name="close"
+                  //     size={20}
+                  //     onPress={function () { handleChange('primaryDomain', null) }}
+                  //   />
+                  // ) :
+                  //   null
+                  // }
                   />
                 </View>
                 <View style={{ borderWidth: 1, margin: 5, borderRadius: 5, paddingHorizontal: 5, borderColor: COLOR.SECONDARY_100, paddingVertical: 5 }}>
@@ -168,10 +222,29 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
                       color: COLOR.SECONDARY_75,
                     }}
                     onChange={function (item) { handleChange('secondaryDomain', item.value) }}
+                    renderLeftIcon={() => values?.secondaryDomain && (values?.secondaryDomain as string).length > 0 ? (
+                      <EvilIcons
+                        style={styles.icon}
+                        color="black"
+                        name="close"
+                        size={20}
+                        onPress={function () { handleChange('secondaryDomain', null) }}
+                      />
+                    ) :
+                      null
+                    }
                   />
                 </View>
 
-                <View style={{ borderWidth: 1, margin: 5, borderRadius: 5, paddingHorizontal: 5, borderColor: COLOR.SECONDARY_100, paddingVertical: 5 }}>
+                <View
+                  style={{
+                    borderWidth: 1,
+                    margin: 5,
+                    borderRadius: 5,
+                    paddingHorizontal: 5,
+                    borderColor: COLOR.SECONDARY_100,
+                    paddingVertical: 5
+                  }}>
                   <MultiSelect
                     style={styles.dropdown}
                     placeholderStyle={styles.placeholderStyle}
@@ -201,14 +274,7 @@ export default function ProfileForm({ handleClose, visible, profilePhoto, setPro
                 </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10, justifyContent: 'space-between' }}>
-                  <Text>Are you available? </Text>
-                  {/* <Switch
-                    style={{ borderWidth: 1 }}
-                    thumbColor={values?.isAvailable ? COLOR.SECONDARY_300 : COLOR.SECONDARY_50}
-                    trackColor={{ true: COLOR.GREY_300, false: COLOR.SECONDARY_300 }}
-                    value={values?.isAvailable as boolean}
-                    onValueChange={(changedValue) => handleChange('isAvailable', changedValue as boolean)}
-                  /> */}
+                  <Text>Are you open to work? </Text>
                   <CheckBox
                     checkBoxToggle={values?.isAvailable as boolean}
                     handleCheckBoxToggle={function (): void {

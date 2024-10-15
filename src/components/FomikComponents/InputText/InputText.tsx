@@ -6,8 +6,8 @@ import {StyleSheet, Text, TextInput, View} from 'react-native'
 
 interface InputTextProps {
   label?: string
-  placeholder?: string
   fieldName: string
+  placeholder?: string
   isMultiLine?: boolean
   isInputSecure?: boolean
 }

@@ -19,6 +19,7 @@ import Forgot from '../screens/AuthScreens/Login/component/Forgot';
 import ResetPassword from '../screens/AuthScreens/Login/component/ResetPassword';
 import Otp from '../screens/AuthScreens/Login/component/Otp';
 import Profile from '../screens/Profile';
+import ChatRoom from '../screens/ChatScreen/ChatScreen'
 
 const Stack = createNativeStackNavigator();
 
@@ -61,10 +62,11 @@ const MainStackNavigator = () => {
       <Stack.Screen name='Reset' component={ResetPassword} />
       <Stack.Screen name='Otp' component={Otp} />
       <Stack.Screen name='Profile' component={Profile} />
+      <Stack.Screen name='ChatRoom' component={ChatRoom} />
     </Stack.Navigator>
   )
 }
 
 
 
-export { MainStackNavigator }
+export {MainStackNavigator}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 
 import {
   View,
@@ -7,10 +7,12 @@ import {
 } from 'react-native';
 
 // constants
-import { COLOR } from '../../constants/contants'
+import {COLOR} from '../../constants/contants'
 import OpportunityList from '../OpportunityStack/OpportunityList/OpportunityList';
+import {CodeTipSkelton} from '../../components/Skelton';
 
 const Home = () => {
+
   return (
     <SafeAreaView
       style={styles.container}
@@ -20,6 +22,7 @@ const Home = () => {
       >
         <OpportunityList />
       </View>
+      
     </SafeAreaView >
   );
 }
@@ -33,6 +36,5 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flex: 1,
-    // paddingVertical: 10,
   }
 })

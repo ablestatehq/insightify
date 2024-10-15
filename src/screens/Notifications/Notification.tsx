@@ -9,7 +9,7 @@ import NotificationCard from '../../components/Cards/NotificationCard'
 const Notification = () => {
 
   // notifications 
-  const { notifications } = useContext(AppContext);
+  const {notifications} = useContext(AppContext);
   // clearLocalData('notifications');
   return (
     <View style={styles.container}>
@@ -20,25 +20,16 @@ const Notification = () => {
             showsVerticalScrollIndicator={false}
           >
             {
-              notifications.map(function (item, index) {
-                if (item?.notification_data?.data.model === 'opportunities') {
-                  return <NotificationCard
-                    id={item?.notification_data?.data?.entry?.id}
+              notifications.map(({ notification_data: { title, id, expiryDate, model }, status }, index) => 
+                   <NotificationCard
+                    id={id}
                     key={index}
-                    title={item?.notification_data?.data?.entry?.Title}
-                    // desciption={item.notification_data?.data?.entry?.Description[0]?.children[0]?.text}
-                    expiryDate={'03/20/24'}
-                    // status={item.status}
-                    model={item?.notification_data?.data?.model} />
-                } else {
-                  return <NotificationCard
-                    id={item?.notification_data?.data?.entry?.id}
-                    key={index}
-                    title={item?.notification_data?.data?.entry?.Title}
-                    // status={item.status}
-                    model={item?.notification_data?.data?.model} />
-                }
-              })
+                    title={title}
+                    expiryDate={expiryDate}
+                    model={model}
+                    status={status}
+                  />
+              )
             }
           </ScrollView>
         </View>
@@ -47,7 +38,6 @@ const Notification = () => {
           <Text style={styles.noTextStyle}>You have no notifications.</Text>
         </View>
       }
-
     </View>
   )
 }

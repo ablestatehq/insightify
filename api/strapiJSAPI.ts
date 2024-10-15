@@ -1,12 +1,14 @@
+import * as FileSystem from 'expo-file-system';
 import {environments} from '../src/constants/environments'
 import {clearLocalData, retrieveLocalData} from "../src/utils/localStorageFunctions";
 
+const {STRAPI_TOKEN, STRAPI_BASE_URL,STRAPI_TALENT_FORM_API_KEY} = environments;
 
-const {STRAPI_TOKEN, STRAPI_BASE_URL,STRAPI_TALENT_FORM_API_KEY, BASE_URL} = environments;
 /**
  * @name getMe
  * @returns
  */
+
 async function getMe() {
   const url = `${STRAPI_BASE_URL}/users/me?populate=*`;
   const authToken = await retrieveLocalData('user_token')
@@ -66,7 +68,6 @@ async function storeData(endpoint: string, data: any) {
   const response = fetch(`${STRAPI_BASE_URL}/${endpoint}`, options)
     .then(response => response.json())
     .then(storedData => {
-      // console.log("Data saved", storedData)
       return storedData
     })
     .catch(error => console.error(error))
@@ -93,7 +94,9 @@ function getStrapiData(endpoint: string) {
       .then(response => response.json())
       .then(data => {
         if (endpoint == 'notification-tokens') {
-          return data.data.map((res: any) => res.attributes.tokenID)
+          return data.data.map((res: any) => {
+            return res.attributes.tokenID
+          })
         }
         return data?.data?.map((res:any) => {
          return {id: res.id, ...res.attributes}
@@ -178,48 +181,94 @@ async function getDataId(endpoint: string, attribute: string, attributeValue: an
  * @param img 
  * @returns 
  */
-async function uploadImage(img: string, id: number, ref: string, field: string, jwt: string) {
-  
-  const response = await fetch(img);
-  const blob = await response.blob();
-  
-  const formData = new FormData();
-  console.log("This is the uri: ",formData)
-  formData.append('files', blob);
-  // formData.append('refId', id.toString());
-  // formData.append('ref', ref);
-  // formData.append('field', field);
-
+async function uploadImage(imgUri: string, jwt: string, refId: string, ref: string, source: string, field: string) {
   try {
-    const response = await fetch(`https://insightify-admin.ablestate.cloud/upload`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${jwt}`
-      },
-      body: formData
-    });
+    const uploading = await
+      FileSystem.uploadAsync(
+        `https://insightify-admin.ablestate.cloud/api/upload/?refId=${refId}&ref=${ref}&source=${source}&field=${field}`,
+        `${imgUri}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${jwt}`
+          },
+          uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+          fieldName: "files",
+        });
 
-    const data = await response.json();
-
-    if (!response.ok) return {data, error: data.error}
-    else return {
-      error: null,
-      data
-    };
+    const imageBlob = await fetch(imgUri);
+    const blob = await imageBlob.blob();
+    
+    return uploading
   } catch (error) {
-    return {
-      error: error,
-      data: null
-    }
+    console.log(JSON.stringify(error, null,2))
+    return null
   }
 }
 
+
+async function sendConfirmationEmail(email:string, jwt: string) {
+  try {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${STRAPI_TOKEN}`
+      },
+      body: JSON.stringify({email})
+    };
+
+    const data = await (await fetch(`${STRAPI_BASE_URL}/auth/send-email-confirmation`, options)).json();
+    if (data) {
+      console.log('Send email: ', data);
+      return {
+        data,
+        error: null
+      }
+    }
+  } catch (error) {
+    return {
+      error,
+      data: null
+    }
+  }
+};
+
+async function sendEmail(email:string, jwt: string) {
+  try {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${jwt}`
+      },
+      body: JSON.stringify({
+        'message': 'Thank you',
+        'name': 'Enock',
+        'email': email
+      })
+    };
+    const response = await (await fetch(`${STRAPI_BASE_URL}/email/`, options)).json();
+    if (response) {
+      return {
+        data: response,
+        error: null
+      }
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error
+    }
+  }
+};
+
 export {
   getMe,
+  sendEmail,
   storeData,
   getDataId,
   uploadImage,
   getStrapiData,
-  updateStrapiData
+  updateStrapiData,
+  sendConfirmationEmail,
 }

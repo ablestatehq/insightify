@@ -5,7 +5,6 @@ import {CodeSnippet, FormModal, TipFooter, HTMLText} from '../../../../component
 
 import RenderHtml from 'react-native-render-html';
 
-import {AntDesign} from '@expo/vector-icons';
 import {AppContext} from '../../../../helper/context/AppContext';
 import {COLOR, DIMEN, FONTSIZE} from '../../../../constants/contants';
 import {bookmarkCodeTips} from '../../../../helper/functions/handleFunctions';
@@ -16,19 +15,15 @@ interface CorouselProps {
   data: any[],
 }
 
-function Index({ data }: CorouselProps) {
-  
+function Index({data}: CorouselProps) {
+
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isCarouselReady, setIsCarouselReady] = useState<boolean>(false);
 
-  const { codeTips, setCodeTips, user } = useContext(AppContext);
+  const {codeTips, setCodeTips, user, comments} = useContext(AppContext);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
 
-  const handleLayoutReady = () => {
-    setIsCarouselReady(true);
-  }
-
+  // Render html tag renderers
   const renderers = {
     code: CodeSnippet,
     p: HTMLText
@@ -40,23 +35,11 @@ function Index({ data }: CorouselProps) {
     setCurrentIndex(index);
   };
 
-  const handleNext = () => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ x: (currentIndex + 1) * scrollViewWidth - 30, animated: true });
-    }
-  };
-
-  const handlePrev = () => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ x: (currentIndex - 1) * scrollViewWidth - 30, animated: true });
-    }
-  };
-
   const scrollViewWidth = SCREENWIDTH;
 
   return (
     <View style={styles.container}>
-      <View style={{flex:1, justifyContent: 'center', alignItems: 'center', padding:10}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 10 }}>
         {data.length > 0 ? (
           <ScrollView
             ref={scrollViewRef}
@@ -95,7 +78,7 @@ function Index({ data }: CorouselProps) {
                         tagsStyles={{
                           p: {
                             fontFamily: 'LatoRegular',
-                            fontSize: FONTSIZE.TITLE_1,
+                            fontSize: FONTSIZE.BODY,
                             textAlign: 'justify',
                             paddingVertical: 5
                           },
@@ -108,22 +91,24 @@ function Index({ data }: CorouselProps) {
                           },
                           li: {
                             fontFamily: 'LatoRegular',
-                            fontSize: FONTSIZE.TITLE_1
+                            fontSize: FONTSIZE.BODY
                           },
                           strong: {
                             fontFamily: 'LatoRegular',
-                            fontSize: FONTSIZE.TITLE_1
+                            fontSize: FONTSIZE.BODY
                           }
                         }}
                       />
                     </ScrollView>
                   </View>
                   <TipFooter
+                    id={item?.id}
                     source_url_text={item?.source_url_text}
                     source_url={item?.source_url}
                     bookmarked={item?.bookmarked}
                     handleBookmark={function (): void { bookmarkCodeTips(item?.id, codeTips, setCodeTips) }}
                     onSubmitReport={function (): void { setShowReportModal(!showReportModal) }}
+                    comments={comments}
                   />
                   <FormModal
                     type={'Tech Tip'}
@@ -136,28 +121,11 @@ function Index({ data }: CorouselProps) {
               </View>
             ))}
           </ScrollView>
-        ) : (<View style={{flex: 1, justifyContent:'center', alignItems:'center'}}>
-            <Text style={{fontFamily:'ComfortaaBold'}}>No tips found</Text>
+        ) : (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={{fontFamily: 'ComfortaaBold'}}>No tips found</Text>
         </View>)
         }
       </View>
-      {/* <View style={styles.navigation}>
-        <AntDesign
-          size={24}
-          name="arrowleft"
-          color={COLOR.SECONDARY_300}
-          style={[styles.navText, currentIndex === 0 && { opacity: 0.5 }]}
-          onPress={handlePrev}
-        />
-        <AntDesign
-          size={24}
-          name="arrowright"
-          color={COLOR.SECONDARY_300}
-          style={[styles.navText, currentIndex === data.length - 1 && { opacity: 0.5 }]}
-          onPress={handleNext}
-        />
-      </View> */}
-
     </View>
   );
 }
@@ -185,7 +153,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.SECONDARY_50,
   },
   renderItemView: {
-    width:SCREENWIDTH - 30,
+    width: SCREENWIDTH - 30,
     margin: 5,
     elevation: 0.5,
     borderRadius: 10,
@@ -195,7 +163,7 @@ const styles = StyleSheet.create({
   tipTitle: {
     fontFamily: 'RalewayBold',
     color: COLOR.SECONDARY_300,
-    fontSize: FONTSIZE.HEADING_4,
+    fontSize: FONTSIZE.TITLE_1,
   },
   tipContent: {
     lineHeight: 30,
@@ -209,7 +177,7 @@ const styles = StyleSheet.create({
   },
   titleName: {
     textTransform: 'capitalize',
-    fontSize: FONTSIZE.TITLE_1
+    fontSize: FONTSIZE.TITLE_2
   },
   categoryView: {
     // padding: 10

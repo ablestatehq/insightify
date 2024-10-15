@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { Modal, Pressable, StatusBar, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native'
+import React, {useState} from 'react'
+import {Modal, Pressable, StatusBar, StyleSheet, Text, TextInput, ToastAndroid, TouchableWithoutFeedback, View} from 'react-native'
 import Button from '../Button'
-import { storeData } from '../../../api/strapiJSAPI'
-import { COLOR, FONTSIZE } from '../../constants/contants'
+import {storeData} from '../../../api/strapiJSAPI'
+import {COLOR, FONTSIZE} from '../../constants/contants'
 import Icons from '../../assets/icons'
 
 interface FormModalProps {
@@ -33,28 +33,32 @@ const FormModal: React.FC<FormModalProps> = ({ visible, onSubmit, resourceId, ty
 
   return (
     <Modal transparent visible={visible}>
-      <View style={styles.modal}>
-        <View style={styles.container}>
-          <Pressable style={styles.close} onPress={onSubmit}>
-            <Icons name='close' size={25} />
-          </Pressable>
-          <Text style={styles.headTextStyle}>What's happening?</Text>
-          <View style={styles.inputView}>
-            <TextInput
-              placeholder=''
-              numberOfLines={5}
-              multiline style={styles.input}
-              onChangeText={text => setComment(text)}
-            />
-          </View>
-          <Button
-            title='Submit a report'
-            btn={styles.buttonStyle}
-            textStyle={styles.buttonTextStyle}
-            handlePress={handleSubmit}
-          />
+      <TouchableWithoutFeedback onPress={onSubmit}>
+        <View style={styles.modal}>
+          <TouchableWithoutFeedback>
+            <View style={styles.container}>
+              <Pressable style={styles.close} onPress={onSubmit}>
+                <Icons name='close' size={25} _color={COLOR.SECONDARY_200} />
+              </Pressable>
+              <Text style={styles.headTextStyle}>What's happening?</Text>
+              <View style={styles.inputView}>
+                <TextInput
+                  placeholder=''
+                  numberOfLines={5}
+                  multiline style={styles.input}
+                  onChangeText={text => setComment(text)}
+                />
+              </View>
+              <Button
+                title='Submit a report'
+                btn={styles.buttonStyle}
+                textStyle={styles.buttonTextStyle}
+                handlePress={handleSubmit}
+              />
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
       <StatusBar backgroundColor={COLOR.NEUTRAL_2} />
     </Modal>
   )
@@ -80,9 +84,10 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   buttonStyle: {
-    backgroundColor: COLOR.PRIMARY_300,
+    backgroundColor: COLOR.SECONDARY_300,
     borderRadius: 5,
-    padding: 5
+    paddingBottom: 5,
+    paddingTop:2
   },
   buttonTextStyle: {
     color: COLOR.WHITE,
@@ -92,14 +97,11 @@ const styles = StyleSheet.create({
   inputView: {
     padding: 5,
     borderWidth: 1,
-    borderColor: COLOR.PRIMARY_300,
+    borderColor: COLOR.SECONDARY_75,
     marginVertical: 20,
   },
   input: {
     fontFamily: 'ComfortaaSemiBold',
-    // fontSize: 16,
-    // paddingVertical:5
-    // borderWidth: 1,
     textAlign: 'justify',
     textAlignVertical: 'top'
   },

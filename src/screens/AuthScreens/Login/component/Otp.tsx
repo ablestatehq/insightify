@@ -11,7 +11,7 @@ export default function Otp() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const [otp, setOtp] = useState(["", "", "", ""]);
-  const otpInputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
+  const otpInputRefs = [useRef<TextInput>(null), useRef<TextInput>(null), useRef<TextInput>(null), useRef<TextInput>(null)];
 
   // Auto focus implemented.
   const handleOtpChange = (text: string, index: number) => {
@@ -21,7 +21,7 @@ export default function Otp() {
       setOtp(newOtp);
 
       if (index > 0) {
-        otpInputRefs[index - 1].current.focus();
+        otpInputRefs[index - 1].current?.focus();
       }
     } else {
       if (/[0-9]/.test(text) && index >= 0 && index <= 3) {
@@ -29,7 +29,7 @@ export default function Otp() {
         newOtp[index] = text;
         setOtp(newOtp);
         if (index < 3 && /[0-9]/.test(text)) {
-          otpInputRefs[index + 1].current.focus();
+          otpInputRefs[index + 1].current?.focus();
         }
       }
     }

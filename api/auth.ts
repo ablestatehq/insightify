@@ -1,4 +1,6 @@
-import {STRAPI_BASE_URL} from "@env";
+import {environments} from "../src/constants/environments";
+
+const {STRAPI_BASE_URL} = environments;
 
 interface PasswordDataObject {
   jwt: string
@@ -36,13 +38,6 @@ const signUp = async (userData: any) => {
 }
 
 async function updateUser(id: number, jwt: string, data_: unknown) {
-  // const payload = {
-  //   // data: {
-  //   //   ...(data_ as any)
-  //   // }
-  //   ..data_
-  // };
-
   try {
     const response = await fetch(`${STRAPI_BASE_URL}/users/${id}`, {
       method: 'PUT',

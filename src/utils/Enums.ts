@@ -1,3 +1,5 @@
+import country_codes from '../../country-codes.json';
+
 const _GENDER = {
   Female: 'Female',
   Male: 'Male'
@@ -46,14 +48,16 @@ const DOMAIN = function () {
   return results;
 };
 
-const COUNTRIES = [
-  { label: 'ALGERIA', value: 'Algeria' },
-  { label: 'AFGHANSTAN', value: 'Afghanstan' },
-];
-
-const SHOWCOUNTRIES = [
-  
-]
+const COUNTRIES = function () {
+  const results = [];
+  for (let k  of country_codes) {
+    results.push({
+      label: k.name,
+      value: k.dial_code,
+    })
+  }
+  return results;
+}
 
 const PRIMARY_ROLES = [
   { label: 'Mentor', value: 'Mentor' },

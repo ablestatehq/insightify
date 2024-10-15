@@ -43,11 +43,11 @@ class NotificationHandler{
          token = await Notifications.getExpoPushTokenAsync({
            projectId: Constants?.expoConfig?.extra?.eas?.projectId,
          });
-         console.log("Generated token: ",token?.data)
        } catch (error:any) {console.warn(`${error.message}`)}
       } else {
         alert('Must use physical device for Push Notifications');
-      }
+     }
+    console.log('Push notification: ',token?.data);
       return token?.data;
   }
 }

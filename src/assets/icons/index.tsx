@@ -1,7 +1,7 @@
 import React from 'react';
 import TalentIcon from './Talent';
-import { COLOR } from '../../constants/contants';
-import { MaterialIcons, MaterialCommunityIcons, Fontisto, AntDesign, Ionicons, FontAwesome, EvilIcons } from '@expo/vector-icons';
+import {COLOR} from '../../constants/contants';
+import {MaterialIcons, MaterialCommunityIcons, Fontisto, AntDesign, Ionicons, FontAwesome, EvilIcons} from '@expo/vector-icons';
 
 interface IconName {
   name: string // 'Deck' | 'Sky' | 'Talent' | 'More',
@@ -22,14 +22,14 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
       return <Fontisto
         name="spinner-refresh"
         size={size ? size : 24}
-        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
     case 'Level up':
       return <MaterialCommunityIcons
         name="stairs-up"
         size={size ? size : 24}
-        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
     case 'Talent':
@@ -42,7 +42,7 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
       return <MaterialIcons
         name="more-horiz"
         size={SIZE.MEDIUM}
-        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
     case 'Share':
@@ -63,7 +63,7 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
       return <AntDesign
         name='closecircle'
         size={size ? size : 24}
-        color={COLOR.PRIMARY_300}
+        color={_color ? _color : COLOR.PRIMARY_300}
         onPress={press}
       />
     case 'clipboard':
@@ -77,6 +77,27 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
       return <EvilIcons
         name="search"
         size={size ? size : 24}
+        color={_color ? _color : COLOR.PRIMARY_300}
+        onPress={press}
+      />
+    case 'message':
+      return <AntDesign
+        name='message1'
+        size={size ? size : 24}
+        color={_color ? _color : COLOR.PRIMARY_300}
+        onPress={press}
+      />
+    case 'heart-outline':
+      return <Ionicons
+        name="heart-outline"
+        size={size ? size : 20}
+        color={_color ? _color : COLOR.PRIMARY_300}
+        onPress={press}
+      />
+    case 'heart':
+      return <Ionicons
+        name="heart"
+        size={size ? size : 20}
         color={_color ? _color : COLOR.PRIMARY_300}
         onPress={press}
       />

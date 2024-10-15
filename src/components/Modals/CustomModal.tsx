@@ -52,14 +52,14 @@ const CustomModal: React.FC<CustomModalProps> = (
                   <Button
                     title={acceptText ?? 'Accept'}
                     handlePress={accept}
-                    textStyle={styles.btnText}
-                    btn={styles.btn}
+                    textStyle={[styles.btnText, {color: COLOR.SECONDARY_300}]}
+                  btn={[styles.btn, {backgroundColor: COLOR.GREY_50}]}
                   />}
                 {cancel &&
                   <Button
                     title={cancelText ?? 'Cancel'}
                     handlePress={cancel}
-                    textStyle={styles.btnText}
+                    textStyle={[styles.btnText, {color:COLOR.SECONDARY_300}]}
                     btn={styles.btn}
                   />}
               </View>
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.NEUTRAL_2
   },
   contentContainer: {
-    width: '90%',
+    width: '75%',
     padding: 10,
     borderRadius: 5,
     paddingHorizontal: 20,
@@ -91,11 +91,9 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: 'RalewayBold',
     fontSize: FONTSIZE.TITLE_1,
-    color: COLOR.SECONDARY_300
-    // textAlign:'center'
+    color: COLOR.SECONDARY_300,
   },
   message: {
-    // textAlign:'center',
     fontSize: FONTSIZE.TITLE_2,
     marginTop: 10,
     fontFamily: 'RalewayMedium',
@@ -109,11 +107,11 @@ const styles = StyleSheet.create({
   btn: {
     paddingBottom: 5,
     paddingHorizontal: 10,
-    backgroundColor: COLOR.SECONDARY_300,
+    backgroundColor: COLOR.SECONDARY_50,
     borderRadius: 5
   },
   btnText: {
     fontFamily: 'ComfortaaBold',
     color: COLOR.WHITE
-  }
-})
+  },
+});

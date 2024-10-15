@@ -19,3 +19,6 @@ export {default as InputText} from './FomikComponents/InputText/InputText'
 export {default as CategorySection} from './CategorySection/CategorySection'
 export {default as SubmitButton} from './FomikComponents/SubmitButton/SubmitButton'
 export {default as ExpandableItemList} from './CodeTips/ExpandableListItem/ExpandableListItem'
+export {default as CommentSection} from './Comments/Comments'
+export {default as IconLabel} from './IconLabelPair'
+export {default as ProfileCard} from './Cards/ProfileCard/ProfileCard';

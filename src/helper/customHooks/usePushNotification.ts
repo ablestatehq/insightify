@@ -1,8 +1,8 @@
 import {AppContext} from '../context/AppContext';
 import {useContext, useEffect, useRef, useState} from 'react';
 import {generateTransactionRef} from '../functions/functions';
-import {getStrapiData, storeData} from '../../../api/strapiJSAPI';
-import {storeToLocalStorage} from '../../utils/localStorageFunctions';
+import {storeData, updateStrapiData} from '../../../api/strapiJSAPI';
+import {clearLocalData, retrieveLocalData, storeToLocalStorage} from '../../utils/localStorageFunctions';
 import {Device, NotificationController, Notifications} from '../functions/notifications';
 
 const usePushNotifications = () => {
@@ -10,46 +10,137 @@ const usePushNotifications = () => {
   const notificationListener = useRef<any>(null);
   const responseListener = useRef<any>(null);
 
-  const {setNotifications, setIsNotificationEnabled} = useContext(AppContext);
+  const generateTokenData = (token: string) => ({
+    tokenValue: generateTransactionRef(5),
+    tokenID: token,
+    deviceID: Device.osVersion,
+    subscription: true,
+    platform: (Device.osName as string).toUpperCase(),
+    serialNumber: Device.modelId,
+    model: Device.modelName,
+    manafacturer: Device.manufacturer,
+  }
+  );
 
-  useEffect(() => {
-    const registerForPushNotifications = async () => {
-      try {
-        const token = await NotificationController.registerForPushNotifications().catch(error => console.error(error))
-        if (token) {
-          setExpoPushToken(token as string);
-          const tokenData = {
-            tokenValue: generateTransactionRef(5),
-            tokenID: token,
-            deviceID: Device.osVersion,
-            subscription: true,
-            platform: (Device.osName as string).toUpperCase(),
-            serialNumber: Device.modelId,
-            model: Device.modelName,
-            manafacturer: Device.manufacturer,
-          };
-          const checkDBToken = await getStrapiData('notification-tokens');
+  const handleTokenUpdate = async (token: string, storedToken: any) => {
+    const tokenData = generateTokenData(token);
+    if (!storedToken) {
+      const response = await storeData('notification-tokens', tokenData);
+      if (response?.data?.id) {
+        await storeToLocalStorage('tokens',
+          {pushToken: token, isPushNotificationEnabled: true, id: response.data.id});
+        setIsNotificationEnabled(true);
+      }
+    } else if (storedToken.pushToken !== token) {
+      await updateStrapiData('notification-tokens', storedToken.id, tokenData).then(response => {
+        clearLocalData('tokens');
+        storeToLocalStorage('tokens',
+          { pushToken: token, isPushNotificationEnabled: true, id: storedToken.id });
+      });
+    }
+  };
+
+  const registerForPushNotifications = async () => {
+    try {
+      const token = await NotificationController.registerForPushNotifications();
+      const storedToken = await retrieveLocalData('tokens');
+      setExpoPushToken(token as string);
+      await handleTokenUpdate(token as string, storedToken);
+    } catch (error) {
+      console.error('Error registering for push notifications:', error);
+    }
+  };
   
-          if (!checkDBToken.includes(token)) {
-            setIsNotificationEnabled(true);
-            await storeData('notification-tokens', tokenData);
-            await storeToLocalStorage('tokens', {pushToken: token, isPushNotificationEnabled: true});
+  const notificationReceivedHandler = async (notification: any) => {
+    const {
+      date,
+      request: {
+        content: {
+          title,
+          subtitle,
+          body,
+          data: { id, model }
+        }
+      }
+    } = notification;
+    const localNotifications = await retrieveLocalData('notifications');
+    const isNotified = (localNotifications || []).some((element: any) => (element.notification_data.id == id && element.notification_data.model == model))
+    if (!isNotified) {
+
+      setNotifications((prev: any[]) => {
+        return [...prev, {
+          'notification_data': {
+            id: id || null,
+            title,
+            body,
+            expiryDate: date,
+            model
+          },
+          'status': 'UNREAD'
+        }]
+      });
+      // Store the notification to the local storage for future reference
+      await storeToLocalStorage('notifications', [...(localNotifications || []), {
+        'notification_data': {
+          id,
+          title,
+          body,
+          expiryDate: date,
+          model
+        },
+        'status': 'UNREAD'
+      }]);
+    }
+  };
+
+  const notificationResponseHandler = async (response: any) => {
+    // Handle notification response
+    const {
+      date,
+      notification: {
+        request: {
+          content: {
+            title,
+            subtitle,
+            body,
+            data: { id, model }
           }
         }
+      }
+    } = response;
+    const localNotifications = await retrieveLocalData('notifications');
+    const isNotified = (localNotifications || [])
+      .some((element: any) => (element.notification_data.id == id && element.notification_data.model == model));
+    if (!isNotified) {
+      setNotifications((prev: any[]) => {
+        return [...prev, {
+          'notification_data': {
+            id: id || null,
+            title,
+            body,
+            expiryDate: date,
+            model
+          },
+          'status': 'UNREAD'
+        }]
+      });
+      // Store the notification to the local storage for future reference
+      await storeToLocalStorage('notifications', [...localNotifications, {
+        'notification_data': {
+          id: id || null,
+          title,
+          body,
+          expiryDate: date,
+          model
+        },
+        'status': 'UNREAD'
+      }]);
+    }
+  };
 
-
-      } catch (error) {}
-    };
-
-    const notificationReceivedHandler = (notification: any) => {
-      console.log("App in the foreground", notification);
-      // setNotifications((prevNotifications: any) => [...prevNotifications, notification]);
-    };
-
-    const notificationResponseHandler = (response: any) => {
-      // Handle notification response
-      console.log('App in background', response);
-    };
+  const {setNotifications, setIsNotificationEnabled} = useContext(AppContext);
+  
+  useEffect(() => {
 
     registerForPushNotifications();
 
