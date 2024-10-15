@@ -6,29 +6,31 @@ import {
 } from 'react-native';
 
 import Icons from '../../assets/icons';
-import Carousel from './componets/Carousel'
 import {useCodeTips} from './useCodeTips';
-import {CategorySection} from '../../components';
+import {CategorySection, Loader} from '../../components';
 import {FONT_NAMES} from '../../assets/fonts/fonts';
 // constants
 import {COLOR, FONTSIZE} from '../../constants/constants';
 
+// lazy loads
+const Carousel = React.lazy(() => import('./componets/Carousel'));
 const CodeTips = () => {
   const {
     category,
     setCategory,
     showSearchBar,
     setShowSearchBar,
-    searchText,
     setSearchText,
     carouselData,
-    isLoading,
+    setCodeTips,
+    comments,
+    codeTips
   } = useCodeTips();
 
   return (
     <View style={styles.codeTipsContainer}>
       <StatusBar backgroundColor={COLOR.WHITE} />
-      <View style={{ paddingHorizontal: 20, backgroundColor: COLOR.WHITE }}>
+      <View style={styles.nav}>
         <View style={styles.header}>
           {showSearchBar ? (
             <View style={styles.searchBar}>
@@ -46,9 +48,17 @@ const CodeTips = () => {
             press={() => setShowSearchBar(!showSearchBar)}
           />
         </View>
-        <CategorySection setFilteredItems={setCategory} categories={['All', 'Saved', 'Archived']} />
+        <CategorySection
+          setFilteredItems={setCategory}
+          categories={['All', 'Saved', 'Archived']}
+          initialCategory={category}
+        />
       </View>
-        <Carousel data={carouselData} />
+      <View style={styles.carouselStyle}>
+        <React.Suspense fallback={<ActivityIndicator size='small' color={COLOR.PRIMARY_300} />}>
+          <Carousel data={carouselData} setTips={setCodeTips} comments={comments} tips={codeTips} />
+        </React.Suspense>
+      </View>
     </View>
   );
 }
@@ -61,11 +71,15 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.SECONDARY_50,
   },
   header: {
+    // borderWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 10,
-    gap: 20,
+  },
+  nav: {
+    paddingHorizontal: 20,
+    backgroundColor: COLOR.WHITE,
   },
   searchBar: {
     flex: 1,
@@ -73,7 +87,7 @@ const styles = StyleSheet.create({
     borderColor: COLOR.SECONDARY_50,
     paddingHorizontal: 10,
     borderRadius: 5,
-    padding: 2,
+    padding: 2
   },
   loadingContainer: {
     flex: 1,
@@ -82,6 +96,12 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontFamily: FONT_NAMES.Title,
-    fontSize: FONTSIZE.TITLE_1,
+    fontSize: FONTSIZE.TITLE_2,
+    // marginVertical: 10,
+  },
+  carouselStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
