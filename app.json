@@ -2,7 +2,7 @@
   "expo": {
     "name": "Insightify",
     "slug": "Insightify",
-    "scheme":"insighity",
+    "scheme": "insighity",
     "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +14,8 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-video"
     ],
     "splash": {
       "image": "./assets/splash.png",
@@ -28,7 +29,7 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 24,
+      "versionCode": 33,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -42,8 +43,8 @@
           "data": [
             {
               "scheme": "https",
-              "host": ".insightify.ablestate.africa",
-              "pathPrefix": "/Home"
+              "host": "insightify.ablestate.africa",
+              "pathPrefix": "/"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]
