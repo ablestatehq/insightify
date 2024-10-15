@@ -91,7 +91,7 @@ const Home = () => {
         visible={showProfileCard && isLoggedIn}
         handleClose={handleCompleteProfile}
         profilePhoto={profilePhoto}
-        setProfilePhoto={() => { }}
+        setProfilePhoto={() => {}}
       />
       <StatusBar backgroundColor={COLOR.WHITE} barStyle='dark-content'/>
     </View >
@@ -109,8 +109,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   techTipStyle: {
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     marginTop: 10,
   },
-  tipsView: {flex: 1, paddingBottom: DIMEN.PADDING.LG, margin: DIMEN.PADDING.LG }
+  tipsView: {
+    flex: 1,
+    paddingBottom: DIMEN.PADDING.LG,
+    marginVertical: DIMEN.PADDING.LG,
+    marginHorizontal: DIMEN.PADDING.ES
+  }
 })
