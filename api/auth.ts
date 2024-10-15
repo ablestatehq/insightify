@@ -23,9 +23,7 @@ const signUp = async (userData: any) => {
     const data = await response.json();
     
     return data;
-  } catch (error) {
-    console.error("In the try and catch",error);
-  }
+  } catch (error) {}
 }
 
 async function updateUser(id: number, jwt: string, data_: unknown) {
@@ -75,7 +73,7 @@ async function setUserPhotoNULL(userId: number, jwt: string) {
   const response = fetch(`${STRAPI_BASE_URL}/users/${userId}`, options)
     .then(response => response.json())
     .then(storedData => storedData)
-    .catch(error => console.error('This is the error',error));
+    .catch(error => {});
   } catch (error) {}
 }
 
@@ -98,9 +96,7 @@ const login = async (identifier:string, password:string) => {
     const data = await response.json();
 
     return data;
-  } catch (error) {
-    console.error(error)
-  }
+  } catch (error) {}
 }
 
 const resetPassword = async (newPassword: string, code: string) => {
@@ -124,7 +120,6 @@ const resetPassword = async (newPassword: string, code: string) => {
     
   }
 }
-
 
 const forgotRequest = async (identifier: string,) => {
   const payload = {
@@ -162,29 +157,21 @@ const changePassword = async (currentPassword: string, password: string, passwor
   } catch (error) {}
 }
 
-const emailConfirmation = async (email: string) => {
+const emailConfirmation = async (confirmation:string) => {
   try {
-    const payload = {
-      email
-    };
-
     const options = {
-      method: 'POST',
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(payload)
+      method: 'GET',
     }
 
-    const response = await fetch(`${STRAPI_BASE_URL}/auth/send-email-confirmation`, options);
-    const data = await response.json();
-
-    if (data?.data) {
+    const response = await fetch(`${STRAPI_BASE_URL}/auth/email-confirmation?confirmation=${confirmation}`, options)
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('text/html')) {
       return true;
-    } else {
-      return false;
     }
-  } catch (error) {return false}
+    return false
+  } catch (error) {
+    return false
+  }
 };
 
 export {signUp, login, resetPassword, forgotRequest, changePassword, emailConfirmation, updateUser, setUserPhotoNULL}

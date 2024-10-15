@@ -66,7 +66,7 @@ function storeData(endpoint: string, data: any, jwt?: string) {
   const response = fetch(`${STRAPI_BASE_URL}/${endpoint}?populate=*`, options)
     .then(response => response.json())
     .then(storedData => storedData)
-    .catch(error => console.error('This is the error',error));
+    .catch(error => {});
   
   return response
 }
@@ -92,11 +92,9 @@ function getStrapiData(endpoint: string, jwt?: string, start=0, limit=25) {
         options)
         .then(response => response.json())
         .then(data => {
-          // console.log('Date-1: ', data);
           const _data = data?.data?.map((res: any) => {
             return {id: res.id, ...res.attributes}
           });
-          // console.log('Data: ', _data);
           return {
             data: _data,
             error: null,
@@ -183,7 +181,7 @@ async function updateStrapiData(endpoint: string, id: number, data: any, jwt?: s
         .then(data => {
           return data
         })
-        .catch(error => console.warn(error))
+        .catch(error => {})
     
     return response
 
@@ -246,7 +244,7 @@ async function getDataId(endpoint: string, attribute: string, attributeValue: an
           return response.json()
         })
         .then(data => data.data.map(((res:any) => {return {token: res.attributes.tokenID, id: res.id}})))
-        .catch(error => console.warn(error))
+        .catch(error => {})
     
     return response
   } catch (error) {
@@ -270,7 +268,6 @@ async function uploadImage(formData: FormData, jwt: string) {
     const uploading = await response.json();
     return uploading
   } catch (error) {
-    console.error(JSON.stringify(error, null, 2));
     return null
   }
 }
@@ -286,7 +283,6 @@ async function deleteImage(id: number, jwt: string) {
     const deleting = await response.json();
     return deleting;
   } catch (error) {
-    console.error(JSON.stringify(error, null, 2));
     return null
   }
 }

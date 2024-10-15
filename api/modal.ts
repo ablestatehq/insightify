@@ -147,12 +147,13 @@ export const MODALS = {
             id
           }
         }
-        developers{
+        uploadedBy{
           data{
             id
             attributes{
               firstName
               lastName
+              primaryDomain
             }
           }
         }
