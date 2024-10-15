@@ -1,14 +1,14 @@
 import React from 'react';
-import { useFonts } from 'expo-font';
-import { View, Text } from 'react-native';
+import {useFonts} from 'expo-font';
+import {View, Text} from 'react-native';
 
 // components 
-import { Loader } from '../components';
+import {Loader} from '../components';
 
 // helper 
 // import {fontsLoading} from '../assets/fonts/fonts';
-import { COLOR, FONTSIZE } from '../constants/constants';
-import { AppContext } from '../helper/context/AppContext';
+import {COLOR, DIMEN, FONTSIZE} from '../constants/constants';
+import {AppContext} from '../helper/context/AppContext';
 
 // screens 
 import Home from '../screens/Dashboard/Home';
@@ -16,11 +16,11 @@ import CodeTips from '../screens/CodeTips/CodeTips';
 import Explore from '../screens/Explore'
 
 import Icon from '../assets/icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
-import { FONT_FILES, FONT_NAMES } from '../assets/fonts/fonts';
+import {FONT_FILES, FONT_NAMES} from '../assets/fonts/fonts';
 
-const { Screen, Navigator } = createBottomTabNavigator();
+const {Screen, Navigator} = createBottomTabNavigator();
 
 const screenOptionStyle = {
   headerShown: false,
@@ -30,7 +30,7 @@ interface CustomItemTabProp {
   focused: any
   text: string
 }
-const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
+const CustomItemTab: React.FC<CustomItemTabProp> = ({focused, text}) => (
   <View
     style={{
       paddingHorizontal: 10,
@@ -40,16 +40,15 @@ const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
       borderBottomWidth: focused ? 2 : 0,
       borderBottomColor: COLOR.WHITE,
       borderTopColor: focused ? COLOR.SECONDARY_300 : COLOR.WHITE,
-      marginBottom: 2,
-      paddingVertical: 10
+      paddingVertical: DIMEN.PADDING.ME,
     }}
   >
     <Icon name={text} isActive={false} />
     <Text
       style={{
-        color: focused ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300,
-        fontFamily: FONT_NAMES.Title,
-        fontSize: FONTSIZE.BODY
+        color: focused ? COLOR.PRIMARY_300 : COLOR.SECONDARY_500,
+        fontFamily: FONT_NAMES.Heading,
+        fontSize: FONTSIZE.SMALL
       }}
     >{text}</Text>
   </View>
