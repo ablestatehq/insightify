@@ -5,12 +5,15 @@ import {useNavigation, useRoute} from '@react-navigation/native'
 import {COLOR, FONTSIZE} from '../../../constants/constants'
 import {AppContext} from '../../../helper/context/AppContext'
 import {InputText, SubmitButton, Dialog} from '../../../components'
-import {NativeStackNavigationProp } from '@react-navigation/native-stack'
+import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 import {login} from '../../../../api/auth';
 import {IDialogBox, LoginScreenProps} from '../../../utils/types';
 import {handleBookmark} from '../../../helper/functions/handleFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import {
+  KeyboardAvoidingView, Pressable, ScrollView,
+  StyleSheet, Text, TouchableOpacity, View
+} from 'react-native'
 import {storeToLocalStorage} from '../../../utils/localStorageFunctions';
 import {FONT_NAMES} from '../../../assets/fonts/fonts';
 import {getFilteredData} from '../../../../api/strapiJSAPI';
@@ -27,7 +30,7 @@ const Login: React.FC = () => {
     message: '',
     cancelText: 'Try again',
     onReject() {
-        setDialog({...dialog, visible: false})
+        setDialog({...dialog, visible: false});
     },
   })
   const {setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser, setXp} = useContext(AppContext);
@@ -40,9 +43,9 @@ const Login: React.FC = () => {
   const displayTitle = () => {
     switch (title) {
       case 'Settings':
-        return 'Good to \nhave you back'
+        return 'Good to \nhave you back';
       case 'Oppo':
-        return 'Good to \nhave you back'
+        return 'Good to \nhave you back';
       default:
         return 'Welcome to Insightify'
     }
@@ -68,7 +71,7 @@ const Login: React.FC = () => {
 
         if (opportunityID) {
           handleBookmark(opportunityID, opportunities, setOpportunities)
-          navigation.goBack()
+          navigation.goBack();
         } else {
           switch (title) {
             case 'Settings':
@@ -108,7 +111,7 @@ const Login: React.FC = () => {
             initialValues={loginFormInitValues}
             onSubmit={handleLogin}
           >
-            {({ handleSubmit }) => (
+            {({handleSubmit}) => (
               <View style={styles.loginScroll}>
                 <ScrollView>
                   <InputText

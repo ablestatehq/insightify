@@ -30,11 +30,6 @@ export default function Otp() {
         }}>
           Please check your email and click on the link provided.
         </Text>
-          {/* <Button
-          title="Verify"
-          textStyle={styles.verifyText}
-          btn={styles.verifyBtn}
-          handlePress={() => {console.log('Hello there')}} /> */}
       </View>
     </View>
   );

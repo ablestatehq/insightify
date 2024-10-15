@@ -31,13 +31,11 @@ export default function Forgot() {
       setLoading(true);
       forgotRequest(values.email)
         .then((response) => {
-          console.log(loading)
           if (response.ok) {
-            console.log("This is the response: ", response);
             navigation.navigate("Otp");
           }
         })
-        .catch((error) => console.log("Something went wrong", error));
+        .catch((error) => {});
     } catch (error) { }
     finally {
       setLoading(false)
