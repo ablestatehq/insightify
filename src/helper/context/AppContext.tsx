@@ -84,12 +84,16 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const fetchInitialData = async () => {
     try {
       const inCommunity = await retrieveLocalData('isMember');
+      const isNofityOn = await retrieveLocalData('tokens');
+      if (isNofityOn) {
+        setIsNotificationEnabled(isNofityOn?.isPushNotificationEnabled);
+      }
       const user_ = await getMe();
       if (user_.ok) {
         setXp(user_.data.totalXP ? user_.data.totalXP : 0);
         setIsLoggedIn(true);
         if (inCommunity) {
-          setUser((prev: any) => ({ ...user_.data, isMember: inCommunity.isMember }));
+          setUser((prev: any) => ({...user_.data, isMember: inCommunity.isMember}));
           setJwt(user_.jwt);
         }
       }

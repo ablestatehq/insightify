@@ -1,5 +1,4 @@
-import {TextInput} from 'react-native';
-import {useState, useEffect, useRef, useCallback} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {
   sendReaction,
   deleteMessageSearch,
@@ -25,7 +24,6 @@ type Message = {
 const useChat = (userId: number, jwt: string) => {
   const [messageMap, setMessageMap] = useState<Map<string, any>>(new Map);
   const [messages, setMessages] = useState<any[]>([]);
-  const textInputRef = useRef<TextInput | null>(null);
   const [newMessage, setNewMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [refreshing, setRefreshing] = useState(true);
@@ -34,6 +32,7 @@ const useChat = (userId: number, jwt: string) => {
   const [modalVisibility, setModalVisibility] = useState<boolean>(false);
   const [start, setStart] = useState<number>(0);
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [selected, setSelected] = useState<string>('');
 
   const loadMessages = useCallback(async () => {
     try {
@@ -77,10 +76,10 @@ const useChat = (userId: number, jwt: string) => {
   const handleDeleteMessage = useCallback(async (key: string) => {
     setMessageMap((prevMap) => {
       const msgs = new Map(prevMap);
-      const msgID = msgs.get(key)?.id
+      const msgID = msgs.get(key)?.id;
       msgs.delete(key);
       try {
-        deleteMessageSearch(jwt, msgID).then(() => { }).catch(error => { })
+        deleteMessageSearch(jwt, msgID).then(() => { }).catch(error => {})
       } catch (error) {
         setErrorMessage('Failed to delete message. Please try again.');
       }
@@ -99,7 +98,7 @@ const useChat = (userId: number, jwt: string) => {
 
     clientSocket.on('message:create', ({data}) => {
       addToMessageMap(data);
-    })
+    });
   }, [socket]);
 
 
@@ -138,9 +137,6 @@ const useChat = (userId: number, jwt: string) => {
 
   const onReply = async (key: string) => {
     setReplyingTo(key);
-    setTimeout(() => {
-      textInputRef.current?.focus();
-    }, 10);
   }
 
   const onCloseReply = () => {
@@ -193,6 +189,8 @@ const useChat = (userId: number, jwt: string) => {
 
 
   return {
+    selected,
+    setSelected,
     messages,
     messageMap,
     newMessage,
@@ -206,7 +204,6 @@ const useChat = (userId: number, jwt: string) => {
     onReply,
     onReaction,
     replyingTo,
-    textInputRef,
     handleModalVisibility,
     modalVisibility,
     onCloseReply

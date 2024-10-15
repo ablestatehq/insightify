@@ -7,9 +7,7 @@ export const useNetworkStatus = async () => {
   try {
     notifyServerDeviceIsOnline();
     return BackgroundFetch.BackgroundFetchResult.NewData;
-  } catch (error) {
-    console.error('Background task failed:', error);
-  }
+  } catch (error) {}
 };
 
 const notifyServerDeviceIsOnline = async () => {

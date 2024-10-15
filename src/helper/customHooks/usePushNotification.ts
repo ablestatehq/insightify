@@ -26,15 +26,12 @@ const usePushNotifications = () => {
     const tokenData = generateTokenData(token);
     if (!storedToken) {
       const response = await storeData('notification-tokens', tokenData);
-      console.log('This is the token response brother: ', response);
       if (response?.data?.id) {
-        console.log('Response ID: ', response?.data?.id);
         await storeToLocalStorage('tokens',
           {pushToken: token, isPushNotificationEnabled: true, id: response.data.id});
         setIsNotificationEnabled(true);
       }
     } else if (storedToken.pushToken !== token) {
-      console.log("we have it", storedToken.pushToken)
       await updateStrapiData('notification-tokens', storedToken.id, tokenData).then(response => {
         clearLocalData('tokens');
         storeToLocalStorage('tokens',
@@ -46,14 +43,10 @@ const usePushNotifications = () => {
   const registerForPushNotifications = async () => {
     try {
       const token = await NotificationController.registerForPushNotifications();
-      console.log('The token is generated: ', token);
       const storedToken = await retrieveLocalData('tokens');
-      console.log('This is it', storedToken);
       setExpoPushToken(token as string);
       await handleTokenUpdate(token as string, storedToken);
-    } catch (error) {
-      console.error('Error registering for push notifications:', error);
-    }
+    } catch (error) {}
   };
   
   const notificationReceivedHandler = async (notification: any) => {
@@ -162,7 +155,6 @@ const usePushNotifications = () => {
     };
   }, []);
 
-  // console.log(expoPushToken)
   return {expoPushToken};
 };
 

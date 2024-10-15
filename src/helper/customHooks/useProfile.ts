@@ -85,6 +85,13 @@ const useProfile = () => {
     }
   };
 
+  const handleSignoutPress = () =>
+    setDialog((prev: IDialogBox) => ({
+      ...prev,
+      visible: true,
+      title: 'Log out',
+      message: LOGOUT_MESSAGE,
+    }));
   return {
     dialog,
     setDialog,
@@ -105,7 +112,8 @@ const useProfile = () => {
     isNotificationEnabled,
     setIsNotificationEnabled,
     LOGOUT_MESSAGE,
-    setShowProfileCard
+    setShowProfileCard,
+    handleSignoutPress
   }
 };
 
