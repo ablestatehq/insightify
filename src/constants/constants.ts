@@ -1,5 +1,7 @@
-import {Dimensions} from "react-native";
+import {Dimensions, PixelRatio} from "react-native";
 
+const fontScale = PixelRatio.getFontScale();
+const getFontSize = (size: number) => size / fontScale;
 export const COLOR = {
   GOLD: '#FFD700',
   SILVER: '#C0C0C0',
@@ -40,15 +42,15 @@ export const COLOR = {
 };
 
 export const FONTSIZE = {
-  HEADING_1: 48,
-  HEADING_2: 40,
-  HEADING_3: 33,
-  HEADING_4: 28,
-  HEADING_5: 23,
-  TITLE_1: 19,
-  TITLE_2: 16,
-  BODY: 13,
-  SMALL: 11
+  HEADING_1: getFontSize(48),
+  HEADING_2: getFontSize(40),
+  HEADING_3: getFontSize(33),
+  HEADING_4: getFontSize(28),
+  HEADING_5: getFontSize(23),
+  TITLE_1: getFontSize(19),
+  TITLE_2: getFontSize(16),
+  BODY: getFontSize(13),
+  SMALL: getFontSize(11),
 }
 
 export const DIMEN = {
