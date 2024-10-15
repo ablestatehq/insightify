@@ -1,27 +1,28 @@
-import React, {useContext} from 'react'
-import {FontAwesome, Ionicons} from '@expo/vector-icons';
-import {COLOR, FONTSIZE} from '../../constants/contants';
-import {StyleSheet, Text, TextInput, View, Image} from 'react-native'
-import {AppContext} from '../../helper/context/AppContext';
-import {environments} from '../../constants/environments';
-import {storeData} from '../../../api/strapiJSAPI';
+import React, { useContext } from 'react'
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { COLOR, FONTSIZE } from '../../constants/constants';
+import { StyleSheet, Text, TextInput, View, Image } from 'react-native'
+import { AppContext } from '../../helper/context/AppContext';
+import { environments } from '../../constants/environments';
+import { storeData } from '../../../api/strapiJSAPI';
+import { FONT_NAMES } from '../../assets/fonts/fonts';
 
-interface CommentsProps{
+interface CommentsProps {
   wantsToComment: boolean
   resourceId: number
   comments: any[]
 }
 
-const {BASE_URL} = environments;
+const { BASE_URL } = environments;
 
 
 // Add scrollView to the comment section.
-const Comments = function ({wantsToComment, comments, resourceId}:CommentsProps){
-  
+const Comments = function ({ wantsToComment, comments, resourceId }: CommentsProps) {
+
   const [commentText, setCommentText] = React.useState<string>('')
   const [comments_, setComments_] = React.useState<any[]>([...comments]);
-  const {user, isLoggedIn} = useContext(AppContext);
-  
+  const { user, isLoggedIn } = useContext(AppContext);
+
   const submitComment = async function () {
     const data = {
       comment: commentText,
@@ -37,7 +38,7 @@ const Comments = function ({wantsToComment, comments, resourceId}:CommentsProps)
     }
   };
 
-  return  wantsToComment && (
+  return wantsToComment && (
     <View style={styles.commentContainer}>
       {comments_.slice(-2).map(function (comment, index) {
         return (
@@ -56,11 +57,11 @@ const Comments = function ({wantsToComment, comments, resourceId}:CommentsProps)
               />}
             <View style={{
               paddingHorizontal: 10,
-              paddingVertical:3,
+              paddingVertical: 3,
               borderRadius: 10,
               backgroundColor: COLOR.NEUTRAL_1
             }}>
-                <Text style={{fontFamily:'ComfortaaBold', paddingBottom:5}}>{comment?.author?.data?.attributes?.firstName ?? 'Guest user'}</Text>
+              <Text style={{ fontFamily: FONT_NAMES.Heading, paddingBottom: 5 }}>{comment?.author?.data?.attributes?.firstName ?? 'Guest user'}</Text>
               <Text style={styles.commentText}>{comment.comment}{comment.resourceId}</Text>
             </View>
           </View>
@@ -71,10 +72,10 @@ const Comments = function ({wantsToComment, comments, resourceId}:CommentsProps)
           <Image source={{ uri: `${BASE_URL}/uploads/${user?.photo}` }} />
           :
           <FontAwesome
-          size={25}
-          name="user-circle-o"
-          color={COLOR.SECONDARY_100}
-        />}
+            size={25}
+            name="user-circle-o"
+            color={COLOR.SECONDARY_100}
+          />}
         <TextInput
           multiline
           value={commentText}
@@ -94,26 +95,26 @@ const Comments = function ({wantsToComment, comments, resourceId}:CommentsProps)
   );
 }
 
-export default Comments;
+export default React.memo(Comments);
 
 const styles = StyleSheet.create({
   commentInput: {
     flex: 1,
-    padding:5,
+    padding: 5,
     // borderWidth: 1,
     // borderColor: COLOR.SECONDARY_50,
-    borderRadius:5
+    borderRadius: 5
   },
   commentView: {
     marginVertical: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    gap:10
+    gap: 10
   },
   commentText: {
     fontSize: FONTSIZE.BODY,
-    fontFamily: 'RalewayRegular',
-    paddingBottom:3
+    fontFamily: FONT_NAMES.Body,
+    paddingBottom: 3
   },
   inputView: {
     flexDirection: 'row',
@@ -122,10 +123,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 5,
     borderRadius: 5,
-    borderColor:COLOR.SECONDARY_50
+    borderColor: COLOR.SECONDARY_50
   },
   commentContainer: {
     marginBottom: 20,
-    marginTop:10
+    marginTop: 10
   }
 })

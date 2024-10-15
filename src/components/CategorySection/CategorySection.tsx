@@ -1,9 +1,5 @@
+import {StyleSheet,View} from 'react-native';
 import React, {useCallback, useMemo} from 'react'
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-} from 'react-native';
 import CategoryItem from '../CategoryItem/CategoryItem';
 
 interface CategorySectionProp {
@@ -14,23 +10,27 @@ interface CategorySectionProp {
 
 const CategorySection: React.FC<CategorySectionProp> =
   ({initialCategory, setFilteredItems, categories}) => {
-    const initialActiveList = useMemo(() => Array(categories.length).fill(false), [categories]);
-    const initialIndex = categories.indexOf(initialCategory as string);
-    initialActiveList[initialIndex] = true;
+    const initialActiveList = useMemo(() => {
+      const list = Array(categories.length).fill(false);
+      const initialIndex = categories.indexOf(initialCategory as string);
+      if (initialIndex !== -1) list[initialIndex] = true;
+      return list;
+    }, [categories, initialCategory]);
+
     const [isActive, setIsActive] = React.useState<boolean[]>(initialActiveList);
 
     const setActiveCategory = useCallback((cat: string) => {
-      let newActive = Array(isActive.length).fill(false);
-      newActive[categories.indexOf(cat)] = true;
-      setIsActive(newActive);
-      // const category = categories[index];
-      setFilteredItems(cat);
-    }, [categories, setFilteredItems, isActive.length]);
+      const newIndex = categories.indexOf(cat);
+      if (isActive[newIndex]) return;
 
-  return (
-    <View style={styles.categorySection}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={{flexDirection: 'row', gap: 5}}>
+      const newActive = isActive.map((_, index) => index === newIndex);
+      setIsActive(newActive);
+      setFilteredItems(cat);
+    }, [categories, setFilteredItems, isActive]);
+
+    return (
+      <View style={styles.categorySection}>
+        <View style={styles.categoryView}>
           {categories.map((category: string, index: number) => (
             <CategoryItem
               key={index}
@@ -40,16 +40,14 @@ const CategorySection: React.FC<CategorySectionProp> =
             />
           ))}
         </View>
-      </ScrollView>
-    </View>
-  );
+      </View>
+    );
 };
 
 
 export default React.memo(CategorySection)
 
 const styles = StyleSheet.create({
-  categorySection: {
-    marginTop: 5,
-  }
-})
+  categorySection: {},
+  categoryView: { flexDirection: 'row', gap: 5 }
+});

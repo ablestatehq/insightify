@@ -10,7 +10,6 @@ export {default as FilterCard} from './Cards/FilterCard'
 export {default as FloatingButton} from './FloatingButton'
 export {default as CodeSnippet} from './Cards/CodeSnippet'
 export {default as CustomModal} from './Modals/CustomModal'
-export {default as Opportunities} from './Cards/Opportunities'
 export {default as JoinCommunity} from './Modals/JoinCommunityModal'
 export {default as Header} from '../components/Headers/Header/Header'
 export {default as OpportunityCard} from './Cards/OpportunityItemCard'
@@ -22,3 +21,15 @@ export {default as ExpandableItemList} from './CodeTips/ExpandableListItem/Expan
 export {default as CommentSection} from './Comments/Comments'
 export {default as IconLabel} from './IconLabelPair'
 export {default as ProfileCard} from './Cards/ProfileCard/ProfileCard';
+export {default as ProductCard} from './Cards/ProductCard';
+export {default as TipCard} from './Cards/TipCard';
+export {default as SeeMore} from './SeeMore'
+export {default as OpportunityItem} from './Cards/OpportunityItem';
+export {default as XPpoint} from './XPpoints';
+export {default as CompleteProfile} from './CompleteProfile'
+export {default as Fragment} from './withSeeMore'
+export {default as SendCard} from './Cards/SendCard'
+export {default as MessageList} from './MessageList'
+export {default as BackgroundImageSlider} from './BackgroundImageSlider'
+export {default as EmptyState} from './EmptyState'
+export {default as Dialog} from './Dialog';

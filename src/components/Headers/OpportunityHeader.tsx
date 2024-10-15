@@ -1,38 +1,40 @@
-import React, { useContext } from 'react'
+import React, {useContext} from 'react'
 
-import { Ionicons } from '@expo/vector-icons'
-import { StyleSheet, Text, View } from 'react-native'
-import { COLOR, FONTSIZE } from '../../constants/constants'
-import { AppContext } from '../../helper/context/AppContext'
-import { useNavigation } from '@react-navigation/native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { FONT_NAMES } from '../../assets/fonts/fonts'
+import {Ionicons} from '@expo/vector-icons'
+import {StyleSheet, Text, View} from 'react-native'
+import {COLOR, DIMEN, FONTSIZE} from '../../constants/constants'
+import {AppContext} from '../../helper/context/AppContext'
+import {useNavigation} from '@react-navigation/native'
+import {NativeStackNavigationProp} from '@react-navigation/native-stack'
+import {FONT_NAMES} from '../../assets/fonts/fonts'
 
 
 interface OpportunityHeaderProps {
   showFilterCard: () => void
 }
 
-function OpportunityHeader({ showFilterCard }: OpportunityHeaderProps): JSX.Element {
-  const { notifications } = useContext(AppContext)
-  const navigation = useNavigation<NativeStackNavigationProp<any>>()
+function OpportunityHeader({showFilterCard}: OpportunityHeaderProps): JSX.Element {
+  const {notifications} = useContext(AppContext);
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  // check the spacing 
+  // check the spacing
   return (
     <View style={styles.container}>
       <Text style={styles.text}>
-        Explore opportunities
+        Opportunities
       </Text>
       <View style={styles.iconContainer}>
-        <Ionicons name="filter-outline" size={23} color={COLOR.SECONDARY_300} onPress={showFilterCard} />
+        <Ionicons name="filter-outline" size={15} color={COLOR.SECONDARY_300} onPress={showFilterCard} />
         <View style={styles.searchMain}>
           <View style={{
             ...styles.badge,
-            backgroundColor: notifications.some((notification: any) => notification.status == 'UNREAD') ? COLOR.PRIMARY_300 : COLOR.WHITE,
-            zIndex: notifications.some((notification: any) => notification.status == 'UNREAD') ? 1 : 0,
+            backgroundColor: notifications.some((notification: any) => notification.status == 'UNREAD')
+              ? COLOR.PRIMARY_300 : COLOR.WHITE,
+            zIndex: notifications.some((notification: any) => notification.status == 'UNREAD')
+              ? 1 : 0,
           }} />
           <Ionicons
-            size={20}
+            size={15}
             color="black"
             name="notifications-outline"
             onPress={() => navigation.navigate('Notification')} />
@@ -47,15 +49,13 @@ export default React.memo(OpportunityHeader)
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingRight: 10,
     justifyContent: 'space-between',
-    paddingVertical: 10
+    paddingVertical: DIMEN.PADDING.SM,
   },
   text: {
-    fontSize: FONTSIZE.TITLE_1,
+    fontSize: FONTSIZE.TITLE_2,
     fontFamily: FONT_NAMES.Title,
-    marginBottom: 5,
-    marginTop: 5,
+    marginVertical: 10,
   },
   searchMain: {
     flexDirection: 'row',

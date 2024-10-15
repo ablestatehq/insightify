@@ -10,9 +10,11 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../utils/types';
 
 interface CompleteProfileProps {
+  // setShowCompleteProfile: React.Dispatch<React.SetStateAction<boolean>>
   handleClose: () => void;
+  setShowProfileCard: React.Dispatch<React.SetStateAction<boolean>>
 }
-const Index = ({handleClose}: CompleteProfileProps) => {
+const Index = ({handleClose, setShowProfileCard}: CompleteProfileProps) => {
   
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
@@ -34,7 +36,8 @@ const Index = ({handleClose}: CompleteProfileProps) => {
         btn={styles.button}
         textStyle={styles.buttonText}
         title='Continue'
-        handlePress={() => navigation.navigate('More')}
+        // handlePress={() => navigation.navigate('More')}
+        handlePress={() => setShowProfileCard(true)}
       />
     </View>
   )

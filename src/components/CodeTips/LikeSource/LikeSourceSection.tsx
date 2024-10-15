@@ -25,10 +25,8 @@ const LikeSourceSection = (
         const url = sourceLink.startsWith('http') ? sourceLink : `https://${sourceLink}`;
         Linking.openURL(url)
           .then(response => {
-            // console.log(response);
           })
           .catch(error => {
-            console.log(error?.message);
             // Provide a user-friendly message here to inform the user about the issue.
           });
       }
