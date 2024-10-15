@@ -35,7 +35,7 @@ const usePushNotifications = () => {
       await updateStrapiData('notification-tokens', storedToken.id, tokenData).then(response => {
         clearLocalData('tokens');
         storeToLocalStorage('tokens',
-          { pushToken: token, isPushNotificationEnabled: true, id: storedToken.id });
+          {pushToken: token, isPushNotificationEnabled: true, id: storedToken.id});
       });
     }
   };
@@ -46,9 +46,7 @@ const usePushNotifications = () => {
       const storedToken = await retrieveLocalData('tokens');
       setExpoPushToken(token as string);
       await handleTokenUpdate(token as string, storedToken);
-    } catch (error) {
-      console.error('Error registering for push notifications:', error);
-    }
+    } catch (error) {}
   };
   
   const notificationReceivedHandler = async (notification: any) => {
@@ -141,11 +139,15 @@ const usePushNotifications = () => {
   const {setNotifications, setIsNotificationEnabled} = useContext(AppContext);
   
   useEffect(() => {
+    (async () => {
+      await registerForPushNotifications();
 
-    registerForPushNotifications();
-
-    notificationListener.current = Notifications.addNotificationReceivedListener(notificationReceivedHandler);
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(notificationResponseHandler);
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener(notificationReceivedHandler);
+      
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener(notificationResponseHandler);
+    })();
 
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current);

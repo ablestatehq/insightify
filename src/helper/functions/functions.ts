@@ -1,3 +1,5 @@
+import { UserProfile } from "../../utils/types";
+
 export function resourceAge(date: Date) {
   const publishedAt = new Date(date);
   const currentDate = new Date();
@@ -21,7 +23,7 @@ export function resourceAge(date: Date) {
       const weeks = Math.floor(days / 7);
       if (weeks >= 4) {
         const months = Math.floor(weeks / 4);
-        return `${months}m`
+        return `${months}mo`
       }
       else return `${weeks}w`
     }
@@ -29,9 +31,9 @@ export function resourceAge(date: Date) {
   } else if( hours != 0){
     return `${hours}hr`
   } else if (minutes != 0) {
-    return `${minutes}min`
+    return `${minutes}m`
   } else {
-    return `${seconds}sec`
+    return `${seconds}s`
   }
 }
 
@@ -101,4 +103,18 @@ export function generateDate(_date_: string) {
     date: formattedDate,
     time: formattedTime
   }
+}
+
+export function isProfileComplete(user: UserProfile): boolean {
+  return (
+    user.email !== null &&
+    user.firstName !== null &&
+    user.lastName !== null &&
+    user.primaryDomain !== null &&
+    user.skills !== null &&
+    user.gender !== null
+  )
+}
+
+export function awardPoints(userId: number, productId: number, interactionType: string) {
 }

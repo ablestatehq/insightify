@@ -1,15 +1,16 @@
 import React, { useContext } from 'react'
-import { COLOR, FONTSIZE } from '../../constants/contants'
+import { COLOR, FONTSIZE } from '../../constants/constants'
 import Header from '../../components/Headers/Header'
 import { AppContext } from '../../helper/context/AppContext'
 import { StyleSheet, View, Text, ScrollView } from 'react-native'
 import NotificationCard from '../../components/Cards/NotificationCard'
+import { FONT_NAMES } from '../../assets/fonts/fonts'
 // import { clearLocalData } from '../../utils/localStorageFunctions'
 
 const Notification = () => {
 
   // notifications 
-  const {notifications} = useContext(AppContext);
+  const { notifications } = useContext(AppContext);
   // clearLocalData('notifications');
   return (
     <View style={styles.container}>
@@ -20,15 +21,15 @@ const Notification = () => {
             showsVerticalScrollIndicator={false}
           >
             {
-              notifications.map(({ notification_data: { title, id, expiryDate, model }, status }, index) => 
-                   <NotificationCard
-                    id={id}
-                    key={index}
-                    title={title}
-                    expiryDate={expiryDate}
-                    model={model}
-                    status={status}
-                  />
+              notifications.map(({ notification_data: { title, id, expiryDate, model }, status }, index) =>
+                <NotificationCard
+                  id={id}
+                  key={index}
+                  title={title}
+                  expiryDate={expiryDate}
+                  model={model}
+                  status={status}
+                />
               )
             }
           </ScrollView>
@@ -42,7 +43,7 @@ const Notification = () => {
   )
 }
 
-export default Notification
+export default Notification;
 
 const styles = StyleSheet.create({
   container: {
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.WHITE
   },
   noTextStyle: {
-    fontFamily: 'ComfortaaBold',
+    fontFamily: FONT_NAMES.Heading,
     fontSize: FONTSIZE.TITLE_2,
     color: COLOR.SECONDARY_75
   },

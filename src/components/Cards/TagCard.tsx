@@ -1,6 +1,7 @@
 import React from 'react'
-import { COLOR } from '../../constants/contants'
-import { Pressable, StyleSheet, Text } from 'react-native'
+import {COLOR, DIMEN } from '../../constants/constants'
+import {Pressable, StyleSheet, Text } from 'react-native'
+import { FONT_NAMES } from '../../assets/fonts/fonts'
 
 interface TagCardProps {
   title?: string
@@ -28,7 +29,6 @@ const TagCard: React.FC<TagCardProps> =
         }
       }
     }
-    // console.log(filteredItems)
     return (
       <Pressable
         style={{
@@ -36,17 +36,17 @@ const TagCard: React.FC<TagCardProps> =
           borderWidth: 1,
           borderColor: COLOR.SECONDARY_300,
           paddingHorizontal: 10,
-          borderRadius: 100,
-          paddingBottom: 5,
+          borderRadius: DIMEN.PADDING.ELG,
+          paddingVertical: 5,
           flexDirection: 'row',
-          gap: 5
+          gap: 2.5
         }}
         onPress={handlePress}
       >
         <Text
           style={{
             color: isActive ? COLOR.WHITE : COLOR.SECONDARY_300,
-            fontFamily: 'RalewayBold'
+            fontFamily: FONT_NAMES.Title
           }}
         >
           {title}
@@ -54,7 +54,7 @@ const TagCard: React.FC<TagCardProps> =
         {<Text
           style={{
             color: isActive ? COLOR.WHITE : COLOR.SECONDARY_300,
-            fontFamily: 'RalewayBold'
+            fontFamily: FONT_NAMES.Title
           }}
         >{`(${itemCount})`}</Text>}
       </Pressable>

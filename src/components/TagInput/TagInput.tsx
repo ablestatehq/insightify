@@ -40,7 +40,7 @@ const TagInput:React.FC<TagInputProps> = ({ onAddTag }) => {
         value={tagInput}
         style={styles.input}
         onChangeText={handleTextChange}
-        onKeyPress={({ nativeEvent }) => handleKeyPress(nativeEvent.key)}
+        onKeyPress={({nativeEvent}) => handleKeyPress(nativeEvent.key)}
         placeholder="Type and press space to add a tag"
       />
     </View>

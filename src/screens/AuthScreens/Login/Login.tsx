@@ -1,18 +1,22 @@
 import {Formik} from 'formik'
-import React, {useContext, useState} from 'react'
+import React, {useContext} from 'react'
 import {AntDesign} from '@expo/vector-icons';
 import {useNavigation, useRoute} from '@react-navigation/native'
-import {COLOR, FONTSIZE} from '../../../constants/contants'
+import {COLOR, FONTSIZE} from '../../../constants/constants'
 import {AppContext} from '../../../helper/context/AppContext'
-import {InputText, SubmitButton, CustomModal} from '../../../components'
+import {InputText, SubmitButton, Dialog} from '../../../components'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 import {login} from '../../../../api/auth';
-import {LoginScreenProps} from '../../../utils/types';
+import {IDialogBox, LoginScreenProps} from '../../../utils/types';
 import {handleBookmark} from '../../../helper/functions/handleFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
-import { storeToLocalStorage } from '../../../utils/localStorageFunctions';
-// import {sendConfirmationEmail} from '../../../../api/strapiJSAPI';
+import {
+  KeyboardAvoidingView, Pressable, ScrollView,
+  StyleSheet, Text, TouchableOpacity, View
+} from 'react-native'
+import {storeToLocalStorage} from '../../../utils/localStorageFunctions';
+import {FONT_NAMES} from '../../../assets/fonts/fonts';
+import {getFilteredData} from '../../../../api/strapiJSAPI';
 
 const Login: React.FC = () => {
   const route = useRoute<LoginScreenProps>();
@@ -20,18 +24,32 @@ const Login: React.FC = () => {
   const {title, opportunityID} = route.params;
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  const [modalTitle, setModalTitle] = useState<string>('');
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [modalMessage, setModalMessage] = useState<string>('');
-  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-
-  const {setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser, community} = useContext(AppContext);
+  const [dialog, setDialog] = React.useState<IDialogBox>({
+    visible: false,
+    title: '',
+    message: '',
+    cancelText: 'Try again',
+    onReject() {
+        setDialog({...dialog, visible: false});
+    },
+  })
+  const {setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser, setXp} = useContext(AppContext);
 
   const loginFormInitValues = {
     email: '',
     password: ''
   }
 
+  const displayTitle = () => {
+    switch (title) {
+      case 'Settings':
+        return 'Good to \nhave you back';
+      case 'Oppo':
+        return 'Good to \nhave you back';
+      default:
+        return 'Welcome to Insightify'
+    }
+  }
   const handleLogin = async (values: any) => {
     try {
       const response = await login(values.email, values.password);
@@ -42,32 +60,40 @@ const Login: React.FC = () => {
             token: response?.jwt,
             ...response.user
           }));
-        
+
         setJwt(response?.jwt);
-        const isMember = community.some((member) => member.email == response?.user?.email);
-        setUser((prev:any) => ({...response?.user,isMember}))
+        const is_community_member = await getFilteredData('community-members', 'email', '$eq', response?.user.email);
+        const isMember = is_community_member.length > 0;
+        setUser((prev: any) => ({...response?.user, isMember}));
+        setXp(response?.user.totalXP ? response?.user.totalXP : 0);
         setIsLoggedIn(true);
-        // console.log("This is what I have for now!",community)
-        
         storeToLocalStorage('isMember', {isMember});
 
         if (opportunityID) {
           handleBookmark(opportunityID, opportunities, setOpportunities)
-          navigation.goBack()
+          navigation.goBack();
         } else {
-          if (title) {
-            navigation.navigate('Share');
-          } else {
-            navigation.goBack();
-            navigation.goBack();
+          switch (title) {
+            case 'Settings':
+              navigation.goBack();
+              break;
+            case 'Oppo':
+              navigation.navigate('Share');
+              break;
+            default:
+              navigation.navigate('Home');
           }
         }
       } else {
-        setShowModal(true);
-        setModalTitle('Login Error');
-        setModalMessage('Login Failed');
+        setDialog((prev: IDialogBox) =>
+        ({
+          ...prev,
+          visible: true,
+          title: 'Login Error',
+          message: 'Your login request has failed. Check your email and password'
+        }));
       }
-    } catch (error) {console.log('')}
+    } catch (error) {}
   }
 
   return (
@@ -78,7 +104,7 @@ const Login: React.FC = () => {
       </View >
       <View style={styles.contentContainer}>
         <Text style={styles.text}>
-          {(title as string).length > 0 ? title : 'Good to \nhave you back'}
+          {displayTitle()}
         </Text>
         <View style={styles.loginView}>
           <Formik
@@ -123,12 +149,7 @@ const Login: React.FC = () => {
           </Formik>
           {/* <SignUpWith /> */}
         </View>
-        <CustomModal
-          title={modalTitle}
-          message={modalMessage}
-          cancelText='ok'
-          cancel={function (): void {setShowModal(false)}}
-          visibility={showModal} />
+        <Dialog {...dialog} />
       </View>
     </KeyboardAvoidingView>
   )
@@ -150,7 +171,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: FONTSIZE.HEADING_3,
-    fontFamily: 'RalewayBold',
+    fontFamily: FONT_NAMES.Title,
   },
   contentContainer: {
     flex: 1,
@@ -164,11 +185,11 @@ const styles = StyleSheet.create({
     // padding: 5
   },
   footerText: {
-    fontFamily: 'RalewayRegular',
+    fontFamily: FONT_NAMES.Body,
     textAlign: 'center'
   },
   signUpText: {
-    fontFamily: 'RalewaySemiBold'
+    fontFamily: FONT_NAMES.Title
   },
   footer: {
     flexDirection: 'row',

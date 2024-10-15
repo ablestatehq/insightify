@@ -1,13 +1,13 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
-import { COLOR } from '../../../constants/contants';
+import { COLOR } from '../../../constants/constants';
 
 interface ProfileCardProps {
   imageUrl?: string;
   text?: string;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({imageUrl, text}) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ imageUrl, text }) => {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>

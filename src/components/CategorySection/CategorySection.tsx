@@ -1,73 +1,53 @@
-import React from 'react'
-import {
-  StyleSheet,
-  ScrollView,
-  View
-} from 'react-native'
+import {StyleSheet,View} from 'react-native';
+import React, {useCallback, useMemo} from 'react'
 import CategoryItem from '../CategoryItem/CategoryItem';
-import { COLOR } from '../../constants/contants';
 
 interface CategorySectionProp {
   setFilteredItems: React.Dispatch<React.SetStateAction<string>>
-  categories: string[]
+  categories: string[];
+  initialCategory?: string;
 }
 
-const CategorySection: React.FC<CategorySectionProp> = ({ setFilteredItems, categories}) => {
+const CategorySection: React.FC<CategorySectionProp> =
+  ({initialCategory, setFilteredItems, categories}) => {
+    const initialActiveList = useMemo(() => {
+      const list = Array(categories.length).fill(false);
+      const initialIndex = categories.indexOf(initialCategory as string);
+      if (initialIndex !== -1) list[initialIndex] = true;
+      return list;
+    }, [categories, initialCategory]);
 
-  // const categories = ['All', 'For you','Saved'];
+    const [isActive, setIsActive] = React.useState<boolean[]>(initialActiveList);
 
-  const [isActive, setIsActive] = React.useState<boolean[]>(Array(categories.length).fill(false));
+    const setActiveCategory = useCallback((cat: string) => {
+      const newIndex = categories.indexOf(cat);
+      if (isActive[newIndex]) return;
 
-  const setActiveCategory = (index: number) => {
-    let newActive = Array(isActive.length).fill(false);
-    newActive[index] = true;
-    setIsActive(newActive)
+      const newActive = isActive.map((_, index) => index === newIndex);
+      setIsActive(newActive);
+      setFilteredItems(cat);
+    }, [categories, setFilteredItems, isActive]);
 
-    const category = categories[index];
-    setFilteredItems(category)
-  }
-
-  React.useEffect(() => {
-    setIsActive((prevState) => {
-      const newState = [...prevState];
-      if (newState.length > 0) {
-        // newState[prevState.length - 1] = true; 
-        newState[0] = true
-      }
-      return newState;
-    });
-  }, []);
-
-  return (
-    <View
-      style={styles.categorySection}
-    >
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      >
-        <View style={{flexDirection:'row',gap:5}}>
+    return (
+      <View style={styles.categorySection}>
+        <View style={styles.categoryView}>
           {categories.map((category: string, index: number) => (
             <CategoryItem
               key={index}
               name={category}
               isActive={isActive[index]}
-              setActive={() => setActiveCategory(index)}
+              setActive={() => setActiveCategory(category)}
             />
           ))}
         </View>
-      </ScrollView>
-    </View>
-  );
-}
+      </View>
+    );
+};
+
 
 export default React.memo(CategorySection)
 
 const styles = StyleSheet.create({
-  categorySection: {
-    // padding: 5,
-    marginTop: 5,
-    // borderBottomWidth: 0.5,
-    // borderBottomColor: COLOR.SECONDARY_50
-  }
-})
+  categorySection: {},
+  categoryView: { flexDirection: 'row', gap: 5 }
+});

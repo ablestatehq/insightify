@@ -122,5 +122,44 @@ export const MODALS = {
       }
     }
   }
-}`
+  }`,
+  'products':`query{
+  products{
+    data{
+      id
+      attributes{
+        name
+        tagline
+        description
+        createdAt
+        status
+        totalViews
+        media{
+          data{
+            id
+            attributes{
+              url
+            }
+          }
+        }
+        tutorial{
+          data{
+            id
+          }
+        }
+        uploadedBy{
+          data{
+            id
+            attributes{
+              firstName
+              lastName
+              primaryDomain
+            }
+          }
+        }
+      }
+    }
+  }
+  }
+`
 }

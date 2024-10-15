@@ -1,29 +1,100 @@
-import React, {useContext, useEffect} from 'react';
-
+import React from 'react';
 import {
-  View,
   StyleSheet,
-  SafeAreaView,
+  View,
+  FlatList,
+  ScrollView,
+  StatusBar,
 } from 'react-native';
 
 // constants
-import {COLOR} from '../../constants/contants'
-import OpportunityList from '../OpportunityStack/OpportunityList/OpportunityList';
-import {CodeTipSkelton} from '../../components/Skelton';
+import {COLOR, DIMEN} from '../../constants/constants'
+import {
+  SeeMore, TipCard, XPpoint, Fragment,
+  CompleteProfile, OpportunityItem, ProductCard,
+  ProfileForm,
+} from '../../components';
+
+import {isProfileComplete} from '../../helper/functions/functions';
+import useHomeLogic from './useHomeLogic';
+
+const renderTip = ({item, index}:{item: any, index: number}) =>
+  <TipCard
+    key={index}
+    title={item?.title}
+    description={item?.details}
+    views={0}
+    tagLine={item?.tags}
+  />
 
 const Home = () => {
-
+  const {
+    // context
+    xp,
+    user,
+    isLoggedIn,
+    navigation,
+    opportunities,
+    products,
+    codeTips,
+    // consts
+    profilePhoto,
+    randomIndex,
+    opportunityIndex,
+    // state
+    showCompleteProfile,
+    showProfileCard,
+    setShowProfileCard,
+    // handlers
+    toggleCompleteProfileCard,
+    handleCompleteProfile
+  } = useHomeLogic();
   return (
-    <SafeAreaView
-      style={styles.container}
-    >
-      <View
-        style={styles.headerContainer}
-      >
-        <OpportunityList />
-      </View>
-      
-    </SafeAreaView >
+    <View style={styles.container}>
+      <XPpoint number={xp} navigation={navigation} inCommunity={user && user.isMember} />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Product showcase section  */}
+          <Fragment
+            Component={ProductCard}
+            onPress={() => navigation.navigate('ProductList')}
+            title={'Featured Product'}
+            {...products[randomIndex]}
+          />
+        {isLoggedIn && !isProfileComplete(user) && showCompleteProfile &&
+          <CompleteProfile
+          handleClose={toggleCompleteProfileCard}
+          setShowProfileCard={setShowProfileCard}
+          />}
+        {/* Opprotunity section  */}
+          <Fragment
+            Component={OpportunityItem}
+            opportunity={opportunities[opportunityIndex]}
+            targetIndex={opportunityIndex}
+            title={"Featured Opportunities"}
+          />
+
+        <View style={styles.tipsView}>
+          <View style={styles.techTipStyle}>
+            <SeeMore title='Tech tips' />
+          </View>
+          {/*Tech tips section */}
+          <FlatList
+            data={codeTips.slice(0, 3)}
+            renderItem={renderTip}
+            keyExtractor={(item) => item?.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
+      </ScrollView>
+      <ProfileForm
+        visible={showProfileCard && isLoggedIn}
+        handleClose={handleCompleteProfile}
+        profilePhoto={profilePhoto}
+        setProfilePhoto={() => {}}
+      />
+      <StatusBar backgroundColor={COLOR.WHITE} barStyle='dark-content'/>
+    </View >
   );
 }
 
@@ -36,5 +107,15 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flex: 1,
+  },
+  techTipStyle: {
+    // paddingHorizontal: 10,
+    marginTop: 10,
+  },
+  tipsView: {
+    flex: 1,
+    paddingBottom: DIMEN.PADDING.LG,
+    marginVertical: DIMEN.PADDING.LG,
+    marginHorizontal: DIMEN.PADDING.ES
   }
 })

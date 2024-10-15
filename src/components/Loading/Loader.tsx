@@ -1,5 +1,5 @@
 import { ActivityIndicator, Modal, StyleSheet, View, Text, StatusBar } from "react-native";
-import { COLOR, FONTSIZE } from "../../constants/contants";
+import { COLOR, FONTSIZE } from "../../constants/constants";
 
 interface LoaderProps {
   message?: string

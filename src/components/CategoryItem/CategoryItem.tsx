@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, Pressable } from 'react-native';
-import { COLOR, FONTSIZE } from '../../constants/contants';
+import {StyleSheet, Text, Pressable} from 'react-native';
+import {COLOR, DIMEN, FONTSIZE} from '../../constants/constants';
+import {FONT_NAMES} from '../../assets/fonts/fonts';
 
 interface CategoryItemProps {
   name: string
@@ -16,7 +17,6 @@ function CategoryItem({
     <Pressable
       style={{
         ...styles.categoryItemContainer,
-        // backgroundColor:  COLOR.WHITE, //isActive ? COLOR.SECONDARY_300 : COLOR.PRIMARY_300,
         borderBottomWidth: isActive ? 4 : 0,
         borderBottomColor: isActive ? COLOR.PRIMARY_300 : ''
       }}
@@ -25,7 +25,6 @@ function CategoryItem({
       <Text
         style={{
           ...styles.text,
-          fontFamily: "RalewayMedium",
           color: isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300
         }}
       >
@@ -35,16 +34,17 @@ function CategoryItem({
   );
 }
 
-export default CategoryItem
+export default React.memo(CategoryItem)
 
 const styles = StyleSheet.create({
   categoryItemContainer: {
     // borderRadius: 5,
-    padding: 5,
-    paddingBottom: 7,
-    paddingHorizontal: 10
+    paddingBottom: DIMEN.PADDING.SM,
+    // paddingLeft: DIMEN.PADDING.ME,
+    marginRight: 20,
   },
   text: {
-    fontSize: FONTSIZE.BODY
+    fontSize: FONTSIZE.SMALL,
+    fontFamily: FONT_NAMES.Body,
   }
 })

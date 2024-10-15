@@ -1,9 +1,10 @@
 import React from 'react'
 import Icons from '../../assets/icons';
-import {Ionicons} from '@expo/vector-icons';
-import {StyleSheet, View, Text} from 'react-native';
-import {COLOR, FONTSIZE} from '../../constants/contants';
-import {resourceAge} from '../../helper/functions/functions';
+import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, View, Text } from 'react-native';
+import { COLOR, DIMEN, FONTSIZE } from '../../constants/constants';
+import { resourceAge } from '../../helper/functions/functions';
+import { FONT_NAMES } from '../../assets/fonts/fonts';
 
 interface OpportunityFooterProps {
   link: string
@@ -11,26 +12,33 @@ interface OpportunityFooterProps {
   bookmarked: boolean
   handleBookmark: () => void
   showReportModal: () => void
-  publishedDate?: string
+  // publishedDate?: string
 }
-const OpportunityFooter: React.FC<OpportunityFooterProps> = ({bookmarked, handleBookmark, link, showReportModal, publishedDate, location}) => {
-  
-  const opportunityLifeSpan = resourceAge(publishedDate as unknown as Date);
+const OpportunityFooter: React.FC<OpportunityFooterProps> = ({
+  bookmarked,
+  handleBookmark,
+  link,
+  showReportModal,
+  // publishedDate,
+  location,
+}) => {
+
+  // const opportunityLifeSpan = resourceAge(publishedDate as unknown as Date);
 
   return (
     <View style={styles.container}>
-      <View style={styles.footer}>
-        <View style={{ paddingBottom: 10 }}>
           <Text style={{ ...styles.text, color: COLOR.SECONDARY_300 }}>
-            {/* <Text style={styles.location}>Location:</Text> */}
             {location}
           </Text>
-        </View>
-      </View>
       <View style={{
-        flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: DIMEN.PADDING.SM,
+        // paddingHorizontal: DIMEN.PADDING.ME,
+        // borderWidth: 1,
       }}>
-        <Text style={{ opacity: 0.5, textTransform: 'capitalize' }}>{opportunityLifeSpan}</Text>
+        {/* <Text style={{ opacity: 0.5, textTransform: 'capitalize' }}>{opportunityLifeSpan}</Text> */}
         {!bookmarked && <Ionicons
           name="heart-outline"
           size={15}
@@ -53,11 +61,12 @@ export default OpportunityFooter
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
     paddingVertical: 5,
-    gap: 20,
     borderTopWidth: 0.5,
-    borderTopColor:COLOR.SECONDARY_50
+    borderTopColor: COLOR.SECONDARY_50,
+    paddingHorizontal: DIMEN.PADDING.ME,
+    alignItems: 'center',
   },
   mentionStyle: {
     flex: 1,
@@ -86,6 +95,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: FONTSIZE.BODY,
-    fontFamily: 'RalewayMedium',
+    fontFamily: FONT_NAMES.Title,
   },
 })

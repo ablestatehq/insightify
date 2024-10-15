@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { AntDesign, EvilIcons } from '@expo/vector-icons';
-import { COLOR } from '../constants/contants';
+import { COLOR } from '../constants/constants';
 
 const SignUpWith: React.FC = () => {
   return (

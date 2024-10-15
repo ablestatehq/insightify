@@ -24,7 +24,7 @@ const handleBookmark = async (id: string, opportunities:any[], setOpportunities:
 };
 
 // Function to handle techtips bookmarking
-async function bookmarkCodeTips(id: string, codeTips: any[], setCodeTips: (tip: any[]) => void) {
+async function bookmarkCodeTips(id: number, codeTips: any[], setCodeTips: (tip: any[]) => void) {
   const updatedCodetips = [...codeTips];
   const targetIndex = updatedCodetips.findIndex(opportunity => opportunity.id === id);
 

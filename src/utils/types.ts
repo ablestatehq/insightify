@@ -6,6 +6,27 @@ type userModal = {
   firstName: string
 }
 
+interface UserProfile {
+  blocked: boolean;
+  confirmed: boolean;
+  createdAt: string;
+  email: string;
+  expoPushToken: string | null;
+  firstName: string | null;
+  gender: string | null;
+  id: number;
+  isAvailable: boolean;
+  lastName: string | null;
+  photo: string | null;
+  primaryDomain: string | null;
+  provider: string;
+  secondaryDomain: string | null;
+  skills: string | null;
+  updatedAt: string;
+  username: string;
+}
+
+
 type NewsRouteParams = {
   title: string
   content: string
@@ -34,21 +55,35 @@ type RootStackParamList = {
   Login: {
     title?: string
     opportunityID?: string
+    // confirmation?: string
   }
-  OpportunityList: undefined;
+  // OpportunityList: undefined;
   Forgot: undefined
   Reset: {
-    email: string
-  }
+    code: string
+  },
+  ConfirmEmail: {
+    code?: string
+  },
+  ChatRoom: undefined;
+  Talent: undefined;
+  ProductDetail: ProductData;
+  Explore: {
+    tag?: string;
+    targetIndex?: number
+  };
+  ProductList: undefined;
+  AddProduct: undefined;
 }
 
 type LoginScreenProps = RouteProp<RootStackParamList, 'Login'>
 type ResetScreenProps = RouteProp<RootStackParamList, 'Reset'>
+type ConfirmEmailScreenProps = RouteProp<RootStackParamList, 'ConfirmEmail'>
 type DetailsScreenProps = RouteProp<RootStackParamList, 'Details'>
-
+type OpportunityListProps = RouteProp<RootStackParamList, 'Explore'>
 // interface for TalentSubmissionForm
 type TalentSubmissionForm = {
-  need: string[]// Looking for
+  need: string[]
   email: string
   phone: string
   heads?: number// Quantity needed.
@@ -158,11 +193,44 @@ interface ProfileType {
   secondaryDomain: string;
 }
 
+interface ViewCount {
+  [id: string]: number;
+}
+
+type ProductData = {
+  name: string;
+  id: number;
+  verified?: boolean;
+  description: string;
+  media?: {data: any[]};
+  uploadedBy?: any;
+  demo?: string;
+  totalViews?: number;
+  tagline?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  status?: string;
+  tutorial?: any
+}
+
+type IDialogBox = {
+  title: string;
+  message: string;
+  visible: boolean;
+  error?: Error | null;
+  acceptText?: string;
+  cancelText: string;
+  onAccept?: () => void;
+  onReject: () => void;
+};
 export {
+  IDialogBox,
   MemberInfo,
   userModal,
+  ProductData,
   ArticleType,
   ProfileType,
+  UserProfile,
   FeedbackObject,
   NewsRouteParams,
   HomeDisplayProps,
@@ -175,4 +243,6 @@ export {
   OpportunitiesFormType,
   ExpandableListItemProps,
   OpportunityItemCardProps,
+  ConfirmEmailScreenProps,
+  OpportunityListProps
 }

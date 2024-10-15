@@ -1,8 +1,9 @@
 import React from 'react'
-import {useFormikContext} from 'formik'
-import {Feather} from '@expo/vector-icons'
-import {COLOR, FONTSIZE} from '../../../constants/contants'
-import {StyleSheet, Text, TextInput, View} from 'react-native'
+import { useFormikContext } from 'formik'
+import { Feather } from '@expo/vector-icons'
+import { COLOR, FONTSIZE } from '../../../constants/constants'
+import { KeyboardTypeOptions, StyleSheet, Text, TextInput, View } from 'react-native'
+import { FONT_NAMES } from '../../../assets/fonts/fonts'
 
 interface InputTextProps {
   label?: string
@@ -10,9 +11,10 @@ interface InputTextProps {
   placeholder?: string
   isMultiLine?: boolean
   isInputSecure?: boolean
+  keyboardType?: KeyboardTypeOptions
 }
 
-const InputText: React.FC<InputTextProps> = ({ label, placeholder, fieldName, isMultiLine, isInputSecure }) => {
+const InputText: React.FC<InputTextProps> = ({ label, placeholder, fieldName, isMultiLine, isInputSecure, keyboardType }) => {
   const { values, handleChange, errors, touched, setFieldTouched } = useFormikContext<any>();
 
   const [inputFocused, setInputFocused] = React.useState<boolean>(false);
@@ -55,6 +57,7 @@ const InputText: React.FC<InputTextProps> = ({ label, placeholder, fieldName, is
           onBlur={handleBlurInput}
           onFocus={handleFocus}
           // keyboardType='url'
+          keyboardType={keyboardType as KeyboardTypeOptions}
           secureTextEntry={visible}
         />
         {isInputSecure && <Feather
@@ -77,23 +80,24 @@ const styles = StyleSheet.create({
   },
   inputText: {
     paddingHorizontal: 5,
-    fontFamily: 'ComfortaaBold',
+    fontFamily: FONT_NAMES.Heading,
   },
   viewContainerTextInput: {
     padding: 5,
     borderRadius: 5,
-    borderWidth: 0.5,
+    borderWidth: 1,
+    borderColor: COLOR.GREY_50,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
   },
   errorText: {
     color: COLOR.DANGER,
-    fontFamily: 'RalewayMedium'
+    fontFamily: FONT_NAMES.Title
   },
   labelText: {
     marginBottom: 5,
-    fontFamily: "RalewayBold",
+    fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.TITLE_2,
   }
 })

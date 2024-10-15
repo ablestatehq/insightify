@@ -1,7 +1,11 @@
 import React from 'react';
-import TalentIcon from './Talent';
-import {COLOR} from '../../constants/contants';
-import {MaterialIcons, MaterialCommunityIcons, Fontisto, AntDesign, Ionicons, FontAwesome, EvilIcons} from '@expo/vector-icons';
+import { COLOR } from '../../constants/constants';
+import {
+  MaterialIcons, MaterialCommunityIcons,
+  Fontisto, AntDesign, Ionicons, FontAwesome,
+  EvilIcons, Feather,
+  Octicons
+} from '@expo/vector-icons';
 
 interface IconName {
   name: string // 'Deck' | 'Sky' | 'Talent' | 'More',
@@ -18,25 +22,26 @@ const SIZE = {
 }
 const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
   switch (name) {
+    case 'Home':
+      return <Feather
+        name="home"
+        size={size ? size : 20}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
+        onPress={press}
+      />
     case 'Explore':
       return <Fontisto
         name="spinner-refresh"
-        size={size ? size : 24}
+        size={size ? size : 20}
         color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
     case 'Level up':
       return <MaterialCommunityIcons
         name="stairs-up"
-        size={size ? size : 24}
+        size={size ? size : 20}
         color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
-      />
-    case 'Talent':
-      return <TalentIcon
-        width={SIZE.HIGHEST}
-        height={SIZE.HIGHEST}
-        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_300}
       />
     case 'More':
       return <MaterialIcons
@@ -47,7 +52,7 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
       />
     case 'Share':
       return <AntDesign
-        size={24}
+        size={20}
         name="sharealt"
         color={"black"}
         onPress={press}
@@ -55,35 +60,35 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
     case 'report':
       return <Ionicons
         name={isActive ? "flag" : "flag-outline"}
-        size={size ? size : 24}
+        size={size ? size : 20}
         color={COLOR.PRIMARY_300}
         onPress={press}
       />
     case 'close':
       return <AntDesign
         name='closecircle'
-        size={size ? size : 24}
+        size={size ? size : 20}
         color={_color ? _color : COLOR.PRIMARY_300}
         onPress={press}
       />
     case 'clipboard':
       return <FontAwesome
         name="clipboard"
-        size={size ? size : 24}
+        size={size ? size : 20}
         color={_color ? _color : COLOR.PRIMARY_300}
         onPress={press}
       />
     case 'search':
       return <EvilIcons
         name="search"
-        size={size ? size : 24}
+        size={size ? size : 20}
         color={_color ? _color : COLOR.PRIMARY_300}
         onPress={press}
       />
     case 'message':
       return <AntDesign
         name='message1'
-        size={size ? size : 24}
+        size={size ? size : 20}
         color={_color ? _color : COLOR.PRIMARY_300}
         onPress={press}
       />
@@ -101,6 +106,21 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
         color={_color ? _color : COLOR.PRIMARY_300}
         onPress={press}
       />
+    case 'verified':
+      return <Octicons
+        name="verified"
+        size={size ? size : 20}
+        color={_color ? _color : COLOR.PRIMARY_300}
+        onPress={press}
+      />
+    case 'unverified':
+      return <Octicons
+        name="unverified"
+        size={size ? size : 20}
+        color={_color ? _color : COLOR.PRIMARY_300}
+        onPress={press}
+      />
+    
   }
 };
 

@@ -98,7 +98,6 @@ async function uploadImage(uri: string, jwt: string, refId: string, field: strin
     });
 
     const imageResponse = await response.json();
-    console.log(imageResponse?.errors);
 
     if (imageResponse?.data) {
       return {

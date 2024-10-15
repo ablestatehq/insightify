@@ -1,90 +1,84 @@
-import { Text, TextInput, StyleSheet, View, StatusBar, TouchableOpacity, Alert } from "react-native";
-import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import {Text, StyleSheet, View, StatusBar} from "react-native";
+import React, {useCallback, useMemo, useState} from "react";
+import {useNavigation} from "@react-navigation/native";
 import Header from "../../../../components/Headers/Header";
-import { Button } from "../../../../components";
-import { COLOR } from "../../../../constants/contants";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { forgotRequest } from "../../../../../api/auth";
+import {Button, InputText} from "../../../../components";
+import {COLOR} from "../../../../constants/constants";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {forgotRequest} from "../../../../../api/auth";
+import {Formik} from "formik";
+import {FONT_NAMES} from "../../../../assets/fonts/fonts";
+
+interface FormValues {
+  email: string;
+}
 
 export default function Forgot() {
-
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  // use hooks
-  const [email, setEmail] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  // Initial form values memoized to avoid unnecessary re-creations
+  const initialValues = useMemo(
+    () => ({
+      email: "",
+    }),
+    []
+  );
 
-  // fonts to be used.
+  // Memoize onSubmit handler
+  const onSubmit = useCallback((values: FormValues) => {
+    try {
+      setLoading(true);
+      forgotRequest(values.email)
+        .then((response) => {
+          if (response.ok) {
+            navigation.navigate("Otp");
+          }
+        })
+        .catch((error) => {});
+    } catch (error) { }
+    finally {
+      setLoading(false)
+    }
+    
+  }, [navigation]);
+
+  // Memoize navigation for Sign Up button
+  const handleSignUpNavigation = useCallback(() => {
+    navigation.navigate("SignUp");
+  }, [navigation]);
+
   return (
-    <View
-      style={styles.container}
-    >
-      {/* include the header  */}
+    <View style={styles.container}>
+      {/* header */}
       <Header title="Forgot password" />
-      <View style={styles.contentContainer}>
-        <View style={styles.inputView}>
-          <Text style={styles.text}>
-            Enter email address
-          </Text>
-          <TextInput
-            style={styles.inputField}
-            placeholder="example@gmail.com"
-            onChangeText={(text) => {
-              setEmail(text)
-            }}
-          />
-        </View>
-        {/* send verification code  */}
-        <Button
-          title="Proceed"
-          textStyle={{ color: COLOR.WHITE }}
-          btn={{ ...styles.btn, backgroundColor: COLOR.SECONDARY_300 }}
-          handlePress={async () => {
-            if (email != ""
-              && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-              const code = await forgotRequest(email)
-              if (code) {
-                console.log(code)
-                // navigation.navigate('Reset', {email})
-              } else {
-                console.log('Failed', code)
-                Alert.alert("Request Not Processed", "Reset password request failed", [
-                  {
-                    style: 'cancel',
-                    text: 'Try again',
-                    onPress: () => { }
-                  }
-                ],
-                  {
-                    cancelable: true,
-                    onDismiss: () => { }
-                  })
-              }
-            }
-          }}
-        />
+      <Formik initialValues={initialValues} onSubmit={onSubmit}>
+        {({ handleSubmit }) => (
+          <View style={styles.contentContainer}>
+            <InputText
+              fieldName={"email"}
+              label="Enter email address"
+              placeholder="email address"
+            />
+            <Button
+              title="Proceed"
+              textStyle={{ color: COLOR.WHITE }}
+              isLoading={loading}
+              btn={{ ...styles.btn, backgroundColor: COLOR.SECONDARY_300 }}
+              handlePress={handleSubmit}
+            />
 
-        <View
-          style={{
-            marginTop: 20
-          }}
-        >
-          <Text
-            style={{
-              textAlign: 'center',
-            }}
-          >Don't have an account?</Text>
-          <Button title="Sign up"
-            btn={{
-              ...styles.btn,
-              borderWidth: 1,
-              borderColor: COLOR.SECONDARY_300
-            }}
-            textStyle={{}}
-            handlePress={() => { navigation.navigate('SignUp') }}
-          />
-        </View>
-      </View>
+            <View style={{ marginTop: 20 }}>
+              <Text style={styles.signupText}>Don't have an account?</Text>
+              <Button
+                title="Sign up"
+                btn={{ ...styles.btn, ...styles.signupBtn }}
+                handlePress={handleSignUpNavigation}
+              />
+            </View>
+          </View>
+        )}
+      </Formik>
       <StatusBar backgroundColor={COLOR.WHITE} barStyle="dark-content" />
     </View>
   );
@@ -93,32 +87,25 @@ export default function Forgot() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLOR.WHITE
+    backgroundColor: COLOR.WHITE,
   },
   contentContainer: {
     flex: 1,
-    padding: 25
-  },
-  inputView: {
-    width: '100%'
-  },
-  inputField: {
-    padding: 5,
-    borderRadius: 5,
-    borderWidth: 1,
-    fontFamily: "",
-    paddingLeft: 10,
-    marginBottom: 10
-  },
-  text: {
-    fontFamily: ""
   },
   btn: {
-    width: "100%",
     flexDirection: "row",
     justifyContent: "center",
     borderRadius: 5,
-    margin: 5,
-    padding: 5
-  }
-})
+    marginHorizontal: 10,
+    marginVertical: 5,
+    padding: 5,
+  },
+  signupText: {
+    textAlign: "center",
+    fontFamily: FONT_NAMES.Title,
+  },
+  signupBtn: {
+    borderWidth: 1,
+    borderColor: COLOR.SECONDARY_300,
+  },
+});

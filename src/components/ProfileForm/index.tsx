@@ -1,24 +1,28 @@
+import {
+  View, StyleSheet, TextInput,
+  Modal, KeyboardAvoidingView,
+  TouchableWithoutFeedback, Platform,
+  Text, ToastAndroid, TouchableOpacity, Image, Pressable,
+} from "react-native";
 import React, {useContext} from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import {AntDesign, EvilIcons, FontAwesome} from '@expo/vector-icons';
 import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
-import {View, StyleSheet, TextInput, Modal, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Text, ToastAndroid, TouchableOpacity, Image, Pressable} from "react-native";
 
 import Button from '../Button';
 import {ProfileType} from '../../utils/types';
-import {COLOR, FONTSIZE} from '../../constants/contants';
+import {COLOR, FONTSIZE} from '../../constants/constants';
 import useLocalStorage from '../../helper/customHooks/useLocalStorage';
-import {DOMAIN, SKILLS, GENDER} from '../../utils/Enums'
-import {updateUser} from '../../../api/auth';
+import {DOMAIN, SKILLS, GENDER} from '../../utils/Enums';
+import {setUserPhotoNULL, updateUser} from '../../../api/auth';
 import {AppContext} from '../../helper/context/AppContext';
 import CheckBox from '../CheckBox';
-// import {uploadImage} from '../../../api/strapiJSAPI';
 import {storeToLocalStorage} from '../../utils/localStorageFunctions';
 import CustomModal from '../Modals/CustomModal';
 
-// import * as FileSystem from 'expo-file-system';
-import {uploadImage} from '../../../api/strapiJSAPI';
-// import { uploadImage } from '../../../api/grapiql';
+import {deleteImage, uploadImage} from '../../../api/strapiJSAPI';
+import {FONT_NAMES} from '../../assets/fonts/fonts';
+import image_name_extension from '../../utils/imageName';
 
 interface ProfileFormProps {
   visible: boolean
@@ -29,8 +33,8 @@ interface ProfileFormProps {
 
 export default function ProfileForm({handleClose, visible, profilePhoto, setProfilePhoto}: ProfileFormProps) {
 
-  const {user, jwt, setUser} = useContext(AppContext);
-  
+  const {user, jwt} = useContext(AppContext);
+
   const initialProfile: ProfileType = {
     firstName: user?.firstName ?? '',
     lastName: user?.lastName ?? '',
@@ -42,16 +46,17 @@ export default function ProfileForm({handleClose, visible, profilePhoto, setProf
   }
 
   const [skills, setSkills] = React.useState<string[]>([]);
-  
+
   const [modalData, setModalData] = React.useState({
     title: '',
     message: '',
     visible: false,
     closeModal: function () {
-      setModalData(prev => ({...prev, visible: false}));
+      setModalData(prev => ({ ...prev, visible: false }));
       handleClose();
     }
-  })
+  });
+
   const [values, setValues] = useLocalStorage('profileImageData', initialProfile as unknown as Record<string, unknown>);
 
   // handle submission
@@ -62,42 +67,37 @@ export default function ProfileForm({handleClose, visible, profilePhoto, setProf
         ToastAndroid.show('Failed to submit profile', 5000);
         return;
       };
-      if (profilePhoto) {
-        const formData = new FormData();
-        const blob = await (await fetch(profilePhoto as string)).blob();
 
-
-        formData.append("files",
-          blob,
-          'profile.jpg',
-        );
-        formData.append('refId', user?.id);
-        formData.append("source", "users-permissions")
-        formData.append("ref", "user")
-        formData.append("field", "photo")
-
-        // const imageResponse = await uploadImage(profilePhoto, jwt, user?.id, 'plugin::users-permissions.user', 'user', 'photo');
-        // console.log("Image response: ",imageResponse)
-        // console.log(imageResponse);
-        // if (!imageResponse) {
-        //   await storeToLocalStorage('profilePicture', { profilePhoto });
-        // }
+      if (!profilePhoto?.startsWith('http') && user.photo) {
+        await setUserPhotoNULL(user.id, jwt);
+        await deleteImage(user.photo.id, jwt);
       }
-    
 
-      setUser(response?.data);
+      if (profilePhoto && !profilePhoto.startsWith('http')) {
+        const formData = new FormData();
+        const {name, extension} = image_name_extension(profilePhoto);
+        formData.append('files', {uri: profilePhoto, type: `image/${extension}`, name});
+        formData.append('refId', user?.id.toString());
+        formData.append('ref', 'plugin::users-permissions.user');
+        formData.append('field', 'photo');
+
+        const imageResponse = await uploadImage(formData, jwt);
+
+        if (!imageResponse) {
+          await storeToLocalStorage('profilePicture', { profilePhoto });
+        }
+      }
 
       ToastAndroid.show('Successfully submitted your profile.', 5000);
-      setModalData(prev => ({...prev, title: 'Profile updated!'}));
-      setModalData(prev => ({...prev, message: 'You have successfully updated your profile'}));
-      setModalData(prev => ({...prev, visible: true}));
+      setModalData(prev => ({ ...prev, title: 'Profile updated!' }));
+      setModalData(prev => ({ ...prev, message: 'You have successfully updated your profile' }));
+      setModalData(prev => ({ ...prev, visible: true }));
       handleClose();
-
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleChange = (key: keyof ProfileType, value: unknown) => {
-    setValues({ ...values, [key]: value });
+    setValues({...values, [key]: value});
   }
 
   // Pick the profile image
@@ -110,8 +110,8 @@ export default function ProfileForm({handleClose, visible, profilePhoto, setProf
     });
 
     if (!result.canceled) {
-      // handleChange('photo', result.assets[0].uri);
       setProfilePhoto(result.assets[0].uri);
+      
     }
   }
 
@@ -146,16 +146,22 @@ export default function ProfileForm({handleClose, visible, profilePhoto, setProf
                     size={70}
                     name="user-circle-o"
                     color={COLOR.SECONDARY_300}
-                    style={{alignSelf: 'center', marginTop: 10}}
+                    style={{ alignSelf: 'center', marginTop: 10 }}
                     onPress={pickImage}
                   />
                 )}
                 {profilePhoto && (
                   <Pressable onPress={pickImage}>
-                    <Image source={{uri: profilePhoto}} style={{width: 70, height: 70, alignSelf: 'center', borderRadius: 35}} />
+                    <Image
+                      source={{uri: profilePhoto}} 
+                      style={{width: 70, height: 70, alignSelf: 'center', borderRadius: 35}}
+                       />
                   </Pressable>
                 )}
-                <Text style={{ fontFamily: 'ComfortaaBold', textAlign: 'center', marginVertical: 10 }}>Complete your profile</Text>
+                <Text
+                  style={{fontFamily: FONT_NAMES.Heading, textAlign: 'center', marginVertical: 10}}>
+                  Complete your profile
+                </Text>
                 <TextInput
                   style={styles.input}
                   placeholder="First Name"
@@ -169,7 +175,15 @@ export default function ProfileForm({handleClose, visible, profilePhoto, setProf
                   onChangeText={value => handleChange('lastName', value)}
                 />
 
-                <View style={{ borderWidth: 1, margin: 5, borderRadius: 5, paddingHorizontal: 5, borderColor: COLOR.SECONDARY_100, paddingVertical: 5 }}>
+                <View
+                  style={{
+                    margin: 5,
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    paddingVertical: 5,
+                    paddingHorizontal: 5,
+                    borderColor: COLOR.SECONDARY_100,
+                  }}>
                   <Dropdown
                     data={GENDER}
                     labelField='label'
@@ -181,11 +195,15 @@ export default function ProfileForm({handleClose, visible, profilePhoto, setProf
                       color: COLOR.SECONDARY_75,
                     }}
                     onChange={function (item) { handleChange('gender', item.value) }}
-                    
+
                   />
                 </View>
 
-                <View style={{ borderWidth: 1, margin: 5, borderRadius: 5, paddingHorizontal: 5, borderColor: COLOR.SECONDARY_100, paddingVertical: 5 }}>
+                <View style={{
+                  borderWidth: 1, margin: 5,
+                  borderRadius: 5, paddingHorizontal: 5,
+                  borderColor: COLOR.SECONDARY_100, paddingVertical: 5
+                }}>
                   <Dropdown
                     data={DOMAIN()}
                     labelField='label'
@@ -197,17 +215,6 @@ export default function ProfileForm({handleClose, visible, profilePhoto, setProf
                       color: COLOR.SECONDARY_75,
                     }}
                     onChange={function (item) { handleChange('primaryDomain', item.value) }}
-                  // renderLeftIcon={() => values?.primaryDomain && (values?.primaryDomain as string).length > 0 ? (
-                  //   <EvilIcons
-                  //     style={styles.icon}
-                  //     color="black"
-                  //     name="close"
-                  //     size={20}
-                  //     onPress={function () { handleChange('primaryDomain', null) }}
-                  //   />
-                  // ) :
-                  //   null
-                  // }
                   />
                 </View>
                 <View style={{ borderWidth: 1, margin: 5, borderRadius: 5, paddingHorizontal: 5, borderColor: COLOR.SECONDARY_100, paddingVertical: 5 }}>

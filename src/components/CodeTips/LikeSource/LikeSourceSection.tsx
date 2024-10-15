@@ -1,10 +1,10 @@
 import React from 'react'
 import { Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import { AntDesign, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
-import { COLOR } from '../../../constants/contants'
+import { COLOR } from '../../../constants/constants'
 import onShare from '../../../utils/onShare'
 
-interface LikeSourceSectionProps{
+interface LikeSourceSectionProps {
   sourceName: string
   sourceLink: string
 }
@@ -12,7 +12,7 @@ const LikeSourceSection = (
   {
     sourceName,
     sourceLink
-  }:LikeSourceSectionProps
+  }: LikeSourceSectionProps
 ) => {
   const [favorite, setFavorite] = React.useState<boolean>(false);
 
@@ -25,16 +25,14 @@ const LikeSourceSection = (
         const url = sourceLink.startsWith('http') ? sourceLink : `https://${sourceLink}`;
         Linking.openURL(url)
           .then(response => {
-            // console.log(response);
           })
           .catch(error => {
-            console.log(error?.message);
             // Provide a user-friendly message here to inform the user about the issue.
           });
       }
     }
   }
-  
+
   return (
     <View
       style={styles.sourceContainer}

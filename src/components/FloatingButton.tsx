@@ -1,7 +1,8 @@
 import React from 'react'
-import {Feather} from '@expo/vector-icons';
-import {COLOR, FONTSIZE} from "../constants/contants"
-import {Pressable, StyleSheet, Text} from 'react-native'
+import { Feather } from '@expo/vector-icons';
+import { COLOR, FONTSIZE } from "../constants/constants"
+import { Pressable, StyleSheet, Text } from 'react-native'
+import { FONT_NAMES } from '../assets/fonts/fonts';
 
 interface FloatingButtonProps {
   title?: string
@@ -15,7 +16,7 @@ interface FloatingButtonProps {
     left?: number
     top?: number
     marginRight?: number
-}
+  }
 }
 
 const FloatingButton: React.FC<FloatingButtonProps> =
@@ -28,28 +29,28 @@ const FloatingButton: React.FC<FloatingButtonProps> =
     buttonPosition
   }) => {
 
-  return (
-    <Pressable
-      style={{
-        ...styles.container,
-        ...buttonPosition,
-        padding: title ? 5 : 10,
-        paddingHorizontal: title ? 15 : 10,
-        borderRadius: borderRadius ? borderRadius : 100,
-        backgroundColor: bgColor ? bgColor : COLOR.PRIMARY_300,
-      }}
-      onPress={press}
-    >
-      {title && <Text
+    return (
+      <Pressable
         style={{
-        ...styles.text,
-        color: textColor ? textColor : COLOR.WHITE
+          ...styles.container,
+          ...buttonPosition,
+          padding: title ? 5 : 10,
+          paddingHorizontal: title ? 15 : 10,
+          borderRadius: borderRadius ? borderRadius : 100,
+          backgroundColor: bgColor ? bgColor : COLOR.PRIMARY_300,
         }}
-      >{title}</Text>}
-      {!title && <Feather name="plus" size={24} color={COLOR.WHITE} />}
-    </Pressable>
-  )
-}
+        onPress={press}
+      >
+        {title && <Text
+          style={{
+            ...styles.text,
+            color: textColor ? textColor : COLOR.WHITE
+          }}
+        >{title}</Text>}
+        {!title && <Feather name="plus" size={24} color={COLOR.WHITE} />}
+      </Pressable>
+    )
+  }
 
 export default FloatingButton
 
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     borderColor: COLOR.PRIMARY_300
   },
   text: {
-    fontFamily: 'RalewayBold',
+    fontFamily: FONT_NAMES.Title,
     fontSize: FONTSIZE.TITLE_2,
     textAlign: 'center',
     marginBottom: 5,

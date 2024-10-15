@@ -1,91 +1,111 @@
-import React, {useState, useEffect, useContext, useRef} from 'react';
-import {View, Text, TextInput, FlatList, StyleSheet, Pressable} from 'react-native';
-import {getStrapiData} from '../../../api/strapiJSAPI';
-import {COLOR, FONTSIZE} from '../../constants/contants';
+import React, {useContext} from 'react';
 import {Ionicons} from '@expo/vector-icons';
-import {ProfileCard} from '../../components';
+import {COLOR, DIMEN} from '../../constants/constants';
 import Header from '../../components/Headers/Header';
-import { AppContext } from '../../helper/context/AppContext';
+import Message from '../../components/Cards/Message';
+import useChat from '../../helper/customHooks/useChat';
+import {AppContext} from '../../helper/context/AppContext';
+
+import {
+  View, FlatList, StyleSheet,
+  Pressable, ActivityIndicator,
+} from 'react-native';
+import {SendCard} from '../../components';
 
 const ChatScreen = () => {
-  const {user, community} = useContext(AppContext)
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
-  const flatListRef = useRef(null);
+  const {user, jwt} = useContext(AppContext);
+  const {
+    selected,
+    setSelected,
+    messageMap,
+    messages,
+    replyingTo,
+    refreshing,
+    newMessage,
+    modalVisibility,
+    handleModalVisibility,
+    // set data
+    setNewMessage,
+    // handle data
+    handleSendMessage,
+    handleDeleteMessage,
+    handleEndReached,
+    onReaction,
+    onReply,
+    onCloseReply,
+  } = useChat(user.id, jwt);
 
-
-  const fetchMessages = async () => {
-    try {
-      const data = await getStrapiData('group-messages');
-      setMessages(data);
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchMessages();
-  }, []);
+  const sendMessage = () => handleSendMessage(replyingTo as string);
+  const renderMessage = React.useCallback(({item}: {item: string}) => {
+    const msg = messageMap.get(item);
+    return (
+      <View
+        key={item}
+        style={{
+          margin: DIMEN.PADDING.ES,
+          padding: DIMEN.PADDING.ES,
+        }}
+      >
+        <Message
+          key={item}
+          userId={user.id}
+          msgKey={item}
+          selected={selected}
+          onReaction={onReaction}
+          setSelectedMsg={setSelected}
+          handleModalVisibility={handleModalVisibility}
+          modalVisibility={modalVisibility}
+          {...msg}
+        />
+     </View>
+    );
+  }, [messageMap]);
   
   return (
     <View style={styles.container}>
-      <Header />
-      <View style={{paddingVertical: 5, padding: 10}}>
-        <Text style={{fontFamily: 'ComfortaaBold', fontSize: FONTSIZE.TITLE_1}}>Community chat</Text>
-        <View style={{margin: 5, flexDirection: 'row'}}>
-          {community.slice(0,15).map((member, index) => (
-            <View
-              key={index}
-              // eslint-disable-next-line react-native/no-inline-styles
-              style={{
-                marginLeft: index === 0 ? 0 : -5,
-              }}>
-              <ProfileCard text={member.email.slice(0,2).toUpperCase()} key={index} />
-            </View>
-          ))}
+      <View style={styles.contentHeader}>
+        <View style={styles.navStyle}>
+          <Header
+            title='Chat'
+            backgroundColor={COLOR.WHITE}
+            showMore={modalVisibility}
+            selected={selected}
+            onReply={onReply}
+            onDelete={handleDeleteMessage}
+            onClose={handleModalVisibility}
+          />
         </View>
       </View>
-      <FlatList
-        data={messages}
-        ref={flatListRef}
-        keyExtractor={(item: {id: string, message: string}) => item?.id.toString()}
-        showsVerticalScrollIndicator={false}
-        style={{ paddingHorizontal: 10 }}
-        renderItem={({ item }) => {
-          return (
-            <View style={styles.messageContainer}>
-              <Text style={styles.sender}>{item?.message}</Text>
-              <Text>{item?.message}</Text>
-            </View>
-          )
-        }}
-        ListEmptyComponent={() => (
-          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center',}}>
-            <Text style={{fontFamily: 'ComfortaaBold' }}>Chat empty</Text>
+      <View style={styles.messagesContainer}>
+        {refreshing ? (
+          <View style={styles.refreshStyle}>
+            <ActivityIndicator size="small" color={COLOR.PRIMARY_200} />
           </View>
-        )}
-        onContentSizeChange={() => flatListRef.current}
-      />
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={{ ...styles.input, borderRadius: 100, paddingHorizontal: 15 }}
-          value={newMessage}
-          onChangeText={setNewMessage}
-          placeholder="Type your message..."
+        ) : null}
+        <FlatList
+          data={messages}
+          inverted
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item) => item}
+          renderItem={renderMessage}
+          onEndReached={handleEndReached}
+          onEndReachedThreshold={0.0}
         />
-        <Pressable style={{
-          backgroundColor: COLOR.SECONDARY_300,
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: 40,
-          height: 40,
-          borderRadius: 30,
-          paddingLeft: 5,
-          padding: 2.5,
-        }}
-          onPress={() =>{}}
+      </View>
+      <View style={styles.inputContainer}>
+        <SendCard
+          replyingTo={replyingTo}
+          messageMap={messageMap}
+          closeReply={onCloseReply}
+          userId={user.id}
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+        />
+        <Pressable
+          style={styles.sendBtnStyle}
+          onPress={sendMessage}
         >
-          <Ionicons name="send" size={18} color="white" />
+          <Ionicons name="send" size={18} color={COLOR.WHITE} />
         </Pressable>
       </View>
     </View>
@@ -97,28 +117,48 @@ export default ChatScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: COLOR.WHITE
+    backgroundColor: COLOR.GREY_50,
+  },
+  contentHeader: {
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: COLOR.WHITE,
+    paddingRight: DIMEN.PADDING.ME,
+    justifyContent: 'space-between',
+  },
+  messagesContainer: {
+    flex: 1, padding: 15,
+    backgroundColor: 'transparent',
+  },
+  inputContainer: {
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    borderRadius: 5,
+    gap: 10,
+    padding: 5,
   },
   messageContainer: {
     flexDirection: 'row',
     marginBottom: 10,
+    // padding: 10,
+    borderRadius: 10,
   },
-  sender: {
-    fontWeight: 'bold',
-    marginRight: 5,
-  },
-  inputContainer: {
-    flexDirection: 'row',
+  content: {},
+  sendBtnStyle: {
+    backgroundColor: COLOR.PRIMARY_300,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal:10
+    width: 40,
+    height: 40,
+    borderRadius: 30,
+    paddingLeft: 5,
+    padding: 2.5,
   },
-  input: {
-    flex: 1,
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: COLOR.GREY_50,
-    borderRadius: 5,
+  refreshStyle: {
+    alignItems: 'center',
     padding: 5,
+    backgroundColor: 'Transparent',
   },
+  navStyle: { flex: 1 }
 });

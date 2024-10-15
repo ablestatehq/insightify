@@ -1,177 +1,191 @@
 import React, {useContext, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {Pressable, StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-
-//renderer
-import HTML from 'react-native-render-html';
-
-import {COLOR, FONTSIZE} from '../../constants/contants';
-import {AppContext} from '../../helper/context/AppContext';
-import {OpportunityItemCardProps} from '../../utils/types';
-
 import OpportunityFooter from './OpportunityFooter';
-import {OpenLink, handleBookmark} from '../../helper/functions/handleFunctions';
-import {generateDate} from '../../helper/functions/functions';
+
+import HTML from 'react-native-render-html';
 import {AntDesign} from '@expo/vector-icons';
-import {environments} from '../../constants/environments';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {TouchableOpacity, StyleSheet, Text, View, Image, Pressable} from 'react-native';
 
-const OpportunityItemCard: React.FC<OpportunityItemCardProps> =
-  ({
-    opportunity,
-    showReportModal
-  }) => {
-    const {setOpportunities, opportunities, isLoggedIn} = useContext(AppContext);
+// Constants and Helpers
+import {COLOR, DIMEN, FONTSIZE } from '../../constants/constants';
+import {AppContext } from '../../helper/context/AppContext';
+import { OpportunityItemCardProps } from '../../utils/types';
+import { OpenLink, handleBookmark } from '../../helper/functions/handleFunctions';
+import { generateDate, resourceAge } from '../../helper/functions/functions';
+import { environments } from '../../constants/environments';
+import { FONT_NAMES } from '../../assets/fonts/fonts';
 
-    const {BASE_URL} = environments;
-    const navigation = useNavigation<NativeStackNavigationProp<any>>();
-    const {Title, Category,Role,URL,Expires, Location,publishedAt, compensation, Contact,company_logo, cover_image, Company, Description, bookmarked, id} = opportunity;
-    
-    // const {date} = generateDate(createdAt);
-    const deadline = Expires ? generateDate(Expires).date : null;
+const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, showReportModal }) => {
+  const { setOpportunities, opportunities, isLoggedIn } = useContext(AppContext);
+  const { BASE_URL } = environments;
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-    // useStates
-    const [expandable, setExpandable] = useState<boolean>(false);
+  const {
+    Title,
+    Category,
+    Role,
+    URL,
+    Expires,
+    Location,
+    publishedAt,
+    compensation,
+    Contact,
+    company_logo,
+    cover_image,
+    Company,
+    Description,
+    bookmarked,
+    id,
+  } = opportunity;
 
-    const handleExpandable = () => {
-      setExpandable(value => !value);
-    }
-    
-    return (
-      <View style={styles.container}>
-        <View style={styles.headSection}>
-          <View style={{flex: 1, paddingTop: 10, flexDirection: 'row', overflow: 'hidden', gap: 15}}>
-            <View style={{
-              width: 50,
-              height: 50,
-              justifyContent: 'center',
-              backgroundColor: (company_logo.data?.attributes?.url == undefined) ? COLOR.SECONDARY_300 : COLOR.WHITE,
-              borderRadius: 5,
-            }}>
-              {company_logo.data && <Image source={{ uri: `${BASE_URL}${company_logo.data?.attributes?.url}` }} height={40} width={40} style={{alignSelf:'center'}} />}
-              {!company_logo.data && <Text style={{ textAlign: 'center', color: COLOR.WHITE }}>{Category == 'Job' ? Category : 'Dev'}</Text>}
-            </View>
-            <View style={{flex: 1}}>
-              <Text style={styles.heading}>{Title}</Text>
-              <Text style={styles.company}>{Company}</Text>
-            </View>
+  const deadline = Expires ? generateDate(Expires).date : null;
+  const [expandable, setExpandable] = useState<boolean>(false);
+
+  const toggleExpandable = () => {
+    setExpandable(prevState => !prevState);
+  };
+
+  const opportunityLifeSpan = resourceAge(publishedAt);
+  return (
+    <View style={styles.container}>
+      <View style={styles.headSection}>
+        <View style={styles.logoContainer}>
+          <View style={[styles.logo, {
+            backgroundColor: company_logo.data?.attributes?.url ? COLOR.WHITE : COLOR.SECONDARY_300
+          }]}>
+            {company_logo.data ? (
+              <Image source={{ uri: `${BASE_URL}${company_logo.data?.attributes?.url}` }} style={styles.logoImage} />
+            ) : (
+              <Text style={styles.logoText}>{Category === 'Job' ? Category : 'Dev'}</Text>
+            )}
+          </View>
+          <View style={styles.titleContainer}>
+            <Text numberOfLines={2} ellipsizeMode='tail' style={styles.heading}>{Title}</Text>
+            <Text style={styles.company}>
+              {Company} 
+              <Text style={styles.timeText}>  {opportunityLifeSpan}</Text>
+            </Text>
           </View>
         </View>
-        
-        <TouchableOpacity
-          style={styles.description}
-          onPress={handleExpandable}
-        >
-          {cover_image.data && <Image source={{ uri: cover_image.data.attributes.url }} />}
-          <HTML
-            contentWidth={100}
-            source={{ html: Description }}
-            defaultTextProps={{
-              numberOfLines: expandable ? 10 : 2,
-              style: { fontFamily: 'LatoRegular', fontSize: 16 }
-            }}
-          />
-        </TouchableOpacity>
-        {expandable && (<View style={styles.description}>
-          {compensation && <Text style={{fontFamily:'ComfortaaBold'}}>Compesation: {compensation}</Text>}
-          {deadline && <Text style={{ textAlign: 'right' }}>Deadline: {deadline}</Text>}
-          <Pressable style={styles.visitStyle} onPress={() => OpenLink(URL)}>
-            <Text style={styles.visitText}>Apply</Text>
+      </View>
+
+      <TouchableOpacity style={styles.description} onPress={toggleExpandable}>
+        {cover_image.data && <Image source={{ uri: cover_image.data.attributes.url }} style={styles.coverImage} />}
+        <HTML
+          contentWidth={100}
+          source={{ html: Description }}
+          defaultTextProps={{
+            numberOfLines: expandable ? 10 : 2,
+            style: styles.descriptionText,
+          }}
+        />
+      </TouchableOpacity>
+
+      {expandable && (
+        <View style={styles.additionalInfo}>
+          {compensation && <Text style={styles.compensation}>Compensation: {compensation}</Text>}
+          {deadline && <Text style={styles.deadline}>Deadline: {deadline}</Text>}
+          <Pressable style={styles.applyButton} onPress={() => OpenLink(URL)}>
+            <Text style={styles.applyButtonText}>Apply</Text>
             <AntDesign name="arrowright" size={19} color={COLOR.SECONDARY_200} />
           </Pressable>
-        </View>)}
+        </View>
+      )}
 
-        <OpportunityFooter
-          link={URL}
-          bookmarked={bookmarked}
-          handleBookmark={function (): void {
-            if (isLoggedIn) {
-              handleBookmark(id, opportunities, setOpportunities);
-            } else {
-              navigation.navigate('Login', { title: 'Login to save \nthis Opportunity', opportunityID: id });
-            }
-          }}
-          publishedDate={publishedAt}
-          showReportModal={showReportModal}
-          location={Location ?? 'Remote'}
-        />
-      </View>
-    )
-  }
-
-export default React.memo(OpportunityItemCard)
+      <OpportunityFooter
+        link={URL}
+        bookmarked={bookmarked}
+        handleBookmark={() => {
+          if (isLoggedIn) {
+            handleBookmark(id, opportunities, setOpportunities);
+          } else {
+            navigation.navigate('Login', {title: 'Login to save \nthis Opportunity', opportunityID: id});
+          }
+        }}
+        // publishedDate={publishedAt}
+        showReportModal={showReportModal}
+        location={Location ?? 'Remote'}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
-    elevation: 0.5,
-    marginBottom: 10,
-    paddingRight: 10,
-    backgroundColor: COLOR.WHITE
+    elevation: 1,
+    backgroundColor: COLOR.WHITE,
+    borderRadius: 5,
+    margin: DIMEN.PADDING.SM,
   },
   headSection: {
-    gap: 5,
-    paddingLeft: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  heading: {
-    fontSize: FONTSIZE.TITLE_2,
-    fontFamily: 'RalewayBold',
-    flexWrap: 'wrap'
-  },
-  description: {
-    padding: 10,
-    alignItems:'flex-start'
-  },
-  footer: {
-    borderTopColor: COLOR.SECONDARY_50,
+  logoContainer: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: "space-between",
     alignItems: 'center',
-    paddingLeft: 10
+    gap: 15,
+    padding: DIMEN.PADDING.SM,
   },
-  text: {
-    fontSize: FONTSIZE.BODY,
-    fontFamily: 'RalewayMedium',
-  },
-  linkText: {
-    fontFamily: 'RalewayLight',
-    fontSize: FONTSIZE.SMALL,
-  },
-  btn: {
-    paddingHorizontal: 5,
+  logo: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
     borderRadius: 5,
   },
-  btnText: {
-    fontFamily: 'ComfortaaBold',
-    fontSize: FONTSIZE.TITLE_2,
+  logoImage: {
+    // alignSelf: 'center',
+    height: 40,
+    width: 40,
+  },
+  logoText: {
     textAlign: 'center',
-    color: COLOR.PRIMARY_300
+    color: COLOR.WHITE,
   },
-  location: {
-    color: COLOR.SECONDARY_75
+  titleContainer: {
+    flex: 1,
   },
-  visitText: {
-    color: COLOR.SECONDARY_500,
-  },
-  visitStyle: {
-    gap: 10,
-    paddingVertical: 5,
-    // paddingBottom:7,
-    flexDirection: 'row',
-    backgroundColor: COLOR.SECONDARY_50,
-    borderRadius: 50,
-    paddingHorizontal: 10,
-    marginTop: 20,
-    alignItems: 'center',
-    
-    // alignItems:'flex-start'
+  heading: {
+    fontFamily: FONT_NAMES.Title,
   },
   company: {
-    fontFamily: 'RalewayRegular',
-    fontSize:FONTSIZE.SMALL
+    fontFamily: FONT_NAMES.Body,
+    fontSize: FONTSIZE.SMALL,
   },
-  contact: {
+  description: {
+    padding: 5,
+  },
+  descriptionText: {
+    fontFamily: FONT_NAMES.Body,
+    fontSize: 16,
+  },
+  additionalInfo: {
+    padding: 5,
+    alignItems: 'flex-start',
+  },
+  compensation: {
+    fontFamily: FONT_NAMES.Heading,
+  },
+  deadline: {
+    textAlign: 'right',
+  },
+  applyButton: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    backgroundColor: COLOR.SECONDARY_50,
+    borderRadius: 50,
+    marginTop: 10
+  },
+  applyButtonText: {
+    color: COLOR.SECONDARY_500,
+  },
+  coverImage: {},
+  timeText: {
+    color: COLOR.SECONDARY_100,
+    // opacity: 0.2,
+  },
+});
 
-  }
-})
+export default React.memo(OpportunityItemCard);
