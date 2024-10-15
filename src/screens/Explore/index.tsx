@@ -117,9 +117,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0.5,
   },
   scrollContent: {
-    // flex: 1,
-    padding: 5,
-    paddingBottom: 25,
+    flexGrow: 1,
   },
   noTextContainer: {
     flex: 1,

@@ -5,7 +5,7 @@ import { COLOR, FONTSIZE } from '../../constants/constants';
 
 const Index = () => (
   <View style={styles.container}>
-    <Text style={styles.noMatchText}>No opportunities found</Text>
+    <Text style={styles.noMatchText}>No Items found</Text>
   </View>
 );
 
@@ -18,9 +18,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   noMatchText: {
-    fontFamily: FONT_NAMES.Heading,
-    fontSize: FONTSIZE.TITLE_2,
+    fontFamily: FONT_NAMES.Body,
+    fontSize: FONTSIZE.SMALL,
     color: COLOR.SECONDARY_75,
-    textAlign: 'center',
   },
 });
