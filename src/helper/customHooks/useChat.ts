@@ -189,6 +189,7 @@ const useChat = (userId: number, jwt: string) => {
   useEffect(() => {
     const initializeChat = async () => {
       const cachedMsgs = await getStoredMessages();
+      console.log("These are the cached messages: ", cachedMsgs)
       const cachedMessages = await loadMessagesFromLocalStorage();
       if (cachedMessages) {
         setMessageMap(JSON.parse(cachedMessages));
