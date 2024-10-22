@@ -30,6 +30,5 @@ export {default as CompleteProfile} from './CompleteProfile'
 export {default as Fragment} from './withSeeMore'
 export {default as SendCard} from './Cards/SendCard'
 export {default as MessageList} from './MessageList'
-export {default as BackgroundImageSlider} from './BackgroundImageSlider'
 export {default as EmptyState} from './EmptyState'
 export {default as Dialog} from './Dialog';
