@@ -4,9 +4,8 @@ import {FontAwesome6} from '@expo/vector-icons';
 import {COLOR, DIMEN} from '../../constants/constants';
 import {FONT_NAMES} from '../../assets/fonts/fonts';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../utils/types';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../utils/types';
 
 
 interface XPpointProps {
@@ -15,7 +14,6 @@ interface XPpointProps {
   inCommunity: boolean;
 }
 const Index = ({number, navigation, inCommunity}: XPpointProps) => {
-  // const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
     <View style={styles.container}>
       <View style={styles.xpView}>
