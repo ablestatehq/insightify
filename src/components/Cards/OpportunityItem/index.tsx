@@ -25,7 +25,7 @@ const Index = (props: any) => {
             '/uploads/join_us_eee8c7c677.jpg'}`
         }}
         resizeMethod="resize"
-        resizeMode="cover"
+        resizeMode="repeat"
         style={styles.imageStyles}
       />
       <Text numberOfLines={3} style={styles.titleStyle}>
@@ -51,9 +51,10 @@ const styles = StyleSheet.create({
     height: 200,
     position: 'absolute',
     borderRadius: 5,
+    // objectFit: 'scale-down',
   },
   overlay: {
-    backgroundColor: COLOR.P_TRANSPARENT_25,
+    backgroundColor: COLOR.NEUTRAL_3,
     position: 'absolute',
     width: '100%',
     height: 200,
