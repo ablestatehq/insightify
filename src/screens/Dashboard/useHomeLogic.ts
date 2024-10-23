@@ -10,12 +10,12 @@ const useHomeLogic = () => {
   const randomIndex = Math.floor(Math.random() * products.length);
   const recentOffers = opportunities.map((opp) => {
     if (opp.Expires) {
-      if (!isPast(opp.Expires)) return opp;
-    } else {
-      const publishedAt = new Date(opp.publishedAt);
-      const days = differenceInDays(new Date, publishedAt);
-      if (days <= 5) return opp;
-    }
+          if (!isPast(opp.Expires)) return opp;
+        } else {
+          const publishedAt = new Date(opp.publishedAt);
+          const days = differenceInDays(new Date, publishedAt);
+          if (days <= 5) return opp;
+        }
   });
   const opportunityIndex = Math.floor(Math.random() * ((recentOffers.length - 1) - 0 + 1)) + 0;
   const [showCompleteProfile, setShowCompleteProfile] = useState(true);
