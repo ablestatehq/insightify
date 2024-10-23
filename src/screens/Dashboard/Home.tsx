@@ -70,7 +70,7 @@ const Home = () => {
             Component={OpportunityItem}
             opportunity={recentOffers[opportunityIndex]}
             targetIndex={opportunityIndex}
-            title={"Featured Opportunities"}
+            title={"Featured Offer"}
           />
 
         <View style={styles.tipsView}>

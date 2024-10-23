@@ -43,7 +43,7 @@ const OpportunityList = () => {
     if (isLoggedIn) {
       navigation.navigate('Share');
     } else {
-      const params = {title: 'Explore'};
+      const params = { title: 'Offers' };
       navigation.navigate('Login', params);
     }
   }, []);

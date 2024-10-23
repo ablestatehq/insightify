@@ -68,7 +68,7 @@ type RootStackParamList = {
   ChatRoom: undefined;
   Talent: undefined;
   ProductDetail: ProductData;
-  Explore: {
+  Offers: {
     tag?: string;
     targetIndex?: number
   };
@@ -80,7 +80,7 @@ type LoginScreenProps = RouteProp<RootStackParamList, 'Login'>
 type ResetScreenProps = RouteProp<RootStackParamList, 'Reset'>
 type ConfirmEmailScreenProps = RouteProp<RootStackParamList, 'ConfirmEmail'>
 type DetailsScreenProps = RouteProp<RootStackParamList, 'Details'>
-type OpportunityListProps = RouteProp<RootStackParamList, 'Explore'>
+type OpportunityListProps = RouteProp<RootStackParamList, 'Offers'>
 // interface for TalentSubmissionForm
 type TalentSubmissionForm = {
   need: string[]

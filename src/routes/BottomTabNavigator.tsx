@@ -1,26 +1,26 @@
 import React from 'react';
-import {useFonts} from 'expo-font';
-import {View, Text} from 'react-native';
+import { useFonts } from 'expo-font';
+import { View, Text } from 'react-native';
 
 // components 
-import {Loader} from '../components';
+import { Loader } from '../components';
 
 // helper 
 // import {fontsLoading} from '../assets/fonts/fonts';
-import {COLOR, DIMEN, FONTSIZE} from '../constants/constants';
-import {AppContext} from '../helper/context/AppContext';
+import { COLOR, DIMEN, FONTSIZE } from '../constants/constants';
+import { AppContext } from '../helper/context/AppContext';
 
 // screens 
 import Home from '../screens/Dashboard/Home';
 import CodeTips from '../screens/CodeTips/CodeTips';
-import Explore from '../screens/Explore'
+import Offers from '../screens/Offers';
 
 import Icon from '../assets/icons';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
-import {FONT_FILES, FONT_NAMES} from '../assets/fonts/fonts';
+import { FONT_FILES, FONT_NAMES } from '../assets/fonts/fonts';
 
-const {Screen, Navigator} = createBottomTabNavigator();
+const { Screen, Navigator } = createBottomTabNavigator();
 
 const screenOptionStyle = {
   headerShown: false,
@@ -30,7 +30,7 @@ interface CustomItemTabProp {
   focused: any
   text: string
 }
-const CustomItemTab: React.FC<CustomItemTabProp> = ({focused, text}) => (
+const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
   <View
     style={{
       paddingHorizontal: 10,
@@ -93,12 +93,12 @@ const BottomTabNavigator = () => {
 
       />
       <Screen
-        name='Explore'
-        component={Explore}
+        name='Offers'
+        component={Offers}
         initialParams={{}}
         options={{
-          tabBarLabel: 'Explore',
-          tabBarIcon: ({ focused }) => <CustomItemTab text='Explore' focused={focused} />
+          tabBarLabel: 'Offers',
+          tabBarIcon: ({ focused }) => <CustomItemTab text='Offers' focused={focused} />
         }}
       />
       <Screen
@@ -106,7 +106,7 @@ const BottomTabNavigator = () => {
         component={CodeTips}
         options={{
           tabBarLabel: 'LevelUp',
-          tabBarIcon: ({ focused }) => <CustomItemTab text='Level up' focused={focused} />
+          tabBarIcon: ({ focused }) => <CustomItemTab text='Career' focused={focused} />
         }}
       />
       <Screen
