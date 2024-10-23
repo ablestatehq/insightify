@@ -34,7 +34,7 @@ const Home = () => {
     user,
     isLoggedIn,
     navigation,
-    opportunities,
+    recentOffers,
     products,
     codeTips,
     // consts
@@ -68,7 +68,7 @@ const Home = () => {
         {/* Opprotunity section  */}
           <Fragment
             Component={OpportunityItem}
-            opportunity={opportunities[opportunityIndex]}
+            opportunity={recentOffers[opportunityIndex]}
             targetIndex={opportunityIndex}
             title={"Featured Opportunities"}
           />
