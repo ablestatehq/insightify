@@ -1,41 +1,35 @@
-import { UserProfile } from "../../utils/types";
+import {UserProfile} from "../../utils/types";
+import {
+  differenceInDays,
+  differenceInWeeks,
+  differenceInSeconds,
+  differenceInHours,
+  differenceInMinutes,
+  differenceInMonths,
+} from 'date-fns';
 
 export function resourceAge(date: Date) {
   const publishedAt = new Date(date);
   const currentDate = new Date();
   
-  const lifespan = (currentDate as any) - (publishedAt as any);
-
-  // Convert to seconds
-  const seconds = Math.floor(lifespan / 1000);
-
-  // Convert to minutes
-  const minutes = Math.floor(seconds / 60);
-
-  // Convert to hours
-  const hours = Math.floor(minutes / 60);
-
-  // Convert to days
-  const days = Math.floor(hours / 24);
-
-  if (days != 0) {
-    if (days >= 7) {
-      const weeks = Math.floor(days / 7);
-      if (weeks >= 4) {
-        const months = Math.floor(weeks / 4);
-        return `${months}mo`
-      }
-      else return `${weeks}w`
-    }
-    return `${days}d`
-  } else if( hours != 0){
-    return `${hours}hr`
-  } else if (minutes != 0) {
-    return `${minutes}m`
-  } else {
-    return `${seconds}s`
-  }
+  const seconds = differenceInSeconds(currentDate, publishedAt);
+  const minutes = differenceInMinutes(currentDate, publishedAt);
+  if (minutes < 1) return seconds == 0 ? 'just now' : `${seconds}secs`;
+  if (minutes < 60) return `${minutes}m`;
+  
+  const hours = differenceInHours(currentDate, publishedAt);
+  if (hours < 24) return `${hours}hr`;
+  
+  const days = differenceInDays(currentDate, publishedAt);
+  if (days < 7) return `${days}d`;
+  
+  const weeks = differenceInWeeks(currentDate, publishedAt);
+  if (weeks < 4) return `${weeks}w`;
+  
+  const months = differenceInMonths(currentDate, publishedAt);
+  return `${months}mo`;
 }
+
 
 export function contentLifeSpan(date:string):string {
   const publishedAt = new Date(date);
