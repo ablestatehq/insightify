@@ -29,14 +29,14 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
         color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
-    case 'Explore':
+    case 'Offers':
       return <Fontisto
         name="spinner-refresh"
         size={size ? size : 20}
         color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
-    case 'Level up':
+    case 'Career':
       return <MaterialCommunityIcons
         name="stairs-up"
         size={size ? size : 20}
@@ -120,7 +120,7 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
         color={_color ? _color : COLOR.PRIMARY_300}
         onPress={press}
       />
-    
+
   }
 };
 

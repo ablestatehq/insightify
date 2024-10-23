@@ -30,19 +30,14 @@ const Index = (props: any) => {
         </Text> : null}
         <RenderHtml
           contentWidth={100}
-          source={{ html: description }}
-          defaultTextProps={{ style: { fontFamily: FONT_NAMES.Body } }}
+          source={{html: description}}
+          defaultTextProps={{style: styles.defaultStyles}}
           renderers={renderers}
           tagsStyles={{
-            p: { ...styles.paraStyles },
-            b: { fontWeight: 'bold' },
-            ul: {
-              listStyleType: 'none',
-              paddingHorizontal: 5,
-              paddingVertical: 1,
-              textAlign: 'justify'
-            },
-            li: { ...styles.liStyles },
+            p: {...styles.paraStyles},
+            b: {fontWeight: 'bold'},
+            ul: {listStyleType : 'none', ...styles.ulStyles},
+            li: {...styles.liStyles},
             strong: { ...styles.liStyles }
           }}
         />
@@ -72,8 +67,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 5,
   },
   content: {
-    flexGrow: 1,
-    padding: 5,
+    // flexGrow: 1,
+    // padding: 5,
   },
   dateStyle: {
     textTransform: 'uppercase',
@@ -108,10 +103,22 @@ const styles = StyleSheet.create({
     fontFamily: FONT_NAMES.Body,
     fontSize: FONTSIZE.BODY,
     textAlign: 'justify',
-    paddingVertical: 5
+    paddingVertical: 5,
+    flexWrap: 'wrap',
+  },
+  ulStyles: {
+    // listStyleType: 'none',
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    textAlign: 'justify',
+    flexWrap: 'wrap',
   },
   liStyles: {
     fontFamily: FONT_NAMES.Body,
     fontSize: FONTSIZE.BODY
+  },
+  defaultStyles: {
+    fontFamily: FONT_NAMES.Body,
+    flexWrap: 'wrap'
   }
 });

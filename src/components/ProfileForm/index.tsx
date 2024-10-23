@@ -31,7 +31,12 @@ interface ProfileFormProps {
   setProfilePhoto: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
-export default function ProfileForm({handleClose, visible, profilePhoto, setProfilePhoto}: ProfileFormProps) {
+export default function ProfileForm({
+  handleClose,
+  visible,
+  profilePhoto,
+  setProfilePhoto
+}: ProfileFormProps) {
 
   const {user, jwt} = useContext(AppContext);
 

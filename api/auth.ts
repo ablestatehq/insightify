@@ -1,4 +1,4 @@
-import { BASE_URL } from "@env";
+import {BASE_URL} from "@env";
 import {environments} from "../src/constants/environments";
 
 const {STRAPI_BASE_URL} = environments;

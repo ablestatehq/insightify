@@ -12,8 +12,8 @@ import Contact from '../screens/More/Contact/Contact';
 import FeedBack from '../screens/More/FeedBack/FeedBack';
 import Privacy from '../screens/More/Privacy/Privacy';
 import OnBoard from '../screens/onBoardSharing/OnBoard';
-import {retrieveLocalData} from '../utils/localStorageFunctions';
-import {Loader} from '../components';
+import { retrieveLocalData } from '../utils/localStorageFunctions';
+import { Loader } from '../components';
 import Notification from '../screens/Notifications/Notification';
 import Forgot from '../screens/AuthScreens/Login/component/Forgot';
 import ResetPassword from '../screens/AuthScreens/Login/component/ResetPassword';
@@ -22,12 +22,12 @@ import Profile from '../screens/Profile';
 import ChatRoom from '../screens/ChatScreen/ChatScreen'
 import FindTalent from '../screens/FindTalent/FindTalent';
 import Product from '../screens/Product';
-import Explore from '../screens/Explore'
+import Offers from '../screens/Offers'
 import ProductList from '../screens/ProductList';
 import AddProduct from '../screens/AddProduct'
 import ConfirmationScreen from '../screens/AuthScreens/Confirmation'
 
-const {Screen, Navigator} = createNativeStackNavigator();
+const { Screen, Navigator } = createNativeStackNavigator();
 
 const screenOptionStyle = {
   headerShown: false
@@ -71,7 +71,7 @@ const MainStackNavigator = () => {
       <Screen name='ChatRoom' component={ChatRoom} />
       <Screen name='Talent' component={FindTalent} />
       <Screen name='ProductDetail' component={Product} />
-      <Screen name='Explore' component={Explore} />
+      <Screen name='Offers' component={Offers} />
       <Screen name='ProductList' component={ProductList} />
       <Screen name='AddProduct' component={AddProduct} />
       <Screen name='ConfirmEmail' component={ConfirmationScreen} />

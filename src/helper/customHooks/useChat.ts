@@ -8,6 +8,7 @@ import {
 } from '../../lib/services/messageService';
 import {createClientSocket} from '../../lib/socket';
 import {Socket} from 'socket.io-client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Message = {
   id?: number;
@@ -34,8 +35,34 @@ const useChat = (userId: number, jwt: string) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [selected, setSelected] = useState<string>('');
 
+
+  // Store the latest 25 messages in AsyncStorage
+  async function storeMessages(messages: Map<string, any>): Promise<void> {
+    try {
+      const latestMessages = Array.from(messages).slice(0, 25);
+      await AsyncStorage.setItem('latestMessages', JSON.stringify(latestMessages));
+    } catch (error) {
+      console.error('Error storing messages: ', error);
+    }
+  }
+  
+  // Getting stored messages;
+  async function getStoredMessages() {
+    try {
+      const storedMessages = await AsyncStorage.getItem('latestMessages');
+      if (storedMessages !== null) {
+        console.log(JSON.parse(storedMessages));
+      }
+      // return null;
+    } catch (error) {
+      console.error('Error retrieving messages: ', error);
+      // return null;
+    }
+  }
+  
   const loadMessages = useCallback(async () => {
     try {
+      // fetch messages from the server
       const response = await fetchMessages(jwt, start, 25);
       const messagesMap = new Map<string, any>();
 
@@ -53,6 +80,7 @@ const useChat = (userId: number, jwt: string) => {
         ...Array.from(messagesMap.entries())
       ]));
 
+      storeMessages(messageMap);
       if (response?.data.length === response?.total) {
         setHasMoreMessages(false);
       }
@@ -160,6 +188,8 @@ const useChat = (userId: number, jwt: string) => {
 
   useEffect(() => {
     const initializeChat = async () => {
+      const cachedMsgs = await getStoredMessages();
+      console.log("These are the cached messages: ", cachedMsgs)
       const cachedMessages = await loadMessagesFromLocalStorage();
       if (cachedMessages) {
         setMessageMap(JSON.parse(cachedMessages));
