@@ -193,10 +193,15 @@ interface ProfileType {
   secondaryDomain: string;
 }
 
-interface ViewCount {
-  [id: string]: number;
+type MetaData = {
+slogan?: string,
+lauchedBy?: {
+    location?: string,
+    companyBio?: string
+    companyLink?: string,
+    companyName: string
+  }
 }
-
 type ProductData = {
   name: string;
   id: number;
@@ -211,6 +216,8 @@ type ProductData = {
   updatedAt?: string;
   status?: string;
   tutorial?: any
+  url?: string
+  meta?: MetaData
 }
 
 type IDialogBox = {
