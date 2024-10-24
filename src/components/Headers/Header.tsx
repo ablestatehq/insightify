@@ -11,10 +11,10 @@ interface HeaderProps {
   backgroundColor?: string;
   showMore?: boolean;
   // mgs: any;
-  selected: string
-  onClose: () => void;
-  onReply: (msgMapID: string) => void;
-  onDelete: (key: string) => void;
+  selected?: string
+  onClose?: () => void;
+  onReply?: (msgMapID: string) => void;
+  onDelete?: (key: string) => void;
 }
 const Header = (
   {
@@ -22,9 +22,9 @@ const Header = (
     title = "",
     iconColor = "black",
     backgroundColor,
-    onDelete,
-    onReply,
-    onClose,
+    onDelete=() => {},
+    onReply=() => {},
+    onClose=() => {},
     selected,
   }: HeaderProps
 ) => {
@@ -32,13 +32,13 @@ const Header = (
   const navigation = useNavigation();
   const handleBack = () => {navigation.goBack()};
   const handleDelete = () => {
-    if (selected.trim()) {
+    if (selected && selected.trim()) {
       onDelete(selected.trim());
       onClose();
     }
   };
   const handleReply = () => {
-    if (selected.trim()) {
+    if (selected && selected.trim()) {
       onReply(selected.trim());
       onClose()
     }
