@@ -46,6 +46,20 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, 
     setExpandable(prevState => !prevState);
   };
 
+  const bookmark = () => {
+    if (isLoggedIn) {
+      handleBookmark(
+        id,
+        opportunities,
+        setOpportunities,
+        'opportunities',
+        'Offer saved',
+        'Offer unsaved'
+      );
+    } else {
+      navigation.navigate('Login', {title: 'Login to save \nthis Opportunity', opportunityID: id});
+    }
+  };
   const opportunityLifeSpan = resourceAge(publishedAt);
   return (
     <View style={styles.container}>
@@ -96,13 +110,7 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, 
       <OpportunityFooter
         link={URL}
         bookmarked={bookmarked}
-        handleBookmark={() => {
-          if (isLoggedIn) {
-            handleBookmark(id, opportunities, setOpportunities);
-          } else {
-            navigation.navigate('Login', {title: 'Login to save \nthis Opportunity', opportunityID: id});
-          }
-        }}
+        handleBookmark={bookmark}
         // publishedDate={publishedAt}
         showReportModal={showReportModal}
         location={Location ?? 'Remote'}

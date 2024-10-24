@@ -38,9 +38,13 @@ const TipFooter: React.FC<TipFooterProps> = ({
     onSubmitReport()
   }
 
+  const handleOpenComments = function () {
+    setOpenComments(!openComments)
+  }
+  // console.log(id)
   return (
     <View>
-      <View style={[styles.footer, { justifyContent: source_url_text ? 'space-evenly' : 'flex-end' }]}>
+      <View style={[styles.footer, {justifyContent: source_url_text ? 'space-evenly' : 'flex-end'}]}>
         {!bookmarked && <IconLabelPair
           iconName='heart-outline'
           iconLabel='Save'
@@ -68,9 +72,7 @@ const TipFooter: React.FC<TipFooterProps> = ({
           iconLabel='Comment'
           iconName='message'
           size={11}
-          press={function () {
-            setOpenComments(!openComments)
-          }}
+          press={handleOpenComments}
           color={COLOR.PRIMARY_300}
         />
         {source_url &&

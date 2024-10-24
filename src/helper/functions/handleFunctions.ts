@@ -1,50 +1,36 @@
 import { Linking, Share, ToastAndroid} from "react-native";
 import { storeToLocalStorage } from "../../utils/localStorageFunctions";
 
-// Function to handle opportunity bookmarking 
-const handleBookmark = async (id: string, opportunities:any[], setOpportunities:(opp:any[]) => void) => {
-  const updatedOpportunities = [...opportunities];
-  const targetIndex = updatedOpportunities.findIndex(opportunity => opportunity.id === id);
+// Generic function to handle bookmarking for any type of items (opportunities, techTips, etc.)
+const handleBookmark = async (
+  id: string | number,
+  items: any[],
+  setItems: (updatedItems: any[]) => void,
+  storageKey: string,
+  savedMessage: string,
+  removedMessage: string
+) => {
+  const updatedItems = [...items];
+  const targetIndex = updatedItems.findIndex(item => item.id === id);
 
   if (targetIndex !== -1) {
-    const targetOpportunity = updatedOpportunities[targetIndex];
+    const targetItem = updatedItems[targetIndex];
 
-    const toastMessage = targetOpportunity.bookmarked ? 'Removed from saved' : 'Saved this for you'
+    const toastMessage = targetItem.bookmarked ? removedMessage : savedMessage;
+
     // Toggle bookmark status
-    targetOpportunity.bookmarked = !targetOpportunity.bookmarked;
+    targetItem.bookmarked = !targetItem.bookmarked;
 
-    updatedOpportunities[targetIndex] = targetOpportunity;
+    updatedItems[targetIndex] = targetItem;
 
-    setOpportunities(updatedOpportunities);
+    setItems(updatedItems);
 
     // Update local storage
-    await storeToLocalStorage('opportunities', updatedOpportunities);
+    await storeToLocalStorage(storageKey, updatedItems);
     ToastAndroid.show(`${toastMessage}`, 3000);
   }
 };
 
-// Function to handle techtips bookmarking
-async function bookmarkCodeTips(id: number, codeTips: any[], setCodeTips: (tip: any[]) => void) {
-  const updatedCodetips = [...codeTips];
-  const targetIndex = updatedCodetips.findIndex(opportunity => opportunity.id === id);
-
-  if (targetIndex !== -1) {
-    const targetCodeTips = updatedCodetips[targetIndex];
-
-    const toastMessage = targetCodeTips.bookmarked ? 'Removed from watch list' : 'Saved this for you';
-
-    // Toggle bookmark status
-    targetCodeTips.bookmarked = !targetCodeTips.bookmarked;
-
-    updatedCodetips[targetIndex] = targetCodeTips;
-
-    setCodeTips(updatedCodetips);
-
-    // Update local storage
-    await storeToLocalStorage('techTips', updatedCodetips);
-    ToastAndroid.show(`${toastMessage}`, 3000);
-  }
-}
 // Function to handle opening a link in the browser
 const OpenLink = async (url: string) => {
   // Navigate to the link in the browser upon card press
@@ -76,5 +62,5 @@ export {
   OpenLink,
   onShare,
   handleBookmark,
-  bookmarkCodeTips
+  // bookmarkCodeTips
 }

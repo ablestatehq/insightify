@@ -4,8 +4,8 @@ import RenderHtml from 'react-native-render-html';
 import {StyleSheet, Text, View} from 'react-native'
 import {FONT_NAMES} from '../../../../assets/fonts/fonts';
 import {CodeSnippet, HTMLText, TipFooter} from '../../../../components';
-import {bookmarkCodeTips} from '../../../../helper/functions/handleFunctions';
-import {COLOR, DIMEN, FONTSIZE} from '../../../../constants/constants';
+import {handleBookmark} from '../../../../helper/functions/handleFunctions';
+import {COLOR, FONTSIZE} from '../../../../constants/constants';
 
 interface TipItemProp {
   id: number;
@@ -40,7 +40,16 @@ const Index = ({
   };
 
   const [showReportModal, setShowReportModal] = React.useState<boolean>(false);
-
+  // console.log(id);
+  const bookMarkTip = () => handleBookmark(
+    id,
+    tips,
+    setTips,
+    'techTips',
+    'Tip saved',
+    'Tip unsaved');
+  
+  const handleSubmitReport = () => setShowReportModal(!showReportModal);
   return (
     <View style={styles.renderItemView}>
       {categories ? (
@@ -67,8 +76,8 @@ const Index = ({
           source_url_text={source_url_text}
           source_url={source_url}
           bookmarked={bookmarked}
-          handleBookmark={() => bookmarkCodeTips(id, tips, setTips)}
-          onSubmitReport={() => setShowReportModal(!showReportModal)}
+          handleBookmark={bookMarkTip}
+          onSubmitReport={handleSubmitReport}
           comments={comments}
         />
       </View>

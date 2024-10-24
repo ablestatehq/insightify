@@ -3,7 +3,6 @@ import Icons from '../../assets/icons';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View, Text } from 'react-native';
 import { COLOR, DIMEN, FONTSIZE } from '../../constants/constants';
-import { resourceAge } from '../../helper/functions/functions';
 import { FONT_NAMES } from '../../assets/fonts/fonts';
 
 interface OpportunityFooterProps {
@@ -19,11 +18,8 @@ const OpportunityFooter: React.FC<OpportunityFooterProps> = ({
   handleBookmark,
   link,
   showReportModal,
-  // publishedDate,
   location,
 }) => {
-
-  // const opportunityLifeSpan = resourceAge(publishedDate as unknown as Date);
 
   return (
     <View style={styles.container}>
