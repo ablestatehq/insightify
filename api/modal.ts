@@ -157,6 +157,8 @@ export const MODALS = {
             }
           }
         }
+        url
+        meta
       }
     }
   }
