@@ -50,7 +50,7 @@ export const FONTSIZE = {
   TITLE_1: getFontSize(19),
   TITLE_2: getFontSize(16),
   BODY: getFontSize(13),
-  SMALL: getFontSize(11),
+  SMALL: getFontSize(10),
 }
 
 export const DIMEN = {
