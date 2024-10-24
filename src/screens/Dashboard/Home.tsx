@@ -17,6 +17,7 @@ import {
 
 import {isProfileComplete} from '../../helper/functions/functions';
 import useHomeLogic from './useHomeLogic';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const renderTip = ({item, index}:{item: any, index: number}) =>
   <TipCard
@@ -50,33 +51,31 @@ const Home = () => {
     handleCompleteProfile
   } = useHomeLogic();
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <XPpoint number={xp} navigation={navigation} inCommunity={user && user.isMember} />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Product showcase section  */}
-          <Fragment
-            Component={ProductCard}
-            onPress={() => navigation.navigate('ProductList')}
-            title={'Featured Product'}
-            {...products[randomIndex]}
-          />
+        <Fragment
+          Component={ProductCard}
+          onPress={() => navigation.navigate('ProductList')}
+          title={'Featured Product'}
+          {...products[randomIndex]}
+        />
         {isLoggedIn && !isProfileComplete(user) && showCompleteProfile &&
           <CompleteProfile
-          handleClose={toggleCompleteProfileCard}
-          setShowProfileCard={setShowProfileCard}
+            handleClose={toggleCompleteProfileCard}
+            setShowProfileCard={setShowProfileCard}
           />}
         {/* Opprotunity section  */}
-          <Fragment
-            Component={OpportunityItem}
-            opportunity={recentOffers[opportunityIndex]}
-            targetIndex={opportunityIndex}
-            title={"Featured Offer"}
-          />
+        <Fragment
+          Component={OpportunityItem}
+          opportunity={recentOffers[opportunityIndex]}
+          targetIndex={opportunityIndex}
+          title={"Featured Offer"}
+        />
 
         <View style={styles.tipsView}>
-          <View style={styles.techTipStyle}>
-            <SeeMore title='Tech tips' />
-          </View>
+          <SeeMore title='Tech tips' />
           {/*Tech tips section */}
           <FlatList
             data={codeTips.slice(0, 3)}
@@ -91,10 +90,10 @@ const Home = () => {
         visible={showProfileCard && isLoggedIn}
         handleClose={handleCompleteProfile}
         profilePhoto={profilePhoto}
-        setProfilePhoto={() => {}}
+        setProfilePhoto={() => { }}
       />
-      <StatusBar backgroundColor={COLOR.WHITE} barStyle='dark-content'/>
-    </View >
+      <StatusBar backgroundColor={COLOR.WHITE} barStyle='dark-content' />
+    </SafeAreaView >
   );
 }
 
@@ -104,14 +103,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLOR.WHITE,
+    padding: DIMEN.PADDING.SM,
   },
   headerContainer: {
     flex: 1,
   },
-  techTipStyle: {
-    // paddingHorizontal: 10,
-    marginTop: 10,
-  },
+  // techTipStyle: {
+  //   marginTop: 10,
+  // },
   tipsView: {
     flex: 1,
     paddingBottom: DIMEN.PADDING.LG,
