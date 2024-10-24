@@ -1,254 +1,344 @@
-import React from 'react';
+import {
+  StyleSheet, View, Text,
+  Image, StatusBar, ScrollView, TextInput, LayoutChangeEvent, Animated
+} from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {COLOR, DIMEN, FONTSIZE} from "../../constants/constants";
+import {environments} from "../../constants/environments";
+import {Ionicons, FontAwesome} from "@expo/vector-icons";
+import {RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import React, {useRef, useState} from "react";
+import {AppContext} from "../../helper/context/AppContext";
+import awardXP from "../../utils/awardXP";
+import {RootStackParamList} from "../../utils/types";
+import {FONT_NAMES} from "../../assets/fonts/fonts";
+import onShare, {handleLinkPress} from "../../utils/onShare";
 
-import awardXP from '../../utils/awardXP';
-import {Ionicons} from '@expo/vector-icons';
-import {RootStackParamList} from '../../utils/types'
-import {environments} from '../../constants/environments';
-import {COLOR, DIMEN, FONTSIZE} from '../../constants/constants';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native'
-import {StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, ImageBackground} from 'react-native'
-import {FONT_NAMES} from '../../assets/fonts/fonts';
-import {AppContext} from '../../helper/context/AppContext';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-
-const {BASE_URL} = environments;
+const { BASE_URL } = environments;
 const AWARD = {
   'FIRST': 5,
   'SECOND': 3,
   'THIRD': 1
 }
+interface Layout {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
-const getImage = (url: string) => ({ uri: `${BASE_URL}${url}` });
-
-const Index = () => {
+function Index() {
+  const scrollViewRef = useRef<ScrollView | null>(null);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
-  const {description, tagline, uploadedBy, name, media, status, id, totalViews} = route.params;
-  const {user, jwt, setXp} = React.useContext(AppContext);
+  const handleBack = () => navigation.goBack();
 
+  const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
+  const { description, tagline, uploadedBy, name, media, status, id, totalViews, url, meta } = route.params;
+  const { user, jwt, setXp } = React.useContext(AppContext);
+
+  // console.log(meta)
+  const [com, setCom] = useState<string>('');
+  const [csLayout, setCsLayout] = useState<Layout>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
+
+  const handleShare = () => {
+    if (url) {
+      onShare(url);
+    }
+  }
+
+  const handleComment = () => { }
+  const handleVisit = () => {
+    handleLinkPress(url as string);
+  }
   React.useEffect(() => {
     awardXP(AWARD, id, jwt, user?.id).then(xps => {
       if (xps) {
         setXp(prev => prev + xps);
       }
-    }).catch(error => {});
+    }).catch(error => { });
   }, []);
+
+  const getCommentSectionLayout = (event: LayoutChangeEvent) => {
+    setCsLayout(event.nativeEvent.layout);
+  }
+  // move the user to a given section in the scrollView
+  const moveToComments = () => {
+    if (scrollViewRef && scrollViewRef.current) {
+      scrollViewRef.current?.scrollTo({ y: csLayout.height, animated: true });
+    }
+  }
+
+  const getImage = (url: string) => ({uri: `${BASE_URL}${url}`});
+  
   return (
-    <ScrollView contentContainerStyle={productStyles.container}>
-      <View style={productStyles.imageContainer}>
-        <ImageBackground
-          resizeMethod='resize'
-          resizeMode='cover'
-          source={getImage(media?.data[0].attributes?.url)}
-          style={productStyles.productImage}
-        >
-          <View style={productStyles.header}>
-            <TouchableOpacity style={productStyles.iconButton}
-              onPress={() => {
-                navigation.goBack()
-              }}>
-              <Ionicons
-                name="arrow-back"
-                productImages={25}
-                color={COLOR.WHITE}
-              />
-            </TouchableOpacity>
-            {/* <TouchableOpacity style={productStyles.iconButton}>
-              <Ionicons
-                name='heart-outline'
-                productImages={25}
-                color={COLOR.WHITE}
-              />
-            </TouchableOpacity> */}
-          </View>
-        </ImageBackground>
-      </View>
-
-      <View style={productStyles.detailsContainer}>
-        <Text style={productStyles.productType}>{name}</Text>
-        {totalViews && <Text style={productStyles.totalViews}>{totalViews} views</Text>}
-        <Text style={productStyles.productDescription}>
-          {description}
-        </Text>
-
-        <Text style={productStyles.productName}>Technologies</Text>
-        {tagline?.trim() && (
-          <View style={productStyles.tagViewStyles}>
-            {tagline?.split(',').map((tag, index) => (
-              tag.trim() && <Text style={productStyles.productDescription} key={index}>#{tag.trim()}</Text>
-            ))}
-          </View>
-        )}
-
-        {uploadedBy && uploadedBy?.data && <>
-          <Text style={productStyles.productName}>Developed by</Text>
-          <View style={productStyles.developerInfor}>
-            <Image source={getImage(media?.data[0].attributes?.url)} style={productStyles.developerImage} />
-            <View>
-              <Text style={productStyles.developerName}>Ablestate</Text>
-              <Text style={productStyles.uploadedBytatus}>{status}</Text>
-            </View>
-          </View></>}
-
-        <Text style={productStyles.productImagesLabel}>Gallery</Text>
-        <View style={productStyles.productImagesContainer}>
-          {media?.data?.map((productImage, index) => (
-            <TouchableOpacity key={index} style={productStyles.productImagesButton}>
-              <Image
-                resizeMode='cover'
-                resizeMethod='resize'
-                source={getImage(productImage.attributes?.url)}
-                style={productStyles.thumbnail}
-              />
-            </TouchableOpacity>
-          ))}
+    <SafeAreaView style={styles.safeArea}>
+      <Animated.View style={styles.navComp}>
+        <View style={styles.navHeader}>
+          <Ionicons
+            name="arrow-back"
+            size={20}
+            color={COLOR.WHITE}
+            onPress={handleBack}
+          />
+        </View >
+        {/**Icon component */}
+        <View style={styles.iconComp}>
+          <Image
+            style={styles.logoStyle}
+            source={getImage(media?.data[0].attributes?.url)}
+          />
+        </View>
+        <Text style={styles.pdttName}>{name}</Text>
+        <Text style={styles.sloganText}>{meta?.slogan}</Text>
+      </Animated.View>
+      <View style={styles.icons_section}>
+        <View style={styles.doubleStyle}>
+          <Ionicons
+            name="chatbubble-outline"
+            size={20}
+            color={COLOR.GREY_300}
+            onPress={moveToComments}
+          />
+          <Ionicons
+            name="open-outline"
+            size={20}
+            color={COLOR.GREY_300}
+            onPress={handleVisit}
+          />
+        </View>
+        <View style={styles.doubleStyle}>
+          <Ionicons
+            name="bookmark-outline"
+            size={20}
+            color={COLOR.GREY_300}
+          />
+          <Ionicons
+            name="share-social-outline"
+            size={20}
+            color={COLOR.GREY_300}
+            onPress={handleShare}
+          />
         </View>
       </View>
-
-      {/* <TouchableOpacity style={productStyles.buyButton} onPress={() => {OpenLink()}}>
-        <Text style={productStyles.buyButtonText}>Tour product</Text>
-      </TouchableOpacity> */}
-    </ScrollView>
+      <ScrollView style={styles.main} ref={scrollViewRef}>
+        {/**Display the product images. */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.pdtImages}>
+          {media?.data?.map((productImage, index) => (
+            <Image
+              key={index}
+              resizeMode='stretch'
+              resizeMethod='resize'
+              source={getImage(productImage.attributes?.url)}
+              style={styles.thumbnail}
+            />
+          ))}
+        </ScrollView>
+        {/**Production description. */}
+        <Text style={styles.description}>{description}</Text>
+        {/**Developer of the product */}
+        <View style={styles.developerSection}>
+          <View style={styles.devProfile}>
+            <FontAwesome
+              size={20}
+              name="user-circle-o"
+              color={COLOR.SECONDARY_100}
+            />
+            <Text style={styles.devName}>{`Launched by ${meta?.lauchedBy?.companyName}`}</Text>
+          </View>
+          <Text style={styles.devDescription}>
+            {meta?.lauchedBy?.companyBio}
+          </Text>
+          {/**comments */}
+          <View onLayout={getCommentSectionLayout}>
+            <Text style={styles.commentTitle}>Comments</Text>
+            {[1, 2, 4, 5, 6].map((_, index) => (
+              <View style={styles.comments} key={index}>
+                <View style={styles.commentedBy}>
+                  <View style={styles.devProfile}>
+                    <FontAwesome
+                      size={20}
+                      name="user-circle-o"
+                      color={COLOR.SECONDARY_100}
+                    />
+                    <Text style={styles.commentor}>{`Guest user`}</Text>
+                  </View>
+                  <View style={styles.dot} />
+                  <Text style={styles.timeStamp}>{'5days ago'}</Text>
+                </View>
+                <Text>{'comment'}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
+      {/**User comment section. */}
+      <View style={styles.comment}>
+        <FontAwesome
+          size={25}
+          name="user-circle-o"
+          color={COLOR.SECONDARY_100}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Add a comment"
+          onChangeText={setCom}
+        />
+        {com.trim() &&
+          <Ionicons
+            name="send"
+            size={25}
+            color={COLOR.GREY_300}
+            onPress={handleComment}
+          />}
+      </View>
+      <StatusBar backgroundColor={COLOR.GREY_300} barStyle='light-content' />
+    </SafeAreaView>
   );
-
 }
 
 export default Index;
-
-
-const productStyles = StyleSheet.create({
-  container: {
+const styles = StyleSheet.create({
+  safeArea: {
     flex: 1,
-    backgroundColor: COLOR.WHITE,
   },
-  header: {
-    paddingTop: 5,
+  navComp: {
+  },
+  navHeader: {
+    padding: DIMEN.PADDING.ME,
+    backgroundColor: COLOR.GREY_300,
+  },
+  main: {
+    // flexGrow: 1,
+    paddingHorizontal: DIMEN.PADDING.ME
+  },
+  logoStyle: {
+    width: 100,
+    height: 100,
+    borderRadius: DIMEN.PADDING.ME,
+  },
+  iconComp: {
+    borderWidth: 2,
+    borderColor: COLOR.WHITE,
+    padding: DIMEN.PADDING.ES,
+    borderRadius: DIMEN.PADDING.ME,
+    marginTop: -DIMEN.MARGIN.XLG,
+    alignSelf: 'center',
+    backgroundColor: COLOR.WHITE,
+    elevation: 2,
+  },
+  pdttName: {
+    textAlign: 'center',
+    fontSize: FONTSIZE.TITLE_2,
+    marginTop: 10,
+    fontFamily: FONT_NAMES.Heading,
+  },
+  sloganText: {
+    textAlign: 'center',
+    fontSize: FONTSIZE.BODY,
+    marginTop: 10,
+    fontFamily: FONT_NAMES.Body,
+  },
+  icons_section: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginHorizontal: DIMEN.MARGIN.ME,
+    paddingVertical: DIMEN.PADDING.SM
   },
-  iconButton: {
-    padding: DIMEN.PADDING.ME,
-    marginHorizontal: 5,
-    backgroundColor: COLOR.NEUTRAL_1,
-    borderRadius: 100,
-  },
-  imageContainer: {
-    flex: 1,
-    margin: 10,
-    borderRadius: 10,
-    overflow: 'hidden'
-  },
-  productImage: {
-    flex: 1,
-    borderRadius: 10
-  },
-  thumbnailContainer: {
+  doubleStyle: {
     flexDirection: 'row',
-    marginTop: 10,
+    gap: DIMEN.MARGIN.ME,
+  },
+  pdtImages: {
+    marginVertical: DIMEN.MARGIN.SM,
+    borderWidth: 1,
+
   },
   thumbnail: {
-    width: 50,
-    height: 50,
-    marginRight: 5,
-    borderRadius: 5,
+    width: DIMEN.SCREENWIDTH * 0.8,
+    height: 150,
+    // marginHorizontal: DIMEN.MARGIN.ME,
+    borderRadius: DIMEN.MARGIN.ME
   },
-  detailsContainer: {
-    paddingHorizontal: DIMEN.PADDING.ELG,
+  description: {
+    textAlign: 'left',
+    fontSize: FONTSIZE.BODY,
+    // marginTop: 10,
+    fontFamily: FONT_NAMES.Body,
   },
-  productType: {
-    fontSize: FONTSIZE.HEADING_5,
-    fontWeight: 'bold',
-    // marginBottom: 5,
+  developerSection: {
+    marginVertical: DIMEN.MARGIN.SM
   },
-  productName: {
-    fontSize: FONTSIZE.TITLE_2,
-    marginBottom: 10,
-    marginTop: 20,
+  devProfile: {
+    flexDirection: 'row',
+    gap: DIMEN.MARGIN.SM,
   },
-  developerInfor: {
+  devName: {
+    textAlign: 'left',
+    fontSize: FONTSIZE.BODY,
+    // marginTop: 10,
+    fontFamily: FONT_NAMES.Title,
+  },
+  devDescription: {
+    textAlign: 'left',
+    fontSize: FONTSIZE.SMALL,
+    // marginTop: 10,
+    fontFamily: FONT_NAMES.Body,
+  },
+  commentTitle: {
+    textAlign: 'left',
+    fontSize: FONTSIZE.BODY,
+    marginVertical: DIMEN.MARGIN.SM,
+    fontFamily: FONT_NAMES.Title,
+  },
+  comment: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 5,
+    gap: DIMEN.MARGIN.SM,
+    // margin: DIMEN.MARGIN.SM,
+    // backgroundColor: COLOR.GREY_300
+    backgroundColor: 'transparent'
   },
-  developerImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
+  comments: {
+
   },
-  developerName: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  commentor: {
+    textAlign: 'left',
+    fontSize: FONTSIZE.SMALL,
+    fontFamily: FONT_NAMES.Title,
   },
-  uploadedBytatus: {
-    color: COLOR.GREY_100,
-  },
-  followButton: {
-    backgroundColor: COLOR.GREY_400,
-    padding: 5,
-    borderRadius: 5,
-    marginLeft: 'auto',
-  },
-  followText: {
-    color: COLOR.WHITE,
-    fontSize: 14,
-  },
-  productImagesLabel: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  productImagesContainer: {
+  commentedBy: {
     flexDirection: 'row',
-    marginBottom: 20,
-  },
-  productImagesButton: {
-    borderWidth: 1,
-    borderColor: COLOR.WHITE,
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  productImagesText: {
-    fontSize: 14,
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    marginBottom: 5,
-  },
-  tabButton: {
-    marginRight: 20,
-  },
-  tabText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLOR.GREY_400,
-  },
-  productDescription: {
-    fontSize: 14,
-    color: COLOR.GREY_100,
-  },
-  buyButton: {
-    backgroundColor: COLOR.SECONDARY_400,
-    padding: DIMEN.PADDING.SM,
-    // alignItems: 'center',
+    gap: DIMEN.MARGIN.SM,
     // justifyContent: 'center',
-    borderRadius: 5,
-    marginHorizontal: 20,
-    alignSelf: 'flex-end'
+    alignItems: 'center',
   },
-  buyButtonText: {
-    color: COLOR.WHITE,
-    fontSize: 18,
+  dot: {
+    width: 2.5,
+    height: 2.5,
+    borderRadius: 10,
+    backgroundColor: COLOR.GREY_100,
   },
-  tagViewStyles: {
-    flexDirection: 'row',
-    gap: 10,
-    flexWrap: 'wrap'
-  },
-  totalViews: {
+  timeStamp: {
+    textAlign: 'left',
     fontSize: FONTSIZE.SMALL,
     fontFamily: FONT_NAMES.Body,
-    opacity: 0.5,
-    marginBottom: 10,
+    color: COLOR.GREY_100
+  },
+  input: {
+    flex: 1,
+    borderWidth: 0.5,
+    borderColor: COLOR.GREY_100,
+    padding: DIMEN.PADDING.SM,
+    borderRadius: DIMEN.MARGIN.XLG,
+    paddingHorizontal: DIMEN.PADDING.ELG
   }
 });
