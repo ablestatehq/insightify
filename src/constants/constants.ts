@@ -62,6 +62,14 @@ export const DIMEN = {
     ME: 10,
     LG: 15,
     ELG: 20
+  },
+  MARGIN: {
+    XLG: 25,
+    LG: 20,
+    ME: 15,
+    SM: 10,
+    XSM: 5,
+    XXSM: 2.5,
   }
 }
 
