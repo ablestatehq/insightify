@@ -200,7 +200,8 @@ lauchedBy?: {
     companyBio?: string
     companyLink?: string,
     companyName: string
-  }
+},
+  bookmarked?: boolean
 }
 type ProductData = {
   name: string;

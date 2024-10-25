@@ -14,6 +14,7 @@ import awardXP from "../../utils/awardXP";
 import {RootStackParamList} from "../../utils/types";
 import {FONT_NAMES} from "../../assets/fonts/fonts";
 import onShare, {handleLinkPress} from "../../utils/onShare";
+import { handleBookmark } from "../../helper/functions/handleFunctions";
 
 const { BASE_URL } = environments;
 const AWARD = {
@@ -34,8 +35,8 @@ function Index() {
   const handleBack = () => navigation.goBack();
 
   const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
-  const { description, tagline, uploadedBy, name, media, status, id, totalViews, url, meta } = route.params;
-  const { user, jwt, setXp } = React.useContext(AppContext);
+  const {description, tagline, uploadedBy, name, media, status, id, totalViews, url, meta} = route.params;
+  const {user, jwt, setXp, setProducts, products} = React.useContext(AppContext);
 
   // console.log(meta)
   const [com, setCom] = useState<string>('');
@@ -73,6 +74,19 @@ function Index() {
       scrollViewRef.current?.scrollTo({ y: csLayout.height, animated: true });
     }
   }
+
+  // console.log(meta?.bookmarked);
+  const bookmark = () => {
+    handleBookmark(
+      id,
+      products,
+      setProducts,
+      'products',
+      'Product saved',
+      'Product removed',
+      jwt
+    );
+  };
 
   const getImage = (url: string) => ({uri: `${BASE_URL}${url}`});
   
@@ -114,9 +128,10 @@ function Index() {
         </View>
         <View style={styles.doubleStyle}>
           <Ionicons
-            name="bookmark-outline"
+            name={meta?.bookmarked ? "bookmark" : 'bookmark-outline'}
             size={20}
             color={COLOR.GREY_300}
+            onPress={bookmark}
           />
           <Ionicons
             name="share-social-outline"

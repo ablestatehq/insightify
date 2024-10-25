@@ -1,7 +1,7 @@
 import {getData} from '../../../api/grapiql';
 import {getMe} from '../../../api/strapiJSAPI';
-import React, {useState, createContext, useEffect} from 'react';
-import {retrieveLocalData, storeToLocalStorage} from '../../utils/localStorageFunctions';
+import React, { useState, createContext, useEffect } from 'react';
+import { retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions';
 
 interface AppContextProviderProps {
   children: React.ReactNode;
@@ -37,17 +37,17 @@ interface AppContextType {
 
 export const AppContext = createContext<AppContextType>({
   jwt: '',
-  setJwt: () => {},
+  setJwt: () => { },
   user: {},
-  setUser: () => {},
+  setUser: () => { },
   xp: 0,
-  setXp: () => {},
+  setXp: () => { },
   isLoading: true,
-  setIsLoading: () => {},
+  setIsLoading: () => { },
   codeTips: [],
-  setCodeTips: () => {},
+  setCodeTips: () => { },
   isLoggedIn: false,
-  setIsLoggedIn: () => {},
+  setIsLoggedIn: () => { },
   opportunities: [],
   setOpportunities: () => { },
   products: [],
@@ -93,7 +93,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
         setXp(user_.data.totalXP ? user_.data.totalXP : 0);
         setIsLoggedIn(true);
         if (inCommunity) {
-          setUser((prev: any) => ({...user_.data, isMember: inCommunity.isMember}));
+          setUser((prev: any) => ({ ...user_.data, isMember: inCommunity.isMember }));
           setJwt(user_.jwt);
         }
       }
@@ -103,7 +103,8 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       const oppos = (await getData('opportunities')).data;
 
       const local_opportunities = await retrieveLocalData('opportunities');
-      const loacl_techTips = await retrieveLocalData('techTips');
+      const local_techTips = await retrieveLocalData('techTips');
+      const local_bookmarked_prods = await retrieveLocalData('products');
 
       if (oppos) {
         setOpportunities((prev) => {
@@ -123,18 +124,24 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
         setCodeTips((prev) => {
           const updatedCodeTip = techTips.map((tip: any) => ({
             ...tip,
-            bookmarked: loacl_techTips?.find((local_tip: any) => local_tip.id === tip.id)?.bookmarked ?? false,
+            bookmarked: local_techTips?.find((local_tip: any) => local_tip.id === tip.id)?.bookmarked ?? false,
           }));
           const newCodeTips = [...prev, ...updatedCodeTip];
           storeToLocalStorage('techTips', newCodeTips);
           return newCodeTips;
         });
       } else {
-        setCodeTips((prev) => [...prev, ...loacl_techTips]);
+        setCodeTips((prev) => [...prev, ...local_techTips]);
       }
 
       if (_products) {
-        setProducts((prev) => [...prev, ..._products]);
+        setProducts((prev) => {
+          storeToLocalStorage('products', _products.slice(0,4));
+          return [...prev, ..._products]
+        });
+
+      } else {
+        setProducts((prev) => [...prev, ...local_bookmarked_prods]);
       }
     } catch (error: any) {
     } finally {

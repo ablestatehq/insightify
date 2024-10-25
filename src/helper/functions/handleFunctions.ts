@@ -1,33 +1,60 @@
-import { Linking, Share, ToastAndroid} from "react-native";
-import { storeToLocalStorage } from "../../utils/localStorageFunctions";
+import {Linking, Share, ToastAndroid} from "react-native";
+import {storeToLocalStorage} from "../../utils/localStorageFunctions";
+import {updateStrapiData} from "../../../api/strapiJSAPI";
 
 // Generic function to handle bookmarking for any type of items (opportunities, techTips, etc.)
 const handleBookmark = async (
   id: string | number,
   items: any[],
   setItems: (updatedItems: any[]) => void,
-  storageKey: string,
+  storageKey: 'products' | string,
   savedMessage: string,
-  removedMessage: string
+  removedMessage: string,
+  jwt?: string,
 ) => {
   const updatedItems = [...items];
   const targetIndex = updatedItems.findIndex(item => item.id === id);
+  const targetItem = updatedItems[targetIndex];
+  const toastMessage = targetItem.bookmarked ? removedMessage : savedMessage;
 
-  if (targetIndex !== -1) {
-    const targetItem = updatedItems[targetIndex];
-
-    const toastMessage = targetItem.bookmarked ? removedMessage : savedMessage;
-
-    // Toggle bookmark status
-    targetItem.bookmarked = !targetItem.bookmarked;
+  if (storageKey === 'products') {
+    const meta_data = targetItem.meta;
+    let newChange: Object = {};
+    if (meta_data) {
+      newChange = {
+      ...meta_data,
+      "bookmarked": !meta_data.bookmarked,
+    }
+    } else {
+      newChange = {
+        "bookmarked": true,
+      }
+    }
+    targetItem.meta = newChange;
 
     updatedItems[targetIndex] = targetItem;
 
     setItems(updatedItems);
 
-    // Update local storage
+    const response = await updateStrapiData('products', id as number, {meta: newChange}, jwt);
+    console.log(response.data.attributes.meta);
     await storeToLocalStorage(storageKey, updatedItems);
+
     ToastAndroid.show(`${toastMessage}`, 3000);
+
+  } else {
+    if (targetIndex !== -1) {
+      // Toggle bookmark status
+      targetItem.bookmarked = !targetItem.bookmarked;
+
+      updatedItems[targetIndex] = targetItem;
+
+      setItems(updatedItems);
+
+      // Update local storage
+      await storeToLocalStorage(storageKey, updatedItems);
+      ToastAndroid.show(`${toastMessage}`, 3000);
+    }
   }
 };
 
