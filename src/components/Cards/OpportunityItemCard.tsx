@@ -10,34 +10,35 @@ import {TouchableOpacity, StyleSheet, Text, View, Image, Pressable} from 'react-
 // Constants and Helpers
 import {COLOR, DIMEN, FONTSIZE } from '../../constants/constants';
 import {AppContext } from '../../helper/context/AppContext';
-import { OpportunityItemCardProps } from '../../utils/types';
+import { OpportunityData } from '../../utils/types';
 import { OpenLink, handleBookmark } from '../../helper/functions/handleFunctions';
 import { generateDate, resourceAge } from '../../helper/functions/functions';
 import { environments } from '../../constants/environments';
 import { FONT_NAMES } from '../../assets/fonts/fonts';
 
-const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, showReportModal }) => {
+interface OppCardProps extends OpportunityData{
+  showModal: () => void
+  showReportModal: () => void
+}
+const OpportunityItemCard: React.FC<OppCardProps> = ({
+  Title,
+  Category,
+  URL,
+  Expires,
+  Location,
+  compensation,
+  company_logo,
+  cover_image,
+  Company,
+  Description,
+  bookmarked,
+  id,
+  publishedAt,
+  showReportModal,
+}) => {
   const { setOpportunities, opportunities, isLoggedIn } = useContext(AppContext);
   const { BASE_URL } = environments;
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-
-  const {
-    Title,
-    Category,
-    Role,
-    URL,
-    Expires,
-    Location,
-    publishedAt,
-    compensation,
-    Contact,
-    company_logo,
-    cover_image,
-    Company,
-    Description,
-    bookmarked,
-    id,
-  } = opportunity;
 
   const deadline = Expires ? generateDate(Expires).date : null;
   const [expandable, setExpandable] = useState<boolean>(false);
@@ -46,6 +47,7 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, 
     setExpandable(prevState => !prevState);
   };
 
+  const getImage = (url: string) => ({ uri: `${BASE_URL}${url}` });
   const bookmark = () => {
     if (isLoggedIn) {
       handleBookmark(
@@ -60,18 +62,23 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, 
       navigation.navigate('Login', {title: 'Login to save \nthis Opportunity', opportunityID: id});
     }
   };
-  const opportunityLifeSpan = resourceAge(publishedAt);
+  const opportunityLifeSpan = resourceAge(new Date(publishedAt as string));
   return (
     <View style={styles.container}>
       <View style={styles.headSection}>
         <View style={styles.logoContainer}>
           <View style={[styles.logo, {
-            backgroundColor: company_logo.data?.attributes?.url ? COLOR.WHITE : COLOR.SECONDARY_300
+            backgroundColor: company_logo?.data?.attributes?.url ? COLOR.WHITE : COLOR.SECONDARY_300
           }]}>
-            {company_logo.data ? (
-              <Image source={{ uri: `${BASE_URL}${company_logo.data?.attributes?.url}` }} style={styles.logoImage} />
+            {company_logo?.data ? (
+              <Image
+                source={getImage(company_logo?.data?.attributes?.url)}
+                style={styles.logoImage}
+              />
             ) : (
-              <Text style={styles.logoText}>{Category === 'Job' ? Category : 'Dev'}</Text>
+                <Text style={styles.logoText}>
+                  {Category === 'Job' ? Category : 'Dev'}
+                </Text>
             )}
           </View>
           <View style={styles.titleContainer}>
@@ -85,10 +92,10 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, 
       </View>
 
       <TouchableOpacity style={styles.description} onPress={toggleExpandable}>
-        {cover_image.data && <Image source={{ uri: cover_image.data.attributes.url }} style={styles.coverImage} />}
+        {cover_image?.data && <Image source={getImage(cover_image?.data.attributes.url)} style={styles.coverImage} />}
         <HTML
           contentWidth={100}
-          source={{ html: Description }}
+          source={{html: Description as string}}
           defaultTextProps={{
             numberOfLines: expandable ? 10 : 2,
             style: styles.descriptionText,
@@ -100,7 +107,7 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, 
         <View style={styles.additionalInfo}>
           {compensation && <Text style={styles.compensation}>Compensation: {compensation}</Text>}
           {deadline && <Text style={styles.deadline}>Deadline: {deadline}</Text>}
-          <Pressable style={styles.applyButton} onPress={() => OpenLink(URL)}>
+          <Pressable style={styles.applyButton} onPress={() => OpenLink(URL as string)}>
             <Text style={styles.applyButtonText}>Apply</Text>
             <AntDesign name="arrowright" size={19} color={COLOR.SECONDARY_200} />
           </Pressable>
@@ -108,10 +115,9 @@ const OpportunityItemCard: React.FC<OpportunityItemCardProps> = ({ opportunity, 
       )}
 
       <OpportunityFooter
-        link={URL}
-        bookmarked={bookmarked}
+        link={URL as string}
+        bookmarked={bookmarked as boolean}
         handleBookmark={bookmark}
-        // publishedDate={publishedAt}
         showReportModal={showReportModal}
         location={Location ?? 'Remote'}
       />
