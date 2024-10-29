@@ -6,7 +6,7 @@ import { RootStackParamList } from "../../utils/types";
 import {isPast, differenceInDays} from "date-fns";
 
 const useHomeLogic = () => {
-  const {opportunities, codeTips, isLoggedIn, user, products, xp} = useContext(AppContext);
+  const {opportunities, codeTips, isLoggedIn, user, products, xp, comments, setCodeTips} = useContext(AppContext);
   const randomIndex = Math.floor(Math.random() * products.length);
   const recentOffers = opportunities.map((opp) => {
     if (opp.Expires) {
@@ -42,6 +42,8 @@ const useHomeLogic = () => {
     user,
     products,
     xp,
+    comments,
+    setCodeTips,
     randomIndex,
     opportunityIndex,
     showCompleteProfile,

@@ -8,25 +8,29 @@ import {
 } from 'react-native';
 
 // constants
-import {COLOR, DIMEN} from '../../constants/constants'
+import { COLOR, DIMEN } from '../../constants/constants'
 import {
-  SeeMore, TipCard, XPpoint, Fragment,
+  XPpoint, Fragment,
   CompleteProfile, OpportunityItem, ProductCard,
   ProfileForm,
+  HomeItem,
+  TipCard,
 } from '../../components';
 
-import {isProfileComplete} from '../../helper/functions/functions';
+import { isProfileComplete } from '../../helper/functions/functions';
 import useHomeLogic from './useHomeLogic';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { FONT_NAMES } from '../../assets/fonts/fonts';
+import TipItem from '../CodeTips/componets/TipItem';
 
-const renderTip = ({item, index}:{item: any, index: number}) =>
-  <TipCard
-    key={index}
-    title={item?.title}
-    description={item?.details}
-    views={0}
-    tagLine={item?.tags}
-  />
+// const renderTip = ({ item, index }: { item: any, index: number }) =>
+//   <TipCard
+//     key={index}
+//     title={item?.title}
+//     description={item?.details}
+//     views={0}
+//     tagLine={item?.tags}
+//   />
 
 const Home = () => {
   const {
@@ -38,6 +42,7 @@ const Home = () => {
     recentOffers,
     products,
     codeTips,
+    comments,
     // consts
     profilePhoto,
     randomIndex,
@@ -48,7 +53,8 @@ const Home = () => {
     setShowProfileCard,
     // handlers
     toggleCompleteProfileCard,
-    handleCompleteProfile
+    handleCompleteProfile,
+    setCodeTips,
   } = useHomeLogic();
   return (
     <SafeAreaView style={styles.container}>
@@ -56,10 +62,14 @@ const Home = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Product showcase section  */}
         <Fragment
-          Component={ProductCard}
-          onPress={() => navigation.navigate('ProductList')}
-          title={'Featured Product'}
-          {...products[randomIndex]}
+          Component={HomeItem}
+          onPress={() => navigation.navigate('AddProduct')}
+          btn_text={'Publish Innovation'}
+          btn_style={styles.p_btn_style}
+          text_style={styles.btn_text_style}
+          itemType='Innovation'
+          item={products[randomIndex]}
+          press={() => navigation.navigate('ProductDetail', { ...products[randomIndex] })}
         />
         {isLoggedIn && !isProfileComplete(user) && showCompleteProfile &&
           <CompleteProfile
@@ -68,22 +78,25 @@ const Home = () => {
           />}
         {/* Opprotunity section  */}
         <Fragment
-          Component={OpportunityItem}
-          opportunity={recentOffers[opportunityIndex]}
-          targetIndex={opportunityIndex}
-          title={"Featured Offer"}
+          Component={HomeItem}
+          onPress={() => navigation.navigate('Offers', {})}
+          itemType={'Offer'}
+          item={recentOffers[opportunityIndex]}
+          btn_text={'See all'}
+          btn_style={styles.o_btn_style}
+          text_style={styles.btn_text_style}
+          press={() => navigation.navigate('Offers', {})}
         />
-
+        {/*Tech tips section */}
         <View style={styles.tipsView}>
-          <SeeMore title='Tech tips' />
-          {/*Tech tips section */}
-          <FlatList
-            data={codeTips.slice(0, 3)}
-            renderItem={renderTip}
-            keyExtractor={(item) => item?.id.toString()}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
+          {codeTips.slice(0, 2).map((item, index) => (
+            <TipCard
+              key={index}
+              {...item}
+              setTips={setCodeTips}
+              tips={codeTips}
+            />
+          ))}
         </View>
       </ScrollView>
       <ProfileForm
@@ -103,18 +116,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLOR.WHITE,
-    padding: DIMEN.PADDING.SM,
+    paddingHorizontal: DIMEN.PADDING.ME,
+    paddingVertical: DIMEN.PADDING.SM,
   },
   headerContainer: {
     flex: 1,
   },
-  // techTipStyle: {
-  //   marginTop: 10,
-  // },
   tipsView: {
     flex: 1,
     paddingBottom: DIMEN.PADDING.LG,
     marginVertical: DIMEN.PADDING.LG,
     marginHorizontal: DIMEN.PADDING.ES
+  },
+  p_btn_style: {
+    borderRadius: DIMEN.CONSTANT.XSM,
+    borderWidth: 1,
+    paddingVertical: DIMEN.PADDING.SM,
+    alignItems: 'center',
+    marginTop: DIMEN.MARGIN.SM,
+  },
+  o_btn_style: {
+    width: 90,
+    borderWidth: 1,
+    alignItems: 'center',
+    marginTop: DIMEN.MARGIN.SM,
+    paddingVertical: DIMEN.PADDING.SM,
+    borderRadius: DIMEN.CONSTANT.XSM,
+  },
+  btn_text_style: {
+    fontFamily: FONT_NAMES.Title,
   }
 })
