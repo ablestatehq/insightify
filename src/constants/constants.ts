@@ -51,6 +51,7 @@ export const FONTSIZE = {
   TITLE_2: getFontSize(16),
   BODY: getFontSize(13),
   SMALL: getFontSize(10),
+  X_SMALL: getFontSize(8),
 }
 
 export const DIMEN = {
@@ -64,6 +65,14 @@ export const DIMEN = {
     ELG: 20
   },
   MARGIN: {
+    XLG: 25,
+    LG: 20,
+    ME: 15,
+    SM: 10,
+    XSM: 5,
+    XXSM: 2.5,
+  },
+  CONSTANT: {
     XLG: 25,
     LG: 20,
     ME: 15,
