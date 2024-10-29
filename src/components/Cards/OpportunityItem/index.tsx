@@ -1,29 +1,31 @@
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { Pressable, StyleSheet, View, Text, Image } from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { COLOR } from '../../../constants/constants';
-import { RootStackParamList } from '../../../utils/types';
-import { environments } from '../../../constants/environments';
-import { FONT_NAMES } from '../../../assets/fonts/fonts';
+import {useNavigation} from '@react-navigation/native';
+import {Pressable, StyleSheet, View, Text, Image} from 'react-native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {COLOR } from '../../../constants/constants';
+import {OpportunityData, RootStackParamList } from '../../../utils/types';
+import {environments } from '../../../constants/environments';
+import {FONT_NAMES } from '../../../assets/fonts/fonts';
 
-const Index = (props: any) => {
+const Index = (props: OpportunityData) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { opportunity } = props;
-  const { id, Title, company_logo } = opportunity;
-  const { BASE_URL } = environments;
+  const {
+    Title,
+    company_logo,
+   } = props;
+  const {BASE_URL} = environments;
+
+  const getImage = (url: string) => ({uri: `${BASE_URL}${url}`});
 
   return (
     <Pressable
       style={styles.container}
-      onPress={() => navigation.navigate('Offers', { tag: 'Recent' })}>
+      onPress={() => navigation.navigate('Offers', {tag: 'Recent'})}>
       <View style={styles.overlay} />
       <Image
-        source={{
-          uri: `${BASE_URL}${company_logo.data ?
-            company_logo.data?.attributes?.url :
-            '/uploads/join_us_eee8c7c677.jpg'}`
-        }}
+        source={getImage(company_logo?.data ?
+          company_logo.data?.attributes?.url :
+          '/uploads/join_us_eee8c7c677.jpg')}
         resizeMethod="resize"
         resizeMode="repeat"
         style={styles.imageStyles}
