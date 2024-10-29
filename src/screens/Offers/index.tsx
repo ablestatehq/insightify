@@ -32,9 +32,9 @@ const OpportunityList = () => {
   };
 
   const renderOpportunity =
-    ({ item }: { item: any }) => (
+    ({item}: {item: any}) => (
       <OpportunityCard
-        opportunity={item}
+        {...item}
         showReportModal={() => setShowReportModal(true)}
       />
     );
