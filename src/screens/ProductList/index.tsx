@@ -2,32 +2,19 @@ import ProductItem from './ProductItem';
 import React, {useContext} from 'react';
 import {COLOR} from '../../constants/constants';
 import {FlatList, Text, View} from 'react-native';
-import {RootStackParamList} from '../../utils/types';
 import Header from '../../components/Headers/Header';
-import {useNavigation} from '@react-navigation/native';
 import {AppContext} from '../../helper/context/AppContext';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {ProductData} from '../../utils/types';
 
 const Index = () => {
-  const renderProducts = ({item, index}:{item: any, index: number}) =>
-    <ProductItem
-      verified={false}
-      name={item?.name}
-      description={item?.description}
-      media={item?.media}
-      views={0}
-      tagline={item?.tagline}
-      id={item?.id}
-    />
+  const renderProducts = ({item, index}:{item: ProductData, index: number}) =>
+    <ProductItem key={index} {...item} />
 
   const EmptyComponent = () => (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>No products available</Text>
     </View>
   );
-
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const {products} = useContext(AppContext);
 
@@ -38,7 +25,7 @@ const Index = () => {
         data={products}
         renderItem={renderProducts}
         contentContainerStyle={styles.flatList}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(_, index) => index.toString()}
         ListEmptyComponent={<EmptyComponent />}
       />
     </View>
