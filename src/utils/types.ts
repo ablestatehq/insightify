@@ -137,19 +137,29 @@ type LoginDetails = {
   password?: string
 }
 
-type OpportunityItemCardProps = {
-  id?:string
+type OpportunityData = {
+  id:string
   link?: string
   type?: string
-  title?: string
+  Title?: string
+  Description?: string
   location?: string
-  opportunity?: any
+  Company?: string
+  Category?: string
+  Role?: string
+  URL?: string
+  Expires?: string
+  Location?: string
   createdAt?: string
-  expireDate?: string
-  description?: string
+  compensation?: string
+  Contact?: Contact
+  company_logo?: any
+  cover_image?: any
   bookmarked?: boolean
-  showModal?: () => void
-  showReportModal: () => void
+  publishedAt?: string
+}
+type Contact = {
+
 }
 
 type OpportunitiesFormType = {
@@ -211,6 +221,7 @@ type ProductData = {
   media?: {data: any[]};
   uploadedBy?: any;
   demo?: string;
+  view?: number
   totalViews?: number;
   tagline?: string;
   createdAt?: string;
@@ -250,7 +261,7 @@ export {
   TalentSubmissionForm,
   OpportunitiesFormType,
   ExpandableListItemProps,
-  OpportunityItemCardProps,
+  OpportunityData,
   ConfirmEmailScreenProps,
   OpportunityListProps
 }
