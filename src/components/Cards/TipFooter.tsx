@@ -13,7 +13,7 @@ interface TipFooterProps {
   isCodeTip?: boolean
   bookmarked: boolean
   handleBookmark: () => void
-  onSubmitReport: () => void
+  onSubmitReport?: () => void
   comments?: any[]
 }
 
@@ -35,7 +35,9 @@ const TipFooter: React.FC<TipFooterProps> = ({
   };
 
   const handleSubmit = () => {
-    onSubmitReport()
+    if (onSubmitReport) {
+      onSubmitReport()
+    }
   }
 
   const handleOpenComments = function () {
@@ -60,13 +62,13 @@ const TipFooter: React.FC<TipFooterProps> = ({
           color={COLOR.PRIMARY_300}
           size={13}
         />}
-        <IconLabelPair
+        {onSubmitReport && <IconLabelPair
           iconName='report'
           iconLabel={'Report'}
           size={13}
           color={COLOR.PRIMARY_300}
           press={handleSubmit}
-        />
+        />}
 
         <IconLabelPair
           iconLabel='Comment'

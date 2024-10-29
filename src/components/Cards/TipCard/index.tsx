@@ -1,23 +1,44 @@
 import React from 'react'
-import {Pressable, StyleSheet, View, Text, Image} from 'react-native'
-import {COLOR, FONTSIZE} from '../../../constants/constants';
+import {StyleSheet, View, Text, Image} from 'react-native'
+import {COLOR, DIMEN, FONTSIZE} from '../../../constants/constants';
 import CodeSnippet from '../CodeSnippet';
 import HTMLText from '../HTMLText';
 import RenderHtml from 'react-native-render-html';
 import {FONT_NAMES} from '../../../assets/fonts/fonts';
-
+import TipFooter from '../TipFooter';
+import { handleBookmark } from '../../../helper/functions/handleFunctions';
 
 const Index = (props: any) => {
 
-  const {description, image, title} = props;
+  const {
+    id,
+    details,
+    image,
+    title,
+    source_url_text,
+    source_url,
+    bookmarked,
+    comments,
+    setTips,
+    tips,
+  } = props;
 
+  const bookMarkTip = () => handleBookmark(
+    id,
+    tips,
+    setTips,
+    'techTips',
+    'Tip saved',
+    'Tip unsaved');
+  
   const renderers = {
     code: CodeSnippet,
     p: HTMLText
   };
 
   return (
-    <Pressable style={styles.container}>
+    <View style={styles.container}>
+      <Text style={styles.careerTxtStyle}>{'CAREER'}</Text>
       {image ? <Image
         source={{ uri: `${image}` }}
         resizeMethod="resize"
@@ -30,7 +51,7 @@ const Index = (props: any) => {
         </Text> : null}
         <RenderHtml
           contentWidth={100}
-          source={{html: description}}
+          source={{html: details}}
           defaultTextProps={{style: styles.defaultStyles}}
           renderers={renderers}
           tagsStyles={{
@@ -42,7 +63,15 @@ const Index = (props: any) => {
           }}
         />
       </View>
-    </Pressable>
+      <TipFooter
+        id={id}
+        source_url_text={source_url_text}
+        source_url={source_url}
+        bookmarked={bookmarked}
+        handleBookmark={bookMarkTip}
+        comments={comments}
+      />
+    </View>
   );
 }
 
@@ -50,15 +79,18 @@ export default React.memo(Index);
 
 const styles = StyleSheet.create({
   container: {
-    width: 200,
-    height: 200,
+    marginTop: DIMEN.MARGIN.SM,
+    height: 250,
     borderRadius: 5,
     flexDirection: 'column',
-    margin: 10,
-    borderColor: COLOR.GREY_100,
     elevation: 2,
     backgroundColor: COLOR.WHITE,
-    paddingHorizontal: 10
+    padding: DIMEN.PADDING.ME,
+  },
+  careerTxtStyle: {
+    fontFamily: FONT_NAMES.Title,
+    fontSize: FONTSIZE.X_SMALL,
+    color: COLOR.PRIMARY_300,
   },
   imageStyles: {
     width: '100%',
@@ -93,8 +125,10 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   titleStyle: {
-    marginVertical: 5,
-    color: COLOR.PRIMARY_300,
+    fontFamily: FONT_NAMES.Heading,
+    fontSize: FONTSIZE.BODY,
+    color: COLOR.GREY_300,
+    marginTop: DIMEN.MARGIN.XSM,
   },
   descriptionStyle: {
     color: COLOR.PRIMARY_200,
