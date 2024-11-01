@@ -10,7 +10,7 @@ import { FONT_NAMES } from '@fonts';
 import {
   EmptyState, FloatingButton, FormModal, CategorySection,
   FilterCard, OpportunityCard, OpportunityHeader
-} from '@components';
+} from '@components/index';
 
 
 const OpportunityList = () => {
