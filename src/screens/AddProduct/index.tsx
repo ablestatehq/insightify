@@ -14,7 +14,7 @@ import { AppContext } from '@helpers/context/AppContext';
 import { COLOR, FONTSIZE } from '@constants/constants';
 
 import { environments } from '@constants/environments';
-import { Dialog, InputText } from '@components';
+import { Dialog, InputText } from '@components/index';
 import { FONT_NAMES } from '@fonts';
 import { storeData, uploadImage } from '@api/strapiJSAPI';
 import image_name_extension from '@utils/imageName';
