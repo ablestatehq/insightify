@@ -1,22 +1,22 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import OpportunityFooter from './OpportunityFooter';
 
 import HTML from 'react-native-render-html';
-import {AntDesign} from '@expo/vector-icons';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {TouchableOpacity, StyleSheet, Text, View, Image, Pressable} from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { TouchableOpacity, StyleSheet, Text, View, Image, Pressable } from 'react-native';
 
 // Constants and helperss
-import {COLOR, DIMEN, FONTSIZE } from '@constants/constants';
-import {AppContext } from '@helpers/context/AppContext';
+import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
+import { AppContext } from '@helpers/context/AppContext';
 import { OpportunityData } from '@utils/types';
 import { OpenLink, handleBookmark } from '@helpers/functions/handleFunctions';
 import { generateDate, resourceAge } from '@helpers/functions/functions';
 import { environments } from '@constants/environments';
 import { FONT_NAMES } from '@fonts';
 
-interface OppCardProps extends OpportunityData{
+interface OppCardProps extends OpportunityData {
   showModal: () => void
   showReportModal: () => void
 }
@@ -59,7 +59,7 @@ const OpportunityItemCard: React.FC<OppCardProps> = ({
         'Offer unsaved'
       );
     } else {
-      navigation.navigate('Login', {title: 'Login to save \nthis Opportunity', opportunityID: id});
+      navigation.navigate('Login', { title: 'Login to save \nthis Opportunity', opportunityID: id });
     }
   };
   const opportunityLifeSpan = resourceAge(new Date(publishedAt as string));
@@ -76,15 +76,15 @@ const OpportunityItemCard: React.FC<OppCardProps> = ({
                 style={styles.logoImage}
               />
             ) : (
-                <Text style={styles.logoText}>
-                  {Category === 'Job' ? Category : 'Dev'}
-                </Text>
+              <Text style={styles.logoText}>
+                {Category === 'Job' ? Category : 'Dev'}
+              </Text>
             )}
           </View>
           <View style={styles.titleContainer}>
             <Text numberOfLines={2} ellipsizeMode='tail' style={styles.heading}>{Title}</Text>
             <Text style={styles.company}>
-              {Company} 
+              {Company}
               <Text style={styles.timeText}>  {opportunityLifeSpan}</Text>
             </Text>
           </View>
@@ -95,7 +95,7 @@ const OpportunityItemCard: React.FC<OppCardProps> = ({
         {cover_image?.data && <Image source={getImage(cover_image?.data.attributes.url)} style={styles.coverImage} />}
         <HTML
           contentWidth={100}
-          source={{html: Description as string}}
+          source={{ html: Description as string }}
           defaultTextProps={{
             numberOfLines: expandable ? 10 : 2,
             style: styles.descriptionText,
