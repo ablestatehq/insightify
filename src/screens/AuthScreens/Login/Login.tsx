@@ -70,7 +70,14 @@ const Login: React.FC = () => {
         storeToLocalStorage('isMember', { isMember });
 
         if (opportunityID) {
-          handleBookmark(opportunityID, opportunities, setOpportunities)
+          handleBookmark(
+            opportunityID,
+            opportunities,
+            setOpportunities,
+            'opportunities',
+            'Offer saved',
+            'Offer unsaved'
+          )
           navigation.goBack();
         } else {
           switch (title) {
