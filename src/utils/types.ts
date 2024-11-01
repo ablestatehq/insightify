@@ -203,6 +203,11 @@ interface ProfileType {
   secondaryDomain: string;
 }
 
+interface Comments{
+  user: UserProfile,
+  comment: string
+}
+
 type MetaData = {
 slogan?: string,
 lauchedBy?: {
@@ -212,6 +217,7 @@ lauchedBy?: {
     companyName: string
 },
   bookmarked?: boolean
+  comments?: Comments[]
 }
 type ProductData = {
   name: string;
