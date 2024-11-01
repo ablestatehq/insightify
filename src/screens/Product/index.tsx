@@ -1,22 +1,23 @@
 import {
-  StyleSheet, View, Text,
-  Image, StatusBar, ScrollView, TextInput, LayoutChangeEvent, Animated
+  StyleSheet, View, Text, Image,
+  StatusBar, ScrollView, TextInput,
+  LayoutChangeEvent, Animated, FlatList
 } from "react-native";
-import {SafeAreaView} from "react-native-safe-area-context";
-import {COLOR, DIMEN, FONTSIZE} from "../../constants/constants";
-import {environments} from "../../constants/environments";
-import {Ionicons, FontAwesome} from "@expo/vector-icons";
-import {RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import React, {useRef, useState} from "react";
-import {AppContext} from "../../helper/context/AppContext";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { COLOR, DIMEN, FONTSIZE } from "../../constants/constants";
+import { environments } from "../../constants/environments";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React, { useRef, useState } from "react";
+import { AppContext } from "../../helper/context/AppContext";
 import awardXP from "../../utils/awardXP";
-import {RootStackParamList} from "../../utils/types";
-import {FONT_NAMES} from "../../assets/fonts/fonts";
-import onShare, {handleLinkPress} from "../../utils/onShare";
+import { RootStackParamList } from "../../utils/types";
+import { FONT_NAMES } from "../../assets/fonts/fonts";
+import onShare, { handleLinkPress } from "../../utils/onShare";
 import { handleBookmark } from "../../helper/functions/handleFunctions";
 
-const { BASE_URL } = environments;
+const {BASE_URL} = environments;
 const AWARD = {
   'FIRST': 5,
   'SECOND': 3,
@@ -35,10 +36,9 @@ function Index() {
   const handleBack = () => navigation.goBack();
 
   const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
-  const {description, tagline, uploadedBy, name, media, status, id, totalViews, url, meta} = route.params;
+  const {description, name, media, id, url, meta} = route.params;
   const {user, jwt, setXp, setProducts, products} = React.useContext(AppContext);
 
-  // console.log(meta)
   const [com, setCom] = useState<string>('');
   const [csLayout, setCsLayout] = useState<Layout>({
     x: 0,
@@ -75,7 +75,6 @@ function Index() {
     }
   }
 
-  // console.log(meta?.bookmarked);
   const bookmark = () => {
     handleBookmark(
       id,
@@ -88,8 +87,18 @@ function Index() {
     );
   };
 
+  const renderImage = ({item, index}: {item: any, index: number}) => (
+    <Image
+      key={index}
+      resizeMode='stretch'
+      resizeMethod='resize'
+      source={getImage(item?.attributes?.url)}
+      style={styles.thumbnail}
+    />
+  );
+
   const getImage = (url: string) => ({uri: `${BASE_URL}${url}`});
-  
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={styles.navComp}>
@@ -109,10 +118,10 @@ function Index() {
           />
         </View>
         <Text style={styles.pdttName}>{name}</Text>
-        <Text style={styles.sloganText}>{meta?.slogan}</Text>
+        {/* {meta?.slogan && <Text style={styles.sloganText}>{meta?.slogan}</Text>} */}
       </Animated.View>
       <View style={styles.icons_section}>
-        <View style={styles.doubleStyle}>
+        {/* <View style={styles.doubleStyle}> */}
           <Ionicons
             name="chatbubble-outline"
             size={20}
@@ -125,8 +134,8 @@ function Index() {
             color={COLOR.GREY_300}
             onPress={handleVisit}
           />
-        </View>
-        <View style={styles.doubleStyle}>
+        {/* </View> */}
+        {/* <View style={styles.doubleStyle}> */}
           <Ionicons
             name={meta?.bookmarked ? "bookmark" : 'bookmark-outline'}
             size={20}
@@ -139,24 +148,22 @@ function Index() {
             color={COLOR.GREY_300}
             onPress={handleShare}
           />
-        </View>
+        {/* </View> */}
       </View>
       <ScrollView style={styles.main} ref={scrollViewRef}>
         {/**Display the product images. */}
-        <ScrollView
+        <FlatList
           horizontal
+          data={media?.data}
+          renderItem={renderImage}
+          showsVerticalScrollIndicator={false}
+          initialNumToRender={1}
+          maxToRenderPerBatch={1}
+          windowSize={2}
+          removeClippedSubviews={true}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.pdtImages}>
-          {media?.data?.map((productImage, index) => (
-            <Image
-              key={index}
-              resizeMode='stretch'
-              resizeMethod='resize'
-              source={getImage(productImage.attributes?.url)}
-              style={styles.thumbnail}
-            />
-          ))}
-        </ScrollView>
+          contentContainerStyle={styles.pdtImages}
+        />
         {/**Production description. */}
         <Text style={styles.description}>{description}</Text>
         {/**Developer of the product */}
@@ -175,23 +182,27 @@ function Index() {
           {/**comments */}
           <View onLayout={getCommentSectionLayout}>
             <Text style={styles.commentTitle}>Comments</Text>
-            {[1, 2, 4, 5, 6].map((_, index) => (
-              <View style={styles.comments} key={index}>
-                <View style={styles.commentedBy}>
-                  <View style={styles.devProfile}>
-                    <FontAwesome
-                      size={20}
-                      name="user-circle-o"
-                      color={COLOR.SECONDARY_100}
-                    />
-                    <Text style={styles.commentor}>{`Guest user`}</Text>
+            {meta?.comments ? meta?.comments.map((_, index) => (
+              <>
+                <View style={styles.comments} key={index}>
+                  <View style={styles.commentedBy}>
+                    <View style={styles.devProfile}>
+                      <FontAwesome
+                        size={20}
+                        name="user-circle-o"
+                        color={COLOR.SECONDARY_100}
+                      />
+                      <Text style={styles.commentor}>{`Guest user`}</Text>
+                    </View>
+                    <View style={styles.dot} />
+                    <Text style={styles.timeStamp}>{'5days ago'}</Text>
                   </View>
-                  <View style={styles.dot} />
-                  <Text style={styles.timeStamp}>{'5days ago'}</Text>
+                  <Text>{'comment'}</Text>
                 </View>
-                <Text>{'comment'}</Text>
-              </View>
-            ))}
+              </>
+            )) :
+              <Text style={styles.no_comments}>No comments</Text>
+            }
           </View>
         </View>
       </ScrollView>
@@ -253,19 +264,23 @@ const styles = StyleSheet.create({
   pdttName: {
     textAlign: 'center',
     fontSize: FONTSIZE.TITLE_2,
-    marginTop: 10,
+    marginTop: DIMEN.MARGIN.SM,
     fontFamily: FONT_NAMES.Heading,
   },
   sloganText: {
     textAlign: 'center',
     fontSize: FONTSIZE.BODY,
-    marginTop: 10,
+    marginBottom: DIMEN.MARGIN.ME,
     fontFamily: FONT_NAMES.Body,
+    lineHeight: FONTSIZE.TITLE_2,
   },
   icons_section: {
+    width: '80%',
+    alignSelf: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: DIMEN.MARGIN.ME,
+    marginVertical: DIMEN.MARGIN.XXSM,
+    // marginHorizontal: DIMEN.MARGIN.ME,
     paddingVertical: DIMEN.PADDING.SM
   },
   doubleStyle: {
@@ -275,18 +290,16 @@ const styles = StyleSheet.create({
   pdtImages: {
     marginVertical: DIMEN.MARGIN.SM,
     borderWidth: 1,
-
   },
   thumbnail: {
-    width: DIMEN.SCREENWIDTH * 0.8,
+    width: DIMEN.SCREENWIDTH * 0.85,
     height: 150,
-    // marginHorizontal: DIMEN.MARGIN.ME,
-    borderRadius: DIMEN.MARGIN.ME
+    borderRadius: DIMEN.MARGIN.ME,
+    marginHorizontal: DIMEN.MARGIN.ME
   },
   description: {
     textAlign: 'left',
     fontSize: FONTSIZE.BODY,
-    // marginTop: 10,
     fontFamily: FONT_NAMES.Body,
   },
   developerSection: {
@@ -299,13 +312,11 @@ const styles = StyleSheet.create({
   devName: {
     textAlign: 'left',
     fontSize: FONTSIZE.BODY,
-    // marginTop: 10,
     fontFamily: FONT_NAMES.Title,
   },
   devDescription: {
     textAlign: 'left',
     fontSize: FONTSIZE.SMALL,
-    // marginTop: 10,
     fontFamily: FONT_NAMES.Body,
   },
   commentTitle: {
@@ -318,12 +329,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: DIMEN.MARGIN.SM,
-    // margin: DIMEN.MARGIN.SM,
-    // backgroundColor: COLOR.GREY_300
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    marginHorizontal: DIMEN.MARGIN.ME,
+    marginVertical: DIMEN.MARGIN.SM,
   },
   comments: {
 
+  },
+  no_comments: {
+    fontFamily: FONT_NAMES.Body,
+    fontSize: FONTSIZE.SMALL,
+    color: COLOR.GREY_100,
   },
   commentor: {
     textAlign: 'left',
@@ -333,7 +349,6 @@ const styles = StyleSheet.create({
   commentedBy: {
     flexDirection: 'row',
     gap: DIMEN.MARGIN.SM,
-    // justifyContent: 'center',
     alignItems: 'center',
   },
   dot: {
