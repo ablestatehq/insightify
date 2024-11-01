@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useContext, useState } from "react";
@@ -6,18 +7,32 @@ import { RootStackParamList } from "../../utils/types";
 import {isPast, differenceInDays} from "date-fns";
 
 const useHomeLogic = () => {
-  const {opportunities, codeTips, isLoggedIn, user, products, xp, comments, setCodeTips} = useContext(AppContext);
-  const randomIndex = Math.floor(Math.random() * products.length);
-  const recentOffers = opportunities.map((opp) => {
-    if (opp.Expires) {
-          if (!isPast(opp.Expires)) return opp;
+  const { opportunities, codeTips, isLoggedIn, user, products, xp, comments, setCodeTips } = useContext(AppContext);
+
+  const randomIndex = useMemo(() => {
+    return products.length > 0 ? Math.floor(Math.random() * products.length) : -1;
+  }, []);
+  
+  const recentOffers = useMemo(() => {
+    return opportunities
+      .map((opp) => {
+        if (opp.Expires && !isPast(opp.Expires)) {
+          return opp;
         } else {
           const publishedAt = new Date(opp.publishedAt);
-          const days = differenceInDays(new Date, publishedAt);
+          const days = differenceInDays(new Date(), publishedAt);
           if (days <= 5) return opp;
         }
-  });
-  const opportunityIndex = Math.floor(Math.random() * ((recentOffers.length - 1) - 0 + 1)) + 0;
+      })
+      .filter(Boolean);
+  }, []);
+
+  const opportunityIndex = useMemo(() => {
+    return recentOffers.length > 0
+      ? Math.floor(Math.random() * recentOffers.length)
+      : -1;
+  }, []);
+
   const [showCompleteProfile, setShowCompleteProfile] = useState(true);
   const [showProfileCard, setShowProfileCard] = useState<boolean>(false);
   
@@ -31,7 +46,7 @@ const useHomeLogic = () => {
     setShowCompleteProfile(!showCompleteProfile);
   }
   
-  const toggleCompleteProfileCard = () => {setShowCompleteProfile(false)}
+  const toggleCompleteProfileCard = () => { setShowCompleteProfile(false) }
   
   return {
     navigation,
@@ -53,6 +68,6 @@ const useHomeLogic = () => {
     handleCompleteProfile,
     toggleCompleteProfileCard,
   }
-}
+};
 
 export default useHomeLogic;

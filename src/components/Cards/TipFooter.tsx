@@ -43,7 +43,6 @@ const TipFooter: React.FC<TipFooterProps> = ({
   const handleOpenComments = function () {
     setOpenComments(!openComments)
   }
-  // console.log(id)
   return (
     <View>
       <View style={[styles.footer, {justifyContent: source_url_text ? 'space-evenly' : 'flex-end'}]}>

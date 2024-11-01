@@ -40,7 +40,7 @@ const Index = ({
   };
 
   const [showReportModal, setShowReportModal] = React.useState<boolean>(false);
-  // console.log(id);
+
   const bookMarkTip = () => handleBookmark(
     id,
     tips,

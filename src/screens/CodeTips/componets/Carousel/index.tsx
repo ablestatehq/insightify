@@ -1,11 +1,11 @@
 import React from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 
-import {EmptyState} from '../../../../components';
+import {EmptyState} from '@components/index';
 import TipItem from '../TipItem'
 
-import {COLOR, DIMEN, FONTSIZE} from '../../../../constants/constants';
-import {FONT_NAMES} from '../../../../assets/fonts/fonts';
+import {FONT_NAMES} from '@fonts';
+import {COLOR, DIMEN, FONTSIZE} from '@constants/constants';
 
 const {SCREENWIDTH} = DIMEN;
 

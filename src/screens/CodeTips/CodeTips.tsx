@@ -5,12 +5,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import Icons from '../../assets/icons';
 import {useCodeTips} from './useCodeTips';
-import {CategorySection, Loader} from '../../components';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
 // constants
-import {COLOR, FONTSIZE} from '../../constants/constants';
+import Icons from '@icons';
+import {FONT_NAMES} from '@fonts';
+import {COLOR, FONTSIZE} from '@constants/constants';
+import {CategorySection, Loader} from '@components/index';
 
 // lazy loads
 const Carousel = React.lazy(() => import('./componets/Carousel'));

@@ -21,16 +21,7 @@ import { isProfileComplete } from '../../helper/functions/functions';
 import useHomeLogic from './useHomeLogic';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FONT_NAMES } from '../../assets/fonts/fonts';
-import TipItem from '../CodeTips/componets/TipItem';
 
-// const renderTip = ({ item, index }: { item: any, index: number }) =>
-//   <TipCard
-//     key={index}
-//     title={item?.title}
-//     description={item?.details}
-//     views={0}
-//     tagLine={item?.tags}
-//   />
 
 const Home = () => {
   const {
@@ -56,6 +47,7 @@ const Home = () => {
     handleCompleteProfile,
     setCodeTips,
   } = useHomeLogic();
+  
   return (
     <SafeAreaView style={styles.container}>
       <XPpoint number={xp} navigation={navigation} inCommunity={user && user.isMember} />

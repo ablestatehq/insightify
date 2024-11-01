@@ -1,7 +1,9 @@
-import {getData} from '../../../api/grapiql';
-import {getMe} from '../../../api/strapiJSAPI';
 import React, { useState, createContext, useEffect } from 'react';
-import { retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions';
+
+import {getData} from '@api/grapiql';
+import {getMe} from '@api/strapiJSAPI';
+import {ProductData} from '@utils/types';
+import {retrieveLocalData, storeToLocalStorage} from '@utils/localStorageFunctions';
 
 interface AppContextProviderProps {
   children: React.ReactNode;
@@ -37,30 +39,30 @@ interface AppContextType {
 
 export const AppContext = createContext<AppContextType>({
   jwt: '',
-  setJwt: () => { },
+  setJwt: () => {},
   user: {},
-  setUser: () => { },
+  setUser: () => {},
   xp: 0,
-  setXp: () => { },
+  setXp: () => {},
   isLoading: true,
-  setIsLoading: () => { },
+  setIsLoading: () => {},
   codeTips: [],
-  setCodeTips: () => { },
+  setCodeTips: () => {},
   isLoggedIn: false,
-  setIsLoggedIn: () => { },
+  setIsLoggedIn: () => {},
   opportunities: [],
-  setOpportunities: () => { },
+  setOpportunities: () => {},
   products: [],
-  setProducts: () => { },
+  setProducts: () => {},
   isNotificationEnabled: false,
-  setIsNotificationEnabled: () => { },
+  setIsNotificationEnabled: () => {},
   notifications: [],
-  setNotifications: () => { },
+  setNotifications: () => {},
   comments: [],
-  setComments: () => { },
+  setComments: () => {},
   community: [],
-  setCommunity: () => { },
-  fetchAdditionalData: async () => { },
+  setCommunity: () => {},
+  fetchAdditionalData: async () => {},
 });
 
 const AppContextProvider = ({ children }: AppContextProviderProps) => {
@@ -83,78 +85,83 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
   const fetchInitialData = async () => {
     try {
-      const inCommunity = await retrieveLocalData('isMember');
-      const isNofityOn = await retrieveLocalData('tokens');
+      // Run all fetches concurrently
+      // const [localOpportunities = [], localTechTips = [], localProducts = []] = await Promise.all([
+      //   retrieveLocalData('opportunities'),
+      //   retrieveLocalData('techTips'),
+      //   retrieveLocalData('products')
+      // ]);
+
+      const [user_, inCommunity, isNofityOn, productsData, opportunitiesData, techTips] = await Promise.all([
+        getMe(),
+        retrieveLocalData('isMember'),
+        retrieveLocalData('tokens'),
+        (await getData('products')).data,
+        (await getData('opportunities')).data,
+        (await getData('techTips')).data,
+      ]);
+
+      console.log("User: ", user_);
+      console.log("products", products);
+      // User & Notification Logic
       if (isNofityOn) {
-        setIsNotificationEnabled(isNofityOn?.isPushNotificationEnabled);
+        setIsNotificationEnabled(isNofityOn.isPushNotificationEnabled);
       }
-      const user_ = await getMe();
       if (user_.ok) {
-        setXp(user_.data.totalXP ? user_.data.totalXP : 0);
+        setUser({
+          ...user_.data,
+          isMember: inCommunity?.isMember ?? false,
+        });
+        setJwt(user_.jwt);
+        setXp(user_.data.totalXP ?? 0);
         setIsLoggedIn(true);
-        if (inCommunity) {
-          setUser((prev: any) => ({ ...user_.data, isMember: inCommunity.isMember }));
-          setJwt(user_.jwt);
+      }
+
+      // Opportunities, TechTips, Products
+      const updatedOpportunities = opportunitiesData.map((opp: any) => ({
+        ...opp,
+        // bookmarked: localOpportunities.find((localOpp: any) => localOpp.id === opp.id)?.bookmarked ?? false,
+      }));
+
+      const updatedTechTips = techTips.map((tip: any) => ({
+        ...tip,
+        // bookmarked: localTechTips.find((localTip: any) => localTip.id === tip.id)?.bookmarked ?? false,
+      }));
+
+      const updatedProducts = productsData.map((product: ProductData) => ({
+        ...product,
+        meta: {
+          ...product.meta,
+          // bookmarked: localProducts.find((localProd: ProductData) => localProd.id === product.id)?.meta?.bookmarked ?? false,
         }
-      }
+      }));
 
-      const techTips = (await getData('techTips')).data;
-      const _products = (await getData('products')).data;
-      const oppos = (await getData('opportunities')).data;
+      // Update state
+      setOpportunities(updatedOpportunities);
+      setCodeTips(updatedTechTips);
+      setProducts(updatedProducts);
 
-      const local_opportunities = await retrieveLocalData('opportunities');
-      const local_techTips = await retrieveLocalData('techTips');
-      const local_bookmarked_prods = await retrieveLocalData('products');
+      // Cache data
+      storeToLocalStorage('opportunities', updatedOpportunities);
+      storeToLocalStorage('techTips', updatedTechTips);
+      storeToLocalStorage('products', updatedProducts);
 
-      if (oppos) {
-        setOpportunities((prev) => {
-          const updatedOpportunity = oppos.map((opp: any) => ({
-            ...opp,
-            bookmarked: local_opportunities?.find((local_opp: any) => local_opp.id === opp.id)?.bookmarked ?? false,
-          }));
-          const newOpportunities = [...prev, ...updatedOpportunity];
-          storeToLocalStorage('opportunities', newOpportunities);
-          return newOpportunities;
-        });
-      } else {
-        setOpportunities((prev) => [...prev, ...local_opportunities]);
-      }
-
-      if (techTips) {
-        setCodeTips((prev) => {
-          const updatedCodeTip = techTips.map((tip: any) => ({
-            ...tip,
-            bookmarked: local_techTips?.find((local_tip: any) => local_tip.id === tip.id)?.bookmarked ?? false,
-          }));
-          const newCodeTips = [...prev, ...updatedCodeTip];
-          storeToLocalStorage('techTips', newCodeTips);
-          return newCodeTips;
-        });
-      } else {
-        setCodeTips((prev) => [...prev, ...local_techTips]);
-      }
-
-      if (_products) {
-        setProducts((prev) => {
-          storeToLocalStorage('products', _products.slice(0,4));
-          return [...prev, ..._products]
-        });
-
-      } else {
-        setProducts((prev) => [...prev, ...local_bookmarked_prods]);
-      }
-    } catch (error: any) {
+    } catch (error) {
+      console.error("Error fetching initial data:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
+
   const fetchAdditionalData = async () => {
     try {
-      const comments_ = (await getData('comments')).data;
-      const sent_notifications = (await getData('sentNotifications')).data;
-      const community_members = (await getData('communityMembers')).data;
-      const localNotification = await retrieveLocalData('notifications');
+      const [comments_, sent_notifications, community_members, localNotification] = await Promise.all([
+        (await getData('comments')).data,
+        (await getData('sentNotifications')).data,
+        (await getData('communityMembers')).data,
+        retrieveLocalData('notifications'),
+      ]);
 
       if (comments_) {
         setComments((prev) => [...prev, ...comments_]);
