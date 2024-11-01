@@ -45,6 +45,6 @@ yarn-error.*
 /eas.json
 
 # ignore the google-service-file
-google-services.json
+# google-services.json
 
-tip.txt
+/tip.txt
