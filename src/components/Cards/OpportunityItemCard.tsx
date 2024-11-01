@@ -7,14 +7,14 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {TouchableOpacity, StyleSheet, Text, View, Image, Pressable} from 'react-native';
 
-// Constants and Helpers
-import {COLOR, DIMEN, FONTSIZE } from '../../constants/constants';
-import {AppContext } from '../../helper/context/AppContext';
-import { OpportunityData } from '../../utils/types';
-import { OpenLink, handleBookmark } from '../../helper/functions/handleFunctions';
-import { generateDate, resourceAge } from '../../helper/functions/functions';
-import { environments } from '../../constants/environments';
-import { FONT_NAMES } from '../../assets/fonts/fonts';
+// Constants and helperss
+import {COLOR, DIMEN, FONTSIZE } from '@constants/constants';
+import {AppContext } from '@helpers/context/AppContext';
+import { OpportunityData } from '@utils/types';
+import { OpenLink, handleBookmark } from '@helpers/functions/handleFunctions';
+import { generateDate, resourceAge } from '@helpers/functions/functions';
+import { environments } from '@constants/environments';
+import { FONT_NAMES } from '@fonts';
 
 interface OppCardProps extends OpportunityData{
   showModal: () => void

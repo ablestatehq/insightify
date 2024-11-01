@@ -1,7 +1,7 @@
-import {View, StyleSheet, Text} from "react-native";
-import Header from "../../../../components/Headers/Header";
-import {COLOR, FONTSIZE} from "../../../../constants/constants";
-import {FONT_NAMES} from "../../../../assets/fonts/fonts";
+import { View, StyleSheet, Text } from "react-native";
+import Header from "@components/Headers/Header";
+import { COLOR, FONTSIZE } from "@constants/constants";
+import { FONT_NAMES } from "@fonts";
 
 export default function Otp() {
   return (

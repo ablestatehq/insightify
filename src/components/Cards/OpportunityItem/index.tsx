@@ -2,10 +2,10 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Pressable, StyleSheet, View, Text, Image} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {COLOR } from '../../../constants/constants';
-import {OpportunityData, RootStackParamList } from '../../../utils/types';
-import {environments } from '../../../constants/environments';
-import {FONT_NAMES } from '../../../assets/fonts/fonts';
+import {COLOR } from '@constants/constants';
+import {OpportunityData, RootStackParamList } from '@utils/types';
+import {environments } from '@constants/environments';
+import {FONT_NAMES } from '@fonts';
 
 const Index = (props: OpportunityData) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();

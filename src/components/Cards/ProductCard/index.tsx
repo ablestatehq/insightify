@@ -1,10 +1,10 @@
 import React from 'react'
 import { Octicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { FONT_NAMES } from '../../../assets/fonts/fonts';
-import { environments } from '../../../constants/environments';
-import { COLOR, FONTSIZE } from '../../../constants/constants';
-import { ProductData, RootStackParamList } from '../../../utils/types';
+import { FONT_NAMES } from '@fonts';
+import { environments } from '@constants/environments';
+import { COLOR, FONTSIZE } from '@constants/constants';
+import { ProductData, RootStackParamList } from '@utils/types';
 import { Pressable, StyleSheet, View, Text, Image } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

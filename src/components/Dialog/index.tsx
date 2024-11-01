@@ -1,8 +1,8 @@
 import React from 'react'
-import {Modal, StyleSheet, Text, View, Pressable} from 'react-native'
-import {COLOR, FONTSIZE} from '../../constants/constants';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
-import {IDialogBox} from '../../utils/types';
+import { Modal, StyleSheet, Text, View, Pressable } from 'react-native'
+import { COLOR, FONTSIZE } from '@constants/constants';
+import { FONT_NAMES } from '@fonts'
+import { IDialogBox } from '@utils/types';
 
 const Dialog = ({
   onAccept,

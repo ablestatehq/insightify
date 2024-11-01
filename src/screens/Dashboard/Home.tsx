@@ -8,19 +8,19 @@ import {
 } from 'react-native';
 
 // constants
-import { COLOR, DIMEN } from '../../constants/constants'
+import { COLOR, DIMEN } from '@constants/constants'
 import {
   XPpoint, Fragment,
   CompleteProfile, OpportunityItem, ProductCard,
   ProfileForm,
   HomeItem,
   TipCard,
-} from '../../components';
+} from '@components';
 
-import { isProfileComplete } from '../../helper/functions/functions';
+import { isProfileComplete } from '@helpers/functions/functions';
 import useHomeLogic from './useHomeLogic';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FONT_NAMES } from '../../assets/fonts/fonts';
+import { FONT_NAMES } from '@fonts';
 
 
 const Home = () => {
@@ -47,7 +47,7 @@ const Home = () => {
     handleCompleteProfile,
     setCodeTips,
   } = useHomeLogic();
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <XPpoint number={xp} navigation={navigation} inCommunity={user && user.isMember} />

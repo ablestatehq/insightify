@@ -1,16 +1,16 @@
 import React from 'react'
-import {Formik, FormikHelpers} from 'formik'
-import {ScrollView, StyleSheet, Text, View} from 'react-native'
+import { Formik, FormikHelpers } from 'formik'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
-import {COLOR, FONTSIZE} from '../../../constants/constants'
+import { COLOR, FONTSIZE } from '@constants/constants'
 
-import {Ionicons} from '@expo/vector-icons';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {InputText, SubmitButton, Dialog} from '../../../components';
-import {signUp} from '../../../../api/auth'
-import {FONT_NAMES} from '../../../assets/fonts/fonts'
-import {IDialogBox, RootStackParamList} from '../../../utils/types'
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { InputText, SubmitButton, Dialog } from '@components/index';
+import { signUp } from '@api/auth'
+import { FONT_NAMES } from '@fonts'
+import { IDialogBox, RootStackParamList } from '@utils/types'
 
 const SignUp = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -139,5 +139,5 @@ const styles = StyleSheet.create({
     width: '95%',
     margin: 10
   },
-  
+
 })

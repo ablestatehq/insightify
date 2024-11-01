@@ -4,20 +4,20 @@ import {
   LayoutChangeEvent, Animated, FlatList
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { COLOR, DIMEN, FONTSIZE } from "../../constants/constants";
-import { environments } from "../../constants/environments";
+import { COLOR, DIMEN, FONTSIZE } from "@constants/constants";
+import { environments } from "@constants/environments";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useRef, useState } from "react";
-import { AppContext } from "../../helper/context/AppContext";
-import awardXP from "../../utils/awardXP";
-import { RootStackParamList } from "../../utils/types";
-import { FONT_NAMES } from "../../assets/fonts/fonts";
-import onShare, { handleLinkPress } from "../../utils/onShare";
-import { handleBookmark } from "../../helper/functions/handleFunctions";
+import { AppContext } from "@helpers/context/AppContext";
+import awardXP from "@utils/awardXP";
+import { RootStackParamList } from "@utils/types";
+import { FONT_NAMES } from "@fonts";
+import onShare, { handleLinkPress } from "@utils/onShare";
+import { handleBookmark } from "@helpers/functions/handleFunctions";
 
-const {BASE_URL} = environments;
+const { BASE_URL } = environments;
 const AWARD = {
   'FIRST': 5,
   'SECOND': 3,
@@ -36,8 +36,8 @@ function Index() {
   const handleBack = () => navigation.goBack();
 
   const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
-  const {description, name, media, id, url, meta} = route.params;
-  const {user, jwt, setXp, setProducts, products} = React.useContext(AppContext);
+  const { description, name, media, id, url, meta } = route.params;
+  const { user, jwt, setXp, setProducts, products } = React.useContext(AppContext);
 
   const [com, setCom] = useState<string>('');
   const [csLayout, setCsLayout] = useState<Layout>({
@@ -87,7 +87,7 @@ function Index() {
     );
   };
 
-  const renderImage = ({item, index}: {item: any, index: number}) => (
+  const renderImage = ({ item, index }: { item: any, index: number }) => (
     <Image
       key={index}
       resizeMode='stretch'
@@ -97,7 +97,7 @@ function Index() {
     />
   );
 
-  const getImage = (url: string) => ({uri: `${BASE_URL}${url}`});
+  const getImage = (url: string) => ({ uri: `${BASE_URL}${url}` });
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -122,32 +122,32 @@ function Index() {
       </Animated.View>
       <View style={styles.icons_section}>
         {/* <View style={styles.doubleStyle}> */}
-          <Ionicons
-            name="chatbubble-outline"
-            size={20}
-            color={COLOR.GREY_300}
-            onPress={moveToComments}
-          />
-          <Ionicons
-            name="open-outline"
-            size={20}
-            color={COLOR.GREY_300}
-            onPress={handleVisit}
-          />
+        <Ionicons
+          name="chatbubble-outline"
+          size={20}
+          color={COLOR.GREY_300}
+          onPress={moveToComments}
+        />
+        <Ionicons
+          name="open-outline"
+          size={20}
+          color={COLOR.GREY_300}
+          onPress={handleVisit}
+        />
         {/* </View> */}
         {/* <View style={styles.doubleStyle}> */}
-          <Ionicons
-            name={meta?.bookmarked ? "bookmark" : 'bookmark-outline'}
-            size={20}
-            color={COLOR.GREY_300}
-            onPress={bookmark}
-          />
-          <Ionicons
-            name="share-social-outline"
-            size={20}
-            color={COLOR.GREY_300}
-            onPress={handleShare}
-          />
+        <Ionicons
+          name={meta?.bookmarked ? "bookmark" : 'bookmark-outline'}
+          size={20}
+          color={COLOR.GREY_300}
+          onPress={bookmark}
+        />
+        <Ionicons
+          name="share-social-outline"
+          size={20}
+          color={COLOR.GREY_300}
+          onPress={handleShare}
+        />
         {/* </View> */}
       </View>
       <ScrollView style={styles.main} ref={scrollViewRef}>

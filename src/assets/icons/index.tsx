@@ -1,5 +1,5 @@
 import React from 'react';
-import { COLOR } from '../../constants/constants';
+import { COLOR } from '@constants/constants';
 import {
   MaterialIcons, MaterialCommunityIcons,
   Fontisto, AntDesign, Ionicons, FontAwesome,

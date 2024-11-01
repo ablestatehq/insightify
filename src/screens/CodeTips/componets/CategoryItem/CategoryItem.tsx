@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, Pressable } from 'react-native'
-import { COLOR, FONTSIZE } from '../../../../constants/constants'
+import { COLOR, FONTSIZE } from '@@constants/constants'
 
 interface CategoryItemProps {
   name: string

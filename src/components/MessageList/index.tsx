@@ -1,8 +1,8 @@
 import React from 'react'
 import Message from '../Cards/Message';
-import useChat from '../../helper/customHooks/useChat';
-import {COLOR} from '../../constants/constants';
-import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native'
+import useChat from '@helpers/customHooks/useChat';
+import { COLOR } from '@constants/constants';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
 
 interface MessageListProps {
   userId: number;
@@ -17,7 +17,7 @@ const Index = ({
   jwt,
   messages,
 }: MessageListProps) => {
-  
+
   const {
     onReaction,
     onReply,

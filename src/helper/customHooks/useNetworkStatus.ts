@@ -1,6 +1,6 @@
 import * as Network from 'expo-network';
 import * as BackgroundFetch from 'expo-background-fetch';
-import {BGTASKS} from '../../constants/constants';
+import {BGTASKS} from '@constants/constants';
 import {NotificationController} from '../functions/notifications';
 
 export const useNetworkStatus = async () => {

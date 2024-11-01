@@ -3,8 +3,8 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {FormikHelpers } from "formik";
 import * as Yup from "yup";
-import { resetPassword } from "../../../../api/auth";
-import { IDialogBox, RootStackParamList, ResetScreenProps } from "../../../utils/types";
+import { resetPassword } from "@api/auth";
+import { IDialogBox, RootStackParamList, ResetScreenProps } from "@utils/types";
 
 export const useResetPassword = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);

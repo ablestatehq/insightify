@@ -1,7 +1,7 @@
 import React from 'react'
-import {COLOR, DIMEN } from '../../constants/constants'
+import {COLOR, DIMEN } from '@constants/constants'
 import {Pressable, StyleSheet, Text } from 'react-native'
-import { FONT_NAMES } from '../../assets/fonts/fonts'
+import { FONT_NAMES } from '@fonts'
 
 interface TagCardProps {
   title?: string

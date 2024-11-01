@@ -1,9 +1,9 @@
 import React from 'react'
 import { useFormikContext } from 'formik'
 import { Feather } from '@expo/vector-icons'
-import { COLOR, FONTSIZE } from '../../../constants/constants'
+import { COLOR, FONTSIZE } from '@constants/constants'
 import { KeyboardTypeOptions, StyleSheet, Text, TextInput, View } from 'react-native'
-import { FONT_NAMES } from '../../../assets/fonts/fonts'
+import { FONT_NAMES } from '@fonts'
 
 interface InputTextProps {
   label?: string

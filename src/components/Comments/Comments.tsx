@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
-import { COLOR, FONTSIZE } from '../../constants/constants';
+import { COLOR, FONTSIZE } from '@constants/constants';
 import { StyleSheet, Text, TextInput, View, Image } from 'react-native'
-import { AppContext } from '../../helper/context/AppContext';
-import { environments } from '../../constants/environments';
-import { storeData } from '../../../api/strapiJSAPI';
-import { FONT_NAMES } from '../../assets/fonts/fonts';
+import { AppContext } from '@helpers/context/AppContext';
+import { environments } from '@constants/environments';
+import { storeData } from '@api/strapiJSAPI';
+import { FONT_NAMES } from '@fonts';
 
 interface CommentsProps {
   wantsToComment: boolean

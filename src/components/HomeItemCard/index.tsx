@@ -1,34 +1,34 @@
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, View} from 'react-native';
-import {COLOR, DIMEN, FONTSIZE} from '../../constants/constants';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
-import {Ionicons} from '@expo/vector-icons';
-import {environments} from '../../constants/environments';
-import {OpportunityData, ProductData} from '../../utils/types';
+import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
+import { FONT_NAMES } from '@fonts';
+import { Ionicons } from '@expo/vector-icons';
+import { environments } from '@constants/environments';
+import { OpportunityData, ProductData } from '@utils/types';
 
 interface HomeItemProps {
   itemType: 'Innovation' | 'Offer'
   item: ProductData | OpportunityData
   press?: () => void
 }
-const Index = ({itemType, item, press}: HomeItemProps) => {
-  const getImage = (url: string) => ({uri: `${environments.BASE_URL}${url}`});
+const Index = ({ itemType, item, press }: HomeItemProps) => {
+  const getImage = (url: string) => ({ uri: `${environments.BASE_URL}${url}` });
 
   const title = itemType === 'Innovation' ?
     (item as ProductData).name :
     (item as OpportunityData).Title;
-  
+
   const imageUrl = itemType === 'Innovation'
     ? (item as ProductData).media?.data[0]?.attributes?.url || ''
     : (item as OpportunityData).company_logo?.data?.attributes?.url || '';
-  
+
   return (
     <ImageBackground
       style={styles.main}
       source={getImage(imageUrl)}
       resizeMethod='resize'
       resizeMode='cover'
-      // resizeMode={itemType === 'Offer' ? 'contain' : 'cover'}
+    // resizeMode={itemType === 'Offer' ? 'contain' : 'cover'}
     >
       <View style={{
         ...styles.overlay,

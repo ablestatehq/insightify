@@ -1,12 +1,12 @@
 import React from 'react'
 import {StyleSheet, View, Text, Image} from 'react-native'
-import {COLOR, DIMEN, FONTSIZE} from '../../../constants/constants';
+import {COLOR, DIMEN, FONTSIZE} from '@constants/constants';
 import CodeSnippet from '../CodeSnippet';
 import HTMLText from '../HTMLText';
 import RenderHtml from 'react-native-render-html';
-import {FONT_NAMES} from '../../../assets/fonts/fonts';
+import {FONT_NAMES} from '@fonts';
 import TipFooter from '../TipFooter';
-import { handleBookmark } from '../../../helper/functions/handleFunctions';
+import { handleBookmark } from '@helpers/functions/handleFunctions';
 
 const Index = (props: any) => {
 

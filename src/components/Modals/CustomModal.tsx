@@ -1,8 +1,8 @@
 import { Modal, StatusBar, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'react'
-import { COLOR, FONTSIZE } from '../../constants/constants'
+import { COLOR, FONTSIZE } from '@constants/constants'
 import Button from '../Button'
-import { FONT_NAMES } from '../../assets/fonts/fonts'
+import { FONT_NAMES } from '@fonts'
 
 interface CustomModalProps {
   title: string

@@ -1,9 +1,9 @@
-import {StyleSheet, Text, View} from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import {Ionicons, Octicons, AntDesign} from '@expo/vector-icons';
-import {COLOR, FONTSIZE } from '../../constants/constants';
-import {useNavigation} from '@react-navigation/native';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
+import { Ionicons, Octicons, AntDesign } from '@expo/vector-icons';
+import { COLOR, FONTSIZE } from '@constants/constants';
+import { useNavigation } from '@react-navigation/native';
+import { FONT_NAMES } from '@fonts'
 
 interface HeaderProps {
   title?: string
@@ -18,19 +18,19 @@ interface HeaderProps {
 }
 const Header = (
   {
-    showMore=false,
+    showMore = false,
     title = "",
     iconColor = "black",
     backgroundColor,
-    onDelete=() => {},
-    onReply=() => {},
-    onClose=() => {},
+    onDelete = () => { },
+    onReply = () => { },
+    onClose = () => { },
     selected,
   }: HeaderProps
 ) => {
 
   const navigation = useNavigation();
-  const handleBack = () => {navigation.goBack()};
+  const handleBack = () => { navigation.goBack() };
   const handleDelete = () => {
     if (selected && selected.trim()) {
       onDelete(selected.trim());
@@ -45,7 +45,7 @@ const Header = (
   };
   return (
     <View
-      style={[styles.container, {backgroundColor}]}
+      style={[styles.container, { backgroundColor }]}
     >
       <Ionicons
         name="arrow-back"
@@ -63,13 +63,13 @@ const Header = (
       >
         {title}
       </Text>) :
-        (<View style={{flexDirection: 'row', gap: 10}}>
+        (<View style={{ flexDirection: 'row', gap: 10 }}>
           <Octicons name="reply" size={15} color="black" onPress={handleReply} style={styles.icon} />
           <AntDesign name="delete" size={15} color="black" onPress={handleDelete} style={styles.icon} />
           {/* <AntDesign name="staro" size={15} color="black" /> */}
           {/* <AntDesign name="star" size={15} color="black" /> */}
           {/* <Feather name="more-vertical" size={15} color="black" /> */}
-      </View>)}
+        </View>)}
       {!showMore && <View />}
     </View >
   )

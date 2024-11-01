@@ -1,8 +1,8 @@
 import React from "react";
-import {Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Icons from "../assets/icons";
-import {COLOR, DIMEN, FONTSIZE} from "../constants/constants";
-import {FONT_NAMES} from "../assets/fonts/fonts";
+import { COLOR, DIMEN, FONTSIZE } from "../constants/constants";
+import { FONT_NAMES } from "@fonts";
 
 interface IconLabelPairProps {
   size?: number

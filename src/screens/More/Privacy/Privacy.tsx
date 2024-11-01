@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { COLOR } from '../../../constants/constants';
-import Header from '../../../components/Headers/Header';
+import { COLOR } from '@constants/constants';
+import Header from '@components/Headers/Header';
 import RenderHtml from 'react-native-render-html';
-import { retrieveLocalData, storeToLocalStorage } from '../../../utils/localStorageFunctions';
+import { retrieveLocalData, storeToLocalStorage } from '@utils/localStorageFunctions';
 import { SafeAreaView, ScrollView, StyleSheet, View, useWindowDimensions, StatusBar } from 'react-native';
-import { environments } from '../../../constants/environments';
-import { FONT_NAMES } from '../../../assets/fonts/fonts';
+import { environments } from '@constants/environments';
+import { FONT_NAMES } from '@fonts';
 
 const { STRAPI_BASE_URL } = environments;
 

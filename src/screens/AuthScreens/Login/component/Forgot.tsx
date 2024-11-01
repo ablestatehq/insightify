@@ -1,13 +1,13 @@
-import {Text, StyleSheet, View, StatusBar} from "react-native";
-import React, {useCallback, useMemo, useState} from "react";
-import {useNavigation} from "@react-navigation/native";
-import Header from "../../../../components/Headers/Header";
-import {Button, InputText} from "../../../../components";
-import {COLOR} from "../../../../constants/constants";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {forgotRequest} from "../../../../../api/auth";
-import {Formik} from "formik";
-import {FONT_NAMES} from "../../../../assets/fonts/fonts";
+import { Text, StyleSheet, View, StatusBar } from "react-native";
+import React, { useCallback, useMemo, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import Header from "@components/Headers/Header";
+import { Button, InputText } from "@components/index";
+import { COLOR } from "@constants/constants";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { forgotRequest } from "@api/auth";
+import { Formik } from "formik";
+import { FONT_NAMES } from "@fonts"
 
 interface FormValues {
   email: string;
@@ -35,12 +35,12 @@ export default function Forgot() {
             navigation.navigate("Otp");
           }
         })
-        .catch((error) => {});
+        .catch((error) => { });
     } catch (error) { }
     finally {
       setLoading(false)
     }
-    
+
   }, [navigation]);
 
   // Memoize navigation for Sign Up button

@@ -1,28 +1,28 @@
 import * as Updates from 'expo-updates';
 import * as TaskManager from 'expo-task-manager';
 import * as Linking from 'expo-linking';
-import {useEffect} from 'react';
-import {MainStackNavigator} from './src/routes/StackNavigator';
-import AppContextProvider from './src/helper/context/AppContext';
-import {NavigationContainer, useNavigationContainerRef} from '@react-navigation/native';
-import {BGTASKS} from './src/constants/constants';
+import { useEffect } from 'react';
+import { MainStackNavigator } from '@routes/StackNavigator';
+import AppContextProvider from '@helpers/context/AppContext';
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
+import { BGTASKS } from '@constants/constants';
 import {
   useNetworkStatus,
   registerBackgroundFetchAsync,
   unregisterBackgroundFetchAsync,
-} from './src/helper/customHooks/useNetworkStatus';
+} from '@helpers/customHooks/useNetworkStatus';
 
-import {useFonts} from 'expo-font';
-import {FONT_FILES} from './src/assets/fonts/fonts';
-import {RootStackParamList} from './src/utils/types';
-import usePushNotifications from './src/helper/customHooks/usePushNotification';
+import { useFonts } from 'expo-font';
+import { FONT_FILES } from '@fonts';
+import { RootStackParamList } from '@utils/types';
+import usePushNotifications from '@helpers/customHooks/usePushNotification';
 
 export default function App() {
 
   // Load font files in the program.
   useFonts(FONT_FILES);
 
-  const {isUpdatePending} = Updates.useUpdates();
+  const { isUpdatePending } = Updates.useUpdates();
   const navigationRef = useNavigationContainerRef<RootStackParamList>()
 
   usePushNotifications();

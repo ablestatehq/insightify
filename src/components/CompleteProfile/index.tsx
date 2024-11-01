@@ -1,21 +1,21 @@
 import React from 'react'
 import Button from '../Button';
-import {Pressable, StyleSheet, Text, View} from 'react-native'
-import {MaterialIcons} from '@expo/vector-icons';
-import {COLOR, FONTSIZE} from '../../constants/constants';
-import {Ionicons} from '@expo/vector-icons';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../utils/types';
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { MaterialIcons } from '@expo/vector-icons';
+import { COLOR, FONTSIZE } from '@constants/constants';
+import { Ionicons } from '@expo/vector-icons';
+import { FONT_NAMES } from '@fonts';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@utils/types';
 
 interface CompleteProfileProps {
   // setShowCompleteProfile: React.Dispatch<React.SetStateAction<boolean>>
   handleClose: () => void;
   setShowProfileCard: React.Dispatch<React.SetStateAction<boolean>>
 }
-const Index = ({handleClose, setShowProfileCard}: CompleteProfileProps) => {
-  
+const Index = ({ handleClose, setShowProfileCard }: CompleteProfileProps) => {
+
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
     <View style={styles.container}>
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textView: {
-    flex:1,
+    flex: 1,
   },
   title: {
     fontFamily: FONT_NAMES.Heading,

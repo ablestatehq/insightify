@@ -6,9 +6,9 @@ import {atomOneDark} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 import * as Clipboard from 'expo-clipboard';
 
-import {COLOR, FONTSIZE} from '../../constants/constants';
+import {COLOR, FONTSIZE} from '@constants/constants';
 import {CustomBlockRenderer} from 'react-native-render-html';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
+import {FONT_NAMES} from '@fonts';
 
 const CodeSnippet: CustomBlockRenderer = ({ TDefaultRenderer, ...props }) => {
 

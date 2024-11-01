@@ -2,7 +2,7 @@ import React from 'react'
 import { Feather } from '@expo/vector-icons';
 import { COLOR, FONTSIZE } from "../constants/constants"
 import { Pressable, StyleSheet, Text } from 'react-native'
-import { FONT_NAMES } from '../assets/fonts/fonts';
+import { FONT_NAMES } from '@fonts';
 
 interface FloatingButtonProps {
   title?: string

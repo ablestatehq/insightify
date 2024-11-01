@@ -1,11 +1,11 @@
 import React from 'react'
-import {StyleSheet, Text, View} from 'react-native';
-import {FontAwesome6} from '@expo/vector-icons';
-import {COLOR, DIMEN, FONTSIZE} from '../../constants/constants';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
+import { StyleSheet, Text, View } from 'react-native';
+import { FontAwesome6 } from '@expo/vector-icons';
+import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
+import { FONT_NAMES } from '@fonts';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../utils/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@utils/types';
 
 
 interface XPpointProps {
@@ -13,7 +13,7 @@ interface XPpointProps {
   navigation: NativeStackNavigationProp<RootStackParamList>
   inCommunity: boolean;
 }
-const Index = ({number, navigation, inCommunity}: XPpointProps) => {
+const Index = ({ number, navigation, inCommunity }: XPpointProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.xpView}>

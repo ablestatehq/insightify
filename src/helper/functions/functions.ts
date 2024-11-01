@@ -1,4 +1,4 @@
-import {UserProfile} from "../../utils/types";
+import {UserProfile} from "@utils/types";
 import {
   differenceInDays,
   differenceInWeeks,

@@ -1,6 +1,6 @@
 import React from 'react'
 import {Ionicons} from '@expo/vector-icons';
-import {COLOR, DIMEN} from '../../../constants/constants';
+import {COLOR, DIMEN} from '@constants/constants';
 import {
   StyleSheet, Text, View, Platform,
   KeyboardAvoidingView, TextInput, Pressable

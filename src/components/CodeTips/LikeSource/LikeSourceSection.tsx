@@ -1,8 +1,8 @@
 import React from 'react'
 import { Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import { AntDesign, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
-import { COLOR } from '../../../constants/constants'
-import onShare from '../../../utils/onShare'
+import { COLOR } from '@constants/constants'
+import onShare from '@utils/onShare'
 
 interface LikeSourceSectionProps {
   sourceName: string

@@ -1,7 +1,7 @@
 import React from "react";
 // import MessageTail from '../MessageTail';
 import ReactionModal from "../ReactionModal";
-import {COLOR, DIMEN} from "../../../constants/constants";
+import {COLOR, DIMEN} from "@constants/constants";
 import {TouchableOpacity, View, Text, StyleSheet} from "react-native";
 
 interface MessageProps {

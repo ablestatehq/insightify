@@ -5,7 +5,7 @@ import {
   View
 } from 'react-native'
 import CategoryItem from '../CategoryItem/CategoryItem';
-import { AppContext } from '../../../../helper/context/AppContext';
+import { AppContext } from '@@helpers/context/AppContext';
 
 const CategorySection = () => {
 

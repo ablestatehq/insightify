@@ -1,7 +1,7 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View, Text } from 'react-native';
-import { COLOR, FONTSIZE } from '../../../constants/constants';
+import { COLOR, FONTSIZE } from '@constants/constants';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 
 

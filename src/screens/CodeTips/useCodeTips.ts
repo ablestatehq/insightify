@@ -1,5 +1,5 @@
 import {useContext, useEffect, useMemo, useState} from 'react';
-import {AppContext} from '../../helper/context/AppContext';
+import {AppContext} from '@helpers/context/AppContext';
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 

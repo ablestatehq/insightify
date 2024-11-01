@@ -1,5 +1,5 @@
 import {BASE_URL} from "@env";
-import {storeData} from "../../api/strapiJSAPI";
+import {storeData} from "@api/strapiJSAPI";
 import {retrieveLocalData, storeToLocalStorage} from "./localStorageFunctions";
 
   // Give points to the user for viewing the product.

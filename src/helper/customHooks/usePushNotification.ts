@@ -1,8 +1,8 @@
 import {AppContext} from '../context/AppContext';
 import {useContext, useEffect, useRef, useState} from 'react';
 import {generateTransactionRef} from '../functions/functions';
-import {storeData, updateStrapiData} from '../../../api/strapiJSAPI';
-import {clearLocalData, retrieveLocalData, storeToLocalStorage} from '../../utils/localStorageFunctions';
+import {storeData, updateStrapiData} from '@api/strapiJSAPI';
+import {clearLocalData, retrieveLocalData, storeToLocalStorage} from '@utils/localStorageFunctions';
 import {Device, NotificationController, Notifications} from '../functions/notifications';
 
 const usePushNotifications = () => {

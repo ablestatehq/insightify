@@ -1,9 +1,9 @@
 import React from 'react'
-import Icons from '../../assets/icons';
+import Icons from '@icons';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View, Text } from 'react-native';
-import { COLOR, DIMEN, FONTSIZE } from '../../constants/constants';
-import { FONT_NAMES } from '../../assets/fonts/fonts';
+import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
+import { FONT_NAMES } from '@fonts';
 
 interface OpportunityFooterProps {
   link: string

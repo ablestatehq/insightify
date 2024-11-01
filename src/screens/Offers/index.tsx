@@ -2,15 +2,15 @@ import React, { useCallback, useContext, useState } from 'react';
 import { View, StatusBar, FlatList, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { COLOR } from '../../constants/constants';
-import useFilter from '../../helper/customHooks/useFilter';
-import { AppContext } from '../../helper/context/AppContext';
-import { OpportunityListProps, RootStackParamList } from '../../utils/types';
-import { FONT_NAMES } from '../../assets/fonts/fonts';
+import { COLOR } from '@constants/constants';
+import useFilter from '@helpers/customHooks/useFilter';
+import { AppContext } from '@helpers/context/AppContext';
+import { OpportunityListProps, RootStackParamList } from '@utils/types';
+import { FONT_NAMES } from '@fonts';
 import {
   EmptyState, FloatingButton, FormModal, CategorySection,
   FilterCard, OpportunityCard, OpportunityHeader
-} from '../../components';
+} from '@components';
 
 
 const OpportunityList = () => {
@@ -32,7 +32,7 @@ const OpportunityList = () => {
   };
 
   const renderOpportunity =
-    ({item}: {item: any}) => (
+    ({ item }: { item: any }) => (
       <OpportunityCard
         {...item}
         showReportModal={() => setShowReportModal(true)}

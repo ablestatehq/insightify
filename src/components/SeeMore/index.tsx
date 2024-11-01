@@ -1,7 +1,7 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {FONTSIZE} from '../../constants/constants';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FONTSIZE } from '@constants/constants';
+import { FONT_NAMES } from '@fonts';
 
 interface SeeMoreSectionProps {
   title: string;

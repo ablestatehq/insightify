@@ -1,7 +1,7 @@
 import React from 'react';
-import {StyleSheet, Text, Pressable} from 'react-native';
-import {COLOR, DIMEN, FONTSIZE} from '../../constants/constants';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
+import { StyleSheet, Text, Pressable } from 'react-native';
+import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
+import { FONT_NAMES } from '@fonts';
 
 interface CategoryItemProps {
   name: string

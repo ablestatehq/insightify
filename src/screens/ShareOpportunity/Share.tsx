@@ -4,12 +4,12 @@ import { Formik, FormikHelpers } from 'formik'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { CustomModal, SubmitButton, InputText } from '../../components'
-import { storeData } from '../../../api/strapiJSAPI'
-import { ShareSchema } from '../../utils/validations'
-import { OpportunitiesFormType } from '../../utils/types'
-import { COLOR, FONTSIZE } from '../../constants/constants'
-import { FONT_NAMES } from '../../assets/fonts/fonts'
+import { CustomModal, SubmitButton, InputText } from '@components'
+import { storeData } from '@api/strapiJSAPI'
+import { ShareSchema } from '@utils/validations'
+import { OpportunitiesFormType } from '@utils/types'
+import { COLOR, FONTSIZE } from '@constants/constants'
+import { FONT_NAMES } from '@fonts'
 
 const Share = () => {
 

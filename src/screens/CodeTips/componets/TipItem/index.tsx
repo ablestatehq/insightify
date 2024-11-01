@@ -1,11 +1,11 @@
 import React from 'react';
 import RenderHtml from 'react-native-render-html';
 
-import {StyleSheet, Text, View} from 'react-native'
-import {FONT_NAMES} from '../../../../assets/fonts/fonts';
-import {CodeSnippet, HTMLText, TipFooter} from '../../../../components';
-import {handleBookmark} from '../../../../helper/functions/handleFunctions';
-import {COLOR, FONTSIZE} from '../../../../constants/constants';
+import { StyleSheet, Text, View } from 'react-native'
+import { FONT_NAMES } from '@fonts'
+import { CodeSnippet, HTMLText, TipFooter } from '@components/index';
+import { handleBookmark } from '@helpers/functions/handleFunctions';
+import { COLOR, FONTSIZE } from '@constants/constants';
 
 interface TipItemProp {
   id: number;
@@ -48,7 +48,7 @@ const Index = ({
     'techTips',
     'Tip saved',
     'Tip unsaved');
-  
+
   const handleSubmitReport = () => setShowReportModal(!showReportModal);
   return (
     <View style={styles.renderItemView}>
@@ -66,7 +66,7 @@ const Index = ({
         <RenderHtml
           contentWidth={100}
           source={{ html: details }}
-          defaultTextProps={{ style: {fontFamily: FONT_NAMES.Body, fontSize: FONTSIZE.SMALL} }}
+          defaultTextProps={{ style: { fontFamily: FONT_NAMES.Body, fontSize: FONTSIZE.SMALL } }}
           renderers={renderers}
           tagsStyles={tagsStyles}
         />

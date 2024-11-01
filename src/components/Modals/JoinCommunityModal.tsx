@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import Button from '../Button';
 import Input from '../TagInput/Input';
-import {PRIMARY_ROLES} from '../../utils/Enums';
-import {MemberInfo} from '../../utils/types';
-import {storeData} from '../../../api/strapiJSAPI';
-import {Dropdown} from 'react-native-element-dropdown';
-import {COLOR, FONTSIZE} from '../../constants/constants';
-import {storeToLocalStorage} from '../../utils/localStorageFunctions';
+import { PRIMARY_ROLES } from '@utils/Enums';
+import { MemberInfo } from '@utils/types';
+import { storeData } from '@api/strapiJSAPI';
+import { Dropdown } from 'react-native-element-dropdown';
+import { COLOR, FONTSIZE } from '@constants/constants';
+import { storeToLocalStorage } from '@utils/localStorageFunctions';
 import {
   KeyboardAvoidingView,
   Modal,
@@ -17,7 +17,7 @@ import {
 import CheckBox from '../CheckBox';
 import { CountryItem } from 'react-native-country-codes-picker';
 import CountryPickerModal from './CountryPickerModal';
-import { FONT_NAMES } from '../../assets/fonts/fonts';
+import { FONT_NAMES } from '@fonts'
 
 interface JoinCommunityModalProps {
   visible: boolean;
@@ -78,7 +78,7 @@ function JoinCommunityModal({ visible, setVisible, setIsInCommunity }: JoinCommu
         if (response.data) {
           setVisible(false);
           setMemberInfo(initialMemberInfo);
-          setState((prevState) => ({...prevState, country: 'Country'}));
+          setState((prevState) => ({ ...prevState, country: 'Country' }));
           setIsInCommunity();
           await storeToLocalStorage('joined_comm', { isJoined: true });
           ToastAndroid.show("You've successfully joined our community.", ToastAndroid.LONG);
@@ -110,7 +110,7 @@ function JoinCommunityModal({ visible, setVisible, setIsInCommunity }: JoinCommu
                   Connect with like-minded developers, share your experiences, and grow together in a supportive environment.
                 </Text>
                 <Input
-                  styles={{inputFocused: styles.inputFocused, input: styles.input}}
+                  styles={{ inputFocused: styles.inputFocused, input: styles.input }}
                   value={memberInfo.email}
                   handleChange={(text) => handleChange('email', text)}
                   placeHolder="Email"
@@ -126,12 +126,12 @@ function JoinCommunityModal({ visible, setVisible, setIsInCommunity }: JoinCommu
                 <View style={styles.countryCode}>
                   <View style={styles.touchCodeView}>
                     <View style={styles.touchCodeStyle}>
-                      <Text style={{fontFamily: FONT_NAMES.Heading}}>{countryCode}</Text>
+                      <Text style={{ fontFamily: FONT_NAMES.Heading }}>{countryCode}</Text>
                     </View>
                   </View>
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <Input
-                      styles={{inputFocused: {padding: 5, borderRadius: 5}, input: {paddingHorizontal: 5, borderRadius: 5, borderWidth: 1 } }}
+                      styles={{ inputFocused: { padding: 5, borderRadius: 5 }, input: { paddingHorizontal: 5, borderRadius: 5, borderWidth: 1 } }}
                       value={memberInfo.phoneNumber}
                       handleChange={(text) => handleChange('phoneNumber', text)}
                       placeHolder="Phone number"
@@ -154,7 +154,7 @@ function JoinCommunityModal({ visible, setVisible, setIsInCommunity }: JoinCommu
                     valueField='value'
                     value={memberInfo.country}
                     placeholder="What's your primary role"
-                    iconStyle={{width: 15, height: 15}}
+                    iconStyle={{ width: 15, height: 15 }}
                     placeholderStyle={{
                       color: COLOR.SECONDARY_75,
                     }}

@@ -1,13 +1,13 @@
-import {View, StyleSheet, Text} from "react-native";
-import {CommonActions, useNavigation, useRoute} from "@react-navigation/native";
-import {useEffect, useState} from "react";
-import Header from "../../../components/Headers/Header";
-import {COLOR, FONTSIZE} from "../../../constants/constants";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {FONT_NAMES} from "../../../assets/fonts/fonts";
-import {ConfirmEmailScreenProps, RootStackParamList} from "../../../utils/types";
-import {emailConfirmation} from "../../../../api/auth";
-import {Button, Loader} from "../../../components";
+import { View, StyleSheet, Text } from "react-native";
+import { CommonActions, useNavigation, useRoute } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import Header from "@components/Headers/Header";
+import { COLOR, FONTSIZE } from "@constants/constants";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { FONT_NAMES } from "@fonts";
+import { ConfirmEmailScreenProps, RootStackParamList } from "@utils/types";
+import { emailConfirmation } from "@api/auth";
+import { Button, Loader } from "@components/index";
 
 export default function Index() {
   // navigation hook 
@@ -15,7 +15,7 @@ export default function Index() {
   const route = useRoute<ConfirmEmailScreenProps>();
   const [buttonText, setButtonText] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const {code} = route.params;
+  const { code } = route.params;
 
   useEffect(() => {
     if (code) {
@@ -23,15 +23,15 @@ export default function Index() {
         setIsLoading(true)
         emailConfirmation(code).then(response => {
           if (response) {
-            navigation.navigate('Login', {title: '', opportunityID: ''});
+            navigation.navigate('Login', { title: '', opportunityID: '' });
           } else {
             setButtonText('Re-send email');
           }
         }).catch(error => {
         })
       } catch (error) {
-        
-      }finally{setIsLoading(false)}
+
+      } finally { setIsLoading(false) }
     }
   }, [code]);
 
@@ -65,7 +65,7 @@ export default function Index() {
           title={buttonText}
           textStyle={styles.verifyText}
           btn={styles.verifyBtn}
-          handlePress={() => {}} /> : null}
+          handlePress={() => { }} /> : null}
       </View>
       {isLoading ? <Loader /> : null}
     </View>

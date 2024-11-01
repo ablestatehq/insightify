@@ -1,20 +1,20 @@
-import React, {useContext} from 'react'
+import React, { useContext } from 'react'
 
-import {Ionicons} from '@expo/vector-icons'
-import {StyleSheet, Text, View} from 'react-native'
-import {COLOR, DIMEN, FONTSIZE} from '../../constants/constants'
-import {AppContext} from '../../helper/context/AppContext'
-import {useNavigation} from '@react-navigation/native'
-import {NativeStackNavigationProp} from '@react-navigation/native-stack'
-import {FONT_NAMES} from '../../assets/fonts/fonts'
+import { Ionicons } from '@expo/vector-icons'
+import { StyleSheet, Text, View } from 'react-native'
+import { COLOR, DIMEN, FONTSIZE } from '@constants/constants'
+import { AppContext } from '@helpers/context/AppContext'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { FONT_NAMES } from '@fonts'
 
 
 interface OpportunityHeaderProps {
   showFilterCard: () => void
 }
 
-function OpportunityHeader({showFilterCard}: OpportunityHeaderProps): JSX.Element {
-  const {notifications} = useContext(AppContext);
+function OpportunityHeader({ showFilterCard }: OpportunityHeaderProps): JSX.Element {
+  const { notifications } = useContext(AppContext);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   // check the spacing

@@ -1,4 +1,4 @@
-import {deteleteStrapiData, getStrapiData, storeData, updateStrapiData} from '../../../api/strapiJSAPI';
+import {deteleteStrapiData, getStrapiData, storeData, updateStrapiData} from '@api/strapiJSAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export const fetchMessages = async (jwt: string, start = 0, limit = 25) => {
   return getStrapiData(`messages`, jwt, start, limit);

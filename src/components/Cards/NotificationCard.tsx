@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { COLOR, FONTSIZE } from '../../constants/constants'
-import { retrieveLocalData, storeToLocalStorage } from '../../utils/localStorageFunctions'
-import { AppContext } from '../../helper/context/AppContext'
-import { FONT_NAMES } from '../../assets/fonts/fonts'
+import { COLOR, FONTSIZE } from '@constants/constants'
+import { retrieveLocalData, storeToLocalStorage } from '@utils/localStorageFunctions'
+import { AppContext } from '@helpers/context/AppContext'
+import { FONT_NAMES } from '@fonts'
 
 interface NotificationCardProps {
   id?: string

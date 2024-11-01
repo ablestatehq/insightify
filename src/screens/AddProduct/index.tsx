@@ -4,21 +4,21 @@ import {
   KeyboardAvoidingView, ActivityIndicator,
   Platform,
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
-import {FontAwesome} from '@expo/vector-icons';
+import React, { useContext, useEffect, useState } from 'react';
+import { FontAwesome } from '@expo/vector-icons';
 import * as Yup from 'yup';
 import * as ImagePicker from 'expo-image-picker';
-import {Formik, FormikHelpers} from 'formik';
-import Header from '../../components/Headers/Header';
-import {AppContext} from '../../helper/context/AppContext';
-import {COLOR, FONTSIZE} from '../../constants/constants';
+import { Formik, FormikHelpers } from 'formik';
+import Header from '@components/Headers/Header';
+import { AppContext } from '@helpers/context/AppContext';
+import { COLOR, FONTSIZE } from '@constants/constants';
 
-import {environments} from '../../constants/environments';
-import {Dialog, InputText} from '../../components';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
-import {storeData, uploadImage} from '../../../api/strapiJSAPI';
-import image_name_extension from '../../utils/imageName';
-import { IDialogBox } from '../../utils/types';
+import { environments } from '@constants/environments';
+import { Dialog, InputText } from '@components';
+import { FONT_NAMES } from '@fonts';
+import { storeData, uploadImage } from '@api/strapiJSAPI';
+import image_name_extension from '@utils/imageName';
+import { IDialogBox } from '@utils/types';
 
 const { STRAPI_BASE_URL } = environments;
 // Form's data structure

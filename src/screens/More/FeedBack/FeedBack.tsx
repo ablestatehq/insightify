@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import Selectable from './components/Selectable'
-import { FeedbackObject } from '../../../utils/types'
-import { COLOR, FONTSIZE } from '../../../constants/constants'
-import Header from '../../../components/Headers/Header'
+import { FeedbackObject } from '@utils/types'
+import { COLOR, FONTSIZE } from '@constants/constants'
+import Header from '@components/Headers/Header'
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native'
-import { storeData } from '../../../../api/strapiJSAPI'
-import { FONT_NAMES } from '../../../assets/fonts/fonts'
+import { storeData } from '@api/strapiJSAPI'
+import { FONT_NAMES } from '@fonts'
 
 const FeedBack = () => {
   const [selectedImprovement, setSelectedImprovement] = useState<string | null>(null);

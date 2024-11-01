@@ -4,9 +4,9 @@ import { SafeAreaView, StyleSheet, View, Text, Pressable } from 'react-native'
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { contactPressed } from '../Contacthandlers';
-import { COLOR, FONTSIZE } from '../../../constants/constants';
-import Header from '../../../components/Headers/Header';
-import { FONT_NAMES } from '../../../assets/fonts/fonts';
+import { COLOR, FONTSIZE } from '@constants/constants';
+import Header from '@components/Headers/Header';
+import { FONT_NAMES } from '@fonts'
 
 const Contact = () => {
   const navigation = useNavigation();

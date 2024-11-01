@@ -1,19 +1,19 @@
 import React from 'react';
-import {Pressable, StatusBar, StyleSheet, Switch, Text, View} from 'react-native';
-import {Entypo, Ionicons, MaterialIcons} from '@expo/vector-icons';
+import { Pressable, StatusBar, StyleSheet, Switch, Text, View } from 'react-native';
+import { Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 
-import onShare from '../../utils/onShare';
-import {COLOR, FONTSIZE} from '../../constants/constants';
+import onShare from '@utils/onShare';
+import { COLOR, FONTSIZE } from '@constants/constants';
 
-import {FontAwesome5} from '@expo/vector-icons';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
-import ProfileSection from '../../components/Cards/ProfileSection';
-import useProfile from '../../helper/customHooks/useProfile';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { FONT_NAMES } from '@fonts'
+import ProfileSection from '@components/Cards/ProfileSection';
+import useProfile from '@helpers/customHooks/useProfile';
 
 
 const SettingsScreen = () => {
 
-  const {isNotificationEnabled, toggleSwitch, navigation} = useProfile();
+  const { isNotificationEnabled, toggleSwitch, navigation } = useProfile();
   const handleTalent = () => navigation.navigate('Talent');
 
   return (

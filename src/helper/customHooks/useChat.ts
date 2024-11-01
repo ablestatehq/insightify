@@ -5,8 +5,8 @@ import {
   fetchMessages, sendMessage, updateMessage,
   loadMessagesFromLocalStorage,
   saveMessagesToLocalStorage
-} from '../../lib/services/messageService';
-import {createClientSocket} from '../../lib/socket';
+} from '@lib/services/messageService';
+import {createClientSocket} from '@lib/socket';
 import {Socket} from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

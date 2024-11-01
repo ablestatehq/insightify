@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
-import { COLOR, FONTSIZE } from '../../constants/constants'
-import Header from '../../components/Headers/Header'
-import { AppContext } from '../../helper/context/AppContext'
+import { COLOR, FONTSIZE } from '@constants/constants'
+import Header from '@components/Headers/Header'
+import { AppContext } from '@helpers/context/AppContext'
 import { StyleSheet, View, Text, ScrollView } from 'react-native'
-import NotificationCard from '../../components/Cards/NotificationCard'
-import { FONT_NAMES } from '../../assets/fonts/fonts'
-// import { clearLocalData } from '../../utils/localStorageFunctions'
+import NotificationCard from '@components/Cards/NotificationCard'
+import { FONT_NAMES } from '@fonts'
+// import { clearLocalData } from '@utils/localStorageFunctions'
 
 const Notification = () => {
 

@@ -4,25 +4,25 @@ import {
   TouchableWithoutFeedback, Platform,
   Text, ToastAndroid, TouchableOpacity, Image, Pressable,
 } from "react-native";
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import {AntDesign, EvilIcons, FontAwesome} from '@expo/vector-icons';
-import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
+import { AntDesign, EvilIcons, FontAwesome } from '@expo/vector-icons';
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 
 import Button from '../Button';
-import {ProfileType} from '../../utils/types';
-import {COLOR, FONTSIZE} from '../../constants/constants';
-import useLocalStorage from '../../helper/customHooks/useLocalStorage';
-import {DOMAIN, SKILLS, GENDER} from '../../utils/Enums';
-import {setUserPhotoNULL, updateUser} from '../../../api/auth';
-import {AppContext} from '../../helper/context/AppContext';
+import { ProfileType } from '@utils/types';
+import { COLOR, FONTSIZE } from '@constants/constants';
+import useLocalStorage from '@helpers/customHooks/useLocalStorage';
+import { DOMAIN, SKILLS, GENDER } from '@utils/Enums';
+import { setUserPhotoNULL, updateUser } from '@api/auth';
+import { AppContext } from '@helpers/context/AppContext';
 import CheckBox from '../CheckBox';
-import {storeToLocalStorage} from '../../utils/localStorageFunctions';
+import { storeToLocalStorage } from '@utils/localStorageFunctions';
 import CustomModal from '../Modals/CustomModal';
 
-import {deleteImage, uploadImage} from '../../../api/strapiJSAPI';
-import {FONT_NAMES} from '../../assets/fonts/fonts';
-import image_name_extension from '../../utils/imageName';
+import { deleteImage, uploadImage } from '@api/strapiJSAPI';
+import { FONT_NAMES } from '@fonts';
+import image_name_extension from '@utils/imageName';
 
 interface ProfileFormProps {
   visible: boolean
@@ -38,7 +38,7 @@ export default function ProfileForm({
   setProfilePhoto
 }: ProfileFormProps) {
 
-  const {user, jwt} = useContext(AppContext);
+  const { user, jwt } = useContext(AppContext);
 
   const initialProfile: ProfileType = {
     firstName: user?.firstName ?? '',
@@ -80,8 +80,8 @@ export default function ProfileForm({
 
       if (profilePhoto && !profilePhoto.startsWith('http')) {
         const formData = new FormData();
-        const {name, extension} = image_name_extension(profilePhoto);
-        formData.append('files', {uri: profilePhoto, type: `image/${extension}`, name});
+        const { name, extension } = image_name_extension(profilePhoto);
+        formData.append('files', { uri: profilePhoto, type: `image/${extension}`, name });
         formData.append('refId', user?.id.toString());
         formData.append('ref', 'plugin::users-permissions.user');
         formData.append('field', 'photo');
@@ -102,7 +102,7 @@ export default function ProfileForm({
   };
 
   const handleChange = (key: keyof ProfileType, value: unknown) => {
-    setValues({...values, [key]: value});
+    setValues({ ...values, [key]: value });
   }
 
   // Pick the profile image
@@ -116,7 +116,7 @@ export default function ProfileForm({
 
     if (!result.canceled) {
       setProfilePhoto(result.assets[0].uri);
-      
+
     }
   }
 
@@ -130,7 +130,7 @@ export default function ProfileForm({
       }}
     >
       <KeyboardAvoidingView
-        style={{flex: 1}}
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <TouchableWithoutFeedback onPress={function () {
@@ -142,7 +142,7 @@ export default function ProfileForm({
               title={modalData.title}
               message={modalData.message}
               visibility={modalData.visible}
-              cancel={function () {modalData.closeModal()}}
+              cancel={function () { modalData.closeModal() }}
             />
             <TouchableWithoutFeedback>
               <View style={styles.container}>
@@ -158,13 +158,13 @@ export default function ProfileForm({
                 {profilePhoto && (
                   <Pressable onPress={pickImage}>
                     <Image
-                      source={{uri: profilePhoto}} 
-                      style={{width: 70, height: 70, alignSelf: 'center', borderRadius: 35}}
-                       />
+                      source={{ uri: profilePhoto }}
+                      style={{ width: 70, height: 70, alignSelf: 'center', borderRadius: 35 }}
+                    />
                   </Pressable>
                 )}
                 <Text
-                  style={{fontFamily: FONT_NAMES.Heading, textAlign: 'center', marginVertical: 10}}>
+                  style={{ fontFamily: FONT_NAMES.Heading, textAlign: 'center', marginVertical: 10 }}>
                   Complete your profile
                 </Text>
                 <TextInput

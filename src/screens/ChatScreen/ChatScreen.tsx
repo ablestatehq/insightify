@@ -1,19 +1,19 @@
-import React, {useContext} from 'react';
-import {Ionicons} from '@expo/vector-icons';
-import {COLOR, DIMEN} from '../../constants/constants';
-import Header from '../../components/Headers/Header';
-import Message from '../../components/Cards/Message';
-import useChat from '../../helper/customHooks/useChat';
-import {AppContext} from '../../helper/context/AppContext';
+import React, { useContext } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { COLOR, DIMEN } from '@constants/constants';
+import Header from '@components/Headers/Header';
+import Message from '@components/Cards/Message';
+import useChat from '@helpers/customHooks/useChat';
+import { AppContext } from '@helpers/context/AppContext';
 
 import {
   View, FlatList, StyleSheet,
   Pressable, ActivityIndicator,
 } from 'react-native';
-import {SendCard} from '../../components';
+import { SendCard } from '@components';
 
 const ChatScreen = () => {
-  const {user, jwt} = useContext(AppContext);
+  const { user, jwt } = useContext(AppContext);
   const {
     selected,
     setSelected,
@@ -36,7 +36,7 @@ const ChatScreen = () => {
   } = useChat(user.id, jwt);
 
   const sendMessage = () => handleSendMessage(replyingTo as string);
-  const renderMessage = React.useCallback(({item}: {item: string}) => {
+  const renderMessage = React.useCallback(({ item }: { item: string }) => {
     const msg = messageMap.get(item);
     return (
       <View
@@ -57,10 +57,10 @@ const ChatScreen = () => {
           modalVisibility={modalVisibility}
           {...msg}
         />
-     </View>
+      </View>
     );
   }, [messageMap]);
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.contentHeader}>

@@ -1,11 +1,11 @@
 import React from "react";
-import {clearLocalData, retrieveLocalData, storeToLocalStorage} from "../../utils/localStorageFunctions";
-import {IDialogBox, RootStackParamList} from "../../utils/types";
+import {clearLocalData, retrieveLocalData, storeToLocalStorage} from "@utils/localStorageFunctions";
+import {IDialogBox, RootStackParamList} from "@utils/types";
 import {AppContext} from "../context/AppContext";
 import {isProfileComplete} from "../functions/functions";
 import {useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { getDataId, updateStrapiData } from "../../../api/strapiJSAPI";
+import { getDataId, updateStrapiData } from "@api/strapiJSAPI";
 
 const LOGOUT_MESSAGE = "Are you sure you want to log out?";
 

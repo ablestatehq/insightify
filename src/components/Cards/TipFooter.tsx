@@ -1,9 +1,9 @@
 import React from 'react'
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import OpenLink from '../../utils/OpenLink';
+import OpenLink from '@utils/OpenLink';
 import IconLabelPair from '../IconLabelPair';
-import {COLOR, FONTSIZE} from '../../constants/constants';
+import { COLOR, FONTSIZE } from '@constants/constants';
 import Comments from '../Comments/Comments';
 
 interface TipFooterProps {
@@ -45,7 +45,7 @@ const TipFooter: React.FC<TipFooterProps> = ({
   }
   return (
     <View>
-      <View style={[styles.footer, {justifyContent: source_url_text ? 'space-evenly' : 'flex-end'}]}>
+      <View style={[styles.footer, { justifyContent: source_url_text ? 'space-evenly' : 'flex-end' }]}>
         {!bookmarked && <IconLabelPair
           iconName='heart-outline'
           iconLabel='Save'

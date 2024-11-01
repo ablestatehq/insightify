@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { COLOR } from '../../../../constants/constants'
-import { FONT_NAMES } from '../../../../assets/fonts/fonts'
+import { COLOR } from '@constants/constants'
+import { FONT_NAMES } from '@fonts'
 
 interface SelectableProps {
   handleClick?: () => void

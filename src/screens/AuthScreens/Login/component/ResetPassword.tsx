@@ -1,8 +1,8 @@
 import { Text, TextInput, View, StyleSheet } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import Header from "../../../../components/Headers/Header";
-import { COLOR, FONTSIZE } from "../../../../constants/constants";
-import {Button, Dialog} from "../../../../components";
+import Header from "@components/Headers/Header";
+import { COLOR, FONTSIZE } from "@constants/constants";
+import { Button, Dialog } from "@components/index";
 import { Formik } from "formik";
 import { useResetPassword } from "../useResetPasswor";
 
@@ -72,7 +72,7 @@ const ResetPassword = () => {
               )}
             </View>
 
-            <View style={{padding: 5}}>
+            <View style={{ padding: 5 }}>
               <Button
                 textStyle={styles.btnText}
                 btn={styles.btn}

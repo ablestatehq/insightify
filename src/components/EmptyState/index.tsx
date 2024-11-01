@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { FONT_NAMES } from '../../assets/fonts/fonts';
-import { COLOR, FONTSIZE } from '../../constants/constants';
+import { FONT_NAMES } from '@fonts';
+import { COLOR, FONTSIZE } from '@constants/constants';
 
 const Index = () => (
   <View style={styles.container}>

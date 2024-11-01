@@ -6,7 +6,7 @@ import { View, Text } from 'react-native';
 import { Loader } from '../components';
 
 // helper 
-// import {fontsLoading} from '../assets/fonts/fonts';
+// import {fontsLoading} from '@fonts';
 import { COLOR, DIMEN, FONTSIZE } from '../constants/constants';
 import { AppContext } from '../helper/context/AppContext';
 
@@ -18,7 +18,7 @@ import Offers from '../screens/Offers';
 import Icon from '../assets/icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
-import { FONT_FILES, FONT_NAMES } from '../assets/fonts/fonts';
+import { FONT_FILES, FONT_NAMES } from '@fonts';
 
 const { Screen, Navigator } = createBottomTabNavigator();
 

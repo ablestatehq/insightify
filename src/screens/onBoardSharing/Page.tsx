@@ -1,11 +1,11 @@
 import React from "react"
 import Animated from "react-native-reanimated";
-import {useNavigation} from "@react-navigation/native";
-import {StyleSheet, Text, View, Image} from "react-native";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {COLOR, DIMEN, FONTSIZE} from "../../constants/constants";
+import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, Text, View, Image } from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { COLOR, DIMEN, FONTSIZE } from "@constants/constants";
 
-const {SCREENHEIGHT: PAGE_HEIGHT, SCREENWIDTH: PAGE_WIDTH} = DIMEN;
+const { SCREENHEIGHT: PAGE_HEIGHT, SCREENWIDTH: PAGE_WIDTH } = DIMEN;
 
 const SIZE = PAGE_WIDTH * 0.7;
 const dgl = Math.sqrt(Math.pow(PAGE_HEIGHT, 2) + Math.pow(PAGE_WIDTH, 2));
@@ -34,7 +34,7 @@ export const Page: React.FC<PageProps> = ({ index, title, translateX }) => {
                 alignSelf: 'center',
                 resizeMode: 'contain',
               }}
-            source={require('../../../assets/icon.png')}
+              source={require('@assets/icon.png')}
             />}
         </View>
 

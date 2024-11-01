@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import { COLOR, DIMEN } from "../../constants/constants";
+import { COLOR, DIMEN } from "@constants/constants";
 import Animated, { useAnimatedStyle, interpolate, Extrapolate } from "react-native-reanimated";
 
 interface DotProps {

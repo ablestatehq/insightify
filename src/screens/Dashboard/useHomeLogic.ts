@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useContext, useState } from "react";
-import {AppContext} from '../../helper/context/AppContext';
-import { RootStackParamList } from "../../utils/types";
+import {AppContext} from '@helpers/context/AppContext';
+import { RootStackParamList } from "@utils/types";
 import {isPast, differenceInDays} from "date-fns";
 
 const useHomeLogic = () => {

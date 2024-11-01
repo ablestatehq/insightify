@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
-import { Modal, Pressable, StatusBar, StyleSheet, Text, TextInput, ToastAndroid, TouchableWithoutFeedback, View } from 'react-native'
+import {
+  Modal, Pressable, StatusBar, StyleSheet, Text,
+  TextInput, ToastAndroid, TouchableWithoutFeedback, View
+} from 'react-native'
 import Button from '../Button'
-import { storeData } from '../../../api/strapiJSAPI'
-import { COLOR, FONTSIZE } from '../../constants/constants'
-import Icons from '../../assets/icons'
-import { FONT_NAMES } from '../../assets/fonts/fonts'
+import { storeData } from '@api/strapiJSAPI'
+import { COLOR, FONTSIZE } from '@constants/constants'
+import Icons from '@icons'
+import { FONT_NAMES } from '@fonts'
 
 interface FormModalProps {
   visible: boolean

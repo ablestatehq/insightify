@@ -1,8 +1,8 @@
 import React from 'react'
 import { useFormikContext } from 'formik'
-import { COLOR } from '../../../constants/constants'
+import { COLOR } from '@constants/constants'
 import { ActivityIndicator, Pressable, Text } from 'react-native'
-import { FONT_NAMES } from '../../../assets/fonts/fonts'
+import { FONT_NAMES } from '@fonts'
 
 interface SubmitButtonProp {
   handleSubmit: () => void,

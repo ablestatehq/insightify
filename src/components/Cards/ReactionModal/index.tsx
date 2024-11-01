@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Modal, Pressable, StyleSheet, Text, TouchableWithoutFeedback} from 'react-native';
-import {DIMEN} from '../../../constants/constants';
+import {DIMEN} from '@constants/constants';
 
 interface ReactionModalProps {
   visible: boolean;

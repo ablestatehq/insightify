@@ -1,13 +1,13 @@
 import ProductItem from './ProductItem';
-import React, {useContext} from 'react';
-import {COLOR} from '../../constants/constants';
-import {FlatList, Text, View} from 'react-native';
-import Header from '../../components/Headers/Header';
-import {AppContext} from '../../helper/context/AppContext';
-import {ProductData} from '../../utils/types';
+import React, { useContext } from 'react';
+import { COLOR } from '@constants/constants';
+import { FlatList, Text, View } from 'react-native';
+import Header from '@components/Headers/Header';
+import { AppContext } from '@helpers/context/AppContext';
+import { ProductData } from '@utils/types';
 
 const Index = () => {
-  const renderProducts = ({item, index}:{item: ProductData, index: number}) =>
+  const renderProducts = ({ item, index }: { item: ProductData, index: number }) =>
     <ProductItem key={index} {...item} />
 
   const EmptyComponent = () => (
@@ -16,7 +16,7 @@ const Index = () => {
     </View>
   );
 
-  const {products} = useContext(AppContext);
+  const { products } = useContext(AppContext);
 
   return (
     <View style={styles.container}>
@@ -36,7 +36,7 @@ export default Index;
 
 const styles = {
   container: {
-    flex:1,
+    flex: 1,
     backgroundColor: COLOR.WHITE,
   },
   flatList: {

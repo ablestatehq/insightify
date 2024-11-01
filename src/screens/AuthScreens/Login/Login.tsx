@@ -1,27 +1,27 @@
-import {Formik} from 'formik'
-import React, {useContext} from 'react'
-import {AntDesign} from '@expo/vector-icons';
-import {useNavigation, useRoute} from '@react-navigation/native'
-import {COLOR, FONTSIZE} from '../../../constants/constants'
-import {AppContext} from '../../../helper/context/AppContext'
-import {InputText, SubmitButton, Dialog} from '../../../components'
-import {NativeStackNavigationProp} from '@react-navigation/native-stack'
-import {login} from '../../../../api/auth';
-import {IDialogBox, LoginScreenProps} from '../../../utils/types';
-import {handleBookmark} from '../../../helper/functions/handleFunctions';
+import { Formik } from 'formik'
+import React, { useContext } from 'react'
+import { AntDesign } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { COLOR, FONTSIZE } from '@constants/constants'
+import { AppContext } from '@helpers/context/AppContext'
+import { InputText, SubmitButton, Dialog } from '@components/index'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { login } from '@api/auth';
+import { IDialogBox, LoginScreenProps } from '@utils/types';
+import { handleBookmark } from '@helpers/functions/handleFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   KeyboardAvoidingView, Pressable, ScrollView,
   StyleSheet, Text, TouchableOpacity, View
 } from 'react-native'
-import {storeToLocalStorage} from '../../../utils/localStorageFunctions';
-import {FONT_NAMES} from '../../../assets/fonts/fonts';
-import {getFilteredData} from '../../../../api/strapiJSAPI';
+import { storeToLocalStorage } from '@utils/localStorageFunctions';
+import { FONT_NAMES } from '@fonts'
+import { getFilteredData } from '@api/strapiJSAPI';
 
 const Login: React.FC = () => {
   const route = useRoute<LoginScreenProps>();
 
-  const {title, opportunityID} = route.params;
+  const { title, opportunityID } = route.params;
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const [dialog, setDialog] = React.useState<IDialogBox>({
@@ -30,10 +30,10 @@ const Login: React.FC = () => {
     message: '',
     cancelText: 'Try again',
     onReject() {
-        setDialog({...dialog, visible: false});
+      setDialog({ ...dialog, visible: false });
     },
   })
-  const {setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser, setXp} = useContext(AppContext);
+  const { setIsLoggedIn, opportunities, setOpportunities, setJwt, setUser, setXp } = useContext(AppContext);
 
   const loginFormInitValues = {
     email: '',
@@ -64,10 +64,10 @@ const Login: React.FC = () => {
         setJwt(response?.jwt);
         const is_community_member = await getFilteredData('community-members', 'email', '$eq', response?.user.email);
         const isMember = is_community_member.length > 0;
-        setUser((prev: any) => ({...response?.user, isMember}));
+        setUser((prev: any) => ({ ...response?.user, isMember }));
         setXp(response?.user.totalXP ? response?.user.totalXP : 0);
         setIsLoggedIn(true);
-        storeToLocalStorage('isMember', {isMember});
+        storeToLocalStorage('isMember', { isMember });
 
         if (opportunityID) {
           handleBookmark(opportunityID, opportunities, setOpportunities)
@@ -93,7 +93,7 @@ const Login: React.FC = () => {
           message: 'Your login request has failed. Check your email and password'
         }));
       }
-    } catch (error) {}
+    } catch (error) { }
   }
 
   return (
@@ -111,7 +111,7 @@ const Login: React.FC = () => {
             initialValues={loginFormInitValues}
             onSubmit={handleLogin}
           >
-            {({handleSubmit}) => (
+            {({ handleSubmit }) => (
               <View style={styles.loginScroll}>
                 <ScrollView>
                   <InputText
@@ -131,13 +131,13 @@ const Login: React.FC = () => {
                     button={styles.button}
                   />
                   <View>
-                    <Pressable onPress={() => {navigation.navigate('Forgot')}}>
+                    <Pressable onPress={() => { navigation.navigate('Forgot') }}>
                       <Text style={styles.footerText}>Forgot password?</Text>
                     </Pressable>
                     <View style={styles.footer}>
                       <Text style={styles.footerText}>Don't have an account?</Text>
                       <TouchableOpacity
-                        onPress={() => {navigation.navigate('SignUp')}}
+                        onPress={() => { navigation.navigate('SignUp') }}
                       >
                         <Text style={styles.signUpText}> Sign up</Text>
                       </TouchableOpacity>
