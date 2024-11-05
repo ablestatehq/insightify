@@ -1,10 +1,10 @@
 import ProductItem from './ProductItem';
-import React, { useContext } from 'react';
+import React from 'react';
 import { COLOR } from '@constants/constants';
 import { FlatList, Text, View } from 'react-native';
 import Header from '@components/Headers/Header';
-import { AppContext } from '@src/context/AppContext';
 import { ProductData } from '@src/types';
+import { useProducts } from '@src/hooks';
 
 const Index = () => {
   const renderProducts = ({ item, index }: { item: ProductData, index: number }) =>
@@ -16,7 +16,7 @@ const Index = () => {
     </View>
   );
 
-  const { products } = useContext(AppContext);
+  const { products } = useProducts();
 
   return (
     <View style={styles.container}>

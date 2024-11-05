@@ -8,14 +8,15 @@ import { NavigationContainer, useNavigationContainerRef } from '@react-navigatio
 import { BGTASKS } from '@constants/constants';
 import {
   useNetworkStatus,
+  usePushNotifications,
   registerBackgroundFetchAsync,
-  unregisterBackgroundFetchAsync,
-} from '@helpers/customHooks/useNetworkStatus';
+  unregisterBackgroundFetchAsync
+} from '@src/hooks';
 
 import { useFonts } from 'expo-font';
 import { FONT_FILES } from '@fonts';
 import { RootStackParamList } from '@src/types';
-import usePushNotifications from '@helpers/customHooks/usePushNotification';
+// import usePushNotifications from '@src/hooks';
 
 export default function App() {
 

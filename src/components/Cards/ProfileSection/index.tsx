@@ -5,7 +5,7 @@ import { COLOR, DIMEN, FONTSIZE } from "@constants/constants";
 import { FONT_NAMES } from '@fonts';
 import ProfileForm from '@components/ProfileForm';
 import { Dialog, JoinCommunity } from '@components/index';
-import useProfile from '@helpers/customHooks/useProfile';
+import {useProfile} from '@src/hooks';
 
 const ProfileSection = () => {
 

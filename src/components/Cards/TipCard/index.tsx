@@ -1,12 +1,12 @@
 import React from 'react'
-import {StyleSheet, View, Text, Image} from 'react-native'
-import {COLOR, DIMEN, FONTSIZE} from '@constants/constants';
+import { StyleSheet, View, Text, Image } from 'react-native'
+import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
 import CodeSnippet from '../CodeSnippet';
 import HTMLText from '../HTMLText';
 import RenderHtml from 'react-native-render-html';
-import {FONT_NAMES} from '@fonts';
+import { FONT_NAMES } from '@fonts';
 import TipFooter from '../TipFooter';
-import { handleBookmark } from '@helpers/functions/handleFunctions';
+import { handleBookmark } from '@src/helper/handleFunctions';
 
 const Index = (props: any) => {
 
@@ -30,7 +30,7 @@ const Index = (props: any) => {
     'techTips',
     'Tip saved',
     'Tip unsaved');
-  
+
   const renderers = {
     code: CodeSnippet,
     p: HTMLText
@@ -51,14 +51,14 @@ const Index = (props: any) => {
         </Text> : null}
         <RenderHtml
           contentWidth={100}
-          source={{html: details}}
-          defaultTextProps={{style: styles.defaultStyles}}
+          source={{ html: details }}
+          defaultTextProps={{ style: styles.defaultStyles }}
           renderers={renderers}
           tagsStyles={{
-            p: {...styles.paraStyles},
-            b: {fontWeight: 'bold'},
-            ul: {listStyleType : 'none', ...styles.ulStyles},
-            li: {...styles.liStyles},
+            p: { ...styles.paraStyles },
+            b: { fontWeight: 'bold' },
+            ul: { listStyleType: 'none', ...styles.ulStyles },
+            li: { ...styles.liStyles },
             strong: { ...styles.liStyles }
           }}
         />

@@ -4,7 +4,7 @@ import RenderHtml from 'react-native-render-html';
 import { StyleSheet, Text, View } from 'react-native'
 import { FONT_NAMES } from '@fonts'
 import { CodeSnippet, HTMLText, TipFooter } from '@components/index';
-import { handleBookmark } from '@helpers/functions/handleFunctions';
+import { handleBookmark } from '@src/helper/handleFunctions';
 import { COLOR, FONTSIZE } from '@constants/constants';
 
 interface TipItemProp {

@@ -1,5 +1,5 @@
-import type { ProductData, Comment, MetaData, Author } from './product'
-
+import type { ProductData, MetaData, Layout } from './product'
+import type {Comment, Author} from './comment'
 import type {
   LoginDetails, LoginScreenProps,
   NewsRouteParams, RootStackParamList,
@@ -44,4 +44,5 @@ export {
   IDialogBox,
   FeedbackObject,
   NotificationType,
+  Layout,
 }

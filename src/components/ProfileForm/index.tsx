@@ -12,7 +12,7 @@ import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 import Button from '../Button';
 import { ProfileType } from '@src/types';
 import { COLOR, FONTSIZE } from '@constants/constants';
-import useLocalStorage from '@helpers/customHooks/useLocalStorage';
+import {useLocalStorage} from '@src/hooks';
 import { DOMAIN, SKILLS, GENDER } from '@utils/Enums';
 import { setUserPhotoNULL, updateUser } from '@api/auth';
 import { AppContext } from '@src/context/AppContext';

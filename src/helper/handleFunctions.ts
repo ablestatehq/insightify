@@ -10,7 +10,6 @@ const handleBookmark = async (
   removedMessage: string,
   jwt?: string,
 ) => {
-  // console.log('id', id);
   const targetIndex = items.findIndex(item => item.id === id);
   if (targetIndex === -1) {
     console.warn(`Item with id ${id} not found.`);
@@ -23,7 +22,6 @@ const handleBookmark = async (
 
   // if ((storageKey === 'products' && isBookmarked === targetItem.meta?.bookmarked) ||
   //   (storageKey !== 'products' && isBookmarked === targetItem.bookmarked)) {
-  //   // console.log('It is here', id);
   //   return;
   // }
   let updatedItems;

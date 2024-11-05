@@ -8,7 +8,7 @@ import { COLOR, FONTSIZE } from '@constants/constants';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FONT_NAMES } from '@fonts'
 import ProfileSection from '@components/Cards/ProfileSection';
-import useProfile from '@helpers/customHooks/useProfile';
+import {useProfile} from '@src/hooks';
 
 
 const SettingsScreen = () => {

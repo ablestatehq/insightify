@@ -3,7 +3,7 @@ import { View, StatusBar, FlatList, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { COLOR } from '@constants/constants';
-import useFilter from '@helpers/customHooks/useFilter';
+import {useFilter} from '@src/hooks';
 import { AppContext } from '@src/context/AppContext';
 import {OpportunityListProps, RootStackParamList} from '@src/types';
 import { FONT_NAMES } from '@fonts';

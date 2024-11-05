@@ -8,7 +8,7 @@ import { InputText, SubmitButton, Dialog } from '@components/index'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { login } from '@api/auth';
 import { IDialogBox, LoginScreenProps } from '@src/types';
-import { handleBookmark } from '@helpers/functions/handleFunctions';
+import { handleBookmark } from '@src/helper/handleFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   KeyboardAvoidingView, Pressable, ScrollView,

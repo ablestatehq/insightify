@@ -17,7 +17,7 @@ import {
   SeeMore
 } from '@src/components';
 
-import { isProfileComplete } from '@helpers/functions/functions';
+import { isProfileComplete } from '@src/helper/functions';
 import useHomeLogic from './useHomeLogic';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FONT_NAMES } from '@fonts';
@@ -53,7 +53,7 @@ const Home = () => {
       <XPpoint number={xp} navigation={navigation} inCommunity={user && user.isMember} />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Product showcase section  */}
-        <SeeMore title={''} onPress={() => navigation.navigate('ProductList')}/>
+        <SeeMore title={''} onPress={() => navigation.navigate('ProductList')} />
         <Fragment
           Component={HomeItem}
           onPress={() => navigation.navigate('AddProduct')}

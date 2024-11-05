@@ -3,7 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLOR, DIMEN } from '@constants/constants';
 import Header from '@components/Headers/Header';
 import Message from '@components/Cards/Message';
-import useChat from '@helpers/customHooks/useChat';
+import useChat from '@src/hooks'
 import { AppContext } from '@src/context/AppContext';
 
 import {

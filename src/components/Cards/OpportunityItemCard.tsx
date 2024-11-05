@@ -11,8 +11,8 @@ import { TouchableOpacity, StyleSheet, Text, View, Image, Pressable } from 'reac
 import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
 import { AppContext } from '@src/context/AppContext';
 import { OpportunityData } from '@src/types';
-import { OpenLink, handleBookmark } from '@helpers/functions/handleFunctions';
-import { generateDate, resourceAge } from '@helpers/functions/functions';
+import { OpenLink, handleBookmark } from '@src/helper/handleFunctions';
+import { generateDate, resourceAge } from '@src/helper/functions';
 import { environments } from '@constants/environments';
 import { FONT_NAMES } from '@fonts';
 

@@ -15,42 +15,15 @@ import awardXP from "@utils/awardXP";
 import { RootStackParamList } from "@src/types";
 import { FONT_NAMES } from "@fonts";
 import onShare, { handleLinkPress } from "@utils/onShare";
-import { handleBookmark } from "@helpers/functions/handleFunctions";
-import { resourceAge } from "@src/helper/functions/functions";
+import { resourceAge } from "@src/helper/functions";
+import { useProducts } from "@src/hooks";
+import {Comment, Layout} from '@src/types'
 
 const { BASE_URL } = environments;
 const AWARD = {
   'FIRST': 5,
   'SECOND': 3,
   'THIRD': 1
-}
-interface Layout {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-interface Author {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string | null;
-};
-interface Comment {
-  readonly id: number;
-  content: string
-  blocked?: null;
-  blockedThread?: boolean;
-  blockReason?: null;
-  authorUser?: null;
-  removed?: null;
-  approvalStatus?: string;
-  author?: Author;
-  threadOf?: number;
-  createdAt?: string,
-  updatedAt?: string,
-  reports?: []
 }
 
 function Index() {
@@ -60,7 +33,8 @@ function Index() {
 
   const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
   const { description, name, media, id, url, meta } = route.params;
-  const { user, jwt, setXp, setProducts, products } = React.useContext(AppContext);
+  const { user, jwt, setXp } = React.useContext(AppContext);
+  const { toggleBookmark, fetchComments, submitComment } = useProducts();
   const [com, setCom] = useState<string>('');
   const [comments, setComments] = useState<Comment[]>([]);
   const [csLayout, setCsLayout] = useState<Layout>({
@@ -92,45 +66,23 @@ function Index() {
   // Fetching comments
   React.useEffect(() => {
     const fetchComment = async () => {
-      const com_response = await (await fetch(`${BASE_URL}/api/comments/api::product.product:${id}?populate=author`, {
-        method: 'GET',
-        headers: {
-          'content-type': 'application/json',
-          'Authorization': `Bearer ${jwt}`
-        },
-      })).json();
-
-      if (com_response) {
-        setComments(com_response);
-        console.log("Our own: ", JSON.stringify(com_response.data, null, 2))
+      const result = await fetchComments(id);
+      if (result) {
+        setComments(result)
       }
     }
-    fetchComment();
+    fetchComment()
   }, []);
 
   const getCommentSectionLayout = useCallback((event: LayoutChangeEvent) => {
     setCsLayout(event.nativeEvent.layout);
   }, []);
 
-  const submitComment = async () => {
-    if (com.trim()) {
-      const newCom: Omit<Comment, "id"> = {
-        content: com,
-      }
-
-      const com_response = await (await fetch(`${BASE_URL}/api/comments/api::product.product:${id}`, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          'Authorization': `Bearer ${jwt}`
-        },
-        body: JSON.stringify(newCom)
-      })).json()
-
-      if (com_response) {
-        setComments([...comments, com_response]);
-        return com_response;
-      }
+  const handleSubmitCommit = async () => {
+    const comment = await submitComment(id, com, jwt);
+    if (comment) {
+      setComments([...comments, comment]);
+      setCom('');
     }
   }
 
@@ -142,15 +94,7 @@ function Index() {
   }, [csLayout]);
 
   const bookmark = useCallback(() => {
-    handleBookmark(
-      id,
-      products,
-      setProducts,
-      'products',
-      'Product saved',
-      'Product removed',
-      jwt
-    );
+    toggleBookmark(id);
   }, []);
 
   const renderImage = ({ item, index }: { item: any, index: number }) => (
@@ -306,7 +250,7 @@ function Index() {
             name="send"
             size={25}
             color={COLOR.GREY_300}
-            onPress={submitComment}
+            onPress={handleSubmitCommit}
           />}
       </View>
       <StatusBar backgroundColor={COLOR.GREY_300} barStyle='light-content' />

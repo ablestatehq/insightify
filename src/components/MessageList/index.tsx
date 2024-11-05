@@ -1,6 +1,6 @@
 import React from 'react'
 import Message from '../Cards/Message';
-import useChat from '@helpers/customHooks/useChat';
+import {useChat} from '@src/hooks';
 import { COLOR } from '@constants/constants';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
 
