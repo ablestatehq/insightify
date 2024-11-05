@@ -7,7 +7,7 @@ import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-
 import { CustomModal, SubmitButton, InputText } from '@components'
 import { storeData } from '@api/strapiJSAPI'
 import { ShareSchema } from '@utils/validations'
-import { OpportunitiesFormType } from '@utils/types'
+import { OpportunitiesFormType } from '@src/types'
 import { COLOR, FONTSIZE } from '@constants/constants'
 import { FONT_NAMES } from '@fonts'
 

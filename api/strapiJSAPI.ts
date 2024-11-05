@@ -1,5 +1,5 @@
-import {environments} from '../src/constants/environments'
-import {clearLocalData, retrieveLocalData} from "../src/utils/localStorageFunctions";
+import {environments} from '@constants/environments'
+import {clearLocalData, retrieveLocalData} from "@utils/localStorageFunctions";
 
 const {STRAPI_TOKEN, STRAPI_BASE_URL,STRAPI_TALENT_FORM_API_KEY, BASE_URL} = environments;
 

@@ -1,4 +1,4 @@
-import {UserProfile} from "@utils/types";
+import {UserProfile} from "@src/types";
 import {
   differenceInDays,
   differenceInWeeks,
@@ -6,6 +6,7 @@ import {
   differenceInHours,
   differenceInMinutes,
   differenceInMonths,
+  differenceInYears,
 } from 'date-fns';
 
 export function resourceAge(date: Date) {
@@ -27,7 +28,10 @@ export function resourceAge(date: Date) {
   if (weeks < 4) return `${weeks}w`;
   
   const months = differenceInMonths(currentDate, publishedAt);
-  return `${months}mo`;
+  if (months < 12) return `${months}mo`;
+
+  const years = differenceInYears(currentDate, publishedAt);
+  return `${years}yrs`
 }
 
 

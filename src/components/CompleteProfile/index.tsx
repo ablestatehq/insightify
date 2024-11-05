@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FONT_NAMES } from '@fonts';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@utils/types';
+import { RootStackParamList } from '@src/types';
 
 interface CompleteProfileProps {
   // setShowCompleteProfile: React.Dispatch<React.SetStateAction<boolean>>

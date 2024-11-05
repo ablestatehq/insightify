@@ -4,8 +4,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { COLOR } from '@constants/constants';
 import useFilter from '@helpers/customHooks/useFilter';
-import { AppContext } from '@helpers/context/AppContext';
-import { OpportunityListProps, RootStackParamList } from '@utils/types';
+import { AppContext } from '@src/context/AppContext';
+import {OpportunityListProps, RootStackParamList} from '@src/types';
 import { FONT_NAMES } from '@fonts';
 import {
   EmptyState, FloatingButton, FormModal, CategorySection,

@@ -10,12 +10,12 @@ import { AntDesign, EvilIcons, FontAwesome } from '@expo/vector-icons';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 
 import Button from '../Button';
-import { ProfileType } from '@utils/types';
+import { ProfileType } from '@src/types';
 import { COLOR, FONTSIZE } from '@constants/constants';
 import useLocalStorage from '@helpers/customHooks/useLocalStorage';
 import { DOMAIN, SKILLS, GENDER } from '@utils/Enums';
 import { setUserPhotoNULL, updateUser } from '@api/auth';
-import { AppContext } from '@helpers/context/AppContext';
+import { AppContext } from '@src/context/AppContext';
 import CheckBox from '../CheckBox';
 import { storeToLocalStorage } from '@utils/localStorageFunctions';
 import CustomModal from '../Modals/CustomModal';

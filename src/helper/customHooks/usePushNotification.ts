@@ -1,4 +1,4 @@
-import {AppContext} from '../context/AppContext';
+import {AppContext} from '../../context/AppContext';
 import {useContext, useEffect, useRef, useState} from 'react';
 import {generateTransactionRef} from '../functions/functions';
 import {storeData, updateStrapiData} from '@api/strapiJSAPI';

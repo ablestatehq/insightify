@@ -3,11 +3,11 @@ import React, { useContext } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { COLOR, FONTSIZE } from '@constants/constants'
-import { AppContext } from '@helpers/context/AppContext'
+import { AppContext } from '@src/context/AppContext'
 import { InputText, SubmitButton, Dialog } from '@components/index'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { login } from '@api/auth';
-import { IDialogBox, LoginScreenProps } from '@utils/types';
+import { IDialogBox, LoginScreenProps } from '@src/types';
 import { handleBookmark } from '@helpers/functions/handleFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {

@@ -1,11 +1,11 @@
 import Button from '../Button';
 import TagCard from './TagCard';
-import {Feather } from '@expo/vector-icons';
-import {COLOR, DIMEN, FONTSIZE} from '@constants/constants';
-import {AppContext} from '@helpers/context/AppContext';
-import React, {useContext, useState, useEffect} from 'react';
-import {Modal, StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback} from 'react-native';
-import {FONT_NAMES} from '@fonts';
+import { Feather } from '@expo/vector-icons';
+import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
+import { AppContext } from '@src/context/AppContext';
+import React, { useContext, useState, useEffect } from 'react';
+import { Modal, StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { FONT_NAMES } from '@fonts';
 
 interface FilterCardProps {
   cardVisible?: boolean
@@ -23,9 +23,9 @@ const FilterCard: React.FC<FilterCardProps> =
     filteredItems,
     filteredCount,
   }) => {
-    const {opportunities} = useContext(AppContext);
+    const { opportunities } = useContext(AppContext);
     const [opportunityCategories, setOpportunityCategories] = useState<any[]>([]);
-    
+
     useEffect(() => {
       setOpportunityCategories(prevTags => {
         const updatedTags = opportunities.reduce((acc, opp) => {
@@ -78,7 +78,7 @@ const FilterCard: React.FC<FilterCardProps> =
                     name="x"
                     size={20}
                     color={COLOR.SECONDARY_300}
-                    style={{padding: 5}}
+                    style={{ padding: 5 }}
                     onPress={handlePress}
                   />
                   <Text style={styles.filterText}>Filter your search</Text>

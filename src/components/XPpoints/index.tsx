@@ -5,7 +5,7 @@ import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
 import { FONT_NAMES } from '@fonts';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@utils/types';
+import { RootStackParamList } from '@src/types';
 
 
 interface XPpointProps {

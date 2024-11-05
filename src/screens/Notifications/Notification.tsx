@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { COLOR, FONTSIZE } from '@constants/constants'
 import Header from '@components/Headers/Header'
-import { AppContext } from '@helpers/context/AppContext'
+import { AppContext } from '@src/context/AppContext'
 import { StyleSheet, View, Text, ScrollView } from 'react-native'
 import NotificationCard from '@components/Cards/NotificationCard'
 import { FONT_NAMES } from '@fonts'

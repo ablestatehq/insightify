@@ -9,8 +9,8 @@ import { TouchableOpacity, StyleSheet, Text, View, Image, Pressable } from 'reac
 
 // Constants and helperss
 import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
-import { AppContext } from '@helpers/context/AppContext';
-import { OpportunityData } from '@utils/types';
+import { AppContext } from '@src/context/AppContext';
+import { OpportunityData } from '@src/types';
 import { OpenLink, handleBookmark } from '@helpers/functions/handleFunctions';
 import { generateDate, resourceAge } from '@helpers/functions/functions';
 import { environments } from '@constants/environments';

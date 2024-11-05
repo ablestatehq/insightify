@@ -2,7 +2,6 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  FlatList,
   ScrollView,
   StatusBar,
 } from 'react-native';
@@ -11,11 +10,12 @@ import {
 import { COLOR, DIMEN } from '@constants/constants'
 import {
   XPpoint, Fragment,
-  CompleteProfile, OpportunityItem, ProductCard,
+  CompleteProfile,
   ProfileForm,
   HomeItem,
   TipCard,
-} from '@components';
+  SeeMore
+} from '@src/components';
 
 import { isProfileComplete } from '@helpers/functions/functions';
 import useHomeLogic from './useHomeLogic';
@@ -53,6 +53,7 @@ const Home = () => {
       <XPpoint number={xp} navigation={navigation} inCommunity={user && user.isMember} />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Product showcase section  */}
+        <SeeMore title={''} onPress={() => navigation.navigate('ProductList')}/>
         <Fragment
           Component={HomeItem}
           onPress={() => navigation.navigate('AddProduct')}

@@ -4,7 +4,7 @@ import { COLOR, DIMEN } from '@constants/constants';
 import Header from '@components/Headers/Header';
 import Message from '@components/Cards/Message';
 import useChat from '@helpers/customHooks/useChat';
-import { AppContext } from '@helpers/context/AppContext';
+import { AppContext } from '@src/context/AppContext';
 
 import {
   View, FlatList, StyleSheet,

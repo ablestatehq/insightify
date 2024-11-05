@@ -3,8 +3,8 @@ import React, { useContext } from 'react';
 import { COLOR } from '@constants/constants';
 import { FlatList, Text, View } from 'react-native';
 import Header from '@components/Headers/Header';
-import { AppContext } from '@helpers/context/AppContext';
-import { ProductData } from '@utils/types';
+import { AppContext } from '@src/context/AppContext';
+import { ProductData } from '@src/types';
 
 const Index = () => {
   const renderProducts = ({ item, index }: { item: ProductData, index: number }) =>

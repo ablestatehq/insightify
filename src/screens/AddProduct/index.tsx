@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import * as ImagePicker from 'expo-image-picker';
 import { Formik, FormikHelpers } from 'formik';
 import Header from '@components/Headers/Header';
-import { AppContext } from '@helpers/context/AppContext';
+import { AppContext } from '@src/context/AppContext';
 import { COLOR, FONTSIZE } from '@constants/constants';
 
 import { environments } from '@constants/environments';
@@ -18,7 +18,7 @@ import { Dialog, InputText } from '@components/index';
 import { FONT_NAMES } from '@fonts';
 import { storeData, uploadImage } from '@api/strapiJSAPI';
 import image_name_extension from '@utils/imageName';
-import { IDialogBox } from '@utils/types';
+import { IDialogBox } from '@src/types';
 
 const { STRAPI_BASE_URL } = environments;
 // Form's data structure

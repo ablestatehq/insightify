@@ -9,13 +9,14 @@ import { environments } from "@constants/environments";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useRef, useState } from "react";
-import { AppContext } from "@helpers/context/AppContext";
+import React, { useCallback, useRef, useState } from "react";
+import { AppContext } from "@src/context/AppContext";
 import awardXP from "@utils/awardXP";
-import { RootStackParamList } from "@utils/types";
+import { RootStackParamList } from "@src/types";
 import { FONT_NAMES } from "@fonts";
 import onShare, { handleLinkPress } from "@utils/onShare";
 import { handleBookmark } from "@helpers/functions/handleFunctions";
+import { resourceAge } from "@src/helper/functions/functions";
 
 const { BASE_URL } = environments;
 const AWARD = {
@@ -30,6 +31,28 @@ interface Layout {
   height: number;
 }
 
+interface Author {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string | null;
+};
+interface Comment {
+  readonly id: number;
+  content: string
+  blocked?: null;
+  blockedThread?: boolean;
+  blockReason?: null;
+  authorUser?: null;
+  removed?: null;
+  approvalStatus?: string;
+  author?: Author;
+  threadOf?: number;
+  createdAt?: string,
+  updatedAt?: string,
+  reports?: []
+}
+
 function Index() {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -38,8 +61,8 @@ function Index() {
   const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
   const { description, name, media, id, url, meta } = route.params;
   const { user, jwt, setXp, setProducts, products } = React.useContext(AppContext);
-
   const [com, setCom] = useState<string>('');
+  const [comments, setComments] = useState<Comment[]>([]);
   const [csLayout, setCsLayout] = useState<Layout>({
     x: 0,
     y: 0,
@@ -47,16 +70,17 @@ function Index() {
     height: 0,
   });
 
-  const handleShare = () => {
+  const handleShare = useCallback(() => {
     if (url) {
       onShare(url);
     }
-  }
+  }, []);
 
-  const handleComment = () => { }
-  const handleVisit = () => {
+  const handleVisit = useCallback(() => {
     handleLinkPress(url as string);
-  }
+  }, [])
+
+  // Award XP to the user.
   React.useEffect(() => {
     awardXP(AWARD, id, jwt, user?.id).then(xps => {
       if (xps) {
@@ -65,17 +89,59 @@ function Index() {
     }).catch(error => { });
   }, []);
 
-  const getCommentSectionLayout = (event: LayoutChangeEvent) => {
+  // Fetching comments
+  React.useEffect(() => {
+    const fetchComment = async () => {
+      const com_response = await (await fetch(`${BASE_URL}/api/comments/api::product.product:${id}?populate=author`, {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': `Bearer ${jwt}`
+        },
+      })).json();
+
+      if (com_response) {
+        setComments(com_response);
+        console.log("Our own: ", JSON.stringify(com_response.data, null, 2))
+      }
+    }
+    fetchComment();
+  }, []);
+
+  const getCommentSectionLayout = useCallback((event: LayoutChangeEvent) => {
     setCsLayout(event.nativeEvent.layout);
-  }
-  // move the user to a given section in the scrollView
-  const moveToComments = () => {
-    if (scrollViewRef && scrollViewRef.current) {
-      scrollViewRef.current?.scrollTo({ y: csLayout.height, animated: true });
+  }, []);
+
+  const submitComment = async () => {
+    if (com.trim()) {
+      const newCom: Omit<Comment, "id"> = {
+        content: com,
+      }
+
+      const com_response = await (await fetch(`${BASE_URL}/api/comments/api::product.product:${id}`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': `Bearer ${jwt}`
+        },
+        body: JSON.stringify(newCom)
+      })).json()
+
+      if (com_response) {
+        setComments([...comments, com_response]);
+        return com_response;
+      }
     }
   }
 
-  const bookmark = () => {
+  // move the user to a given section in the scrollView
+  const moveToComments = useCallback(() => {
+    if (scrollViewRef && scrollViewRef.current) {
+      scrollViewRef.current?.scrollTo({ y: csLayout.height, animated: true });
+    }
+  }, [csLayout]);
+
+  const bookmark = useCallback(() => {
     handleBookmark(
       id,
       products,
@@ -85,7 +151,7 @@ function Index() {
       'Product removed',
       jwt
     );
-  };
+  }, []);
 
   const renderImage = ({ item, index }: { item: any, index: number }) => (
     <Image
@@ -97,7 +163,7 @@ function Index() {
     />
   );
 
-  const getImage = (url: string) => ({ uri: `${BASE_URL}${url}` });
+  const getImage = useCallback((url: string) => ({ uri: `${BASE_URL}${url}` }), []);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -136,12 +202,18 @@ function Index() {
         />
         {/* </View> */}
         {/* <View style={styles.doubleStyle}> */}
-        <Ionicons
-          name={meta?.bookmarked ? "bookmark" : 'bookmark-outline'}
+        {meta?.bookmarked && <Ionicons
+          name={"bookmark"}
           size={20}
           color={COLOR.GREY_300}
           onPress={bookmark}
-        />
+        />}
+        {!meta?.bookmarked && <Ionicons
+          name={'bookmark-outline'}
+          size={20}
+          color={COLOR.GREY_300}
+          onPress={bookmark}
+        />}
         <Ionicons
           name="share-social-outline"
           size={20}
@@ -182,24 +254,35 @@ function Index() {
           {/**comments */}
           <View onLayout={getCommentSectionLayout}>
             <Text style={styles.commentTitle}>Comments</Text>
-            {meta?.comments ? meta?.comments.map((_, index) => (
-              <>
-                <View style={styles.comments} key={index}>
-                  <View style={styles.commentedBy}>
-                    <View style={styles.devProfile}>
+            {comments.length > 0 ? comments.map((comment: Comment, index) => (
+              comment.approvalStatus !== 'REJECTED' &&
+              <View style={styles.comments} key={index}>
+                <View style={styles.commentedBy}>
+                  {comment.author && <View style={styles.devProfile}>
+                    {comment.author && !comment.author.avatar &&
                       <FontAwesome
                         size={20}
                         name="user-circle-o"
                         color={COLOR.SECONDARY_100}
+                      />}
+                    {comment.author && comment.author.avatar &&
+                      <Image
+                        source={getImage(comment.author.avatar)}
+                        height={20}
+                        width={20}
+                        resizeMethod="resize"
+                        resizeMode="cover"
+                        style={styles.avatar}
                       />
-                      <Text style={styles.commentor}>{`Guest user`}</Text>
-                    </View>
-                    <View style={styles.dot} />
-                    <Text style={styles.timeStamp}>{'5days ago'}</Text>
-                  </View>
-                  <Text>{'comment'}</Text>
+                    }
+                    <Text style={styles.commentor}>{comment?.author.name}</Text>
+                    <Text style={styles.commentor_email}>{comment?.author.email}</Text>
+                  </View>}
+                  <View style={styles.dot} />
+                  <Text style={styles.timeStamp}>{resourceAge(new Date(comment.createdAt as string))}</Text>
                 </View>
-              </>
+                <Text style={styles.contentStyle}>{comment.content}</Text>
+              </View>
             )) :
               <Text style={styles.no_comments}>No comments</Text>
             }
@@ -223,7 +306,7 @@ function Index() {
             name="send"
             size={25}
             color={COLOR.GREY_300}
-            onPress={handleComment}
+            onPress={submitComment}
           />}
       </View>
       <StatusBar backgroundColor={COLOR.GREY_300} barStyle='light-content' />
@@ -243,7 +326,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.GREY_300,
   },
   main: {
-    // flexGrow: 1,
     paddingHorizontal: DIMEN.PADDING.ME
   },
   logoStyle: {
@@ -334,7 +416,7 @@ const styles = StyleSheet.create({
     marginVertical: DIMEN.MARGIN.SM,
   },
   comments: {
-
+    marginVertical: DIMEN.MARGIN.SM
   },
   no_comments: {
     fontFamily: FONT_NAMES.Body,
@@ -370,5 +452,17 @@ const styles = StyleSheet.create({
     padding: DIMEN.PADDING.SM,
     borderRadius: DIMEN.MARGIN.XLG,
     paddingHorizontal: DIMEN.PADDING.ELG
+  },
+  avatar: {
+
+  },
+  commentor_email: {
+    fontFamily: FONT_NAMES.Body,
+    fontSize: FONTSIZE.SMALL,
+  },
+  contentStyle: {
+    fontFamily: FONT_NAMES.Body,
+    fontSize: FONTSIZE.SMALL,
+    margin: DIMEN.MARGIN.XSM,
   }
 });

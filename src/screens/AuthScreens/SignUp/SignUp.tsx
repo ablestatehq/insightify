@@ -10,7 +10,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { InputText, SubmitButton, Dialog } from '@components/index';
 import { signUp } from '@api/auth'
 import { FONT_NAMES } from '@fonts'
-import { IDialogBox, RootStackParamList } from '@utils/types'
+import { IDialogBox, RootStackParamList } from '@src/types'
 
 const SignUp = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();

@@ -5,7 +5,7 @@ import Header from "@components/Headers/Header";
 import { COLOR, FONTSIZE } from "@constants/constants";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FONT_NAMES } from "@fonts";
-import { ConfirmEmailScreenProps, RootStackParamList } from "@utils/types";
+import { ConfirmEmailScreenProps, RootStackParamList } from "@src/types";
 import { emailConfirmation } from "@api/auth";
 import { Button, Loader } from "@components/index";
 

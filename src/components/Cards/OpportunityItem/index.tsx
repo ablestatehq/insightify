@@ -1,26 +1,26 @@
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {Pressable, StyleSheet, View, Text, Image} from 'react-native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {COLOR } from '@constants/constants';
-import {OpportunityData, RootStackParamList } from '@utils/types';
-import {environments } from '@constants/environments';
-import {FONT_NAMES } from '@fonts';
+import { useNavigation } from '@react-navigation/native';
+import { Pressable, StyleSheet, View, Text, Image } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { COLOR } from '@constants/constants';
+import { OpportunityData, RootStackParamList } from '@src/types';
+import { environments } from '@constants/environments';
+import { FONT_NAMES } from '@fonts';
 
 const Index = (props: OpportunityData) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {
     Title,
     company_logo,
-   } = props;
-  const {BASE_URL} = environments;
+  } = props;
+  const { BASE_URL } = environments;
 
-  const getImage = (url: string) => ({uri: `${BASE_URL}${url}`});
+  const getImage = (url: string) => ({ uri: `${BASE_URL}${url}` });
 
   return (
     <Pressable
       style={styles.container}
-      onPress={() => navigation.navigate('Offers', {tag: 'Recent'})}>
+      onPress={() => navigation.navigate('Offers', { tag: 'Recent' })}>
       <View style={styles.overlay} />
       <Image
         source={getImage(company_logo?.data ?

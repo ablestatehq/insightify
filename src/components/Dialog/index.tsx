@@ -2,7 +2,7 @@ import React from 'react'
 import { Modal, StyleSheet, Text, View, Pressable } from 'react-native'
 import { COLOR, FONTSIZE } from '@constants/constants';
 import { FONT_NAMES } from '@fonts'
-import { IDialogBox } from '@utils/types';
+import { IDialogBox } from '@src/types';
 
 const Dialog = ({
   onAccept,

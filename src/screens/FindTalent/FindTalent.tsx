@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { Formik, FormikHelpers } from 'formik';
 
 import { Dropdown } from 'react-native-element-dropdown';
-import { TalentSubmissionForm } from '@utils/types';
+import { TalentSubmissionForm } from '@src/types';
 import { COLOR, FONTSIZE } from '@constants/constants';
 
 import { TalentFormValidationSchema } from '@utils/validations';

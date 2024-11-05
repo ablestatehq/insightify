@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Selectable from './components/Selectable'
-import { FeedbackObject } from '@utils/types'
+import { FeedbackObject } from '@src/types'
 import { COLOR, FONTSIZE } from '@constants/constants'
 import Header from '@components/Headers/Header'
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native'

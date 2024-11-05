@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import Button from '../Button';
 import Input from '../TagInput/Input';
 import { PRIMARY_ROLES } from '@utils/Enums';
-import { MemberInfo } from '@utils/types';
+import { MemberInfo } from '@src/types';
 import { storeData } from '@api/strapiJSAPI';
 import { Dropdown } from 'react-native-element-dropdown';
 import { COLOR, FONTSIZE } from '@constants/constants';

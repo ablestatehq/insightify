@@ -6,7 +6,7 @@ import {
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
 import { COLOR, FONTSIZE } from '@constants/constants';
-import { ExpandableListItemProps } from '@utils/types';
+import { ExpandableListItemProps } from '@src/types';
 import onShare, { handleLinkPress } from '@utils/onShare';
 import { FONT_NAMES } from '@assets_/fonts/fonts';
 

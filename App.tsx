@@ -3,7 +3,7 @@ import * as TaskManager from 'expo-task-manager';
 import * as Linking from 'expo-linking';
 import { useEffect } from 'react';
 import { MainStackNavigator } from '@routes/StackNavigator';
-import AppContextProvider from '@helpers/context/AppContext';
+import AppContextProvider from '@src/context/AppContext';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { BGTASKS } from '@constants/constants';
 import {
@@ -14,7 +14,7 @@ import {
 
 import { useFonts } from 'expo-font';
 import { FONT_FILES } from '@fonts';
-import { RootStackParamList } from '@utils/types';
+import { RootStackParamList } from '@src/types';
 import usePushNotifications from '@helpers/customHooks/usePushNotification';
 
 export default function App() {

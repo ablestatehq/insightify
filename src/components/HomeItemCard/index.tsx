@@ -4,7 +4,7 @@ import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
 import { FONT_NAMES } from '@fonts';
 import { Ionicons } from '@expo/vector-icons';
 import { environments } from '@constants/environments';
-import { OpportunityData, ProductData } from '@utils/types';
+import { OpportunityData, ProductData } from '@src/types';
 
 interface HomeItemProps {
   itemType: 'Innovation' | 'Offer'
