@@ -8,7 +8,7 @@ import { Loader } from '../components';
 // helper 
 // import {fontsLoading} from '@fonts';
 import { COLOR, DIMEN, FONTSIZE } from '../constants/constants';
-import { AppContext } from '../helper/context/AppContext';
+import { AppContext } from '../context/AppContext';
 
 // screens 
 import Home from '../screens/Dashboard/Home';
