@@ -33,7 +33,7 @@ function Index<P extends object>(props: WithSeeMoreProps<P> & P) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: DIMEN.MARGIN.ME,
+    marginBottom: DIMEN.MARGIN.LG,
     borderRadius: DIMEN.CONSTANT.SM,
     borderWidth: 0.5,
     borderColor: COLOR.GREY_50,
