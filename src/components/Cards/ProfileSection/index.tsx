@@ -9,13 +9,11 @@ import {useProfile} from '@src/hooks';
 
 const ProfileSection = () => {
 
-  const handleAddProfile = () => { navigation.navigate('AddProduct') }
   const {
-    user,
     profilePhoto,
     userProfile,
     isLoggedIn,
-    navigation,
+    // navigation,
     setJoinVisible,
     joinVisible,
     showProfileCard,
@@ -45,39 +43,11 @@ const ProfileSection = () => {
           </Pressable>
         )}
       </View>
-      <View style={styles.joinProductStyle}>
-        {/* Add a product  */}
-        {isLoggedIn && <Pressable
-          onPress={handleAddProfile}
-          style={styles.communityButton}>
-          <Text style={styles.communityButtonText}>Add a product</Text>
-        </Pressable>}
-
-        {isLoggedIn && <Pressable
-          style={styles.communityButton}
-          onPress={() => userProfile.inCommunity ?
-            navigation.navigate('ChatRoom') :
-            setJoinVisible(!joinVisible)}
-        >
-          <Text style={styles.communityButtonText}>
-            {userProfile.inCommunity ?
-              'Community Chat' :
-              'Join our Community'}
-          </Text>
-        </Pressable>}
-
-      </View>
       <ProfileForm
         visible={showProfileCard}
         handleClose={() => setShowProfileCard(!showProfileCard)}
         profilePhoto={profilePhoto}
         setProfilePhoto={() => { }}
-      />
-
-      <JoinCommunity
-        visible={joinVisible}
-        setVisible={setJoinVisible}
-        setIsInCommunity={handleJoinCommunity}
       />
       <Dialog {...dialog} />
     </View>
@@ -126,24 +96,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: FONT_NAMES.Title,
     color: COLOR.SECONDARY_300,
-  },
-  communityButton: {
-    padding: DIMEN.PADDING.SM,
-    backgroundColor: COLOR.SECONDARY_50,
-    flexGrow: 1,
-    flexBasis: 50,
-    borderRadius: DIMEN.PADDING.SM,
-    elevation: 2,
-  },
-  communityButtonText: {
-    textAlign: 'center',
-    fontSize: FONTSIZE.BODY,
-    color: COLOR.SECONDARY_300,
-  },
-  joinProductStyle: {
-    flexDirection: 'row',
-    gap: 10,
-    paddingHorizontal: DIMEN.PADDING.SM,
   },
   domainStyle: {
     textAlign: 'center',

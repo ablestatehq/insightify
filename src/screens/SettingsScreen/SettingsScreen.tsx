@@ -3,24 +3,36 @@ import { Pressable, StatusBar, StyleSheet, Switch, Text, View } from 'react-nati
 import { Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 import onShare from '@utils/onShare';
-import { COLOR, FONTSIZE } from '@constants/constants';
+import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
 
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FONT_NAMES } from '@fonts'
 import ProfileSection from '@components/Cards/ProfileSection';
-import {useProfile} from '@src/hooks';
+import { useProfile } from '@src/hooks';
+import { JoinCommunity } from '@src/components';
 
 
 const SettingsScreen = () => {
 
-  const { isNotificationEnabled, toggleSwitch, navigation } = useProfile();
+  const { isNotificationEnabled, toggleSwitch,
+    navigation, setJoinVisible, isLoggedIn,
+    userProfile, joinVisible } = useProfile();
+
   const handleTalent = () => navigation.navigate('Talent');
 
   return (
     <View style={styles.container}>
       {/* Account  */}
       <ProfileSection />
-
+      {isLoggedIn && !userProfile.inCommunity &&
+        <Pressable
+          style={styles.communityButton}
+          onPress={() => setJoinVisible(!joinVisible)}
+        >
+          <Text style={styles.communityButtonText}>
+            Join our Community
+          </Text>
+        </Pressable>}
       <View style={styles.main}>
         {/* Notifications  */}
         <Text style={styles.textHeading}>Notification</Text>
@@ -140,6 +152,11 @@ const SettingsScreen = () => {
           </Pressable>
         </View>
       </View>
+      <JoinCommunity
+        visible={joinVisible}
+        setVisible={setJoinVisible}
+        setIsInCommunity={() => navigation.navigate('AddProduct')}
+      />
       <StatusBar backgroundColor={COLOR.WHITE} />
     </View>
   );
@@ -150,7 +167,7 @@ export default SettingsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: DIMEN.PADDING.ME,
     backgroundColor: COLOR.WHITE,
   },
   main: { marginHorizontal: 10, marginVertical: 10 },
@@ -198,6 +215,25 @@ const styles = StyleSheet.create({
   },
   showCaseProduct: {
     justifyContent: 'center',
-    // alignItems: 'center'
+  },
+  communityButton: {
+    padding: DIMEN.PADDING.SM,
+    backgroundColor: COLOR.SECONDARY_50,
+    borderRadius: DIMEN.PADDING.SM,
+    marginVertical: DIMEN.MARGIN.ME,
+    // elevation: 2,
+    // alignSelf: 'center',
+    // position: 'absolute',
+    // bottom: 10,
+  },
+  communityButtonText: {
+    textAlign: 'center',
+    fontSize: FONTSIZE.BODY,
+    color: COLOR.SECONDARY_300,
+  },
+  joinProductStyle: {
+    flexDirection: 'row',
+    gap: 10,
+    paddingHorizontal: DIMEN.PADDING.SM,
   }
 })
