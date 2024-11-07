@@ -1,10 +1,11 @@
-import React, { useState, createContext, useEffect } from 'react';
+import React, { useState, createContext, useEffect, useCallback } from 'react';
 
 import {getData} from '@api/grapiql';
 import {getMe} from '@api/strapiJSAPI';
-import {ProductData} from '@src/types';
 import {retrieveLocalData, storeToLocalStorage} from '@utils/localStorageFunctions';
 import ProductProvider from './ProductContext';
+import { createClientSocket } from '@src/lib/socket';
+import { Socket } from 'socket.io-client';
 
 interface AppContextProviderProps {
   children: React.ReactNode;
@@ -73,17 +74,30 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [xp, setXp] = useState<number>(0);
   const [jwt, setJwt] = useState<string>('');
   const [opportunities, setOpportunities] = useState<any[]>([]);
-  // const [products, setProducts] = useState<any[]>([]);
   const [codeTips, setCodeTips] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
   const [comments, setComments] = useState<any[]>([]);
   const [community, setCommunity] = useState<any[]>([]);
+  const [socket, setSocket] = useState<Socket | null>(null);
+
 
   useEffect(() => {
     fetchInitialData();
   }, []);
 
+  // real time.
+  const setupSocket = useCallback(() => {
+    const clientSocket = createClientSocket(jwt);
+    setSocket(clientSocket);
+    clientSocket.on('connect', () => {
+      clientSocket.on('onlineUsers', (data) => { });
+    })
+
+    clientSocket.on('opportunity:create', ({ data }) => {
+      setOpportunities([...opportunities, data]);
+    });
+  }, [socket]);
   const fetchInitialData = async () => {
     try {
       // Run all fetches concurrently
@@ -155,7 +169,6 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     }
   };
 
-
   const fetchAdditionalData = async () => {
     try {
       const [comments_, sent_notifications, community_members, localNotification] = await Promise.all([
@@ -207,6 +220,13 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     fetchAdditionalData,
   };
 
+  useEffect(() => {
+    setupSocket();
+    return () => {
+      socket?.off('connect');
+      socket?.off('opportunity:create');
+    }
+  }, []);
   return (
     <ProductProvider>
       <AppContext.Provider value={contextValue}>

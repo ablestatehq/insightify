@@ -1,8 +1,8 @@
-import { getData } from "@api/grapiql";
+import {getData} from "@api/grapiql";
 import {environments} from "@constants/environments";
-import { ProductData } from "@src/types";
-import { retrieveLocalData, storeToLocalStorage } from "@src/utils/localStorageFunctions";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import {ProductData} from "@src/types";
+import {retrieveLocalData, storeToLocalStorage} from "@src/utils/localStorageFunctions";
+import React, {createContext, useContext, useEffect, useState} from "react";
 
 interface Author {
   id: string;
