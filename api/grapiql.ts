@@ -1,9 +1,9 @@
-import {environments} from "../src/constants/environments";
 import {MODALS} from "./modal";
+import {environments} from "../src/constants/environments";
 
-const {STRAPI_TOKEN, BASE_URL, STRAPI_TALENT_FORM_API_KEY} = environments;
+const {STRAPI_TOKEN, BASE_URL} = environments;
 
-async function getData(endpoint: keyof typeof MODALS) {
+async function getData(endpoint: keyof typeof MODALS, start: number = 0, limit: number = 25) {
   try {
     const query = MODALS[endpoint];
     const response = await fetch(`${BASE_URL}/graphql`, {
@@ -13,7 +13,7 @@ async function getData(endpoint: keyof typeof MODALS) {
         'Authorization': `Bearer ${STRAPI_TOKEN}`,
         'X-REQUEST-TYPE': 'GraphQL'
       },
-      body: JSON.stringify({query})
+      body: JSON.stringify({query, variables: {start, limit}})
     });
 
     const data = await response.json();
@@ -39,6 +39,35 @@ async function getData(endpoint: keyof typeof MODALS) {
     }
   }
 }
+
+async function fetchNextBatch(endpoint: keyof typeof MODALS, currentLength: number) {
+  return await getData(endpoint, currentLength, 25);
+};
+
+async function fetchNewItems(endpoint: keyof typeof MODALS) {
+  const query = MODALS[endpoint];
+  const response = await fetch(`${BASE_URL}/graphql`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${STRAPI_TOKEN}`,
+      'X-REQUEST-TYPE': 'GraphQL'
+    },
+    body: JSON.stringify({
+      query,
+      variables: {start: 0, limit: 10},
+    })
+  });
+
+  const data = await response.json();
+
+  if (data.data) {
+    const newItems = data.data[`${endpoint}`]['data']
+      .map((res: any) => ({ id: res.id, ...res.attributes }));
+    return newItems;
+  }
+  return [];
+};
 
 async function createEntry(endpoint: string, data: any) {
   try {
@@ -130,6 +159,8 @@ async function login(email:string, password: string) {
 
 export {
   getData,
+  fetchNewItems,
   uploadImage,
-  createEntry
+  createEntry,
+  fetchNextBatch,
 }
