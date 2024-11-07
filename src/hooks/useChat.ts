@@ -203,7 +203,7 @@ const useChat = (userId: number, jwt: string) => {
     const newMsgs = Array.from(messageMap.keys()).sort((a: string, b: string) =>
       new Date(b).getTime() - new Date(a).getTime()
       );
-    setMessages(newMsgs);
+    setMessages(newMsgs);   
   }, [messageMap]);
 
   useEffect(() => {

@@ -1,16 +1,17 @@
 import React, { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { COLOR, DIMEN } from '@constants/constants';
-import Header from '@components/Headers/Header';
-import Message from '@components/Cards/Message';
-import useChat from '@src/hooks'
-import { AppContext } from '@src/context/AppContext';
+import SendCard from '@src/components/Cards/SendCard';
+import Message from '@src/components/Cards/Message';
+
+import Header from '@components/Headers/Header'
+import {useChat} from '@src/hooks'
+import { AppContext } from '@src/context';
 
 import {
   View, FlatList, StyleSheet,
   Pressable, ActivityIndicator,
 } from 'react-native';
-import { SendCard } from '@components';
 
 const ChatScreen = () => {
   const { user, jwt } = useContext(AppContext);
