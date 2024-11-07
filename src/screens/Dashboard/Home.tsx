@@ -53,7 +53,7 @@ const Home = () => {
       <XPpoint number={xp} navigation={navigation} inCommunity={user && user.isMember} />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Product showcase section  */}
-        <SeeMore title={''} onPress={() => navigation.navigate('ProductList')} />
+        <SeeMore title={''} text='products' onPress={() => navigation.navigate('ProductList')} />
         <Fragment
           Component={HomeItem}
           onPress={() => navigation.navigate('AddProduct')}
