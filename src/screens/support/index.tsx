@@ -8,7 +8,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '@src/types'
 import { AppContext } from '@src/context'
 
-const SupportScreen = () => {
+const Index = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { isLoggedIn } = useContext(AppContext);
   const handleTalent = () => {
@@ -88,7 +88,7 @@ const SupportScreen = () => {
   )
 }
 
-export default SupportScreen
+export default Index
 
 const styles = StyleSheet.create({
   container: {
