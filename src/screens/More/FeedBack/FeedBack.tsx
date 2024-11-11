@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     padding: 10,
     marginTop: 10,
-    fontFamily: 'ComfortaaMedium'
+    fontFamily: FONT_NAMES.Title,
   },
   toImprove: {
     flexDirection: 'row',
