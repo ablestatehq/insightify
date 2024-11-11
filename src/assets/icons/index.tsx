@@ -27,6 +27,13 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
         color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
+    case 'news':
+      return <FontAwesome
+        name="newspaper-o"
+        size={size ? size : 20}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
+        onPress={press}
+      />
     case 'career':
       return <Ionicons
         name="school-outline"
