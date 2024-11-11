@@ -3,81 +3,49 @@ import { Image, Pressable, Text, View, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { COLOR, DIMEN, FONTSIZE } from "@constants/constants";
 import { FONT_NAMES } from '@fonts';
-import ProfileForm from '@components/ProfileForm';
-import { Dialog, JoinCommunity } from '@components/index';
-import {useProfile} from '@src/hooks';
+import { useProfile } from '@src/hooks';
 
 const ProfileSection = () => {
 
   const {
     profilePhoto,
     userProfile,
-    isLoggedIn,
-    // navigation,
-    setJoinVisible,
-    joinVisible,
-    showProfileCard,
-    setShowProfileCard,
-    handleJoinCommunity,
-    dialog,
-    handleSignoutPress
+    isLoggedIn
   } = useProfile();
   return (
-    <View style={styles.contentContainer}>
-      <View style={styles.profileContainer}>
-        {!profilePhoto ? (
-          <FontAwesome name="user-circle-o" size={50} color={COLOR.SECONDARY_300} />
-        ) : (
-          <Image source={{ uri: profilePhoto }} style={styles.profileImage} />
-        )}
-        <Pressable onPress={userProfile.operations}>
-          <Text style={[styles.profileText, userProfile.completed === 'Complete Profile' && styles.underlineText]}>
-            {userProfile.completed}
-          </Text>
-        </Pressable>
-        {isLoggedIn && (
-          <Pressable
-            onPress={handleSignoutPress}
-            style={styles.logoutPressable}>
-            <Text style={styles.logoutText}>Sign out</Text>
-          </Pressable>
-        )}
-      </View>
-      <ProfileForm
-        visible={showProfileCard}
-        handleClose={() => setShowProfileCard(!showProfileCard)}
-        profilePhoto={profilePhoto}
-        setProfilePhoto={() => { }}
-      />
-      <Dialog {...dialog} />
+    <View style={styles.profileContainer}>
+      {!profilePhoto ? (
+        <FontAwesome name="user-circle-o" size={80} color={COLOR.SECONDARY_300} />
+      ) : (
+        <Image source={{ uri: profilePhoto }} style={styles.profileImage} />
+      )}
+      <Pressable onPress={userProfile.operations}>
+        {isLoggedIn && <Text style={styles.profileText}>
+          {userProfile.completed}
+        </Text>}
+        {!isLoggedIn && <Text style={styles.profileText}>Guest</Text>}
+      </Pressable>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  contentContainer: {
-    elevation: 1,
-    borderRadius: 5,
-    backgroundColor: COLOR.SECONDARY_50,
-  },
   profileContainer: {
-    // borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: DIMEN.PADDING.SM,
-    gap: 5,
+    gap: DIMEN.CONSTANT.XXSM,
+    marginTop: DIMEN.MARGIN.SM,
   },
   profileImage: {
-    width: 70,
-    height: 70,
+    width: 100,
+    height: 100,
     borderRadius: 35,
   },
   profileTextContainer: {
-    // width: '100%',
-    // borderWidth: 1,
   },
   profileText: {
-    fontSize: FONTSIZE.BODY,
+    fontSize: FONTSIZE.TITLE_2,
     fontFamily: FONT_NAMES.Heading,
     textAlign: 'center',
     color: COLOR.SECONDARY_300,
