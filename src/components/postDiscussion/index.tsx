@@ -1,6 +1,5 @@
 import {Modal, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native'
 import React, {useEffect, useState} from 'react'
-import ProfileCard from '../Cards/ProfileCard/ProfileCard'
 import {COLOR, DIMEN, FONTSIZE} from '@src/constants/constants';
 import {PostDiscussionModal} from '@src/types';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -27,19 +26,19 @@ const Index = ({ visible, close }: PostDiscussionModal) => {
       <View style={styles.container}>
         <View style={styles.header}>
           <Ionicons name="close-outline" size={24} style={styles.closeButton} color="black" onPress={close} />
-          <Text style={styles.headerTitle}>New Discussion</Text>
+          <Text style={styles.headerTitle}>Post Square</Text>
           <TouchableOpacity style={styles.postButton} onPress={handlePost}>
             <Text style={styles.postButtonText}>POST</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.topicContainer}>
-          <Text style={styles.topicLabel}>Set a topic</Text>
+          {/* <Text style={styles.topicLabel}>Set a topic</Text> */}
           <View style={styles.topicProfileSection}>
-            {!topic.trim() && <ProfileCard />}
+            {/* {!topic.trim() && <ProfileCard />} */}
             <TextInput
               style={styles.topicInput}
-              placeholder="Enter your topic"
+              placeholder="Title"
               value={topic}
               onChangeText={setTopic}
             />
@@ -47,10 +46,12 @@ const Index = ({ visible, close }: PostDiscussionModal) => {
         </View>
 
         <View style={styles.contentContainer}>
-          <Text style={styles.contentPrompt}>Ask a question to the community</Text>
+          {/* <Text style={styles.contentPrompt}>Ask a question to the community</Text> */}
+          <Text style={styles.contentPrompt}>Details</Text>
           <TextInput
             style={styles.contentInput}
-            placeholder={`Share more details about what you're working on here so the community can give feedback.\n\nYou can include specific challenges, goals, or any context that will help others understand your project.`}
+            placeholder={`Post details`}
+            // placeholder={`Share more details about what you're working on here so the community can give feedback.\n\nYou can include specific challenges, goals, or any context that will help others understand your project.`}
             placeholderTextColor={COLOR.GREY_100}
             multiline={true}
             value={content}
