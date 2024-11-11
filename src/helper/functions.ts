@@ -15,23 +15,23 @@ export function resourceAge(date: Date) {
   
   const seconds = differenceInSeconds(currentDate, publishedAt);
   const minutes = differenceInMinutes(currentDate, publishedAt);
-  if (minutes < 1) return seconds == 0 ? 'just now' : `${seconds}secs`;
-  if (minutes < 60) return `${minutes}m`;
+  if (minutes < 1) return seconds == 0 ? 'just now' : `${seconds} secs`;
+  if (minutes < 60) return `${minutes} min`;
   
   const hours = differenceInHours(currentDate, publishedAt);
-  if (hours < 24) return `${hours}hr`;
+  if (hours < 24) return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
   
   const days = differenceInDays(currentDate, publishedAt);
-  if (days < 7) return `${days}d`;
+  if (days < 7) return `${days} ${days === 1 ? 'day' : 'days'}`;
   
   const weeks = differenceInWeeks(currentDate, publishedAt);
-  if (weeks < 4) return `${weeks}w`;
+  if (weeks < 4) return `${weeks} ${weeks === 1 ? 'week' : 'weeks'}`;
   
   const months = differenceInMonths(currentDate, publishedAt);
-  if (months < 12) return `${months}mo`;
+  if (months < 12) return `${months} ${months === 1 ? 'month' : 'months'}`;
 
   const years = differenceInYears(currentDate, publishedAt);
-  return `${years}yrs`
+  return `${years} yrs`
 }
 
 
