@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView, StyleSheet, View, Text, Pressable } from 'react-native'
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { contactPressed } from '../Contacthandlers';
+import { contactPressed } from '@src/helper/functions';
 import { COLOR, FONTSIZE } from '@constants/constants';
 import Header from '@components/Headers/Header';
 import { FONT_NAMES } from '@fonts'
