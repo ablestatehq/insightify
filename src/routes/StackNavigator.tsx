@@ -26,7 +26,8 @@ import Offers from '../screens/Offers'
 import ProductList from '../screens/ProductList';
 import AddProduct from '../screens/AddProduct'
 import ConfirmationScreen from '../screens/AuthScreens/Confirmation'
-import SupportScreen from '@src/screens/support/indext';
+import SupportScreen from '@src/screens/support';
+import News from '@src/screens/news'
 
 const { Screen, Navigator } = createNativeStackNavigator();
 
@@ -77,6 +78,7 @@ const MainStackNavigator = () => {
       <Screen name='AddProduct' component={AddProduct} />
       <Screen name='ConfirmEmail' component={ConfirmationScreen} />
       <Screen name='Support' component={SupportScreen} />
+      <Screen name='News' component={News} />
     </Navigator>
   )
 }

@@ -14,6 +14,7 @@ import { AppContext } from '../context/AppContext';
 import Home from '../screens/Dashboard/Home';
 import CodeTips from '../screens/CodeTips/CodeTips';
 import Offers from '../screens/Offers';
+import News from '@src/screens/news'
 
 import Icon from '../assets/icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -102,6 +103,14 @@ const BottomTabNavigator = () => {
         options={{
           tabBarLabel: 'LevelUp',
           tabBarIcon: ({ focused }) => <CustomItemTab text='Career' focused={focused} />
+        }}
+      />
+      <Screen
+        name='News'
+        component={News}
+        options={{
+          tabBarLabel: 'News',
+          tabBarIcon: ({ focused }) => <CustomItemTab text='News' focused={focused} />
         }}
       />
       <Screen

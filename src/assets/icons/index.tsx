@@ -118,7 +118,13 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
         color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
-
+    case 'notifications':
+      return <Ionicons
+        name="notifications-outline"
+        size={size ? size : 20}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
+        onPress={press}
+      />
   }
 };
 
