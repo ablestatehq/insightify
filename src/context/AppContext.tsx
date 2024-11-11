@@ -26,6 +26,8 @@ interface AppContextType {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   opportunities: any[];
   setOpportunities: React.Dispatch<React.SetStateAction<any[]>>;
+  hasMoreOffers: boolean;
+  setHasMoreOffers: React.Dispatch<React.SetStateAction<boolean>>;
   // products: any[];
   // setProducts: React.Dispatch<React.SetStateAction<any[]>>;
   isNotificationEnabled: boolean;
@@ -53,7 +55,9 @@ export const AppContext = createContext<AppContextType>({
   isLoggedIn: false,
   setIsLoggedIn: () => {},
   opportunities: [],
-  setOpportunities: () => {},
+  setOpportunities: () => { },
+  hasMoreOffers: true,
+  setHasMoreOffers: () => {},
   // products: [],
   // setProducts: () => {},
   isNotificationEnabled: false,
@@ -80,7 +84,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [comments, setComments] = useState<any[]>([]);
   const [community, setCommunity] = useState<any[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
-
+  const [hasMoreOffers, setHasMoreOffers] = useState<boolean>(true);
 
   useEffect(() => {
     fetchInitialData();
@@ -101,11 +105,11 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const fetchInitialData = async () => {
     try {
       // Run all fetches concurrently
-      // const [localOpportunities = [], localTechTips = [], localProducts = []] = await Promise.all([
-      //   retrieveLocalData('opportunities'),
-      //   retrieveLocalData('techTips'),
-      //   retrieveLocalData('products')
-      // ]);
+      const [localOpportunities = [], localTechTips = [], localProducts = []] = await Promise.all([
+        retrieveLocalData('opportunities'),
+        retrieveLocalData('techTips'),
+        retrieveLocalData('products')
+      ]);
 
       const [
         user_, inCommunity, isNofityOn,
@@ -115,8 +119,8 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
         retrieveLocalData('isMember'),
         retrieveLocalData('tokens'),
         // (await getData('products')).data,
-        (await getData('opportunities')).data,
-        (await getData('techTips')).data,
+        (await getData('opportunities')),
+        (await getData('techTips')),
       ]);
 
       // User & Notification Logic
@@ -134,28 +138,20 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       }
 
       // Opportunities, TechTips, Products
-      const updatedOpportunities = opportunitiesData.map((opp: any) => ({
+      const updatedOpportunities = opportunitiesData.data.map((opp: any) => ({
         ...opp,
-        // bookmarked: localOpportunities.find((localOpp: any) => localOpp.id === opp.id)?.bookmarked ?? false,
+        bookmarked: localOpportunities.find((localOpp: any) => localOpp.id === opp.id)?.bookmarked ?? false,
       }));
 
-      const updatedTechTips = techTips.map((tip: any) => ({
+      const updatedTechTips = techTips.data.map((tip: any) => ({
         ...tip,
-        // bookmarked: localTechTips.find((localTip: any) => localTip.id === tip.id)?.bookmarked ?? false,
+        bookmarked: localTechTips.find((localTip: any) => localTip.id === tip.id)?.bookmarked ?? false,
       }));
-
-      // const updatedProducts = productsData.map((product: ProductData) => ({
-      //   ...product,
-      //   meta: {
-      //     ...product.meta,
-      //     // bookmarked: localProducts.find((localProd: ProductData) => localProd.id === product.id)?.meta?.bookmarked ?? false,
-      //   }
-      // }));
 
       // Update state
       setOpportunities(updatedOpportunities);
       setCodeTips(updatedTechTips);
-      // setProducts(updatedProducts);
+      setHasMoreOffers(opportunitiesData.hasMore);
 
       // Cache data
       storeToLocalStorage('opportunities', updatedOpportunities);
@@ -207,6 +203,8 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     setIsLoggedIn,
     opportunities,
     setOpportunities,
+    hasMoreOffers,
+    setHasMoreOffers,
     // products,
     // setProducts,
     isNotificationEnabled,

@@ -1,6 +1,11 @@
 export const MODALS = {
-  'comments': `query {
-    comments(pagination: {start: 0, limit: 25}){
+  'comments': `query($start: Int, $limit: Int){
+    comments(pagination: { start: $start, limit: $limit }){
+    meta {
+        pagination {
+          total
+        }
+      }
       data{
         id
         attributes{
@@ -41,8 +46,8 @@ export const MODALS = {
     }
   }`,
 
-  'notificationTokens': `query{
-  notificationTokens(sort: "publishedAt:desc", pagination: {start: 0, limit: 25}){
+  'notificationTokens': `query($start: Int, $limit: Int){
+  notificationTokens(sort: "publishedAt:desc", pagination: { start: $start, limit: $limit }){
     data{
       id,
       attributes{
@@ -52,8 +57,13 @@ export const MODALS = {
   }
   }`,
 
-  'techTips': `query{
-    techTips(sort: "publishedAt:desc", pagination: {start: 0, limit: 25}){
+  'techTips': `query($start: Int, $limit: Int){
+    techTips(sort: "publishedAt:desc", pagination: { start: $start, limit: $limit }){
+    meta {
+        pagination {
+          total
+        }
+      }
       data{
         id
         attributes{
@@ -68,8 +78,13 @@ export const MODALS = {
     }
   }`,
 
-  'opportunities': `query {
-    opportunities(sort: "publishedAt:desc", pagination: {start: 0, limit: 25}){
+  'opportunities': `query($start: Int, $limit: Int){
+    opportunities(sort: "publishedAt:desc", pagination: { start: $start, limit: $limit }){
+    meta {
+        pagination {
+          total
+        }
+      }
       data{
         id,
         attributes{
@@ -104,13 +119,13 @@ export const MODALS = {
     }
   }`,
 
-  'sentNotifications': `query{
-    sentNotifications(pagination: {start: 0, limit: 25}){
+  'sentNotifications': `query($start: Int, $limit: Int){
+    sentNotifications(pagination: { start: $start, limit: $limit }){
 
     }
   }`,
-  'communityMembers':`query{
-  communityMembers{
+  'communityMembers':`query($start: Int, $limit: Int){
+  communityMembers(pagination: { start: $start, limit: $limit }){
     data{
       id,
       attributes{
@@ -123,8 +138,13 @@ export const MODALS = {
     }
   }
   }`,
-  'products':`query{
-  products{
+  'products':`query($start: Int, $limit: Int){
+  products(pagination: { start: $start, limit: $limit }){
+  meta {
+        pagination {
+          total
+        }
+      }
     data{
       id
       attributes{

@@ -1,22 +1,22 @@
-import React, { useCallback, useContext, useState } from 'react';
-import { View, StatusBar, FlatList, StyleSheet, RefreshControl } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { COLOR } from '@constants/constants';
-import { useFilter } from '@src/hooks';
-import { AppContext } from '@src/context/AppContext';
-import { OpportunityData, OpportunityListProps, RootStackParamList } from '@src/types';
-import { FONT_NAMES } from '@fonts';
+import React, {useCallback, useContext, useState} from 'react';
+import {View, StatusBar, FlatList, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {COLOR, DIMEN} from '@constants/constants';
+import {useFilter} from '@src/hooks';
+import {AppContext} from '@src/context/AppContext';
+import {OpportunityData, OpportunityListProps, RootStackParamList} from '@src/types';
+import {FONT_NAMES} from '@fonts';
 import {
   EmptyState, FloatingButton, FormModal, CategorySection,
   FilterCard, OpportunityCard, OpportunityHeader
 } from '@components/index';
-import { fetchNewItems } from '@api/grapiql';
+import { fetchNewItems, fetchNextBatch } from '@api/grapiql';
 
 
 const OpportunityList = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { opportunities, user, isLoggedIn, setOpportunities } = useContext(AppContext);
+  const { opportunities, user, isLoggedIn, setOpportunities, hasMoreOffers, setHasMoreOffers} = useContext(AppContext);
   const route = useRoute<OpportunityListProps>();
   const { tag } = route.params;
   const [category, setCategory] = useState<string>(tag ?? 'Recent');
@@ -25,22 +25,21 @@ const OpportunityList = () => {
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
   const [resourceId, setResourceId] = useState<number>(0);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     try {
       setRefreshing(true);
       const newOpps = await fetchNewItems('opportunities');
-      const arr = newOpps.filter((value: OpportunityData, index: number) => value.id !== opportunities[index]?.id);
-      setOpportunities([...arr, ...opportunities]);
+      const updatedOpps = [...new Set([...newOpps, ...opportunities])];
+      setOpportunities(updatedOpps);
     } catch (error) {
-
+      console.error("Error refreshing opportunities:", error);
     } finally {
       setRefreshing(false);
     }
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }
+  }, [opportunities]);
+  
   const [filteredOpportunities, isLoading] =
     useFilter(category, opportunities, filteredItems);
 
@@ -48,24 +47,47 @@ const OpportunityList = () => {
     setShowFilterCard(!showFilterCard);
   };
 
-  const renderOpportunity =
-    ({ item, index }: { item: OpportunityData, index: number }) => (
-      <OpportunityCard
-        {...item}
-        key={item.id}
-        showModal={() => { }}
-        showReportModal={() => setShowReportModal(true)} />
-    );
+
+  const loadMoreOpportunities = useCallback(async () => {
+    if (loading || !hasMoreOffers) return;
+    try {
+      setLoading(true);
+      console.log('Batch-',opportunities.length)
+      const newOpportunities = await fetchNextBatch('opportunities', opportunities.length);
+      if (newOpportunities.data) {
+        const newArr = [...new Set([...opportunities, ...newOpportunities.data])];
+        setOpportunities(newArr);
+        setHasMoreOffers(newOpportunities.hasMore);
+      }
+    } catch (error) {
+      console.error("Error loading more opportunities:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [hasMoreOffers]);
+
+  const renderOpportunity = useCallback(({ item, index }: { item: OpportunityData, index: number }) => (
+    <OpportunityCard
+      {...item}
+      // key={`${item.id}-${index}`}
+      showModal={() => { }}
+      showReportModal={() => setShowReportModal(true)} />
+  ), []);
 
   const handleFloatingButtonPress = useCallback(() => {
     if (isLoggedIn) {
       navigation.navigate('Share');
     } else {
-      const params = { title: 'Offers' };
+      const params = {title: 'Offers'};
       navigation.navigate('Login', params);
     }
   }, []);
 
+  const renderFooter = () => {
+    if (!loading) return null;
+    return <ActivityIndicator style={{paddingBottom: 30}} size="small" color={COLOR.PRIMARY_300} />;
+  };
+  
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLOR.WHITE} />
@@ -83,15 +105,18 @@ const OpportunityList = () => {
       <View style={styles.opportunityListContainer}>
         <FlatList
           data={filteredOpportunities}
-          keyExtractor={(item) => item?.id.toString()}
+          keyExtractor={(item, index) => `${item.id}-${index}`}
           renderItem={renderOpportunity}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={<EmptyState />}
+          ListFooterComponent={renderFooter}
           initialNumToRender={10}
           maxToRenderPerBatch={10}
           windowSize={5}
-          removeClippedSubviews={true}
+          onEndReached={loadMoreOpportunities}
+          onEndReachedThreshold={0.5}
+          removeClippedSubviews
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -113,7 +138,7 @@ const OpportunityList = () => {
       {/* Floating Button */}
       <FloatingButton
         press={handleFloatingButtonPress}
-        buttonPosition={{ bottom: 20, right: 10 }}
+        buttonPosition={{ bottom: 70, right: 10 }}
       />
 
       {/* Filter Card */}
@@ -146,6 +171,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    paddingBottom: DIMEN.PADDING.ELG,
   },
   noTextContainer: {
     flex: 1,

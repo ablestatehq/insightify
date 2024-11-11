@@ -19,23 +19,28 @@ async function getData(endpoint: keyof typeof MODALS, start: number = 0, limit: 
     const data = await response.json();
 
     if (data.data) {
+      const hasMore = start + limit < data.data[`${endpoint}`].meta.pagination.total;
       const results = data.data[`${endpoint}`]['data'].map((res: any) => {
-        return { id: res.id, ...res.attributes }
+        return {id: res.id, ...res.attributes}
       });
+      
       return {
         data: results,
-        error: null
+        error: null,
+        hasMore: hasMore,
       }
     }
     return {
       data: null,
-      error: data?.error
+      error: data?.error,
+      hasMore: false,
     }
 
   } catch (error) {
     return {
       error,
-      data: null
+      data: null,
+      hasMore: false
     }
   }
 }

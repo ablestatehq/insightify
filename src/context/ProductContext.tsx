@@ -30,6 +30,8 @@ interface ProductContextType {
   setProducts: React.Dispatch<React.SetStateAction<ProductData[]>>;
   fetchComments: (id: number) => Promise<Comment[]>;
   toggleBookmark: (id: number) => void;
+  hasMoreProducts: boolean;
+  setHasMoreProducts: React.Dispatch<React.SetStateAction<boolean>>;
   submitComment: (id: number, comment: string, jwt: string) => Promise<Comment | null>;
 };
 
@@ -39,6 +41,7 @@ export const ProductContext = createContext<ProductContextType | undefined>(unde
 
 export const ProductProvider = ({ children }: { children: React.ReactNode }) => {
   const [products, setProducts] = useState<ProductData[]>([]);
+  const [hasMoreProducts, setHasMoreProducts] = useState<boolean>(true);
 
   const toggleBookmark = (productId: number) => {
     const updatedProducts = products.map((product: ProductData) => {
@@ -57,17 +60,18 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
   };
 
   const fetchProducts = async () => {
-    const productsData = (await getData('products')).data;
+    const productsData = (await getData('products'));
     const localProducts = await retrieveLocalData('products') ?? [];
 
     // Combine remote data with local updates
-    const updatedProducts = productsData.map((product: ProductData) => ({
+    const updatedProducts = productsData.data.map((product: ProductData) => ({
       ...product,
       meta: { ...product.meta, bookmarked: localProducts.find((p: ProductData) => p.id === product.id)?.meta?.bookmarked ?? false }
     }));
 
     setProducts(updatedProducts);
     storeToLocalStorage('products', updatedProducts);
+    setHasMoreProducts(productsData.hasMore);
   };
 
   const fetchComments = async (id: number,) => {
@@ -112,7 +116,15 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
   }, []);
 
   return (
-    <ProductContext.Provider value={{products, setProducts, fetchComments, toggleBookmark, submitComment}}>
+    <ProductContext.Provider value={{
+      products,
+      setProducts,
+      fetchComments,
+      toggleBookmark,
+      submitComment,
+      hasMoreProducts,
+      setHasMoreProducts,
+    }}>
       {children}
     </ProductContext.Provider>
   );
