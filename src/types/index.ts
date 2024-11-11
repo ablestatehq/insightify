@@ -20,7 +20,10 @@ import type {
 import type {TalentSubmissionForm, IDialogBox} from './components';
 import type {FeedbackObject, NotificationType} from './types';
 
+import type {SegmentedControlProps, StoryProps, Story, SquareProps, Post, PostDiscussionModal, Tab} from './news'
+
 export {
+  Tab,
   userModal,
   UserProfile,
   MemberInfo,
@@ -29,6 +32,9 @@ export {
   Comment,
   MetaData,
   Author,
+  Story,
+  StoryProps,
+  SquareProps,
   LoginDetails, 
   LoginScreenProps,
   NewsRouteParams,
@@ -39,6 +45,8 @@ export {
   ConfirmEmailScreenProps,
   OpportunitiesFormType,
   OpportunityData,
+  PostDiscussionModal,
+  SegmentedControlProps,
   ExpandableListItemProps,
   TalentSubmissionForm,
   IDialogBox,

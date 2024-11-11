@@ -113,7 +113,7 @@ const OpportunityList = () => {
       {/* Floating Button */}
       <FloatingButton
         press={handleFloatingButtonPress}
-        buttonPosition={{ bottom: 20, right: 10 }}
+        buttonPosition={{ bottom: 70, right: 10 }}
       />
 
       {/* Filter Card */}

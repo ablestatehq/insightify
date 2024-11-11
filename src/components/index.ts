@@ -34,3 +34,7 @@ export {default as EmptyState} from './EmptyState'
 export {default as Dialog} from './Dialog';
 export {default as HomeItem} from './HomeItemCard';
 export {default as Message} from './Cards/Message'
+export {default as SegmentedControl} from './segmentedControl'
+export {default as Stories} from './stories'
+export {default as Square} from './squareDiscussion';
+export {default as PostDiscussion} from './postDiscussion'

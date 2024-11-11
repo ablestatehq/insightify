@@ -3,9 +3,9 @@ import { View, Text, StyleSheet } from 'react-native';
 import { FONT_NAMES } from '@fonts';
 import { COLOR, FONTSIZE } from '@constants/constants';
 
-const Index = () => (
+const Index = ({text = 'Items found'}: {text?: string}) => (
   <View style={styles.container}>
-    <Text style={styles.noMatchText}>No Items found</Text>
+    <Text style={styles.noMatchText}>No {text}</Text>
   </View>
 );
 
