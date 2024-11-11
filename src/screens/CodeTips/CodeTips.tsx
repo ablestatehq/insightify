@@ -10,7 +10,7 @@ import {useCodeTips} from './useCodeTips';
 import Icons from '@icons';
 import {FONT_NAMES} from '@fonts';
 import {COLOR, FONTSIZE} from '@constants/constants';
-import {CategorySection, Loader} from '@components/index';
+import {CategorySection} from '@components/index';
 
 // lazy loads
 const Carousel = React.lazy(() => import('./componets/Carousel'));
@@ -40,7 +40,7 @@ const CodeTips = () => {
               />
             </View>
           ) : (
-            <Text style={styles.heading}>Career insights</Text>
+            <Text style={styles.heading}>Career support</Text>
           )}
           <Icons
             name={showSearchBar ? 'close' : 'search'}
