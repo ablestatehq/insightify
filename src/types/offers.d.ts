@@ -1,5 +1,5 @@
 export type OpportunityData = {
-  id:string
+  readonly id: string
   link?: string
   type?: string
   Title?: string
@@ -18,7 +18,7 @@ export type OpportunityData = {
   cover_image?: any
   bookmarked?: boolean
   publishedAt?: string
-}
+};
 
 export type OpportunitiesFormType = {
   link:string
