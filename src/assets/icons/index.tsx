@@ -1,11 +1,7 @@
 import React from 'react';
 import { COLOR } from '@constants/constants';
-import {
-  MaterialIcons, MaterialCommunityIcons,
-  Fontisto, AntDesign, Ionicons, FontAwesome,
-  EvilIcons, Feather,
-  Octicons
-} from '@expo/vector-icons';
+import { AntDesign, Ionicons, FontAwesome,
+  EvilIcons, Feather, Octicons} from '@expo/vector-icons';
 
 interface IconName {
   name: string // 'Deck' | 'Sky' | 'Talent' | 'More',
@@ -15,38 +11,26 @@ interface IconName {
   _color?: string
 }
 
-const SIZE = {
-  HIGHEST: 25,
-  MEDIUM: 20,
-  SMALL: 15
-}
 const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
   switch (name) {
-    case 'Home':
+    case 'home':
       return <Feather
         name="home"
         size={size ? size : 20}
         color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
-    case 'Offers':
-      return <Fontisto
-        name="spinner-refresh"
+    case 'offers':
+      return <Ionicons
+        name="briefcase-outline"
         size={size ? size : 20}
         color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
-    case 'Career':
-      return <MaterialCommunityIcons
-        name="stairs-up"
+    case 'career':
+      return <Ionicons
+        name="school-outline"
         size={size ? size : 20}
-        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
-        onPress={press}
-      />
-    case 'More':
-      return <MaterialIcons
-        name="more-horiz"
-        size={SIZE.MEDIUM}
         color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
@@ -118,6 +102,13 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
         name="unverified"
         size={size ? size : 20}
         color={_color ? _color : COLOR.PRIMARY_300}
+        onPress={press}
+      />
+    case 'settings':
+      return <Ionicons
+        name="settings-outline"
+        size={size ? size : 20}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
 

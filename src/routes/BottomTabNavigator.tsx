@@ -33,21 +33,17 @@ interface CustomItemTabProp {
 const CustomItemTab: React.FC<CustomItemTabProp> = ({ focused, text }) => (
   <View
     style={{
-      paddingHorizontal: 10,
+      // paddingHorizontal: 10,
       justifyContent: 'center',
       alignItems: 'center',
-      borderTopWidth: focused ? 2 : 0,
-      borderBottomWidth: focused ? 2 : 0,
-      borderBottomColor: COLOR.WHITE,
-      borderTopColor: focused ? COLOR.SECONDARY_300 : COLOR.WHITE,
-      paddingVertical: DIMEN.PADDING.ME,
+      // paddingVertical: DIMEN.PADDING.ME,
     }}
   >
-    <Icon name={text} isActive={false} />
+    <Icon name={text.toLowerCase()} isActive={focused} />
     <Text
       style={{
         color: focused ? COLOR.PRIMARY_300 : COLOR.SECONDARY_500,
-        fontFamily: FONT_NAMES.Heading,
+        fontFamily: FONT_NAMES.Title,
         fontSize: FONTSIZE.SMALL
       }}
     >{text}</Text>
@@ -73,14 +69,13 @@ const BottomTabNavigator = () => {
         },
         tabBarShowLabel: false,
         tabBarStyle: {
-          borderWidth: 0,
-          borderColor: COLOR.WHITE,
           paddingVertical: 1,
-          height: 60
+          elevation: 0,
+          position: 'absolute',
         },
-        tabBarItemStyle: {
-          height: 60,
-        }
+        // tabBarItemStyle: {
+        //   // height: 60,
+        // }
       }}
     >
       <Screen
@@ -110,11 +105,11 @@ const BottomTabNavigator = () => {
         }}
       />
       <Screen
-        name='More'
+        name='Settings'
         component={SettingsScreen}
         options={{
-          tabBarLabel: 'More',
-          tabBarIcon: ({ focused }) => <CustomItemTab text='More' focused={focused} />,
+          tabBarLabel: 'Settings',
+          tabBarIcon: ({ focused }) => <CustomItemTab text='Settings' focused={focused} />,
         }}
       />
     </Navigator>
