@@ -17,7 +17,7 @@ import { FONT_NAMES } from "@fonts";
 import onShare, { handleLinkPress } from "@utils/onShare";
 import { resourceAge } from "@src/helper/functions";
 import { useProducts } from "@src/hooks";
-import {Comment, Layout} from '@src/types'
+import { Comment, Layout } from '@src/types'
 
 const { BASE_URL } = environments;
 const AWARD = {
@@ -109,6 +109,7 @@ function Index() {
 
   const getImage = useCallback((url: string) => ({ uri: `${BASE_URL}${url}` }), []);
 
+  // console.log("",meta)
   return (
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={styles.navComp}>
@@ -184,17 +185,19 @@ function Index() {
         <Text style={styles.description}>{description}</Text>
         {/**Developer of the product */}
         <View style={styles.developerSection}>
-          <View style={styles.devProfile}>
-            <FontAwesome
-              size={20}
-              name="user-circle-o"
-              color={COLOR.SECONDARY_100}
-            />
-            <Text style={styles.devName}>{`Launched by ${meta?.lauchedBy?.companyName}`}</Text>
-          </View>
-          <Text style={styles.devDescription}>
-            {meta?.lauchedBy?.companyBio}
-          </Text>
+          {meta &&
+            <>
+              <View style={styles.devProfile}>
+                <FontAwesome
+                  size={20}
+                  name="user-circle-o"
+                  color={COLOR.SECONDARY_100}
+                />
+                <Text style={styles.devName}>{`Launched by ${meta?.lauchedBy?.companyName}`}</Text>
+              </View>
+              <Text style={styles.devDescription}>
+                {meta?.lauchedBy?.companyBio}
+              </Text></>}
           {/**comments */}
           <View onLayout={getCommentSectionLayout}>
             <Text style={styles.commentTitle}>Comments</Text>
@@ -205,25 +208,29 @@ function Index() {
                   {comment.author && <View style={styles.devProfile}>
                     {comment.author && !comment.author.avatar &&
                       <FontAwesome
-                        size={20}
+                        size={30}
                         name="user-circle-o"
                         color={COLOR.SECONDARY_100}
                       />}
                     {comment.author && comment.author.avatar &&
                       <Image
                         source={getImage(comment.author.avatar)}
-                        height={20}
-                        width={20}
+                        height={30}
+                        width={30}
                         resizeMethod="resize"
                         resizeMode="cover"
                         style={styles.avatar}
                       />
                     }
-                    <Text style={styles.commentor}>{comment?.author.name}</Text>
-                    <Text style={styles.commentor_email}>{comment?.author.email}</Text>
+                    <View>
+                      <View style={styles.commentor_view}>
+                        <Text style={styles.commentor}>{comment?.author.name}</Text>
+                        <View style={styles.dot} />
+                        <Text style={styles.timeStamp}>{resourceAge(new Date(comment.createdAt as string))} ago</Text>
+                      </View>
+                      {/* <Text style={styles.commentor_email}>{comment?.author.email}</Text> */}
+                    </View>
                   </View>}
-                  <View style={styles.dot} />
-                  <Text style={styles.timeStamp}>{resourceAge(new Date(comment.createdAt as string))}</Text>
                 </View>
                 <Text style={styles.contentStyle}>{comment.content}</Text>
               </View>
@@ -360,22 +367,32 @@ const styles = StyleSheet.create({
     marginVertical: DIMEN.MARGIN.SM,
   },
   comments: {
-    marginVertical: DIMEN.MARGIN.SM
+    marginVertical: DIMEN.MARGIN.SM,
+    // padding: DIMEN.PADDING.SM,
   },
   no_comments: {
     fontFamily: FONT_NAMES.Body,
     fontSize: FONTSIZE.SMALL,
     color: COLOR.GREY_100,
+    left: 30,
   },
   commentor: {
     textAlign: 'left',
     fontSize: FONTSIZE.SMALL,
     fontFamily: FONT_NAMES.Title,
+    lineHeight: DIMEN.CONSTANT.ME,
+  },
+  commentor_view: {
+    // flex:1,
+    flexDirection: 'row',
+    gap: DIMEN.CONSTANT.SM,
+    alignItems: 'center',
+    paddingVertical: DIMEN.CONSTANT.XXSM,
   },
   commentedBy: {
     flexDirection: 'row',
     gap: DIMEN.MARGIN.SM,
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   dot: {
     width: 2.5,
@@ -384,10 +401,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.GREY_100,
   },
   timeStamp: {
-    textAlign: 'left',
     fontSize: FONTSIZE.SMALL,
     fontFamily: FONT_NAMES.Body,
-    color: COLOR.GREY_100
+    color: COLOR.GREY_100,
+    lineHeight: DIMEN.CONSTANT.ME
   },
   input: {
     flex: 1,
@@ -402,11 +419,13 @@ const styles = StyleSheet.create({
   },
   commentor_email: {
     fontFamily: FONT_NAMES.Body,
-    fontSize: FONTSIZE.SMALL,
+    fontSize: FONTSIZE.X_SMALL,
+    lineHeight: 10,
   },
   contentStyle: {
     fontFamily: FONT_NAMES.Body,
     fontSize: FONTSIZE.SMALL,
-    margin: DIMEN.MARGIN.XSM,
-  }
+    marginTop: DIMEN.MARGIN.ME,
+    marginBottom: DIMEN.MARGIN.XXSM,
+  },
 });
