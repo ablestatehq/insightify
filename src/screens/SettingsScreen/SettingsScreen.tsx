@@ -1,161 +1,199 @@
 import React from 'react';
-import { Pressable, StatusBar, StyleSheet, Switch, Text, View } from 'react-native';
-import { Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import {Pressable, StatusBar, StyleSheet, Switch, Text, View} from 'react-native';
+import {Entypo, Feather, Ionicons} from '@expo/vector-icons';
 
 import onShare from '@utils/onShare';
-import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
+import {COLOR, DIMEN, FONTSIZE} from '@constants/constants';
 
-import { FontAwesome5 } from '@expo/vector-icons';
-import { FONT_NAMES } from '@fonts'
+import {FONT_NAMES} from '@fonts'
 import ProfileSection from '@components/Cards/ProfileSection';
-import { useProfile } from '@src/hooks';
-import { JoinCommunity } from '@src/components';
+import {useProfile} from '@src/hooks';
+import {Dialog, JoinCommunity, ProfileForm} from '@src/components';
 
 
 const SettingsScreen = () => {
 
   const { isNotificationEnabled, toggleSwitch,
     navigation, setJoinVisible, isLoggedIn,
-    userProfile, joinVisible } = useProfile();
-
-  const handleTalent = () => navigation.navigate('Talent');
+    userProfile, joinVisible, setDialog, dialog,
+    showProfileCard, setShowProfileCard, profilePhoto,
+    handleSignoutPress } = useProfile();
 
   return (
     <View style={styles.container}>
-      {/* Account  */}
+      {/* <View style={styles.navBar}> */}
+        {/* <View /> */}
+        <Text style={styles.screen_title}>Settings</Text>
+        {/* <Feather name="more-vertical" size={20} color="black" /> */}
+      {/* </View> */}
+      {/* User profile section  */}
       <ProfileSection />
-      {isLoggedIn && !userProfile.inCommunity &&
-        <Pressable
-          style={styles.communityButton}
-          onPress={() => setJoinVisible(!joinVisible)}
-        >
-          <Text style={styles.communityButtonText}>
-            Join our Community
-          </Text>
-        </Pressable>}
+
       <View style={styles.main}>
-        {/* Notifications  */}
-        <Text style={styles.textHeading}>Notification</Text>
-        <View style={styles.itemContainer}>
-          <View style={styles.iconContainer}>
+        {/**Account */}
+        {isLoggedIn && <View style={styles.settingCard}>
+          <View style={styles.setting_view_left}>
             <Ionicons
-              size={15} color={COLOR.SECONDARY_100}
-              name="notifications"
+              name="person-outline"
+              size={13}
+              color={COLOR.SECONDARY_100}
             />
-            <Text style={styles.text}>Push notifications</Text>
+            <Text style={styles.settingText}>Account</Text>
+          </View>
+          <Entypo
+            size={15}
+            name="chevron-thin-right"
+            color={COLOR.SECONDARY_100}
+            onPress={() => setShowProfileCard(!showProfileCard)}
+          />
+        </View>}
+        {/**Chat */}
+        <View style={styles.settingCard}>
+          <View style={styles.setting_view_left}>
+            <Ionicons
+              name="chatbubbles-outline"
+              size={13}
+              color={COLOR.SECONDARY_100}
+            />
+            <Text style={styles.settingText}>
+              {`${isLoggedIn && userProfile.inCommunity ?
+                'Community chat' :
+                'Join community'}`}
+            </Text>
+          </View>
+          <Entypo
+            size={15}
+            name="chevron-thin-right"
+            color={COLOR.SECONDARY_100}
+            onPress={() => {
+              if (isLoggedIn) {
+                if (userProfile.completed) {
+                  if (!userProfile.inCommunity) {
+                    setJoinVisible(!joinVisible)
+                  } else {
+                    navigation.navigate('ChatRoom')
+                  }
+                } else {
+                  setDialog({
+                    ...dialog,
+                    visible: true,
+                    title: 'User profile',
+                    message: 'Complete your profile to join the comminuty',
+                  })
+                }
+              } else {
+                setDialog({
+                  ...dialog,
+                  visible: true,
+                  title: 'Guest user',
+                  message: 'You are currently a guest user, complete login to join community',
+                });
+              }
+            }}
+          />
+        </View>
+        {/**Support */}
+        <View style={styles.settingCard}>
+          <View style={styles.setting_view_left}>
+            <Ionicons
+              name="headset"
+              size={13}
+              color={COLOR.SECONDARY_100}
+            />
+            <Text style={styles.settingText}>Support</Text>
+          </View>
+          <Entypo
+            size={15}
+            name="chevron-thin-right"
+            color={COLOR.SECONDARY_100}
+            onPress={() => navigation.navigate('Support')}
+          />
+        </View>
+        {/**Privacy */}
+        <View style={styles.settingCard}>
+          <View style={styles.setting_view_left}>
+            <Ionicons
+              name="shield-checkmark-outline"
+              size={13}
+              color={COLOR.SECONDARY_100}
+            />
+            <Text style={styles.settingText}>Privacy</Text>
+          </View>
+          <Entypo
+            size={15}
+            name="chevron-thin-right"
+            color={COLOR.SECONDARY_100}
+            onPress={() => navigation.navigate('Privacy')}
+          />
+        </View>
+        {/**Share */}
+        <View style={styles.settingCard}>
+          <View style={styles.setting_view_left}>
+            <Entypo name="share" size={13} color={COLOR.SECONDARY_100} />
+            <Text style={styles.settingText}>Share</Text>
+          </View>
+          <Entypo
+            size={15}
+            name="chevron-thin-right"
+            color={COLOR.SECONDARY_100}
+            onPress={() => onShare('https://cutt.ly/insightify')}
+          />
+        </View>
+        {/**Notification */}
+        <View style={styles.settingCard}>
+          <View style={styles.setting_view_left}>
+            <Ionicons
+              size={15}
+              color={COLOR.SECONDARY_100}
+              name="notifications-outline"
+            />
+            <Text style={styles.settingText}>Notifications</Text>
           </View>
           <Switch
             trackColor={{ false: `${COLOR.SECONDARY_100}`, true: `${COLOR.PRIMARY_100}` }}
             thumbColor={isNotificationEnabled ? `${COLOR.PRIMARY_300}` : `${COLOR.SECONDARY_50}`}
             onValueChange={toggleSwitch}
             value={isNotificationEnabled}
+            style={styles.switch}
           />
         </View>
-
-        {/* Support  */}
-        <Text style={styles.textHeading}>Support</Text>
-        <View style={styles.contentContainer}>
-          <Pressable
-            onPress={handleTalent}
-            style={styles.itemContainer}
-          >
-            <View style={styles.iconContainer}>
-              <FontAwesome5 name="hire-a-helper" size={15} color={COLOR.SECONDARY_100} />
-              <Text style={styles.text}>Hire</Text>
-            </View>
-            <Entypo
+        {/**Log out */}
+        <Pressable
+          style={styles.settingCard}
+          onPress={() => {
+            if (isLoggedIn) {
+              handleSignoutPress()
+            } else {
+              navigation.navigate('Login', {});
+            }
+          }}
+        >
+          <View style={styles.setting_view_left}>
+            {!isLoggedIn && <Feather
               size={15}
-              name="chevron-thin-right"
               color={COLOR.SECONDARY_100}
-            />
-          </Pressable>
-          <Pressable
-            onPress={() => navigation.navigate('Contact')}
-            style={styles.itemContainer}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="help-circle" size={18} color={COLOR.SECONDARY_100} />
-              <Text style={styles.text}>Help</Text>
-            </View>
-            <Entypo
-              size={13}
-              name="chevron-thin-right"
-              color={COLOR.SECONDARY_100}
-            />
-          </Pressable>
-          <Pressable
-            onPress={() => navigation.navigate('Contact')}
-            style={styles.itemContainer}
-          >
-            <View style={styles.iconContainer}>
-              <MaterialIcons name="headphones" size={16} color={COLOR.SECONDARY_100} />
-              <Text style={styles.text}>Contact Us</Text>
-            </View>
-            <Entypo
+              name="log-out"
+            />}
+            {isLoggedIn && <Feather
               size={15}
-              name="chevron-thin-right"
               color={COLOR.SECONDARY_100}
-            />
-          </Pressable>
-          <Pressable
-            onPress={() => navigation.navigate('Feedback')}
-            style={styles.itemContainer}>
-            <View style={styles.iconContainer}>
-              <MaterialIcons
-                name="feedback"
-                size={15}
-                color={COLOR.SECONDARY_100}
-              />
-              <Text style={styles.text}>Your voice matters</Text>
-            </View>
-            <Entypo
-              size={15}
-              name="chevron-thin-right"
-              color={COLOR.SECONDARY_100}
-            />
-          </Pressable>
-        </View>
-
-        <Text style={styles.textHeading}>Legal</Text>
-        <View style={styles.contentContainer}>
-          <Pressable
-            onPress={() => navigation.navigate('Privacy')}
-            style={styles.itemContainer}>
-            <View style={styles.iconContainer}>
-              <MaterialIcons name="privacy-tip" size={13} color={COLOR.SECONDARY_100} />
-              <Text style={styles.text}>Privacy Policy</Text>
-            </View>
-            <Entypo
-              size={15}
-              name="chevron-thin-right"
-              color={COLOR.SECONDARY_100}
-            />
-          </Pressable>
-        </View>
-
-        <Text style={styles.textHeading}>About</Text>
-        {/* Share mobile application. */}
-        <View style={styles.contentContainer}>
-          <Pressable
-            onPress={() => onShare('https://cutt.ly/insightify')}
-            style={styles.itemContainer}>
-            <View style={styles.iconContainer}>
-              <Entypo name="share" size={13} color={COLOR.SECONDARY_100} />
-              <View>
-                <Text style={styles.text}>Share</Text>
-              </View>
-            </View>
-            <Entypo
-              size={15}
-              name="chevron-thin-right"
-              color={COLOR.SECONDARY_100}
-            />
-          </Pressable>
-        </View>
+              name="log-in"
+            />}
+            <Text style={styles.settingText}>{isLoggedIn ? 'Log out' : 'Login'}</Text>
+          </View>
+        </Pressable>
       </View>
       <JoinCommunity
         visible={joinVisible}
         setVisible={setJoinVisible}
         setIsInCommunity={() => navigation.navigate('AddProduct')}
+      />
+      <Dialog {...dialog} />
+      <ProfileForm
+        visible={showProfileCard}
+        handleClose={() => setShowProfileCard(!showProfileCard)}
+        profilePhoto={profilePhoto}
+        setProfilePhoto={() => { }}
       />
       <StatusBar backgroundColor={COLOR.WHITE} />
     </View>
@@ -170,70 +208,36 @@ const styles = StyleSheet.create({
     padding: DIMEN.PADDING.ME,
     backgroundColor: COLOR.WHITE,
   },
-  main: { marginHorizontal: 10, marginVertical: 10 },
-  contentContainer: {
-    borderRadius: 5,
-    paddingTop: 10,
-    marginVertical: 10,
-    backgroundColor: COLOR.WHITE,
+  screen_title: {
+    fontFamily: FONT_NAMES.Heading,
+    fontSize: FONTSIZE.TITLE_2,
+    textAlign: 'center'
   },
-  itemContainer: {
+  main: { marginHorizontal: 10, marginVertical: 10 },
+  settingCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
     alignItems: 'center',
-    paddingVertical: 3,
+    borderRadius: DIMEN.CONSTANT.SM,
+    padding: DIMEN.PADDING.LG,
+    backgroundColor: COLOR.WHITE,
+    elevation: 1,
+    marginVertical: DIMEN.MARGIN.SM
   },
-  iconContainer: {
-    gap: 20,
+  setting_view_left: {
     flexDirection: 'row',
+    gap: DIMEN.CONSTANT.SM,
     alignItems: 'center',
   },
-  textHeading: {
-    fontFamily: FONT_NAMES.Title,
-    fontSize: FONTSIZE.TITLE_2,
-    // opacity: 0.5,
-    color: COLOR.SECONDARY_100,
-    marginLeft: 10
-  },
-  text: {
-    fontFamily: FONT_NAMES.Heading,
+  settingText: {
+    fontFamily: FONT_NAMES.Body,
     fontSize: FONTSIZE.BODY,
-    // opacity: 0.5
-    color: COLOR.SECONDARY_100
   },
-  version: {
-    position: 'absolute',
-    bottom: 5,
-    alignSelf: 'center',
-    marginTop: 20
+  switch: {
+    height: 10,
   },
-  versionText: {
-    opacity: 0.5,
-    fontFamily: FONT_NAMES.Heading,
-    fontSize: FONTSIZE.BODY
-  },
-  showCaseProduct: {
-    justifyContent: 'center',
-  },
-  communityButton: {
-    padding: DIMEN.PADDING.SM,
-    backgroundColor: COLOR.SECONDARY_50,
-    borderRadius: DIMEN.PADDING.SM,
-    marginVertical: DIMEN.MARGIN.ME,
-    // elevation: 2,
-    // alignSelf: 'center',
-    // position: 'absolute',
-    // bottom: 10,
-  },
-  communityButtonText: {
-    textAlign: 'center',
-    fontSize: FONTSIZE.BODY,
-    color: COLOR.SECONDARY_300,
-  },
-  joinProductStyle: {
+  navBar: {
     flexDirection: 'row',
-    gap: 10,
-    paddingHorizontal: DIMEN.PADDING.SM,
+    justifyContent: 'space-between',
   }
-})
+});

@@ -48,6 +48,7 @@ export type RootStackParamList = {
   };
   ProductList: undefined;
   AddProduct: undefined;
+  Support: undefined
 }
 
 export type LoginDetails = {
