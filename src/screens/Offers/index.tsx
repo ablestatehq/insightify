@@ -49,10 +49,11 @@ const OpportunityList = () => {
 
 
   const loadMoreOpportunities = useCallback(async () => {
+    // console.log('More offers: ',hasMoreOffers);
     if (loading || !hasMoreOffers) return;
     try {
       setLoading(true);
-      console.log('Batch-',opportunities.length)
+      // console.log('Batch-',opportunities.length)
       const newOpportunities = await fetchNextBatch('opportunities', opportunities.length);
       if (newOpportunities.data) {
         const newArr = [...new Set([...opportunities, ...newOpportunities.data])];
@@ -60,7 +61,7 @@ const OpportunityList = () => {
         setHasMoreOffers(newOpportunities.hasMore);
       }
     } catch (error) {
-      console.error("Error loading more opportunities:", error);
+      // console.error("Error loading more opportunities:", error);
     } finally {
       setLoading(false);
     }

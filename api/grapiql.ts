@@ -23,7 +23,6 @@ async function getData(endpoint: keyof typeof MODALS, start: number = 0, limit: 
       const results = data.data[`${endpoint}`]['data'].map((res: any) => {
         return {id: res.id, ...res.attributes}
       });
-      
       return {
         data: results,
         error: null,
@@ -158,14 +157,12 @@ async function login(email:string, password: string) {
   login(input: { identifier: ${email}, password: ${password} }) {
     jwt
   }`;
-
-
 }
 
 export {
   getData,
-  fetchNewItems,
   uploadImage,
   createEntry,
+  fetchNewItems,
   fetchNextBatch,
 }
