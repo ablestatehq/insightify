@@ -1,6 +1,6 @@
 import {
   StyleSheet, View, Text, Image,
-  StatusBar, ScrollView, TextInput,
+  StatusBar, ScrollView,
   LayoutChangeEvent, Animated, FlatList
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,6 +18,7 @@ import onShare, { handleLinkPress } from "@utils/onShare";
 import { resourceAge } from "@src/helper/functions";
 import { useProducts } from "@src/hooks";
 import { Comment, Layout } from '@src/types'
+import { Comment_, CommentList } from "@src/components";
 
 const { BASE_URL } = environments;
 const AWARD = {
@@ -27,14 +28,20 @@ const AWARD = {
 }
 
 function Index() {
+  // ref
   const scrollViewRef = useRef<ScrollView | null>(null);
+
+  // hooks
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const handleBack = () => navigation.goBack();
-
   const route = useRoute<RouteProp<RootStackParamList, 'ProductDetail'>>();
-  const { description, name, media, id, url, meta } = route.params;
-  const { user, jwt, setXp } = React.useContext(AppContext);
   const { toggleBookmark, fetchComments, submitComment } = useProducts();
+  const { user, jwt, setXp } = React.useContext(AppContext);
+
+  // params /data
+  const { description, name, media, id, url, meta } = route.params;
+  
+  // state
   const [com, setCom] = useState<string>('');
   const [comments, setComments] = useState<Comment[]>([]);
   const [csLayout, setCsLayout] = useState<Layout>({
@@ -198,68 +205,15 @@ function Index() {
               <Text style={styles.devDescription}>
                 {meta?.lauchedBy?.companyBio}
               </Text></>}
-          {/**comments */}
-          <View onLayout={getCommentSectionLayout}>
-            <Text style={styles.commentTitle}>Comments</Text>
-            {comments.length > 0 ? comments.map((comment: Comment, index) => (
-              comment.approvalStatus !== 'REJECTED' &&
-              <View style={styles.comments} key={index}>
-                <View style={styles.commentedBy}>
-                  {comment.author && <View style={styles.devProfile}>
-                    {comment.author && !comment.author.avatar &&
-                      <FontAwesome
-                        size={30}
-                        name="user-circle-o"
-                        color={COLOR.SECONDARY_100}
-                      />}
-                    {comment.author && comment.author.avatar &&
-                      <Image
-                        source={getImage(comment.author.avatar)}
-                        height={30}
-                        width={30}
-                        resizeMethod="resize"
-                        resizeMode="cover"
-                        style={styles.avatar}
-                      />
-                    }
-                    <View>
-                      <View style={styles.commentor_view}>
-                        <Text style={styles.commentor}>{comment?.author.name}</Text>
-                        <View style={styles.dot} />
-                        <Text style={styles.timeStamp}>{resourceAge(new Date(comment.createdAt as string))} ago</Text>
-                      </View>
-                      {/* <Text style={styles.commentor_email}>{comment?.author.email}</Text> */}
-                    </View>
-                  </View>}
-                </View>
-                <Text style={styles.contentStyle}>{comment.content}</Text>
-              </View>
-            )) :
-              <Text style={styles.no_comments}>No comments</Text>
-            }
-          </View>
+          <CommentList comments={comments} sectionLayout={getCommentSectionLayout}/>
         </View>
       </ScrollView>
       {/**User comment section. */}
-      <View style={styles.comment}>
-        <FontAwesome
-          size={25}
-          name="user-circle-o"
-          color={COLOR.SECONDARY_100}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Add a comment"
-          onChangeText={setCom}
-        />
-        {com.trim() &&
-          <Ionicons
-            name="send"
-            size={25}
-            color={COLOR.GREY_300}
-            onPress={handleSubmitCommit}
-          />}
-      </View>
+      <Comment_
+        comment={com}
+        setComment={setCom}
+        handleSubmitCommit={handleSubmitCommit}
+      />
       <StatusBar backgroundColor={COLOR.GREY_300} barStyle='light-content' />
     </SafeAreaView>
   );
@@ -351,81 +305,5 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontSize: FONTSIZE.SMALL,
     fontFamily: FONT_NAMES.Body,
-  },
-  commentTitle: {
-    textAlign: 'left',
-    fontSize: FONTSIZE.BODY,
-    marginVertical: DIMEN.MARGIN.SM,
-    fontFamily: FONT_NAMES.Title,
-  },
-  comment: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: DIMEN.MARGIN.SM,
-    backgroundColor: 'transparent',
-    marginHorizontal: DIMEN.MARGIN.ME,
-    marginVertical: DIMEN.MARGIN.SM,
-  },
-  comments: {
-    marginVertical: DIMEN.MARGIN.SM,
-    // padding: DIMEN.PADDING.SM,
-  },
-  no_comments: {
-    fontFamily: FONT_NAMES.Body,
-    fontSize: FONTSIZE.SMALL,
-    color: COLOR.GREY_100,
-    left: 30,
-  },
-  commentor: {
-    textAlign: 'left',
-    fontSize: FONTSIZE.SMALL,
-    fontFamily: FONT_NAMES.Title,
-    lineHeight: DIMEN.CONSTANT.ME,
-  },
-  commentor_view: {
-    // flex:1,
-    flexDirection: 'row',
-    gap: DIMEN.CONSTANT.SM,
-    alignItems: 'center',
-    paddingVertical: DIMEN.CONSTANT.XXSM,
-  },
-  commentedBy: {
-    flexDirection: 'row',
-    gap: DIMEN.MARGIN.SM,
-    // alignItems: 'center',
-  },
-  dot: {
-    width: 2.5,
-    height: 2.5,
-    borderRadius: 10,
-    backgroundColor: COLOR.GREY_100,
-  },
-  timeStamp: {
-    fontSize: FONTSIZE.SMALL,
-    fontFamily: FONT_NAMES.Body,
-    color: COLOR.GREY_100,
-    lineHeight: DIMEN.CONSTANT.ME
-  },
-  input: {
-    flex: 1,
-    borderWidth: 0.5,
-    borderColor: COLOR.GREY_100,
-    padding: DIMEN.PADDING.SM,
-    borderRadius: DIMEN.MARGIN.XLG,
-    paddingHorizontal: DIMEN.PADDING.ELG
-  },
-  avatar: {
-
-  },
-  commentor_email: {
-    fontFamily: FONT_NAMES.Body,
-    fontSize: FONTSIZE.X_SMALL,
-    lineHeight: 10,
-  },
-  contentStyle: {
-    fontFamily: FONT_NAMES.Body,
-    fontSize: FONTSIZE.SMALL,
-    marginTop: DIMEN.MARGIN.ME,
-    marginBottom: DIMEN.MARGIN.XXSM,
   },
 });
