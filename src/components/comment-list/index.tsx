@@ -8,16 +8,18 @@ import { environments } from '@src/constants/environments';
 import { FONT_NAMES } from '@src/assets/fonts/fonts'
 
 const {BASE_URL} = environments;
+
 interface CommentListProps {
+  title?: string;
   comments: Comment[];
   sectionLayout?: (event: LayoutChangeEvent) => void;
 }
-const Index = ({comments, sectionLayout}: CommentListProps) => {
+const Index = ({title, comments, sectionLayout}: CommentListProps) => {
 
   const getImage = React.useCallback((url: string) => ({ uri: `${BASE_URL}${url}` }), []);
   return (
     <View onLayout={sectionLayout}>
-      <Text style={styles.commentTitle}>Comments</Text>
+      <Text style={styles.commentTitle}>{title ? title : 'Comments'}</Text>
       {
         comments.length > 0 ? comments.map((comment: Comment, index) => (
           comment.approvalStatus !== 'REJECTED' &&
@@ -53,7 +55,7 @@ const Index = ({comments, sectionLayout}: CommentListProps) => {
             <Text style={styles.contentStyle}>{comment.content}</Text>
           </View>
         )) :
-          <Text style={styles.no_comments}>No comments</Text>
+          <Text style={styles.no_comments}>No {title ? title.toLowerCase() : 'comments'}</Text>
       }
     </View >
   )
@@ -80,7 +82,8 @@ const styles = StyleSheet.create({
     fontFamily: FONT_NAMES.Body,
     fontSize: FONTSIZE.SMALL,
     color: COLOR.GREY_100,
-    left: 30,
+    textAlign: 'center',
+    textAlignVertical: 'center',
   },
   commentor: {
     textAlign: 'left',
