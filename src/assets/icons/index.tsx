@@ -2,6 +2,7 @@ import React from 'react';
 import { COLOR } from '@constants/constants';
 import { AntDesign, Ionicons, FontAwesome,
   EvilIcons, Feather, Octicons} from '@expo/vector-icons';
+import { ViewStyle } from 'react-native';
 
 interface IconName {
   name: string // 'Deck' | 'Sky' | 'Talent' | 'More',
@@ -9,9 +10,10 @@ interface IconName {
   size?: number
   press?: () => void
   _color?: string
+  style?: ViewStyle
 }
 
-const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
+const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color, style}) => {
   switch (name) {
     case 'home':
       return <Feather
@@ -124,6 +126,22 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
         size={size ? size : 20}
         color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
+      />
+    case 'back':
+      return <Ionicons
+        name="arrow-back"
+        size={size ? size : 20}
+        color={_color}
+        onPress={press}
+        style={style}
+      />
+    case 'user':
+      return <FontAwesome
+        name="user-circle-o"
+        size={size ? size : 20}
+        color={_color}
+        onPress={press}
+        style={style}
       />
   }
 };
