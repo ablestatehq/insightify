@@ -20,10 +20,14 @@ import type {
 import type {TalentSubmissionForm, IDialogBox} from './components';
 import type {FeedbackObject, NotificationType} from './types';
 
-import type {SegmentedControlProps, StoryProps, Story, SquareProps, Post, PostDiscussionModal, Tab} from './news'
+import type {SegmentedControlProps, StoryProps, Story, SquareProps, PostDiscussionModal, Tab, NewsPost} from './news'
 
+import type { PostResponse, Post } from './discussion';
 export {
+  PostResponse,
+  NewsPost,
   Tab,
+  Post,
   userModal,
   UserProfile,
   MemberInfo,

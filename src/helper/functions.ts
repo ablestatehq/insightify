@@ -16,23 +16,23 @@ export function resourceAge(date: Date) {
   
   const seconds = differenceInSeconds(currentDate, publishedAt);
   const minutes = differenceInMinutes(currentDate, publishedAt);
-  if (minutes < 1) return seconds == 0 ? 'just now' : `${seconds} secs`;
+  if (minutes < 1) return seconds < 1 ? 'just now' : `${seconds} secs ago`;
   if (minutes < 60) return `${minutes} min`;
   
   const hours = differenceInHours(currentDate, publishedAt);
-  if (hours < 24) return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+  if (hours < 24) return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
   
   const days = differenceInDays(currentDate, publishedAt);
-  if (days < 7) return `${days} ${days === 1 ? 'day' : 'days'}`;
+  if (days < 7) return `${days} ${days === 1 ? 'day' : 'days'} ago`;
   
   const weeks = differenceInWeeks(currentDate, publishedAt);
-  if (weeks < 4) return `${weeks} ${weeks === 1 ? 'week' : 'weeks'}`;
+  if (weeks < 4) return `${weeks} ${weeks === 1 ? 'week' : 'weeks'} ago`;
   
   const months = differenceInMonths(currentDate, publishedAt);
-  if (months < 12) return `${months} ${months === 1 ? 'month' : 'months'}`;
+  if (months < 12) return `${months} ${months === 1 ? 'month' : 'months'} ago`;
 
   const years = differenceInYears(currentDate, publishedAt);
-  return `${years} yrs`
+  return `${years} yrs ago`
 }
 
 export function contentLifeSpan(date:string):string {

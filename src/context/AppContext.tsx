@@ -1,11 +1,12 @@
 import React, { useState, createContext, useEffect, useCallback } from 'react';
 
-import {getData} from '@api/grapiql';
-import {getMe} from '@api/strapiJSAPI';
-import {retrieveLocalData, storeToLocalStorage} from '@utils/localStorageFunctions';
+import { getData } from '@api/grapiql';
+import { getMe } from '@api/strapiJSAPI';
+import { retrieveLocalData, storeToLocalStorage } from '@utils/localStorageFunctions';
 import ProductProvider from './ProductContext';
 import { createClientSocket } from '@src/lib/socket';
 import { Socket } from 'socket.io-client';
+import PostProvider from './post-context';
 
 interface AppContextProviderProps {
   children: React.ReactNode;
@@ -26,45 +27,43 @@ interface AppContextType {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   opportunities: any[];
   setOpportunities: React.Dispatch<React.SetStateAction<any[]>>;
-  // products: any[];
-  // setProducts: React.Dispatch<React.SetStateAction<any[]>>;
   isNotificationEnabled: boolean;
   setIsNotificationEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   notifications: any[];
   setNotifications: React.Dispatch<React.SetStateAction<any[]>>;
-  comments: any[];
-  setComments: React.Dispatch<React.SetStateAction<any[]>>;
-  community: any[];
-  setCommunity: React.Dispatch<React.SetStateAction<any[]>>;
+  // comments: any[];
+  // setComments: React.Dispatch<React.SetStateAction<any[]>>;
+  // community: any[];
+  // setCommunity: React.Dispatch<React.SetStateAction<any[]>>;
   fetchAdditionalData: () => Promise<void>;
 }
 
 export const AppContext = createContext<AppContextType>({
   jwt: '',
-  setJwt: () => {},
+  setJwt: () => { },
   user: {},
-  setUser: () => {},
+  setUser: () => { },
   xp: 0,
-  setXp: () => {},
+  setXp: () => { },
   isLoading: true,
-  setIsLoading: () => {},
+  setIsLoading: () => { },
   codeTips: [],
-  setCodeTips: () => {},
+  setCodeTips: () => { },
   isLoggedIn: false,
-  setIsLoggedIn: () => {},
+  setIsLoggedIn: () => { },
   opportunities: [],
-  setOpportunities: () => {},
+  setOpportunities: () => { },
   // products: [],
   // setProducts: () => {},
   isNotificationEnabled: false,
-  setIsNotificationEnabled: () => {},
+  setIsNotificationEnabled: () => { },
   notifications: [],
-  setNotifications: () => {},
-  comments: [],
-  setComments: () => {},
-  community: [],
-  setCommunity: () => {},
-  fetchAdditionalData: async () => {},
+  setNotifications: () => { },
+  // comments: [],
+  // setComments: () => { },
+  // community: [],
+  // setCommunity: () => { },
+  fetchAdditionalData: async () => { },
 });
 
 const AppContextProvider = ({ children }: AppContextProviderProps) => {
@@ -77,10 +76,30 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [codeTips, setCodeTips] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
-  const [comments, setComments] = useState<any[]>([]);
-  const [community, setCommunity] = useState<any[]>([]);
+  // const [comments, setComments] = useState<any[]>([]);
+  // const [community, setCommunity] = useState<any[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
 
+  // helper function to fetch with cache
+  const fetchWithCache = async (
+    key: string,
+    fetchFn: () => Promise<{ data: any }>,
+    transform?: (data: any) => any
+  ): Promise<any> => {
+    try {
+      const response = await fetchFn();
+      const data = transform ? transform(response.data) : response.data;
+      storeToLocalStorage(key, data);
+      return data;
+    } catch (error) {
+      console.warn(`Failed to fetch ${key}, falling back to cache:`, error);
+      const cachedData = await retrieveLocalData(key);
+      if (!cachedData) {
+        throw new Error(`No cached data available for ${key}`);
+      }
+      return cachedData;
+    }
+  };
 
   useEffect(() => {
     fetchInitialData();
@@ -98,25 +117,15 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       setOpportunities([...opportunities, data]);
     });
   }, [socket]);
+
   const fetchInitialData = async () => {
     try {
-      // Run all fetches concurrently
-      // const [localOpportunities = [], localTechTips = [], localProducts = []] = await Promise.all([
-      //   retrieveLocalData('opportunities'),
-      //   retrieveLocalData('techTips'),
-      //   retrieveLocalData('products')
-      // ]);
-
       const [
         user_, inCommunity, isNofityOn,
-        // productsData,
-        opportunitiesData, techTips] = await Promise.all([
+      ] = await Promise.all([
         getMe(),
         retrieveLocalData('isMember'),
         retrieveLocalData('tokens'),
-        // (await getData('products')).data,
-        (await getData('opportunities')).data,
-        (await getData('techTips')).data,
       ]);
 
       // User & Notification Logic
@@ -133,34 +142,15 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
         setIsLoggedIn(true);
       }
 
-      // Opportunities, TechTips, Products
-      const updatedOpportunities = opportunitiesData.map((opp: any) => ({
-        ...opp,
-        // bookmarked: localOpportunities.find((localOpp: any) => localOpp.id === opp.id)?.bookmarked ?? false,
-      }));
-
-      const updatedTechTips = techTips.map((tip: any) => ({
-        ...tip,
-        // bookmarked: localTechTips.find((localTip: any) => localTip.id === tip.id)?.bookmarked ?? false,
-      }));
-
-      // const updatedProducts = productsData.map((product: ProductData) => ({
-      //   ...product,
-      //   meta: {
-      //     ...product.meta,
-      //     // bookmarked: localProducts.find((localProd: ProductData) => localProd.id === product.id)?.meta?.bookmarked ?? false,
-      //   }
-      // }));
+      // Opportunities, TechTips
+      const [opportunity_data, tech_tips_data] = await Promise.all([
+        fetchWithCache('opportunities', () => getData('opportunities')),
+        fetchWithCache('techTips', () => getData('techTips')),
+      ]);
 
       // Update state
-      setOpportunities(updatedOpportunities);
-      setCodeTips(updatedTechTips);
-      // setProducts(updatedProducts);
-
-      // Cache data
-      storeToLocalStorage('opportunities', updatedOpportunities);
-      storeToLocalStorage('techTips', updatedTechTips);
-      // storeToLocalStorage('products', updatedProducts);
+      setOpportunities(opportunity_data);
+      setCodeTips(tech_tips_data);
 
     } catch (error) {
       console.error("Error fetching initial data:", error);
@@ -171,24 +161,28 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
   const fetchAdditionalData = async () => {
     try {
-      const [comments_, sent_notifications, community_members, localNotification] = await Promise.all([
-        (await getData('comments')).data,
+      const [
+        // comments_,
+        sent_notifications,
+        // community_members,
+        localNotification] = await Promise.all([
+        // (await getData('comments')).data,
         (await getData('sentNotifications')).data,
-        (await getData('communityMembers')).data,
+        // (await getData('communityMembers')).data,
         retrieveLocalData('notifications'),
       ]);
 
-      if (comments_) {
-        setComments((prev) => [...prev, ...comments_]);
-      }
+      // if (comments_) {
+      //   setComments((prev) => [...prev, ...comments_]);
+      // }
 
       if (localNotification) {
         setNotifications((prev) => [...prev, ...localNotification]);
       }
 
-      if (community_members) {
-        setCommunity((prev) => [...prev, ...community_members]);
-      }
+      // if (community_members) {
+      //   setCommunity((prev) => [...prev, ...community_members]);
+      // }
     } catch (error: any) { }
   };
 
@@ -213,10 +207,10 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     setIsNotificationEnabled,
     notifications,
     setNotifications,
-    comments,
-    setComments,
-    community,
-    setCommunity,
+    // comments,
+    // setComments,
+    // community,
+    // setCommunity,
     fetchAdditionalData,
   };
 
@@ -229,9 +223,11 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   }, []);
   return (
     <ProductProvider>
-      <AppContext.Provider value={contextValue}>
-        {children}
-      </AppContext.Provider>
+      <PostProvider>
+        <AppContext.Provider value={contextValue}>
+          {children}
+        </AppContext.Provider>
+      </PostProvider>
     </ProductProvider>
   );
 };

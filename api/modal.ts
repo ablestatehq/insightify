@@ -162,6 +162,68 @@ export const MODALS = {
       }
     }
   }
+  }`,
+'posts': `query {
+  posts {
+    data {
+      id
+      attributes {
+        author{
+         data{
+          attributes{
+            firstName
+            lastName
+            email
+            photo{
+              data {
+                id
+                attributes {
+                  url
+                }
+          }
+            }
+          }
+         }
+        }
+        content
+        createdAt
+        updatedAt
+        topics {
+          data {
+            id
+            attributes {
+              name
+              slug
+              description
+              usageCount
+              isTrending
+            }
+          }
+        }
+        type
+        views
+        poll {
+          data {
+            id
+            attributes {
+              # options 
+              endDate
+              isMultipleChoice
+              status
+            }
+          }
+        }
+        media {
+          data {
+            id
+            attributes {
+              url
+            }
+          }
+        }
+      }
+    }
   }
+}
 `
 }

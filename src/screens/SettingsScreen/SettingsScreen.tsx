@@ -85,6 +85,7 @@ const SettingsScreen = () => {
                 setDialog({
                   ...dialog,
                   visible: true,
+                  acceptText: 'Login',
                   title: 'Guest user',
                   message: 'You are currently a guest user, complete login to join community',
                 });

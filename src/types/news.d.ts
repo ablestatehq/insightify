@@ -1,14 +1,28 @@
-export type Post = {
-  readonly id: number;
-  title: string;
-  message: string;
-  postedBy: PostedBy
-}
+import React from "react";
+import type { Post } from "./discussion";
 
 interface PostedBy{
   name: string;
 }
 
+export type NewsPost = {
+  id: number
+  title: string;
+  // excerpt: string;
+  content: string;
+  resources: string[];
+  featured_image: string;
+  author?: string;
+  publishedAt: string;
+  readTime: string;
+}
+
+
+export type NewsAuthor = {
+  name: string;
+  imageUrl: string;
+  ID: string;
+}
 export interface SegmentedControlProps{
   selectedTab: Tab;
   onTabChange: (value: Tab) => void;
@@ -21,7 +35,8 @@ export type Story = {
 }
 
 export type StoryProps = {
-  stories: Story[]
+  stories: NewsPost[];
+  loading: boolean;
 }
 
 export type SquareProps = {
@@ -30,7 +45,8 @@ export type SquareProps = {
 
 export type PostDiscussionModal = {
   visible: boolean,
-  close: () => void
+  close: () => void;
+  setPost: React.Dispatch<React.SetStateAction<PostData[]>>
 }
 
 export type Tab = 'Square' | 'Stories'

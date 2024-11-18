@@ -1,3 +1,5 @@
+import { Post } from "./discussion"
+import { NewsPost } from "./news"
 import type { ProductData } from "./product"
 import {RouteProp} from "@react-navigation/native"
 
@@ -49,6 +51,8 @@ export type RootStackParamList = {
   ProductList: undefined;
   AddProduct: undefined;
   Support: undefined
+  StoryDetails: NewsPost;
+  Discussion: Post;
 }
 
 export type LoginDetails = {
@@ -61,3 +65,5 @@ export type ResetScreenProps = RouteProp<RootStackParamList, 'Reset'>
 export type ConfirmEmailScreenProps = RouteProp<RootStackParamList, 'ConfirmEmail'>
 export type DetailsScreenProps = RouteProp<RootStackParamList, 'Details'>
 export type OpportunityListProps = RouteProp<RootStackParamList, 'Offers'>
+export type StoryDetailsProps = RouteProp<RootStackParamList, 'StoryDetails'>
+// export type 

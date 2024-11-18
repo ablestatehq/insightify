@@ -1,5 +1,6 @@
 import { useUser } from "@src/context/UserContext";
 import { useProducts } from "@src/context/ProductContext";
+import { usePosts } from "@src/context/post-context";
 import { useCodeTips } from "@src/context/TipsContext";
 import { useOffers } from "@src/context/OpportunityContext";
 
@@ -13,6 +14,7 @@ import usePushNotifications from "./usePushNotification";
 
 export {
   useUser,
+  usePosts,
   useProducts,
   useCodeTips,
   useOffers,

@@ -29,7 +29,7 @@ export default function App() {
   usePushNotifications();
   useEffect(() => {
     if (isUpdatePending) {
-      Updates.reloadAsync();
+      Updates.reloadAsync().then(() => {}).catch(console.error);
     }
   }, [isUpdatePending]);
 
@@ -38,9 +38,9 @@ export default function App() {
 
   TaskManager.defineTask(BGTASKS.CHECK_ONLINE_STATUS, useNetworkStatus);
   useEffect(() => {
-    registerBackgroundFetchAsync();
+    registerBackgroundFetchAsync().then(() => {}).catch(console.error);
     return () => {
-      unregisterBackgroundFetchAsync();
+      unregisterBackgroundFetchAsync().then(() => {}).catch(console.error);
     };
   }, []);
 

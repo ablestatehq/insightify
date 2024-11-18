@@ -59,10 +59,11 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color, style})
       />
     case 'close':
       return <AntDesign
-        name='closecircle'
+        name='close'
         size={size ? size : 20}
         color={_color ? _color : COLOR.PRIMARY_300}
         onPress={press}
+        style={style}
       />
     case 'clipboard':
       return <FontAwesome
@@ -138,6 +139,14 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color, style})
     case 'user':
       return <FontAwesome
         name="user-circle-o"
+        size={size ? size : 20}
+        color={_color}
+        onPress={press}
+        style={style}
+      />
+    case 'share-arrow':
+      return <Ionicons
+        name="arrow-undo-outline"
         size={size ? size : 20}
         color={_color}
         onPress={press}

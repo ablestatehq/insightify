@@ -1,7 +1,7 @@
 import {MODALS} from "./modal";
 import {environments} from "../src/constants/environments";
 
-const {STRAPI_TOKEN, BASE_URL} = environments;
+const {STRAPI_TOKEN, BASE_URL, NEWS_API_KEY, NEWS_URL} = environments;
 
 async function getData(endpoint: keyof typeof MODALS, start: number = 0, limit: number = 25) {
   try {
@@ -69,23 +69,6 @@ async function fetchNewItems(endpoint: keyof typeof MODALS) {
   return [];
 };
 
-async function createEntry(endpoint: string, data: any) {
-  try {
-    const createData = await fetch(`${BASE_URL}/graphql`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${STRAPI_TOKEN}`,
-        'X-REQUEST-TYPE': 'GraphQL'
-      },
-    })
-  } catch (error) {
-    return {
-      error, 
-      data: null
-    }
-  }
-}
 
 async function uploadImage(uri: string, jwt: string, refId: string, field: string, imageName: string) {
   const response = await fetch(uri);
@@ -147,20 +130,23 @@ async function uploadImage(uri: string, jwt: string, refId: string, field: strin
   }
 }
 
+async function get_top_news() {
+   try {
+    const response = await fetch(`${NEWS_URL}/news`, {
+      method: 'GET',
+    });
 
-async function login(email:string, password: string) {
-  const mutation = `mutation {
-  login(input: { identifier: ${email}, password: ${password} }) {
-    jwt
-  }`;
-
-
+     const data = await response.json();
+     return data;
+   } catch (error) {
+     return error;
+  }
 }
 
 export {
+  get_top_news,
   getData,
   fetchNewItems,
   uploadImage,
-  createEntry,
   fetchNextBatch,
 }

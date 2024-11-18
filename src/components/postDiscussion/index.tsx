@@ -1,9 +1,11 @@
 import {Modal, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native'
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {COLOR, DIMEN, FONTSIZE} from '@src/constants/constants';
 import {PostDiscussionModal} from '@src/types';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {FONT_NAMES} from '@src/assets/fonts/fonts';
+import { storeData } from '@api/strapiJSAPI';
+import { AppContext } from '@src/context';
 
 const Titles = [
   'Ask a question to the community',
@@ -11,16 +13,23 @@ const Titles = [
   'Share what you are working on',
 ];
 
-const Index = ({ visible, close }: PostDiscussionModal) => {
+const Index = ({ visible, close, setPost }: PostDiscussionModal) => {
   const [topic, setTopic] = useState('');
   const [content, setContent] = useState('');
+  const {jwt, user} = useContext(AppContext);
 
-  const handlePost = () => {
-    console.log('Posting discussion:', { topic, content });
+  const handlePost = async () => {
+    const topic_response = await (await storeData('topics', {name: topic}, jwt));
+    const topic_id = topic_response?.data?.id;
+    if (topic_id) {
+      const post_response = await (await storeData('posts', {content, topics: topic_id, author: user.id}, jwt));
+      const p_data = { id: post_response?.data?.id, ...post_response?.data?.attributes }
+      setPost(prev => [p_data, ...prev]);
+    }
     close()
   };
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
   return (
     <Modal visible={visible}>
       <View style={styles.container}>

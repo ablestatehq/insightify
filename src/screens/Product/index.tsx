@@ -44,6 +44,7 @@ function Index() {
   // state
   const [com, setCom] = useState<string>('');
   const [comments, setComments] = useState<Comment[]>([]);
+  const [replyTo, setReplyTo] = useState<Comment | null>(null);
   const [csLayout, setCsLayout] = useState<Layout>({
     x: 0,
     y: 0,
@@ -205,7 +206,7 @@ function Index() {
               <Text style={styles.devDescription}>
                 {meta?.lauchedBy?.companyBio}
               </Text></>}
-          <CommentList comments={comments} sectionLayout={getCommentSectionLayout}/>
+          <CommentList comments={comments} sectionLayout={getCommentSectionLayout} setReplyTo={setReplyTo}/>
         </View>
       </ScrollView>
       {/**User comment section. */}
@@ -213,6 +214,7 @@ function Index() {
         comment={com}
         setComment={setCom}
         handleSubmitCommit={handleSubmitCommit}
+        replyTo={replyTo}
       />
       <StatusBar backgroundColor={COLOR.GREY_300} barStyle='light-content' />
     </SafeAreaView>
