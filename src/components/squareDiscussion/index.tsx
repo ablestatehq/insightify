@@ -16,7 +16,7 @@ const Index = ({ discussions}: SquareProps) => {
   const renderDiscussion = ({ item, index }: { item: Post, index: number }) => {
     const getImage = () => ({uri: `${BASE_URL}${item?.author?.data?.attributes.photo.data.attributes.url}` })
     return (
-      <Pressable style={styles.card} onPress={() => navigation.navigate('Discussion', {...item})}>
+      <Pressable style={styles.card} onPress={() => navigation.navigate('Discussion', {...item})} key={index}>
         {/* Profile Image */}
         {item.author?.data?.attributes?.photo?.data ?
           <Image source={getImage()} style={styles.profileImage} /> :

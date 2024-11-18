@@ -6,7 +6,6 @@ import { COLOR, DIMEN, FONTSIZE } from '@src/constants/constants';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import EmptyState from '../EmptyState';
-import Loader from '../Loading/Loader';
 
 const Index = ({stories, loading}: StoryProps) => {
   // hooks
