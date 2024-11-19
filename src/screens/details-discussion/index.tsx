@@ -8,7 +8,7 @@ import { Comment, RootStackParamList } from '@src/types'
 import { FONT_NAMES } from '@src/assets/fonts/fonts';
 import { environments } from '@src/constants/environments'
 import { resourceAge } from '@src/helper/functions'
-import { Comment_, CommentList } from '@src/components'
+import { Comment_, CommentList, Dot } from '@src/components'
 import { usePosts } from '@src/hooks'
 import { AppContext } from '@src/context'
 
@@ -108,7 +108,7 @@ const Index = () => {
 
         <View style={styles.starter_view_b}>
           <Text style={styles.small_text}>{resourceAge(new Date(createdAt as string))}</Text>
-          <View style={styles.dot_style} />
+          <Dot />
           <Text style={styles.small_text}>{comments.length} replies</Text>
         </View>
 
@@ -176,13 +176,6 @@ const styles = StyleSheet.create({
 
   },
   start_follow_txt: {},
-  dot_style: {
-    width: 2,
-    height: 2,
-    backgroundColor: COLOR.GREY_400,
-    borderRadius: DIMEN.CONSTANT.LG,
-    marginHorizontal: DIMEN.CONSTANT.XSM,
-  },
   starter_view_b: {
     flexDirection: 'row',
     gap: DIMEN.CONSTANT.XXSM,

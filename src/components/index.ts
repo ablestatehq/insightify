@@ -40,3 +40,4 @@ export {default as Square} from './squareDiscussion';
 export {default as PostDiscussion} from './postDiscussion'
 export {default as Comment_} from './comment'
 export {default as CommentList} from './comment-list';
+export {default as Dot} from './dot';

@@ -7,6 +7,7 @@ import {resourceAge} from '@src/helper/functions';
 import {environments} from '@src/constants/environments';
 import {FONT_NAMES} from '@src/assets/fonts/fonts';
 import Icons from '@src/assets/icons';
+import Dot from '../dot';
 
 const { BASE_URL } = environments;
 
@@ -49,7 +50,7 @@ function ShowComment({ comment, setReplyTo }:
           <View>
             <View style={styles.commentor_view}>
               <Text style={styles.commentor}>{comment?.author.name}</Text>
-              <View style={styles.dot} />
+              <Dot />
               <Text style={styles.timeStamp}>{resourceAge(new Date(comment.createdAt as string))}</Text>
             </View>
             {/* <Text style={styles.commentor_email}>{comment?.author.email}</Text> */}
@@ -146,12 +147,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: DIMEN.MARGIN.SM,
     // alignItems: 'center',
-  },
-  dot: {
-    width: 2.5,
-    height: 2.5,
-    borderRadius: 10,
-    backgroundColor: COLOR.GREY_100,
   },
   timeStamp: {
     fontSize: FONTSIZE.SMALL,
