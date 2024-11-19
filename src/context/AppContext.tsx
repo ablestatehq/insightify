@@ -2,11 +2,12 @@ import React, { useState, createContext, useEffect, useCallback } from 'react';
 
 import { getData } from '@api/grapiql';
 import { getMe } from '@api/strapiJSAPI';
-import { retrieveLocalData, storeToLocalStorage } from '@utils/localStorageFunctions';
+import { retrieveLocalData } from '@utils/localStorageFunctions';
 import ProductProvider from './ProductContext';
 import { createClientSocket } from '@src/lib/socket';
 import { Socket } from 'socket.io-client';
 import PostProvider from './post-context';
+import fetchWithCache from '@src/utils/fetch-with-cache';
 
 interface AppContextProviderProps {
   children: React.ReactNode;
@@ -79,27 +80,6 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   // const [comments, setComments] = useState<any[]>([]);
   // const [community, setCommunity] = useState<any[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
-
-  // helper function to fetch with cache
-  const fetchWithCache = async (
-    key: string,
-    fetchFn: () => Promise<{ data: any }>,
-    transform?: (data: any) => any
-  ): Promise<any> => {
-    try {
-      const response = await fetchFn();
-      const data = transform ? transform(response.data) : response.data;
-      storeToLocalStorage(key, data);
-      return data;
-    } catch (error) {
-      console.warn(`Failed to fetch ${key}, falling back to cache:`, error);
-      const cachedData = await retrieveLocalData(key);
-      if (!cachedData) {
-        throw new Error(`No cached data available for ${key}`);
-      }
-      return cachedData;
-    }
-  };
 
   useEffect(() => {
     fetchInitialData();
