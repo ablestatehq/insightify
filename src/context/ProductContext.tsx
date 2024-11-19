@@ -1,8 +1,9 @@
 import {getData} from "@api/grapiql";
 import {environments} from "@constants/environments";
 import {ProductData} from "@src/types";
-import {retrieveLocalData, storeToLocalStorage} from "@src/utils/localStorageFunctions";
+import {storeToLocalStorage} from "@src/utils/localStorageFunctions";
 import React, {createContext, useContext, useEffect, useState} from "react";
+import fetchWithCache from '@src/utils/fetch-with-cache';
 
 interface Author {
   id: string;
@@ -57,17 +58,17 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
   };
 
   const fetchProducts = async () => {
-    const productsData = (await getData('products')).data;
-    const localProducts = await retrieveLocalData('products') ?? [];
+    // const productsData = (await getData('products')).data;
+    // const localProducts = await retrieveLocalData('products') ?? [];
 
-    // Combine remote data with local updates
-    const updatedProducts = productsData.map((product: ProductData) => ({
-      ...product,
-      meta: { ...product.meta, bookmarked: localProducts.find((p: ProductData) => p.id === product.id)?.meta?.bookmarked ?? false }
-    }));
+    // const updatedProducts = productsData.map((product: ProductData) => ({
+    //   ...product,
+    //   meta: { ...product.meta, bookmarked: localProducts.find((p: ProductData) => p.id === product.id)?.meta?.bookmarked ?? false }
+    // }));
+    const products_data = await fetchWithCache('products',() => getData('products'))
+    // // Combine remote data with local updates
 
-    setProducts(updatedProducts);
-    storeToLocalStorage('products', updatedProducts);
+    setProducts(products_data);
   };
 
   const fetchComments = async (id: number,) => {
