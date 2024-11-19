@@ -15,8 +15,14 @@ export type NewsPost = {
   author?: string;
   publishedAt: string;
   readTime: string;
+  source?: NSource,
 }
 
+export type NSource = {
+  name: string;
+  description: string;
+  link: string;
+};
 
 export type NewsAuthor = {
   name: string;

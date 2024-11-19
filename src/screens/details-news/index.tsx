@@ -1,59 +1,188 @@
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import React from 'react'
-import { COLOR, DIMEN, FONTSIZE } from '@src/constants/constants';
-import { FONT_NAMES } from '@src/assets/fonts/fonts';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {StyleSheet, Text, View} from 'react-native';
+import React, {useMemo} from 'react';
+import {COLOR, DIMEN, FONTSIZE} from '@src/constants/constants';
+import {FONT_NAMES } from '@src/assets/fonts/fonts';
+import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
 import Icons from '@src/assets/icons';
-import { StoryDetailsProps } from '@src/types/navigation';
+import { StoryDetailsProps } from '@src/types';
+import { Dot } from '@src/components';
+import Animated, {
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
+import { NSource } from '@src/types/news';
 
-const Index = () => {
-  // hooks 
+// consts
+const HEADER = {
+  MAX_HEIGHT: 200,
+  MIN_HEIGHT: 10,
+  get SCROLL_DISTANCE() {
+    return this.MAX_HEIGHT - this.MIN_HEIGHT;
+  },
+} as const;
+
+// animation configs
+const SPRING_CONFIG = {
+  damping: 15,
+  mass: 1,
+  stiffness: 100,
+};
+
+const TIMING_CONFIG = {
+  duration: 300,
+};
+
+
+// back button
+const BackButton = React.memo(( {navigation}:{navigation: any}) => (
+  <View style={styles.backBtn}>
+    <Icons
+      name="back"
+      _color={COLOR.WHITE}
+      press={() => navigation.goBack()}
+    />
+  </View>
+));
+
+const Article = React.memo((
+  { author, source, formattedDate, readTime }:
+    {
+      author: string; 
+      source: NSource;
+      formattedDate: string;
+      readTime: string;
+    }) => (
+  <>
+    <View style={styles.reportViewStyle}>
+      <Text style={styles.articleAuthor}>By {author}</Text>
+      <Dot />
+      <Text style={styles.articleAuthor}>{source?.name}</Text>
+    </View>
+
+    <View style={styles.articleMeta}>
+      <Text style={styles.articleDate}>{formattedDate}</Text>
+      <Text style={styles.articleReadTime}>{readTime} read</Text>
+    </View>
+  </>
+));
+
+const StoryDetails = () => {
+  // hooks
   const route = useRoute<StoryDetailsProps>();
   const navigation = useNavigation();
 
-  const { featured_image, title, author, id, content, resources, publishedAt, readTime } = route.params;
-  const getImage = () => ({ uri: featured_image });
-  
+  const {
+    featured_image,
+    title,
+    author,
+    content,
+    publishedAt,
+    readTime,
+    source
+  } = route.params;
+
+  // animated value
+  const scrollY = useSharedValue(0);
+
+  // img source
+  const get_image = useMemo(() => ({ uri: featured_image }), [featured_image]);
+
+  const formattedDate = useMemo(() => {
+    const date = new Date(publishedAt);
+    return `${date.getDate()}-${date.getUTCMonth()}-${date.getFullYear()}`;
+  }, [publishedAt]);
+
+  // animated styles
+  const headerAnimatedStyle = useAnimatedStyle(() => ({
+    height: withSpring(
+      interpolate(
+        scrollY.value,
+        [0, HEADER.SCROLL_DISTANCE],
+        [HEADER.MAX_HEIGHT, HEADER.MIN_HEIGHT],
+      ),
+      SPRING_CONFIG
+    ),
+  }), []);
+
+  const imageAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(
+      interpolate(
+        scrollY.value,
+        [0, HEADER.SCROLL_DISTANCE / 2, HEADER.SCROLL_DISTANCE],
+        [1, 0.5, 0],
+      ),
+      TIMING_CONFIG
+    ),
+    transform: [{
+      translateY: withSpring(
+        interpolate(
+          scrollY.value,
+          [0, HEADER.SCROLL_DISTANCE],
+          [0, -50],
+        ),
+        SPRING_CONFIG
+      ),
+    }],
+  }), []);
+
+  // scroll handler
+  const handleScroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+    },
+  });
+
+  // header components
+  const HeaderImage = useMemo(() => (
+    <Animated.View style={[styles.imageContainer, headerAnimatedStyle]}>
+      <Animated.Image
+        source={get_image}
+        style={[styles.articleImage, imageAnimatedStyle, headerAnimatedStyle]}
+        resizeMethod="resize"
+        resizeMode="cover"
+      />
+    </Animated.View>
+  ), [get_image, headerAnimatedStyle, imageAnimatedStyle]);
+
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
-        <View style={{position: 'relative'}}>
-          <Icons name='back'
-            _color={COLOR.WHITE}
-            style={styles.back_btn}
-            press={() => navigation.goBack()} />
-          <Image source={getImage()} style={styles.articleImage} resizeMethod="resize" resizeMode='cover' />
-        </View>
+      {HeaderImage}
+      <BackButton navigation={navigation} />
+      <Animated.ScrollView
+        style={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={handleScroll}
+        removeClippedSubviews={true}
+        overScrollMode="never"
+        bounces={false}
+      >
         <View style={styles.articleInfo}>
-          <Text style={styles.articleTitle}>{title}</Text>
-          <Text style={styles.articleAuthor}>By {author}</Text>
-          <View style={styles.articleMeta}>
-            <Text style={styles.articleDate}>
-              {new Date(publishedAt as string).getDate()}-{new Date(publishedAt as string).getUTCMonth()}-{new Date(publishedAt as string).getFullYear()}
-            </Text>
-            <Text style={styles.articleReadTime}>{readTime} read.</Text>
-          </View>
-          <Text style={styles.articleContent}>{content}</Text>
+          <Text style={styles.articleTitle} numberOfLines={2}>
+            {title}
+          </Text>
+
+          <Article
+            author={author as string}
+            source={source as NSource}
+            formattedDate={formattedDate}
+            readTime={readTime}
+          />
+
+          <Text style={styles.articleContent}>
+            {content}
+          </Text>
         </View>
-      </ScrollView>
-      {/* <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.bottomButton}>
-          <Text style={styles.bottomButtonText}>7</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bottomButton}>
-          <Icons name='message' _color={COLOR.GREY_200} size={15}/>
-          <Text style={styles.bottomButtonText}>0</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bottomButton}>
-          <Icons name='Share' />
-          <Text style={styles.bottomButtonText}>Share</Text>
-        </TouchableOpacity>
-      </View> */}
+      </Animated.ScrollView>
     </View>
   );
-}
+};
 
-export default Index
+export default React.memo(StoryDetails);
 
 const styles = StyleSheet.create({
   container: {
@@ -61,73 +190,67 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.WHITE,
   },
   contentContainer: {
-    padding: 16,
+    flexGrow: 1,
+    paddingHorizontal: DIMEN.CONSTANT.LG,
   },
-  back_btn: {
+  backBtn: {
     position: 'absolute',
     zIndex: 10,
     padding: DIMEN.CONSTANT.SM,
     backgroundColor: COLOR.NEUTRAL_2,
     borderRadius: DIMEN.CONSTANT.XLG,
-    margin: DIMEN.MARGIN.XXSM,
+    margin: DIMEN.MARGIN.XSM,
+    marginLeft: DIMEN.MARGIN.LG,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
-  articleInfo: {
-    // flexDirection: 'row',
-    // gap: DIMEN.CONSTANT.XSM
+  imageContainer: {
+    overflow: 'hidden',
+    paddingHorizontal: DIMEN.CONSTANT.ME,
+    height: HEADER.MAX_HEIGHT,
+    zIndex: 1,
+    width: '100%',
   },
   articleImage: {
     width: '100%',
-    height: 200,
-    borderRadius: 8,
-    marginBottom: 16,
+    height: HEADER.MAX_HEIGHT,
+    borderRadius: DIMEN.CONSTANT.SM,
+  },
+  articleInfo: {
+    paddingTop: DIMEN.CONSTANT.ME,
   },
   articleTitle: {
     fontSize: FONTSIZE.TITLE_2,
     fontFamily: FONT_NAMES.Heading,
+    marginBottom: DIMEN.MARGIN.XSM,
+  },
+  reportViewStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: DIMEN.CONSTANT.XXSM,
+    marginBottom: DIMEN.CONSTANT.ME,
+  },
+  articleAuthor: {
+    color: COLOR.GREY_100,
+    fontFamily: FONT_NAMES.Title,
   },
   articleMeta: {
     flexDirection: 'row',
     marginBottom: DIMEN.MARGIN.LG,
     gap: DIMEN.CONSTANT.XSM,
-    alignItems: 'center'
-  },
-  articleAuthor: {
-    color: COLOR.GREY_100,
-    marginRight: DIMEN.CONSTANT.SM,
-    marginBottom: DIMEN.CONSTANT.ME,
-    fontFamily: FONT_NAMES.Title
+    alignItems: 'center',
   },
   articleDate: {
     color: COLOR.GREY_100,
-    marginRight: DIMEN.CONSTANT.SM,
   },
   articleReadTime: {
-    // color: COLOR.GREY_50,
+    color: COLOR.GREY_100,
   },
   articleContent: {
     lineHeight: 24,
-  },
-  bottomBar: {
-    // position: 'absolute',
-    // bottom: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: COLOR.WHITE,
-    padding: DIMEN.CONSTANT.ME,
-    // width: '80%',
-    // alignSelf: 'center',
-    elevation: 1,
-    // marginBottom: DIMEN.CONSTANT.XSM
-  },
-  bottomButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: DIMEN.CONSTANT.XXSM,
-  },
-  bottomButtonText: {
-    // color: '#fff',
-    fontFamily: FONT_NAMES.Body,
+    textAlign: 'justify',
   },
 });
