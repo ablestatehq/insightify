@@ -14,13 +14,13 @@ const Index = ({stories, loading}: StoryProps) => {
   // render methods
   const renderStory = ({item}: {item: NewsPost}) => (
     <Pressable style={styles.card} onPress={() => navigation.navigate('StoryDetails', {...item})}>
-      <View style={{ flex: 1, aspectRatio: 1 }}>
+      <View style={{}}>
         {item?.featured_image &&
           <Image source={{ uri: `${item?.featured_image}` }}
-          style={{ flex: 1, borderRadius: DIMEN.CONSTANT.ME }} />}
+          style={{borderRadius: DIMEN.CONSTANT.ME, width: '100%', height: 150 }} />}
       </View>
-      <View style={{flex: 0.3}}>
-        <Text style={styles.title_}>{item?.title}</Text>
+      <View style={{flex: 1, marginTop: DIMEN.CONSTANT.SM}}>
+        <Text style={styles.title_}>{item?.title.trim()}</Text>
         <Text style={styles.author_}>By {item?.author}</Text>
       </View>
     </Pressable>
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   card: {
-    width: '45%',
+    width: '48%',
     backgroundColor: COLOR.WHITE,
     padding: DIMEN.CONSTANT.SM,
     borderRadius: DIMEN.CONSTANT.SM,
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   title_: {
     fontSize: FONTSIZE.SMALL,
     fontFamily: FONT_NAMES.Title,
-    marginTop: DIMEN.CONSTANT.ME,
+    // marginTop: DIMEN.CONSTANT.ME,
     textAlign: 'left',
   },
   author_: {
