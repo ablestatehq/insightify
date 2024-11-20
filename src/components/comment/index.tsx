@@ -39,9 +39,10 @@ const Index = ({ comment, replyTo, setComment, handleSubmitCommit, setReplyTo }:
           </View>}
           <TextInput
             style={styles.input}
-            placeholder="Type a comment..."
             value={comment}
+            placeholder="Type a comment..."
             onChangeText={setComment}
+            multiline
           />
         </View>
         {comment.trim() &&

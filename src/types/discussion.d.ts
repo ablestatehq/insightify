@@ -9,7 +9,7 @@ export type Post = {
   content: string;
   createdAt?: string;
   media: Media[] | null;
-  mentions?: object | null;
+  mentions?: any[] | null;
   poll: Poll | null;
   topics: {data: Topic[]};
   type?: string;

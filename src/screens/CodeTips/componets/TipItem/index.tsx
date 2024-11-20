@@ -1,26 +1,27 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import RenderHtml from 'react-native-render-html';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { StyleSheet, Text, View } from 'react-native'
-import { FONT_NAMES } from '@fonts'
+import { FONT_NAMES } from '@fonts';
 import { CodeSnippet, HTMLText, TipFooter } from '@components/index';
 import { handleBookmark } from '@src/helper/handleFunctions';
 import { COLOR, FONTSIZE } from '@constants/constants';
 
-interface TipItemProp {
+interface TipItemProps {
   id: number;
-  categories: any[];
-  tags: string;
+  categories?: string[];
+  tags?: string;
   title: string;
-  details: any;
-  source_url_text: string;
-  source_url: string;
-  bookmarked: boolean;
+  details: string;
+  source_url_text?: string;
+  source_url?: string;
+  bookmarked?: boolean;
   tips: any[];
   setTips: React.Dispatch<React.SetStateAction<any>>;
-  comments: any[]
+  comments: any[];
 }
-const Index = ({
+
+const Index: React.FC<TipItemProps> = ({
   id,
   categories,
   tags,
@@ -28,45 +29,61 @@ const Index = ({
   title,
   details,
   source_url_text,
-  bookmarked,
+  bookmarked = false,
   source_url,
   setTips,
   comments
-}: TipItemProp) => {
-  // Render html tag renderers
-  const renderers = {
+}) => {
+  // renderers
+  const renderers = useMemo(() => ({
     code: CodeSnippet,
     p: HTMLText
-  };
+  }), []);
 
-  const [showReportModal, setShowReportModal] = React.useState<boolean>(false);
+  // bookmark handler
+  const bookMarkTip = useCallback(() =>
+    handleBookmark(
+      id,
+      tips,
+      setTips,
+      'techTips',
+      'Tip saved',
+      'Tip unsaved'
+    ), [id, tips, setTips]);
 
-  const bookMarkTip = () => handleBookmark(
-    id,
-    tips,
-    setTips,
-    'techTips',
-    'Tip saved',
-    'Tip unsaved');
+  // tag processing
+  const processedTags = useMemo(() =>
+    tags ? `#${tags.split(', ').join(' #')}` : null,
+    [tags]
+  );
 
-  const handleSubmitReport = () => setShowReportModal(!showReportModal);
   return (
     <View style={styles.renderItemView}>
-      {categories ? (
+      {categories && (
         <View style={styles.tipTitleView}>
-          <View style={styles.categoryView}>
-            <Text style={styles.titleName}>{categories}</Text>
-          </View>
-          <View />
+          <Text style={styles.titleName}>
+            {Array.isArray(categories) ? categories.join(', ') : categories}
+          </Text>
         </View>
-      ) : null}
+      )}
       <View style={styles.contentView}>
-        {tags ? <Text style={styles.categories}>#{tags.split(', ').join(' #')}</Text> : null}
-        <Text numberOfLines={3} style={styles.tipTitle}>{title}</Text>
+        {processedTags && (
+          <Text style={styles.categories}>
+            {processedTags}
+          </Text>
+        )}
+        <Text numberOfLines={3} style={styles.tipTitle}>
+          {title}
+        </Text>
         <RenderHtml
           contentWidth={100}
           source={{ html: details }}
-          defaultTextProps={{ style: { fontFamily: FONT_NAMES.Body, fontSize: FONTSIZE.SMALL } }}
+          defaultTextProps={{
+            style: {
+              fontFamily: FONT_NAMES.Body,
+              fontSize: FONTSIZE.SMALL
+            }
+          }}
           renderers={renderers}
           tagsStyles={tagsStyles}
         />
@@ -77,15 +94,12 @@ const Index = ({
           source_url={source_url}
           bookmarked={bookmarked}
           handleBookmark={bookMarkTip}
-          onSubmitReport={handleSubmitReport}
           comments={comments}
         />
       </View>
     </View>
-  )
-}
-
-export default React.memo(Index)
+  );
+};
 
 const styles = StyleSheet.create({
   renderItemView: {
@@ -97,9 +111,6 @@ const styles = StyleSheet.create({
   },
   tipTitleView: {
     justifyContent: 'flex-start'
-  },
-  categoryView: {
-    // padding: 10
   },
   titleName: {
     textTransform: 'capitalize',
@@ -117,6 +128,7 @@ const styles = StyleSheet.create({
     fontSize: FONTSIZE.BODY,
   },
 });
+
 const tagsStyles = {
   p: {
     fontFamily: FONT_NAMES.Body,
@@ -140,3 +152,5 @@ const tagsStyles = {
     fontSize: FONTSIZE.BODY
   }
 };
+
+export default React.memo(Index);

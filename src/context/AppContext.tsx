@@ -107,8 +107,8 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
         retrieveLocalData('isMember'),
         retrieveLocalData('tokens'),
       ]);
-      // const users = await get_users();
-      // console.log(users[1]);
+      const users = await get_users();
+      console.log(users);
       // User & Notification Logic
       if (isNofityOn) {
         setIsNotificationEnabled(isNofityOn.isPushNotificationEnabled);

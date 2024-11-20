@@ -350,13 +350,18 @@ async function get_users() {
     'Authorization': `Bearer ${STRAPI_TOKEN}`
     },
   }
+  const response = await fetch(`${STRAPI_BASE_URL}/users?populate=*`, options);
+  const data = await response.json();
 
-  const response = fetch(`${STRAPI_BASE_URL}/users?populate=*`, options)
-    .then(response => response.json())
-    .then(storedData => storedData)
-    .catch(error => {});
-  
-  return response;
+  if (data) {
+    return data.map((user_data: any) => {
+      return {
+        id: user_data?.id,
+        name: user_data?.username
+      }
+    })
+  }
+  return data;
 }
 
 async function get_user_data(id: number) {

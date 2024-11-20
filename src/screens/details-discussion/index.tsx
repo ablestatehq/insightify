@@ -36,9 +36,9 @@ const Index = () => {
     meta,
   } = route.params;
 
-  const getImage = useCallback((url: string) => ({ uri: `${BASE_URL}${url}` }), []);
-  const { fetchComments, submitComment } = usePosts();
-  const { jwt } = useContext(AppContext);
+  const getImage = useCallback((url: string) => ({uri: `${BASE_URL}${url}`}), []);
+  const {fetchComments, submitComment} = usePosts();
+  const {jwt} = useContext(AppContext);
 
   useEffect(() => {
     const _fetch = async () => {
@@ -100,10 +100,6 @@ const Index = () => {
             <Image source={getImage(author.data.attributes?.photo?.data?.attributes?.url)} style={styles.profileImage} /> :
             <Icons name='user' _color={COLOR.GREY_200} size={25} />}
           <Text style={styles.start_name_txt}>{`${author.data.attributes.firstName} ${author.data.attributes.lastName}`}</Text>
-          {/* <View style={styles.dot_style} />
-        <Pressable>
-          <Text style={styles.start_follow_txt}>Follow</Text>
-        </Pressable> */}
         </View>
 
         <View style={styles.starter_view_b}>

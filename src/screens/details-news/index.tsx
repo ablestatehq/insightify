@@ -2,7 +2,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import React, {useMemo} from 'react';
 import {COLOR, DIMEN, FONTSIZE} from '@src/constants/constants';
 import {FONT_NAMES } from '@src/assets/fonts/fonts';
-import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Icons from '@src/assets/icons';
 import { StoryDetailsProps } from '@src/types';
 import { Dot } from '@src/components';
@@ -13,13 +13,15 @@ import Animated, {
   useSharedValue,
   withSpring,
   withTiming,
+  runOnJS,
+  interpolateColor
 } from 'react-native-reanimated';
 import { NSource } from '@src/types/news';
 
 // consts
 const HEADER = {
   MAX_HEIGHT: 200,
-  MIN_HEIGHT: 10,
+  MIN_HEIGHT: 20,
   get SCROLL_DISTANCE() {
     return this.MAX_HEIGHT - this.MIN_HEIGHT;
   },
@@ -36,17 +38,6 @@ const TIMING_CONFIG = {
   duration: 300,
 };
 
-
-// back button
-const BackButton = React.memo(( {navigation}:{navigation: any}) => (
-  <View style={styles.backBtn}>
-    <Icons
-      name="back"
-      _color={COLOR.WHITE}
-      press={() => navigation.goBack()}
-    />
-  </View>
-));
 
 const Article = React.memo((
   { author, source, formattedDate, readTime }:
@@ -94,10 +85,17 @@ const StoryDetails = () => {
   const formattedDate = useMemo(() => {
     const date = new Date(publishedAt);
     return `${date.getDate()}-${date.getUTCMonth()}-${date.getFullYear()}`;
-  }, [publishedAt]);
+  }, []);
 
-  // animated styles
-  const headerAnimatedStyle = useAnimatedStyle(() => ({
+  const imageAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(
+      interpolate(
+        scrollY.value,
+        [0, HEADER.SCROLL_DISTANCE / 2, HEADER.SCROLL_DISTANCE],
+        [1, 0.7, 0.3],
+      ),
+      TIMING_CONFIG
+    ),
     height: withSpring(
       interpolate(
         scrollY.value,
@@ -108,27 +106,25 @@ const StoryDetails = () => {
     ),
   }), []);
 
-  const imageAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(
+  const animatedTextStyle = useAnimatedStyle(() => ({
+    opacity: withSpring(
       interpolate(
         scrollY.value,
         [0, HEADER.SCROLL_DISTANCE / 2, HEADER.SCROLL_DISTANCE],
-        [1, 0.5, 0],
+        [0, 0.5, 1],
       ),
-      TIMING_CONFIG
-    ),
-    transform: [{
-      translateY: withSpring(
-        interpolate(
-          scrollY.value,
-          [0, HEADER.SCROLL_DISTANCE],
-          [0, -50],
-        ),
-        SPRING_CONFIG
-      ),
-    }],
-  }), []);
+      SPRING_CONFIG
+    )
+  }));
 
+  const animatedBgStyle = useAnimatedStyle(() => ({
+    backgroundColor: 
+      interpolateColor(
+        scrollY.value,
+        [0, HEADER.SCROLL_DISTANCE],
+        ['transparent', COLOR.WHITE]
+      )
+  }))
   // scroll handler
   const handleScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -138,15 +134,31 @@ const StoryDetails = () => {
 
   // header components
   const HeaderImage = useMemo(() => (
-    <Animated.View style={[styles.imageContainer, headerAnimatedStyle]}>
+    <Animated.View style={[styles.imageContainer, {height: imageAnimatedStyle.height}]}>
       <Animated.Image
         source={get_image}
-        style={[styles.articleImage, imageAnimatedStyle, headerAnimatedStyle]}
+        style={[styles.articleImage, imageAnimatedStyle]}
         resizeMethod="resize"
         resizeMode="cover"
       />
     </Animated.View>
-  ), [get_image, headerAnimatedStyle, imageAnimatedStyle]);
+  ), [get_image, imageAnimatedStyle]);
+
+  // back button
+  const BackButton = React.memo(({ navigation }: { navigation: any }) => (
+    <Animated.View style={[styles.backBtn, animatedBgStyle]}>
+      <Icons
+        name="back"
+        _color={COLOR.WHITE}
+        press={() => runOnJS(navigation.goBack())}
+      />
+      <Animated.Text style={[{
+        ...styles.articleAuthor,
+        color: COLOR.WHITE,
+      }, animatedTextStyle]}>{source?.name}</Animated.Text>
+      <View />
+    </Animated.View>
+  ));
 
   return (
     <View style={styles.container}>
@@ -159,6 +171,7 @@ const StoryDetails = () => {
         onScroll={handleScroll}
         removeClippedSubviews={true}
         overScrollMode="never"
+        // scrollEnabled={scrollEnabled}
         bounces={false}
       >
         <View style={styles.articleInfo}>
@@ -195,28 +208,26 @@ const styles = StyleSheet.create({
   },
   backBtn: {
     position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    // gap: DIMEN.CONSTANT.XLG,
+    justifyContent: 'space-between',
     zIndex: 10,
     padding: DIMEN.CONSTANT.SM,
     backgroundColor: COLOR.NEUTRAL_2,
-    borderRadius: DIMEN.CONSTANT.XLG,
-    margin: DIMEN.MARGIN.XSM,
-    marginLeft: DIMEN.MARGIN.LG,
+    // borderRadius: DIMEN.CONSTANT.ME,
+    // margin: DIMEN.MARGIN.XSM,
+    marginHorizontal: DIMEN.MARGIN.ME,
     elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    width: '95%',
+    shadowColor: COLOR.NEUTRAL_1,
   },
   imageContainer: {
-    overflow: 'hidden',
     paddingHorizontal: DIMEN.CONSTANT.ME,
-    height: HEADER.MAX_HEIGHT,
     zIndex: 1,
-    width: '100%',
   },
   articleImage: {
     width: '100%',
-    height: HEADER.MAX_HEIGHT,
     borderRadius: DIMEN.CONSTANT.SM,
   },
   articleInfo: {

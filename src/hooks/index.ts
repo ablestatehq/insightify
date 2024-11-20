@@ -1,13 +1,17 @@
-import { useUser } from "@src/context/UserContext";
-import { useProducts } from "@src/context/ProductContext";
-import { usePosts } from "@src/context/post-context";
-import { useCodeTips } from "@src/context/TipsContext";
-import { useOffers } from "@src/context/OpportunityContext";
+import {useUser} from "@src/context/UserContext";
+import {useProducts} from "@src/context/ProductContext";
+import {usePosts} from "@src/context/post-context";
+import {useCodeTips} from "@src/context/TipsContext";
+import {useOffers} from "@src/context/OpportunityContext";
 
 import useChat from './useChat';
 import useFilter from "./useFilter";
 import useLocalStorage from "./useLocalStorage";
-import { useNetworkStatus, registerBackgroundFetchAsync, unregisterBackgroundFetchAsync } from "./useNetworkStatus";
+import {
+  background_func,
+  // useNetworkStatus,
+  registerBackgroundFetchAsync, unregisterBackgroundFetchAsync
+} from "./useNetworkStatus";
 import useOpportunities from "./useOpportunities";
 import useProfile from "./useProfile";
 import usePushNotifications from "./usePushNotification";
@@ -21,7 +25,7 @@ export {
   useChat,
   useFilter,
   useLocalStorage,
-  useNetworkStatus,
+  background_func,
   useOpportunities,
   useProfile,
   usePushNotifications,
