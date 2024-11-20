@@ -342,8 +342,44 @@ async function sendEmail(email:string, jwt: string) {
   }
 };
 
+async function get_users() {
+  const options = {
+    method: 'GET',
+    headers: {
+    'content-type': 'application/json',
+    'Authorization': `Bearer ${STRAPI_TOKEN}`
+    },
+  }
+
+  const response = fetch(`${STRAPI_BASE_URL}/users?populate=*`, options)
+    .then(response => response.json())
+    .then(storedData => storedData)
+    .catch(error => {});
+  
+  return response;
+}
+
+async function get_user_data(id: number) {
+  const options = {
+    method: 'GET',
+    headers: {
+    'content-type': 'application/json',
+    'Authorization': `Bearer ${STRAPI_TALENT_FORM_API_KEY}`
+    },
+  }
+
+  const response = fetch(`${STRAPI_BASE_URL}/users/${id}?populate=*`, options)
+    .then(response => response.json())
+    .then(storedData => storedData)
+    .catch(error => {});
+  
+  return response;
+}
+
 export {
   getMe,
+  get_users,
+  get_user_data,
   sendEmail,
   getFilteredData,
   storeData,
