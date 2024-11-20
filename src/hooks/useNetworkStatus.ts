@@ -1,31 +1,27 @@
 import * as Network from 'expo-network';
 import * as BackgroundFetch from 'expo-background-fetch';
 import {BGTASKS} from '@constants/constants';
+import { getData } from '@api/grapiql';
+import { NotificationController } from '@src/helper/notifications';
 
-export const useNetworkStatus = async () => {
+export const background_func = async () => {
   try {
-    notifyServerDeviceIsOnline();
-    return BackgroundFetch.BackgroundFetchResult.NewData;
-  } catch (error) {}
-};
-
-const notifyServerDeviceIsOnline = async () => {
-   try {
+     // check if there is active internet
     const networkState = await Network.getNetworkStateAsync();
-     if (networkState.isConnected) {
-       // If the network is connected. 
-       // Establish a connect to the server.zZ
-      //  const ws = new WebSocket('ws://host.com/path');
-      //  ws.onopen = () => {Z
-      //    ws.send('Any missed notifications')
-      //  }
-      // const now = new Date();
-      // NotificationController.schedulePushNotification(
-      //     'Insightify',
-      //     `Got background fetch call at date: `,
-      //     'Back online', 2
-      //   );
-    }
+    if (!networkState.isConnected || !networkState.isInternetReachable) {
+      return BackgroundFetch.BackgroundFetchResult.NoData;
+    };
+    
+    // check notification right now
+    const response = (await getData('posts')).data;
+
+    if (response.length > 0) {
+      NotificationController.schedulePushNotification(
+        'You were mentioned!',
+        'Check out what your friend said about you.'
+      )
+    };
+
     return BackgroundFetch.BackgroundFetchResult.NewData;
   } catch (error) {
     return BackgroundFetch.BackgroundFetchResult.Failed;
@@ -33,19 +29,13 @@ const notifyServerDeviceIsOnline = async () => {
 };
 
 export const registerBackgroundFetchAsync = async () => {
-  try {
-    await BackgroundFetch.registerTaskAsync(BGTASKS.CHECK_ONLINE_STATUS, {
-      minimumInterval: 1* 60,
-      stopOnTerminate: false,
-      startOnBoot: true,
-    });
-  } catch (error) {
-  }
+  return BackgroundFetch.registerTaskAsync(BGTASKS.CHECK_ONLINE_STATUS, {
+    minimumInterval: 60 * 1, 
+    stopOnTerminate: false,
+    startOnBoot: true,
+  })
 };
 
 export const unregisterBackgroundFetchAsync = async () => {
-  try {
-    await BackgroundFetch.unregisterTaskAsync(BGTASKS.CHECK_ONLINE_STATUS);
-  } catch (error) {
-  }
+    return BackgroundFetch.unregisterTaskAsync(BGTASKS.CHECK_ONLINE_STATUS);
 };

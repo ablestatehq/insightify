@@ -79,15 +79,15 @@ class NotificationHandler {
   }
 
   // Schedule a local push notification
-  async schedulePushNotification(title: string, body: string, data: string, secs: number) {
+  async schedulePushNotification(title: string, body: string, data?: string, secs?: number) {
     try {
       await Notifications.scheduleNotificationAsync({
         content: {
           title,
           body,
-          data: { data },
+          // data: data ? { data } : null,
         },
-        trigger: { seconds: secs },
+        trigger: secs ? { seconds: secs } : null,
       });
     } catch (error: any) {}
   }

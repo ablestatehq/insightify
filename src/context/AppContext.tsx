@@ -1,7 +1,7 @@
 import React, { useState, createContext, useEffect, useCallback } from 'react';
 
 import { getData } from '@api/grapiql';
-import { getMe } from '@api/strapiJSAPI';
+import { get_users, getMe } from '@api/strapiJSAPI';
 import { retrieveLocalData } from '@utils/localStorageFunctions';
 import ProductProvider from './ProductContext';
 import { createClientSocket } from '@src/lib/socket';
@@ -107,7 +107,8 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
         retrieveLocalData('isMember'),
         retrieveLocalData('tokens'),
       ]);
-
+      // const users = await get_users();
+      // console.log(users[1]);
       // User & Notification Logic
       if (isNofityOn) {
         setIsNotificationEnabled(isNofityOn.isPushNotificationEnabled);
