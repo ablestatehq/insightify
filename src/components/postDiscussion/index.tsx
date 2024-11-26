@@ -1,32 +1,47 @@
-import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react'
+import { SuggestionsProvidedProps, TriggersConfig, useMentions } from 'react-native-more-controlled-mentions';
+
 import { COLOR, DIMEN, FONTSIZE } from '@src/constants/constants';
-// import { MentionSuggestionsProps } from 'react-native-controlled-mentions'
 import { PostDiscussionModal } from '@src/types';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FONT_NAMES } from '@src/assets/fonts/fonts';
 import { get_users, storeData } from '@api/strapiJSAPI';
 import { AppContext } from '@src/context';
 
-const Titles = [
-  'Ask a question to the community',
-  'Ask for feedback',
-  'Share what you are working on',
-];
-
-interface Selection {
-  start: number;
-  end: number;
-}
-
+// regex expression
 const men_regex = /(@\w+)/g;
 const hash_tag = /(#\w+)/g;
+
+
+const triggersConfig: TriggersConfig<'mention' | 'hashtag'> = {
+  mention: {
+    trigger: '@',
+    allowedSpacesCount: 0,
+    isInsertSpaceAfterMention: true,
+    textStyle: {
+      color: COLOR.PRIMARY_200,
+      fontSize: FONTSIZE.SMALL,
+      fontWeight: 'bold'
+    },
+  },
+  hashtag: {
+    trigger: '#',
+    allowedSpacesCount: 0,
+    isInsertSpaceAfterMention: true,
+    textStyle: {
+      color: COLOR.PRIMARY_200,
+      fontSize: FONTSIZE.SMALL,
+      fontWeight: 'bold'
+    },
+  },
+};
 
 const Index = ({ visible, close, setPost }: PostDiscussionModal) => {
   // states
   const [topic, setTopic] = useState('');
   const [content, setContent] = useState('');
-  const [mentions, setMentions] = useState<string[]>([]);
+  const [mentions, setMentions] = useState<number[]>([]);
   const [hashTag, setHashTag] = useState<string[]>([]);
   const [users, setUsers] = useState<any[]>([]);
 
@@ -46,65 +61,36 @@ const Index = ({ visible, close, setPost }: PostDiscussionModal) => {
     close()
   }, []);
 
-  const handle_change = (text: string) => {
-    const mentions_ = text.match(men_regex);
-    const hash_tags = text.match(hash_tag);
-    if (mentions_) {
-      setMentions([...mentions_]);
+  // hooks
+  const { textInputProps, triggers } = useMentions({
+    value: content,
+    onChange: setContent,
+    triggersConfig,
+  });
+
+  const Suggestions: FC<SuggestionsProvidedProps> = ({
+    keyword,
+    onSelect
+  }) => {
+    if (keyword == null) {
+      return null;
     }
-    if (hash_tags) {
-      setHashTag([...hash_tags]);
-    }
-    setContent(text);
-  }
-  // const renderSuggestions: FC<MentionSuggestionsProps> = ({ keyword, onSuggestionPress }) => {
-  //   if (keyword == null) {
-  //     return null;
-  //   }
-  //   return (
-  //     <ScrollView>
-  //       {users
-  //         .filter(one => one.name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
-  //         .map(one => (
-  //           <Pressable
-  //             key={one.id}
-  //             onPress={() => onSuggestionPress(one)}
 
-  //             style={{ padding: 12 }}
-  //           >
-  //             <Text>{one.name}</Text>
-  //           </Pressable>
-  //         ))
-  //       }
-  //     </ScrollView>
-  //   );
-  // };
-  // const renderHashtagSuggestions: FC<MentionSuggestionsProps> = ({ keyword, onSuggestionPress }) => {
-  //   if (keyword == null) {
-  //     return null;
-  //   }
-  //   return (
-  //     <ScrollView>
-  //       {users
-  //         .filter(one => one.name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
-  //         .map(one => (
-  //           <Pressable
-  //             key={one.id}
-  //             onPress={() => onSuggestionPress(one)}
-
-  //             style={{ padding: 12 }}
-  //           >
-  //             <Text>{one.name}</Text>
-  //           </Pressable>
-  //         ))
-  //       }
-  //     </ScrollView>
-  //   );
-  // };
-
-  const getPlainString = () => {
-
-  }
+    return (
+      <FlatList
+        contentContainerStyle={styles.suggestionsContainer}
+        data={users.filter(one => one.name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))}
+        renderItem={({ item }) =>
+          <Pressable onPress={() => {
+            setMentions([...mentions, item.id]);
+            onSelect(item)
+          }}>
+            <Text>{item.name}</Text>
+          </Pressable>
+        }
+      />
+    );
+  };
 
   useEffect(() => {
     (async () => {
@@ -112,8 +98,7 @@ const Index = ({ visible, close, setPost }: PostDiscussionModal) => {
       setUsers(data);
     })();
   }, []);
-  // console.log(content);
-  // console.log(mentions)
+
   return (
     <Modal visible={visible}>
       <View style={styles.container}>
@@ -126,9 +111,7 @@ const Index = ({ visible, close, setPost }: PostDiscussionModal) => {
         </View>
 
         <View style={styles.topicContainer}>
-          {/* <Text style={styles.topicLabel}>Set a topic</Text> */}
           <View style={styles.topicProfileSection}>
-            {/* {!topic.trim() && <ProfileCard />} */}
             <TextInput
               style={styles.topicInput}
               placeholder="Title"
@@ -139,52 +122,17 @@ const Index = ({ visible, close, setPost }: PostDiscussionModal) => {
         </View>
 
         <View style={styles.contentContainer}>
-          {/* <Text style={styles.contentPrompt}>Ask a question to the community</Text> */}
           <Text style={styles.contentPrompt}>Details</Text>
+          <Suggestions {...triggers.mention} />
           <TextInput
             style={styles.contentInput}
             placeholder={`Post details`}
             placeholderTextColor={COLOR.GREY_100}
             multiline
-            onChangeText={handle_change}
+            {...textInputProps}
             textAlign="left"
             textAlignVertical="top"
-          >
-            <Text style={styles.input_content}>
-              {content.split(/([@#]\w+)/g).map((part, index) => (
-                part.match(men_regex) ? (
-                  <Text key={`mention-${index}`} style={styles.mention_style}>
-                    {part}
-                  </Text>
-                ) : part.match(hash_tag) ? (
-                    <Text style={styles.mention_style}>{part}</Text>
-                ) : (
-                  <Text key={`text-${index}`} style={styles.input_content}>{part}</Text>
-                )
-              ))}
-            </Text>
-          </TextInput>
-          {/* <MentionInput
-            value={content}
-            onChange={setContent}
-            partTypes={[{
-              trigger: '@',
-              renderSuggestions,
-              isInsertSpaceAfterMention: true,
-              textStyle: styles.mention_style,
-              isBottomMentionSuggestionsRender: true,
-              // getPlainString,
-            }, {
-              trigger: '#',
-              renderSuggestions: renderHashtagSuggestions,
-              textStyle: styles.mention_style,
-            },]}
-            multiline
-            containerStyle={styles.contentInput}
-            textAlign="left"
-            textAlignVertical="top"
-            placeholder={`Post details`}
-          /> */}
+          />
         </View>
       </View>
     </Modal>
@@ -270,7 +218,6 @@ const styles = StyleSheet.create({
   },
   hash_tag: {},
   mention_style: {
-    // color: 'blue',
     color: COLOR.PRIMARY_200,
     fontSize: FONTSIZE.SMALL,
     fontWeight: 'bold'
@@ -278,5 +225,13 @@ const styles = StyleSheet.create({
   input_content: {
     color: COLOR.GREY_300,
     fontFamily: FONT_NAMES.Body,
-  }
+  },
+  suggestionsContainer: {
+    // position: 'absolute',
+    top: 0,
+    backgroundColor: "#fff",
+    // borderWidth: 1,
+    borderRadius: 8,
+    maxHeight: 150,
+  },
 });

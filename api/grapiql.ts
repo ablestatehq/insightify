@@ -1,5 +1,6 @@
 import {MODALS} from "./modal";
 import {environments} from "../src/constants/environments";
+import { STRAPI_BASE_URL } from "@env";
 
 const {STRAPI_TOKEN, BASE_URL, NEWS_API_KEY, NEWS_URL} = environments;
 
@@ -69,34 +70,82 @@ async function fetchNewItems(endpoint: keyof typeof MODALS) {
   return [];
 };
 
-
-async function uploadImage(uri: string, jwt: string, refId: string, field: string, imageName: string) {
-  const response = await fetch(uri);
-  const blob = await response.blob();
-  const mutation = `mutation UploadImage($file: Upload!, $refId: ID!, $ref: String!, $field: String!, $imageName: String!) {
-    upload(
-      file: $file
-      name: $imageName
-      refId: $refId
-      ref: $ref
-      field: $field
-      source: "content-manager"
-    ) {
-      id
-      url
+async function fetchDataByID(endpoint: string, itemID: number): Promise<{ data: any, error: any }> {
+  if(endpoint && itemID) {
+    try {
+      const response = await fetch(`${STRAPI_BASE_URL}/${endpoint}/${itemID}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${STRAPI_TOKEN}`
+        }
+      });
+      const data_ = await response.json();
+      const data = data_?.data ? {...data_.data?.attributes, id: data_.data?.id} : null;
+      return {
+        data,
+        error: null
+      }
+    } catch (error) {
+      return {
+        data: null,
+        error
+      }
     }
-  }`
-
-  const variables = {
-    file: {uri: uri, name: 'test.png', type: 'image/jpeg'},
-    refId: refId,
-    ref: "plugin::users-permissions.user",
-    field: field,
-    imageName: imageName
-  };
+  }
+  return {
+    data: null,
+    error: new Error('endpoint or itemID is missing')
+  }
+}
+async function uploadImage(
+  uri: string,
+  jwt: string,
+  refId: string,
+  field: string,
+  imageName: string
+): Promise<{ data: any, error: any }> {
+  if (!uri || !jwt || !refId || !field || !imageName) {
+    return {
+      data: null,
+      error: new Error('Missing parameters')
+    };
+  }
 
   try {
-    const response = await fetch('https://insightify-admin.ablestate.cloud/graphql', {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    if (!blob) {
+      return {
+        data: null,
+        error: new Error('Failed to fetch image')
+      };
+    }
+
+    const mutation = `mutation UploadImage($file: Upload!, $refId: ID!, $ref: String!, $field: String!, $imageName: String!) {
+      upload(
+        file: $file
+        name: $imageName
+        refId: $refId
+        ref: $ref
+        field: $field
+        source: "content-manager"
+      ) {
+        id
+        url
+      }
+    }`;
+
+    const variables = {
+      file: {uri: uri, name: 'test.png', type: 'image/jpeg'},
+      refId: refId,
+      ref: "plugin::users-permissions.user",
+      field: field,
+      imageName: imageName
+    };
+
+    const response2 = await fetch('https://insightify-admin.ablestate.cloud/graphql', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${jwt}`,
@@ -109,19 +158,19 @@ async function uploadImage(uri: string, jwt: string, refId: string, field: strin
       })
     });
 
-    const imageResponse = await response.json();
+    const imageResponse = await response2.json();
 
-    if (imageResponse?.data) {
-      return {
-        data: imageResponse?.data,
-        error: null
-      };
-    } else {
+    if (!imageResponse?.data) {
       return {
         data: null,
         error: imageResponse?.errors
       };
     }
+
+    return {
+      data: imageResponse?.data,
+      error: null
+    };
   } catch (error) {
     return {
       data: null,
@@ -149,4 +198,5 @@ export {
   fetchNewItems,
   uploadImage,
   fetchNextBatch,
+  fetchDataByID
 }

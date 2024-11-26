@@ -154,3 +154,26 @@ export const contactPressed = (contactProvider: string) => {
       break
   }
 }
+
+export function kSeparator(num: number): string {
+  let count: number = 0;
+  while (num >= 1000) {
+    num = num / 1000;
+    count++;
+  }
+  
+  num = Number(num.toFixed(1));
+  
+  switch(count) {
+    case 1:
+      return `${num}K`
+    case 2:
+      return `${num}M`
+    case 3:
+      return `${num}B`
+    case 5: 
+      return `${num}T`
+    default:
+      return `${num}`
+  }
+}

@@ -1,129 +1,209 @@
-import { StyleSheet, Text, View, Image, ScrollView, KeyboardAvoidingView } from 'react-native'
-import React, { useState, useCallback, useEffect, useContext } from 'react'
-import Icons from '@src/assets/icons'
-import { COLOR, DIMEN, FONTSIZE } from '@src/constants/constants'
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+  useMemo
+} from 'react'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView
+} from 'react-native'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Comment, RootStackParamList } from '@src/types'
-import { FONT_NAMES } from '@src/assets/fonts/fonts';
+
+// constants and assets imports
+import Icons from '@src/assets/icons'
+import { COLOR, DIMEN, FONTSIZE } from '@src/constants/constants'
+import { FONT_NAMES } from '@src/assets/fonts/fonts'
 import { environments } from '@src/constants/environments'
-import { resourceAge } from '@src/helper/functions'
+
+// type imports
+import { Comment, RootStackParamList } from '@src/types'
+
+// component and hook imports
 import { Comment_, CommentList, Dot } from '@src/components'
 import { usePosts } from '@src/hooks'
 import { AppContext } from '@src/context'
 
+// utility imports
+import { kSeparator, resourceAge } from '@src/helper'
+import count_post_view from '@src/utils/count_views'
+
 const { BASE_URL } = environments;
-const Index = () => {
+
+const DiscussionScreen = () => {
+  // navigation and route hooks
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'Discussion'>>();
 
-  // state 
+  // custom hooks
+  const { posts, setPost } = usePosts();
+  const { fetchComments, submitComment } = usePosts();
+
+  // context
+  const { jwt } = useContext(AppContext);
+
+  // route parameters
+  const { id } = route.params;
+
+  // prevent unnecessary recalculations
+  const post_data = useMemo(() =>
+    posts.find((product: any) => product?.id === id),
+    [posts, id]
+  );
+
+  // state
   const [comments, setComments] = useState<Comment[]>([]);
   const [comment, setComment] = useState<string>('');
   const [replyTo, setReplyTo] = useState<Comment | null>(null);
-  const {
-    id,
-    author,
-    content,
-    createdAt,
-    media,
-    mentions,
-    poll,
-    topics,
-    type,
-    updatedAt,
-    views,
-    meta,
-  } = route.params;
 
-  const getImage = useCallback((url: string) => ({uri: `${BASE_URL}${url}`}), []);
-  const {fetchComments, submitComment} = usePosts();
-  const {jwt} = useContext(AppContext);
+  // image getter
+  const getImage = useCallback((url: string) => ({
+    uri: `${BASE_URL}${url}`
+  }), [BASE_URL]);
 
-  useEffect(() => {
-    const _fetch = async () => {
-      const data_comments = await fetchComments(id);
-      setComments(data_comments)
-    }
+  // comment submission handler
+  const handleSubmitCommit = useCallback(async () => {
+    try {
+      if (!comment.trim()) return;
 
-    _fetch().then(() => { }).catch();
-  }, []);
+      const commentHandler = replyTo
+        ? () => submitComment(id, comment, jwt, replyTo.id)
+        : () => submitComment(id, comment, jwt);
 
-  const handleSubmitCommit = async () => {
-    if (replyTo) {
-      const _reply = await submitComment(id, comment, jwt, replyTo.id);
-      if (_reply) {
-        setComments(prev => {
-          const updateReplies = (comments: Comment[]): Comment[] => {
-            return comments.map((comment) => {
-              if (comment.id === replyTo.id) {
-                return {
+      const newComment = await commentHandler();
+
+      if (!newComment) return;
+
+      setComments(prevComments => {
+        if (replyTo) {
+          // update for nested comments
+          const updateNestedComments = (comments: Comment[]): Comment[] =>
+            comments.map(comment =>
+              comment.id === replyTo.id
+                ? {
                   ...comment,
-                  children: [_reply, ...(comment.children || [])],
-                };
-              }
-              // run recursion on the nested children
-              return comment.children ? { children: updateReplies(comment.children) , ...comment } : comment;
-            });
-          };
-          return updateReplies(prev);
-        });
-        setComment('');
-        setReplyTo(null);
-      }
-      console.log(replyTo);
-    } else {
-      const _comment = await submitComment(id, comment, jwt);
-      if (_comment) {
-        setComments([...comments, _comment as Comment]);
-        setComment('');
-        setReplyTo(null);
-      }
+                  children: [newComment, ...(comment.children || [])]
+                }
+                : comment.children
+                  ? { ...comment, children: updateNestedComments(comment.children) }
+                  : comment
+            );
+
+          return updateNestedComments(prevComments);
+        }
+
+        return [...prevComments, newComment as Comment];
+      });
+
+      // reset comment state
+      setComment('');
+      setReplyTo(null);
+    } catch (error) {
+      console.error('Comment submission error:', error);
     }
-  }
+  }, [id, comment, jwt, replyTo, submitComment]);
+
+  // post update function
+  const updatePosts = useCallback((id_: number, views_: number) => {
+    setPost(prevPosts =>
+      prevPosts.map(post =>
+        post.id === id_ ? { ...post, views: views_ } : post
+      )
+    );
+  }, [setPost]);
+
+  // fetching and post count effect
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await count_post_view(id, jwt, updatePosts);
+        const data_comments = await fetchComments(id);
+        setComments(data_comments);
+      } catch (error) {
+        console.error('Data fetching error:', error);
+      }
+    };
+
+    fetchData();
+  }, [id, jwt, fetchComments, updatePosts]);
+
+  // render methods
+  const renderProfileImage = useMemo(() => {
+    const photoUrl = post_data?.author?.data?.attributes?.photo?.data?.attributes?.url;
+    return photoUrl
+      ? <Image
+        source={getImage(photoUrl)}
+        style={styles.profileImage}
+      />
+      : <Icons name='user' _color={COLOR.GREY_200} size={25} />;
+  }, [post_data, getImage]);
+
   return (
     <KeyboardAvoidingView style={styles.container}>
-      {/* <View style={styles.container}> */}
       <View style={styles.nav_view}>
-        <Icons name='back' size={20} _color={COLOR.GREY_200} press={() => navigation.goBack()} />
+        <Icons
+          name='back'
+          size={20}
+          _color={COLOR.GREY_200}
+          press={() => navigation.goBack()}
+        />
         <Text style={styles.heading_text}>Square</Text>
         <View />
-        {/* <Icons name='Share' press={() => { }} style={styles.share_icon} size={10} _color={COLOR.GREY_200} /> */}
       </View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll_view_style}
-        keyboardShouldPersistTaps="always">
+        keyboardShouldPersistTaps="always"
+      >
         <View style={styles.starter_profile}>
-          {author?.data?.attributes?.photo.data ?
-            <Image source={getImage(author.data.attributes?.photo?.data?.attributes?.url)} style={styles.profileImage} /> :
-            <Icons name='user' _color={COLOR.GREY_200} size={25} />}
-          <Text style={styles.start_name_txt}>{`${author.data.attributes.firstName} ${author.data.attributes.lastName}`}</Text>
+          {renderProfileImage}
+          <Text style={styles.start_name_txt}>
+            {`${post_data?.author.data.attributes.firstName} ${post_data?.author.data.attributes.lastName}`}
+          </Text>
         </View>
 
         <View style={styles.starter_view_b}>
-          <Text style={styles.small_text}>{resourceAge(new Date(createdAt as string))}</Text>
+          <Text style={styles.small_text}>
+            {resourceAge(new Date(post_data?.createdAt as string))}
+          </Text>
           <Dot />
-          <Text style={styles.small_text}>{comments.length} replies</Text>
+          <Text style={styles.small_text}>
+            {comments.length} replies
+          </Text>
         </View>
 
-        {/* like Section */}
         <View style={styles.square_heading_view}>
-          <Text style={styles.square_heading_txt}>{topics.data.at(0)?.attributes.name}</Text>
+          <Text style={styles.square_heading_txt}>
+            {post_data?.topics.data.at(0)?.attributes.name}
+          </Text>
           <View style={styles.likeContainer}>
-            {/* <Icons name='heart' size={15} /> */}
+            <Text style={styles.likeCount}>
+              {post_data?.views ? kSeparator(post_data?.views) : 0}
+            </Text>
             <Text style={styles.view_text_text}>views</Text>
-            <Text style={styles.likeCount}>{views ? views : 0}</Text>
           </View>
         </View>
 
-        {/* content  */}
-        {content && <Text style={styles.content_text}>{content}</Text>}
+        {post_data?.content && (
+          <Text style={styles.content_text}>
+            {post_data.content}
+          </Text>
+        )}
 
-        {/* replies  */}
-        <CommentList comments={comments} title='Replies' setReplyTo={setReplyTo} />
+        <CommentList
+          comments={comments}
+          title='Replies'
+          setReplyTo={setReplyTo}
+        />
       </ScrollView>
+
       <Comment_
         replyTo={replyTo}
         setReplyTo={setReplyTo}
@@ -131,12 +211,11 @@ const Index = () => {
         setComment={setComment}
         handleSubmitCommit={handleSubmitCommit}
       />
-      {/* </View> */}
     </KeyboardAvoidingView>
-  )
-}
+  );
+};
 
-export default Index
+export default React.memo(DiscussionScreen);
 
 const styles = StyleSheet.create({
   container: {

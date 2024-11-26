@@ -1,56 +1,76 @@
-import {StyleSheet, View, Image, Pressable, Text} from 'react-native'
 import React from 'react'
-import {Post, RootStackParamList, SquareProps} from '@src/types';
 import Animated from 'react-native-reanimated';
-import EmptyState from '../EmptyState';
-import Icons from '@src/assets/icons';
-import {COLOR, DIMEN, FONTSIZE} from '@src/constants/constants';
-import {FONT_NAMES} from '@src/assets/fonts/fonts';
 import {useNavigation} from '@react-navigation/native';
+import {StyleSheet, View, Image, Pressable, Text} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {environments} from '@src/constants/environments';
+
+import EmptyState from '../EmptyState';
+import {kSeparator} from '@src/helper';
+import {FONT_NAMES, Icons} from '@src/assets';
+import {Post, RootStackParamList, SquareProps} from '@src/types';
+import {COLOR, DIMEN, FONTSIZE, environments} from '@src/constants';
 
 const {BASE_URL} = environments;
-const Index = ({ discussions}: SquareProps) => {
+const DiscussionList = ({ discussions }: SquareProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const renderDiscussion = ({ item, index }: { item: Post, index: number }) => {
-    const getImage = () => ({uri: `${BASE_URL}${item?.author?.data?.attributes.photo.data.attributes.url}` })
-    return (
-      <Pressable style={styles.card} onPress={() => navigation.navigate('Discussion', {...item})} key={index}>
-        {/* Profile Image */}
-        {item.author?.data?.attributes?.photo?.data ?
-          <Image source={getImage()} style={styles.profileImage} /> :
-          <Icons name='user' _color={COLOR.GREY_200} size={20} />}
 
-        {/* Content */}
-        <View style={styles.content}>
-          {item?.topics && <Text style={styles.title} numberOfLines={2}>{item?.topics?.data?.at(0)?.attributes?.name}</Text>}
-          <Text style={styles.description} numberOfLines={2} ellipsizeMode='tail'>{item?.content}</Text>
-        </View>
+  const renderItem = 
+    ({ item, index }: { item: Post, index: number }) => {
+      const image = item?.author?.data?.attributes?.photo?.data?.attributes?.url
+        ? { uri: `${BASE_URL}${item?.author?.data?.attributes?.photo?.data?.attributes?.url}` }
+        : null;
 
-        {/* like Section */}
-        <View style={styles.likeContainer}>
-          {/* <Icons name='heart' size={15}/> */}
-          <Text style={styles.view_text_style}>views</Text>
-          <Text style={styles.likeCount}>{item?.views ? item?.views : 0}</Text>
-        </View>
-      </Pressable>
-    )
-  }
+      return (
+        <Pressable
+          style={styles.card}
+          onPress={() => navigation.navigate('Discussion', { ...item })}
+          key={index}
+        >
+          {/* Profile Image */}
+          {image ? (
+            <Image source={image} style={styles.profileImage} />
+          ) : (
+            <Icons name="user" _color={COLOR.GREY_200} size={20} />
+          )}
+
+          {/* Content */}
+          <View style={styles.content}>
+            {item?.topics?.data?.at(0)?.attributes?.name && (
+              <Text style={styles.title} numberOfLines={2}>
+                {item?.topics?.data?.at(0)?.attributes?.name}
+              </Text>
+            )}
+            <Text style={styles.description} numberOfLines={2} ellipsizeMode="tail">
+              {item?.content}
+            </Text>
+          </View>
+
+          {/* like Section */}
+          <View style={styles.likeContainer}>
+            <Text style={styles.likeCount}>{item?.views ? kSeparator(item?.views) : 0}</Text>
+            <Text style={styles.view_text_style}>views</Text>
+          </View>
+        </Pressable>
+      );
+    }
+
   return (
     <View style={styles.container}>
       <Animated.FlatList
         data={discussions}
         keyExtractor={(item, index) => `${index}-${item.id}`}
-        renderItem={renderDiscussion}
-        ListEmptyComponent={<EmptyState text='Discussions' />}
+        renderItem={renderItem}
+        ListEmptyComponent={<EmptyState text="Discussions" />}
         contentContainerStyle={styles.scrollStyle}
+        initialNumToRender={5}
+        maxToRenderPerBatch={5}
+        windowSize={5}
       />
     </View>
-  )
+  );
 }
 
-export default Index;
+export default DiscussionList;
 
 const styles = StyleSheet.create({
   container: {
@@ -66,7 +86,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     backgroundColor: COLOR.WHITE,
     paddingHorizontal: DIMEN.CONSTANT.XSM,
-    borderBottomWidth: 1, 
+    borderBottomWidth: 1,
     borderBottomColor: COLOR.GREY_50,
     paddingVertical: DIMEN.PADDING.LG,
   },
