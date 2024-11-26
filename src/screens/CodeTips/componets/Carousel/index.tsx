@@ -1,11 +1,10 @@
 import React, { useCallback } from 'react';
 import { View, StyleSheet, FlatList, ListRenderItem } from 'react-native';
 
-import { EmptyState } from '@components/index';
+import { EmptyState, ListFooter } from '@components/index';
 import TipItem from '../TipItem';
 
-import { FONT_NAMES } from '@fonts';
-import { COLOR, DIMEN, FONTSIZE } from '@constants/constants';
+import { DIMEN } from '@constants/constants';
 
 const { SCREENWIDTH } = DIMEN;
 
@@ -19,13 +18,15 @@ interface CarouselProps {
   tips: any[];
   setTips: React.Dispatch<React.SetStateAction<any>>;
   comments: any[];
+  handleEndReached: () => void
 }
 
 const Index: React.FC<CarouselProps> = ({
-  data,
-  tips,
+  data =[],
+  tips = [],
   setTips,
-  comments
+  comments = [],
+  handleEndReached=() => {}
 }) => {
   // render
   const renderItem: ListRenderItem<TipData> = ({ item }) => (
@@ -56,6 +57,9 @@ const Index: React.FC<CarouselProps> = ({
         maxToRenderPerBatch={10}
         windowSize={5}
         removeClippedSubviews={true}
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={<ListFooter loading={false} text="No more tips" />}
         getItemLayout={(_, index) => ({
           length: SCREENWIDTH - 30,
           offset: (SCREENWIDTH - 30) * index,
@@ -73,6 +77,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    paddingBottom: 50,
   },
 });
 

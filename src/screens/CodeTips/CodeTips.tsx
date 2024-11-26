@@ -24,7 +24,8 @@ const CodeTips = () => {
     carouselData,
     setCodeTips,
     comments,
-    codeTips
+    codeTips,
+    handleEndReached,
   } = useCodeTips();
 
   return (
@@ -56,7 +57,13 @@ const CodeTips = () => {
       </View>
       <View style={styles.carouselStyle}>
         <React.Suspense fallback={<ActivityIndicator size='small' color={COLOR.PRIMARY_300} />}>
-          <Carousel data={carouselData} setTips={setCodeTips} comments={comments} tips={codeTips} />
+          <Carousel
+            data={carouselData}
+            setTips={setCodeTips}
+            comments={comments}
+            tips={codeTips}
+            handleEndReached={handleEndReached}
+          />
         </React.Suspense>
       </View>
     </View>

@@ -1,4 +1,4 @@
-import {getData} from "@api/grapiql";
+import {fetchNextBatch, getData} from "@api/grapiql";
 import {environments} from "@constants/environments";
 import {ProductData} from "@src/types";
 import {storeToLocalStorage} from "@src/utils/localStorageFunctions";
@@ -32,6 +32,7 @@ interface ProductContextType {
   fetchComments: (id: number) => Promise<Comment[]>;
   toggleBookmark: (id: number) => void;
   submitComment: (id: number, comment: string, jwt: string) => Promise<Comment | null>;
+  fetchAdditionalData: (endpoint: string, start: number) => Promise<void>;
 };
 
 const {BASE_URL, STRAPI_TOKEN} = environments;
@@ -58,15 +59,7 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
   };
 
   const fetchProducts = async () => {
-    // const productsData = (await getData('products')).data;
-    // const localProducts = await retrieveLocalData('products') ?? [];
-
-    // const updatedProducts = productsData.map((product: ProductData) => ({
-    //   ...product,
-    //   meta: { ...product.meta, bookmarked: localProducts.find((p: ProductData) => p.id === product.id)?.meta?.bookmarked ?? false }
-    // }));
     const products_data = await fetchWithCache('products',() => getData('products'))
-    // // Combine remote data with local updates
 
     setProducts(products_data);
   };
@@ -108,12 +101,33 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
       return null
     }
   }
+
+  const fetchAdditionalData = async (endpoint: string, start: number) => {
+    try {
+      const newProducts = await fetchNextBatch('products', start as number);
+      if (!newProducts.data && newProducts.error) {
+        return;
+      }
+      setProducts(prev => {
+        const existingIds = prev.map((item) => item.id);
+        const filteredProducts = newProducts.data.filter((item: any) => !existingIds.includes(item.id));
+        return [...prev, ...filteredProducts];
+      });
+    } catch (error: any) { }
+  };
   useEffect(() => {
     fetchProducts();
   }, []);
 
   return (
-    <ProductContext.Provider value={{products, setProducts, fetchComments, toggleBookmark, submitComment}}>
+    <ProductContext.Provider value={{
+      products,
+      setProducts,
+      fetchComments,
+      toggleBookmark,
+      submitComment,
+      fetchAdditionalData
+    }}>
       {children}
     </ProductContext.Provider>
   );

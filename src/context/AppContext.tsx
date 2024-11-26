@@ -1,6 +1,6 @@
 import React, { useState, createContext, useEffect, useCallback } from 'react';
 
-import { getData } from '@api/grapiql';
+import { fetchNextBatch, getData } from '@api/grapiql';
 import { getMe } from '@api/strapiJSAPI';
 import { retrieveLocalData } from '@utils/localStorageFunctions';
 import ProductProvider from './ProductContext';
@@ -32,11 +32,7 @@ interface AppContextType {
   setIsNotificationEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   notifications: any[];
   setNotifications: React.Dispatch<React.SetStateAction<any[]>>;
-  // comments: any[];
-  // setComments: React.Dispatch<React.SetStateAction<any[]>>;
-  // community: any[];
-  // setCommunity: React.Dispatch<React.SetStateAction<any[]>>;
-  fetchAdditionalData: () => Promise<void>;
+  fetchAdditionalData: (endpoint: string, start: number) => Promise<void>;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -54,17 +50,11 @@ export const AppContext = createContext<AppContextType>({
   setIsLoggedIn: () => { },
   opportunities: [],
   setOpportunities: () => { },
-  // products: [],
-  // setProducts: () => {},
   isNotificationEnabled: false,
   setIsNotificationEnabled: () => { },
   notifications: [],
   setNotifications: () => { },
-  // comments: [],
-  // setComments: () => { },
-  // community: [],
-  // setCommunity: () => { },
-  fetchAdditionalData: async () => { },
+  fetchAdditionalData: async (endpoint: string, start: number) => {},
 });
 
 const AppContextProvider = ({ children }: AppContextProviderProps) => {
@@ -77,8 +67,6 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [codeTips, setCodeTips] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
-  // const [comments, setComments] = useState<any[]>([]);
-  // const [community, setCommunity] = useState<any[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
@@ -132,36 +120,52 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       setCodeTips(tech_tips_data);
 
     } catch (error) {
-      console.error("Error fetching initial data:", error);
+      // console.error("Error fetching initial data:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const fetchAdditionalData = async () => {
+  const fetchAdditionalData = async (endpoint: string, start: number) => {
     try {
-      const [
-        // comments_,
-        sent_notifications,
-        // community_members,
-        localNotification] = await Promise.all([
-        // (await getData('comments')).data,
-        (await getData('sentNotifications')).data,
-        // (await getData('communityMembers')).data,
-        retrieveLocalData('notifications'),
-      ]);
-
-      // if (comments_) {
-      //   setComments((prev) => [...prev, ...comments_]);
-      // }
-
-      if (localNotification) {
-        setNotifications((prev) => [...prev, ...localNotification]);
+      switch (endpoint) {
+        case 'opportunities':
+          const newOpps = await fetchNextBatch('opportunities', start);
+          if (!newOpps.data && newOpps.error) {
+            return;
+          } else {
+            setOpportunities(prev => {
+              const existingIds = prev.map((item) => item.id);
+              const filteredNewOpps = newOpps.data.filter((item:any) => !existingIds.includes(item.id));
+              return [...prev, ...filteredNewOpps];
+            });
+          }
+          break;
+        case 'techtips':
+          const newTechTips = await fetchNextBatch('techTips', start as number);
+          if (!newTechTips.data && newTechTips.error) {
+            return;
+          } else {
+            setCodeTips(prev => {
+              const existingIds = new Set(prev.map((item) => item.id));
+              const filteredNewOpps = newTechTips.data.filter((item: any) => !existingIds.has(item.id));
+              return [...prev, ...filteredNewOpps];
+            });
+          }
+          break;
+        case 'products':
+          const newProducts = await fetchNextBatch('products', start as number);
+          if (!newProducts.data && newProducts.error) {
+            return;
+          } else {
+            setCodeTips(prev => {
+              const existingIds = new Set(prev.map((item) => item.id));
+              const filteredNewProducts = newProducts.data.filter((item: any) => !existingIds.has(item.id));
+              return [...prev, ...filteredNewProducts];
+            });
+          }
+          break;
       }
-
-      // if (community_members) {
-      //   setCommunity((prev) => [...prev, ...community_members]);
-      // }
     } catch (error: any) { }
   };
 
@@ -180,16 +184,10 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     setIsLoggedIn,
     opportunities,
     setOpportunities,
-    // products,
-    // setProducts,
     isNotificationEnabled,
     setIsNotificationEnabled,
     notifications,
     setNotifications,
-    // comments,
-    // setComments,
-    // community,
-    // setCommunity,
     fetchAdditionalData,
   };
 

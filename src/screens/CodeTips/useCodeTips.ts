@@ -4,11 +4,12 @@ import {AppContext} from '@src/context/AppContext';
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 export const useCodeTips = () => {
-  const {codeTips, setCodeTips, comments} = useContext(AppContext);
+  const {codeTips, setCodeTips, fetchAdditionalData} = useContext(AppContext);
   const [category, setCategory] = useState<string>('All');
   const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
   const [carouselData, setCarouselData] = useState<any[]>([]);
+  const [comments, setComments] = useState<any[]>([]);
 
   // saved tips
   const savedTips = useMemo(() => 
@@ -19,7 +20,8 @@ export const useCodeTips = () => {
   // archived tips
   const archivedTips = useMemo(() => 
     codeTips.filter(tip => {
-      const differenceInDays = (new Date().getTime() - new Date(tip.publishedAt).getTime()) / MS_PER_DAY;
+      const differenceInDays =
+        (new Date().getTime() - new Date(tip.publishedAt).getTime()) / MS_PER_DAY;
       return differenceInDays > 28;
     }), 
     [codeTips]
@@ -36,6 +38,10 @@ export const useCodeTips = () => {
     setCarouselData(filteredData);
   }, [filteredData]);
 
+  const handleEndReached = async () => {
+    await fetchAdditionalData('techTips', codeTips.length);
+  }
+
   return {
     category,
     setCategory,
@@ -47,5 +53,6 @@ export const useCodeTips = () => {
     setCodeTips,
     comments,
     codeTips,
+    handleEndReached,
   };
 };

@@ -117,7 +117,6 @@ function Index() {
 
   const getImage = useCallback((url: string) => ({ uri: `${BASE_URL}${url}` }), []);
 
-  // console.log("",meta)
   return (
     <SafeAreaView style={styles.safeArea}>
       <Animated.View style={styles.navComp}>
@@ -215,6 +214,7 @@ function Index() {
         setComment={setCom}
         handleSubmitCommit={handleSubmitCommit}
         replyTo={replyTo}
+        setReplyTo={setReplyTo}
       />
       <StatusBar backgroundColor={COLOR.GREY_300} barStyle='light-content' />
     </SafeAreaView>

@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react';
-import { View, StatusBar, FlatList, StyleSheet, RefreshControl } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { View, StatusBar, FlatList, StyleSheet, RefreshControl } from 'react-native';
 import { COLOR } from '@constants/constants';
 import { useFilter } from '@src/hooks';
 import { AppContext } from '@src/context/AppContext';
@@ -9,14 +9,14 @@ import { OpportunityData, OpportunityListProps, RootStackParamList } from '@src/
 import { FONT_NAMES } from '@fonts';
 import {
   EmptyState, FloatingButton, FormModal, CategorySection,
-  FilterCard, OpportunityCard, OpportunityHeader
+  FilterCard, OpportunityCard, OpportunityHeader,
+  ListFooter
 } from '@components/index';
 import { fetchNewItems } from '@api/grapiql';
 
-
 const OpportunityList = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { opportunities, user, isLoggedIn, setOpportunities } = useContext(AppContext);
+  const { opportunities, user, isLoggedIn, setOpportunities, fetchAdditionalData} = useContext(AppContext);
   const route = useRoute<OpportunityListProps>();
   const { tag } = route.params;
   const [category, setCategory] = useState<string>(tag ?? 'Recent');
@@ -25,13 +25,17 @@ const OpportunityList = () => {
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
   const [resourceId, setResourceId] = useState<number>(0);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const onRefresh = async () => {
     try {
       setRefreshing(true);
       const newOpps = await fetchNewItems('opportunities');
-      const arr = newOpps.filter((value: OpportunityData, index: number) => value.id !== opportunities[index]?.id);
-      setOpportunities([...arr, ...opportunities]);
+      setOpportunities(prev => {
+        const existingIds = prev.map((item) => item.id);
+        const new_opps = newOpps.filter((item: OpportunityData) => !existingIds.includes(item.id));
+        return [...new_opps, ...prev];
+      });
     } catch (error) {
 
     } finally {
@@ -41,13 +45,32 @@ const OpportunityList = () => {
       setRefreshing(false);
     }, 2000);
   }
-  const [filteredOpportunities, isLoading] =
-    useFilter(category, opportunities, filteredItems);
+
+  // filter data called when opportunities change or when category or filteredItems change
+  const offers =
+    useCallback(() =>
+      useFilter(category, opportunities, filteredItems),
+      [opportunities, category, filteredItems]);
+  
+  // call and set filtered data
+  const [filteredOpportunities, isLoading] = offers();
 
   const toggleFilterCard = () => {
     setShowFilterCard(!showFilterCard);
   };
 
+  // handle end of list
+  const handleEndReached = useCallback(async () => {
+    setLoading(true);
+    try {
+      await fetchAdditionalData('opportunities', opportunities.length);
+      
+    } catch (error) {
+      
+    }finally{
+      setLoading(false);
+    }
+  }, [opportunities.length]);
   const renderOpportunity =
     ({ item, index }: { item: OpportunityData, index: number }) => (
       <OpportunityCard
@@ -88,10 +111,13 @@ const OpportunityList = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={<EmptyState />}
+          ListFooterComponent={<ListFooter loading={loading} text='No more opportunities'/>}
           initialNumToRender={10}
           maxToRenderPerBatch={10}
           windowSize={5}
           removeClippedSubviews={true}
+          onEndReached={handleEndReached}
+          onEndReachedThreshold={0.5}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -142,10 +168,10 @@ const styles = StyleSheet.create({
   },
   opportunityListContainer: {
     flex: 1,
-    paddingVertical: 0.5,
   },
   scrollContent: {
     flexGrow: 1,
+    paddingBottom: 50,
   },
   noTextContainer: {
     flex: 1,
@@ -156,4 +182,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT_NAMES.Body,
     textAlign: 'center',
   },
+  list_footer: {
+    height: 200,
+  }
 });

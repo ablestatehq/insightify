@@ -19,8 +19,8 @@ const FilterCard: React.FC<FilterCardProps> =
   ({
     cardVisible,
     handleCardVisibility,
-    setFilteredItems,
-    filteredItems,
+    setFilteredItems=() => {},
+    filteredItems=[],
     filteredCount,
   }) => {
     const { opportunities } = useContext(AppContext);

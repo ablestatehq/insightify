@@ -2,8 +2,8 @@ import { storeToLocalStorage, retrieveLocalData } from "./localStorageFunctions"
 
  const fetchWithCache = async (
     key: string,
-    fetchFn: () => Promise<{ data: any }>,
-    transform?: (data: any) => any
+    fetchFn: () => Promise<{ data: any, error: any }>,
+   transform?: (data: any) => any,
   ): Promise<any> => {
     try {
       const response = await fetchFn();
