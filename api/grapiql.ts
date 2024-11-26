@@ -4,7 +4,11 @@ import { STRAPI_BASE_URL } from "@env";
 
 const {STRAPI_TOKEN, BASE_URL, NEWS_API_KEY, NEWS_URL} = environments;
 
-async function getData(endpoint: keyof typeof MODALS, start: number = 0, limit: number = 25) {
+async function getData(
+  endpoint: keyof typeof MODALS,
+  start: number = 0,
+  limit: number = 25
+) {
   try {
     const query = MODALS[endpoint];
     const response = await fetch(`${BASE_URL}/graphql`, {
@@ -14,30 +18,59 @@ async function getData(endpoint: keyof typeof MODALS, start: number = 0, limit: 
         'Authorization': `Bearer ${STRAPI_TOKEN}`,
         'X-REQUEST-TYPE': 'GraphQL'
       },
-      body: JSON.stringify({query, variables: {start, limit}})
+      body: JSON.stringify({
+        query, 
+        variables: { 
+          start, 
+          limit 
+        }
+      })
     });
 
-    const data = await response.json();
+    const responseData = await response.json();
 
-    if (data.data) {
-      const results = data.data[`${endpoint}`]['data'].map((res: any) => {
-        return { id: res.id, ...res.attributes }
-      });
+    // Handle GraphQL errors
+    if (responseData.errors) {
+      return {
+        data: null,
+        error: responseData.errors,
+        meta: null
+      };
+    }
+
+    // process the data
+    if (responseData.data) {
+      const dataKey = Object.keys(responseData.data)[0];
+      const rawData = responseData.data[dataKey];
+
+      const results = rawData.data.map((res: any) => ({
+        id: res.id,
+        ...res.attributes
+      }));
+
       return {
         data: results,
-        error: null
-      }
-    }
-    return {
-      data: null,
-      error: data?.error
+        error: null,
+        meta: {
+          pagination: rawData.meta?.pagination || null,
+          total: rawData.meta?.pagination?.total || results.length
+        }
+      };
     }
 
-  } catch (error) {
     return {
-      error,
-      data: null
-    }
+      data: null,
+      error: 'No data found',
+      meta: null
+    };
+
+  } catch (error) {
+    console.error('getData error:', error);
+    return {
+      data: null,
+      error: error instanceof Error ? error.message : 'An unknown error occurred',
+      meta: null
+    };
   }
 }
 

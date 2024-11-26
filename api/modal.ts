@@ -52,8 +52,11 @@ export const MODALS = {
   }
   }`,
 
-  'techTips': `query{
-    techTips(sort: "publishedAt:desc", pagination: {start: 0, limit: 25}){
+  'techTips': `query($start: Int, $limit: Int){
+    techTips(sort: "publishedAt:desc", pagination: { 
+          start: $start, 
+          limit: $limit 
+        }){
       data{
         id
         attributes{
@@ -68,8 +71,12 @@ export const MODALS = {
     }
   }`,
 
-  'opportunities': `query {
-    opportunities(sort: "publishedAt:desc", pagination: {start: 0, limit: 25}){
+  'opportunities': `query($start: Int, $limit: Int) {
+    opportunities(sort: "publishedAt:desc",
+    pagination: {
+          start: $start, 
+          limit: $limit 
+        }){
       data{
         id,
         attributes{
@@ -101,6 +108,14 @@ export const MODALS = {
           },
         }
       }
+        meta {
+          pagination {
+            total
+            page
+            pageSize
+            pageCount
+          }
+        }
     }
   }`,
 
@@ -109,8 +124,10 @@ export const MODALS = {
 
     }
   }`,
-  'communityMembers':`query{
-  communityMembers{
+  'communityMembers':`query($start:Int, $limit: Int){
+  communityMembers(pagination: {
+          start: $start,
+          limit: $limit}){
     data{
       id,
       attributes{
@@ -121,10 +138,21 @@ export const MODALS = {
         primaryRole
       }
     }
+    meta {
+          pagination {
+            total
+            page
+            pageSize
+            pageCount
+          }
+        }
   }
   }`,
-  'products':`query{
-  products{
+  'products':`query($start: Int, $limit: Int){
+  products(pagination: {
+          start: $start, 
+          limit: $limit 
+}){
     data{
       id
       attributes{
@@ -161,10 +189,21 @@ export const MODALS = {
         meta
       }
     }
+    meta {
+          pagination {
+            total
+            page
+            pageSize
+            pageCount
+          }
+        }
   }
   }`,
-'posts': `query {
-  posts {
+'posts': `query($start: Int, $limit: Int) {
+  posts(pagination: {
+          start: $start, 
+          limit: $limit 
+        }) {
     data {
       id
       attributes {
@@ -223,6 +262,14 @@ export const MODALS = {
         }
       }
     }
+      meta {
+          pagination {
+            total
+            page
+            pageSize
+            pageCount
+          }
+        }
   }
 }
 `
