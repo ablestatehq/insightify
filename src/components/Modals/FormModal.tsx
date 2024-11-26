@@ -15,9 +15,14 @@ interface FormModalProps {
   resourceId: number
   type: string
   author?: number
-  // resourceTitle: string
 }
-const FormModal: React.FC<FormModalProps> = ({ visible, onSubmit, resourceId, type, author }) => {
+const FormModal: React.FC<FormModalProps> = ({
+  visible = false,
+  onSubmit = () => { },
+  resourceId = 0,
+  type = '',
+  author
+}) => {
   const [comment, setComment] = useState<string>('');
   const handleSubmit = async () => {
     if (comment.length === 0) return;

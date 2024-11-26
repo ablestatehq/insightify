@@ -4,7 +4,7 @@ import { COLOR, DIMEN } from "@constants/constants";
 import Button from "../Button";
 
 interface WithSeeMoreProps<P> {
-  Component: React.ComponentType<P>
+  Component?: React.ComponentType<P>
   title?: string
   onPress?: () => void
   btn_text?: string
@@ -16,7 +16,7 @@ function Index<P extends object>(props: WithSeeMoreProps<P> & P) {
   const { Component, title, onPress, btn_text, btn_style, text_style, ...rest } = props;
   return (
     <View style={styles.container}>
-      <Component {...rest as P} />
+      {Component && <Component {...rest as P} />}
       <Button title={btn_text}
         handlePress={onPress}
         btn={{

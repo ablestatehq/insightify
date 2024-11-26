@@ -123,7 +123,7 @@ const Index = ({ visible, close, setPost }: PostDiscussionModal) => {
 
         <View style={styles.contentContainer}>
           <Text style={styles.contentPrompt}>Details</Text>
-          <Suggestions {...triggers.mention} />
+          {/* <Suggestions {...triggers.mention} /> */}
           <TextInput
             style={styles.contentInput}
             placeholder={`Post details`}

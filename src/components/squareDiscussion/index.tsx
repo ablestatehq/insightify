@@ -15,7 +15,7 @@ const DiscussionList = ({ discussions }: SquareProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const renderItem = 
-    ({ item, index }: { item: Post, index: number }) => {
+    ({ item }: { item: Post}) => {
       const image = item?.author?.data?.attributes?.photo?.data?.attributes?.url
         ? { uri: `${BASE_URL}${item?.author?.data?.attributes?.photo?.data?.attributes?.url}` }
         : null;
@@ -24,7 +24,6 @@ const DiscussionList = ({ discussions }: SquareProps) => {
         <Pressable
           style={styles.card}
           onPress={() => navigation.navigate('Discussion', { ...item })}
-          key={index}
         >
           {/* Profile Image */}
           {image ? (

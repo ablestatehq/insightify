@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Pressable, SectionList, ScrollView, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, SectionList, ActivityIndicator } from 'react-native';
 import React from 'react';
 import { NewsPost, RootStackParamList, StoryProps } from '@src/types';
 import { FONT_NAMES } from '@src/assets/fonts/fonts';

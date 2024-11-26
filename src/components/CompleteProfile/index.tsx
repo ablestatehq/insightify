@@ -12,11 +12,10 @@ import { RootStackParamList } from '@src/types';
 interface CompleteProfileProps {
   // setShowCompleteProfile: React.Dispatch<React.SetStateAction<boolean>>
   handleClose: () => void;
-  setShowProfileCard: React.Dispatch<React.SetStateAction<boolean>>
+  setShowProfileCard?: React.Dispatch<React.SetStateAction<boolean>>
 }
-const Index = ({ handleClose, setShowProfileCard }: CompleteProfileProps) => {
+const Index = ({ handleClose=() => {}, setShowProfileCard }: CompleteProfileProps) => {
 
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
     <View style={styles.container}>
       <Pressable style={styles.close} onPress={handleClose}>
@@ -25,7 +24,6 @@ const Index = ({ handleClose, setShowProfileCard }: CompleteProfileProps) => {
       <View style={styles.pictureView}>
         <View style={styles.halfBorderOverlay}>
           <MaterialIcons name="account-circle" size={70} color={COLOR.SECONDARY_100} />
-          {/* <View style={styles.halfBorderOverlay} /> */}
         </View>
         <View style={styles.textView}>
           <Text style={styles.title}>Unlock work opportunities</Text>
@@ -36,8 +34,9 @@ const Index = ({ handleClose, setShowProfileCard }: CompleteProfileProps) => {
         btn={styles.button}
         textStyle={styles.buttonText}
         title='Continue'
-        // handlePress={() => navigation.navigate('More')}
-        handlePress={() => setShowProfileCard(true)}
+        handlePress={() => {
+          if(setShowProfileCard) setShowProfileCard(true)
+        }}
       />
     </View>
   )

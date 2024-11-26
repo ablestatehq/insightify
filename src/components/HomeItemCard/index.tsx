@@ -8,10 +8,10 @@ import { OpportunityData, ProductData } from '@src/types';
 
 interface HomeItemProps {
   itemType: 'Innovation' | 'Offer'
-  item: ProductData | OpportunityData
+  item?: ProductData | OpportunityData
   press?: () => void
 }
-const Index = ({ itemType, item, press }: HomeItemProps) => {
+const Index = ({ itemType='Innovation', item, press }: HomeItemProps) => {
   const getImage = (url: string) => ({ uri: `${environments.BASE_URL}${url}` });
 
   const title = itemType === 'Innovation' ?

@@ -1,7 +1,7 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React, {useMemo} from 'react';
-import {COLOR, DIMEN, FONTSIZE} from '@src/constants/constants';
-import {FONT_NAMES } from '@src/assets/fonts/fonts';
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useMemo } from 'react';
+import { COLOR, DIMEN, FONTSIZE } from '@src/constants/constants';
+import { FONT_NAMES } from '@src/assets/fonts/fonts';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icons from '@src/assets/icons';
 import { StoryDetailsProps } from '@src/types';
@@ -42,7 +42,7 @@ const TIMING_CONFIG = {
 const Article = React.memo((
   { author, source, formattedDate, readTime }:
     {
-      author: string; 
+      author: string;
       source: NSource;
       formattedDate: string;
       readTime: string;
@@ -118,11 +118,11 @@ const StoryDetails = () => {
   }));
 
   const animatedBgStyle = useAnimatedStyle(() => ({
-    backgroundColor: 
+    backgroundColor:
       interpolateColor(
         scrollY.value,
         [0, HEADER.SCROLL_DISTANCE],
-        ['transparent', COLOR.WHITE]
+        ['transparent', COLOR.NEUTRAL_3]
       )
   }))
   // scroll handler
@@ -134,7 +134,7 @@ const StoryDetails = () => {
 
   // header components
   const HeaderImage = useMemo(() => (
-    <Animated.View style={[styles.imageContainer, {height: imageAnimatedStyle.height}]}>
+    <Animated.View style={[styles.imageContainer, { height: imageAnimatedStyle.height }]}>
       <Animated.Image
         source={get_image}
         style={[styles.articleImage, imageAnimatedStyle]}
@@ -219,7 +219,13 @@ const styles = StyleSheet.create({
     // margin: DIMEN.MARGIN.XSM,
     marginHorizontal: DIMEN.MARGIN.ME,
     elevation: 4,
-    width: '95%',
+    // width: '95%',
+    // flexGrow: 1,
+    // flex: 1,
+    // width: 'auto',
+    width: '92%',
+    // right: '5%',
+    // left: '5%',
     shadowColor: COLOR.NEUTRAL_1,
   },
   imageContainer: {

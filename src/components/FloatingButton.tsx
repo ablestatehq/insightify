@@ -10,7 +10,7 @@ interface FloatingButtonProps {
   bgColor?: string
   textColor?: string
   press?: () => void
-  buttonPosition: {
+  buttonPosition?: {
     bottom?: number
     right?: number
     left?: number

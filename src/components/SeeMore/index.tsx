@@ -8,7 +8,7 @@ interface SeeMoreSectionProps {
   text?: string;
   onPress?: () => void;
 }
-const Index = ({ title, onPress, text}: SeeMoreSectionProps) => {
+const Index = ({ title='', onPress, text}: SeeMoreSectionProps) => {
   return (
     <View style={styles.seeMoreContainer}>
       <Text style={styles.eventText}>{title}</Text>
