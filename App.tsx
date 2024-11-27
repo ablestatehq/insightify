@@ -8,6 +8,7 @@ import { NavigationContainer, useNavigationContainerRef } from '@react-navigatio
 import { BGTASKS } from '@constants/constants';
 import {
   registerBackgroundFetchAsync,
+  unregisterBackgroundFetchAsync,
   background_func,
   usePushNotifications,
 } from '@src/hooks';
@@ -42,11 +43,11 @@ export default function App() {
   }
   ), []);
 
-  // const checkStatusAsync = async () => {
-  //   const isRegistered = await TaskManager.isTaskRegisteredAsync(BGTASKS.CHECK_ONLINE_STATUS);
-  //   if (isRegistered) return;
-  //   else await registerBackgroundFetchAsync();
-  // };
+  const checkStatusAsync = async () => {
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(BGTASKS.CHECK_ONLINE_STATUS);
+    if (isRegistered) await unregisterBackgroundFetchAsync();
+    // else await registerBackgroundFetchAsync();
+  };
 
   // checking for the updates to update the app.
   useEffect(() => {
@@ -56,9 +57,9 @@ export default function App() {
   }, [isUpdatePending]);
 
   // effect for the background task.
-  // useEffect(() => {
-  //   checkStatusAsync();
-  // }, []);
+  useEffect(() => {
+    checkStatusAsync();
+  }, []);
 
   return (
     <NavigationContainer ref={navigationRef} linking={linking}>
