@@ -42,11 +42,11 @@ export default function App() {
   }
   ), []);
 
-  const checkStatusAsync = async () => {
-    const isRegistered = await TaskManager.isTaskRegisteredAsync(BGTASKS.CHECK_ONLINE_STATUS);
-    if (isRegistered) return;
-    else await registerBackgroundFetchAsync();
-  };
+  // const checkStatusAsync = async () => {
+  //   const isRegistered = await TaskManager.isTaskRegisteredAsync(BGTASKS.CHECK_ONLINE_STATUS);
+  //   if (isRegistered) return;
+  //   else await registerBackgroundFetchAsync();
+  // };
 
   // checking for the updates to update the app.
   useEffect(() => {
@@ -56,9 +56,9 @@ export default function App() {
   }, [isUpdatePending]);
 
   // effect for the background task.
-  useEffect(() => {
-    checkStatusAsync();
-  }, []);
+  // useEffect(() => {
+  //   checkStatusAsync();
+  // }, []);
 
   return (
     <NavigationContainer ref={navigationRef} linking={linking}>
