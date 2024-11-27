@@ -16,10 +16,11 @@ import {
 import { useFonts } from 'expo-font';
 import { FONT_FILES } from '@fonts';
 import { RootStackParamList } from '@src/types';
-// import * as BackgroundFetch from 'expo-background-fetch';
+import { checkActiveStatus } from '@src/helper';
 
 
 TaskManager.defineTask(BGTASKS.CHECK_ONLINE_STATUS, background_func);
+TaskManager.defineTask(BGTASKS.APP_START_STATUS, checkActiveStatus);
 
 const LINK_CONFIG = {
   screens: {
@@ -43,10 +44,17 @@ export default function App() {
   }
   ), []);
 
+  // update when user is online.
   const checkStatusAsync = async () => {
     const isRegistered = await TaskManager.isTaskRegisteredAsync(BGTASKS.CHECK_ONLINE_STATUS);
-    if (isRegistered) await unregisterBackgroundFetchAsync();
-    // else await registerBackgroundFetchAsync();
+    if (isRegistered) await unregisterBackgroundFetchAsync(BGTASKS.CHECK_ONLINE_STATUS);
+  };
+
+  // if app is open, for more days, update the app and alert the app.
+  const checkAppStatusAsync = async () => {
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(BGTASKS.APP_START_STATUS);
+    if (isRegistered) return;
+    else await registerBackgroundFetchAsync(BGTASKS.APP_START_STATUS);
   };
 
   // checking for the updates to update the app.
@@ -59,6 +67,7 @@ export default function App() {
   // effect for the background task.
   useEffect(() => {
     checkStatusAsync();
+    checkAppStatusAsync();
   }, []);
 
   return (
