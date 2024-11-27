@@ -9,6 +9,7 @@ import {
   differenceInMonths,
   differenceInYears,
 } from 'date-fns';
+import { retrieveLocalData, storeToLocalStorage } from "@src/utils/localStorageFunctions";
 
 export function resourceAge(date: Date) {
   const publishedAt = new Date(date);
@@ -177,3 +178,23 @@ export function kSeparator(num: number): string {
       return `${num}`
   }
 }
+
+export const calculateInactiveDays = async () => {
+    try {
+      // Retrieve the last open date from AsyncStorage
+      const lastOpenDate = await retrieveLocalData('lastOpenDate');
+      const currentDate = new Date();
+      await storeToLocalStorage('lastOpenDate', currentDate);
+      if (lastOpenDate) {
+        const lastOpen = new Date(lastOpenDate);
+        const timeDiff = currentDate.getTime() - lastOpen.getTime();
+        const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        return daysDiff;
+      } else {
+        // First time the app is opened
+        return 0;
+      }      
+    } catch (error) {
+      console.error('Error calculating inactive days:', error);
+    }
+  };
