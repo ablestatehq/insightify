@@ -1,6 +1,5 @@
 import * as Network from 'expo-network';
 import * as BackgroundFetch from 'expo-background-fetch';
-import {BGTASKS} from '@constants/constants';
 import { getData } from '@api/grapiql';
 import { NotificationController } from '@src/helper/notifications';
 
@@ -28,14 +27,14 @@ export const background_func = async () => {
   }
 };
 
-export const registerBackgroundFetchAsync = async () => {
-  return BackgroundFetch.registerTaskAsync(BGTASKS.CHECK_ONLINE_STATUS, {
+export const registerBackgroundFetchAsync = async (bg_task: string) => {
+  return BackgroundFetch.registerTaskAsync(bg_task, {
     minimumInterval: 60 * 1, 
     stopOnTerminate: false,
     startOnBoot: true,
   })
 };
 
-export const unregisterBackgroundFetchAsync = async () => {
-    return BackgroundFetch.unregisterTaskAsync(BGTASKS.CHECK_ONLINE_STATUS);
+export const unregisterBackgroundFetchAsync = async (bg_task: string) => {
+    return BackgroundFetch.unregisterTaskAsync(bg_task);
 };

@@ -11,7 +11,7 @@ import {
   background_func,
   // useNetworkStatus,
   registerBackgroundFetchAsync, unregisterBackgroundFetchAsync
-} from "./useNetworkStatus";
+} from "./useBg-fucs";
 import useOpportunities from "./useOpportunities";
 import useProfile from "./useProfile";
 import usePushNotifications from "./usePushNotification";
