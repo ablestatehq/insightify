@@ -18,7 +18,7 @@ const Index = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
 
   // state
-  const [selectedTab, setSelectedTab] = useState<Tab>('Stories');
+  const [selectedTab, setSelectedTab] = useState<Tab>('Square');
   const [news, setNews] = useState<NewsPost[]>([]);
   const [postModal, setPostModal] = useState<PostDiscussionModal>({
     visible: false,
