@@ -9,17 +9,18 @@ import { BGTASKS } from '@constants/constants';
 import {
   registerBackgroundFetchAsync,
   unregisterBackgroundFetchAsync,
-  background_func,
   usePushNotifications,
 } from '@src/hooks';
 
 import { useFonts } from 'expo-font';
 import { FONT_FILES } from '@fonts';
 import { RootStackParamList } from '@src/types';
-import { checkActiveStatus } from '@src/helper';
+import {
+  checkActiveStatus, background_func,
+ } from '@src/helper';
 
 
-TaskManager.defineTask(BGTASKS.CHECK_ONLINE_STATUS, background_func);
+// TaskManager.defineTask(BGTASKS.CHECK_ONLINE_STATUS, background_func);
 TaskManager.defineTask(BGTASKS.APP_START_STATUS, checkActiveStatus);
 
 const LINK_CONFIG = {
@@ -45,10 +46,10 @@ export default function App() {
   ), []);
 
   // update when user is online.
-  const checkStatusAsync = async () => {
-    const isRegistered = await TaskManager.isTaskRegisteredAsync(BGTASKS.CHECK_ONLINE_STATUS);
-    if (isRegistered) await unregisterBackgroundFetchAsync(BGTASKS.CHECK_ONLINE_STATUS);
-  };
+  // const checkStatusAsync = async () => {
+  //   const isRegistered = await TaskManager.isTaskRegisteredAsync(BGTASKS.CHECK_ONLINE_STATUS);
+  //   if (isRegistered) await unregisterBackgroundFetchAsync(BGTASKS.CHECK_ONLINE_STATUS);
+  // };
 
   // if app is open, for more days, update the app and alert the app.
   const checkAppStatusAsync = async () => {
@@ -66,7 +67,7 @@ export default function App() {
 
   // effect for the background task.
   useEffect(() => {
-    checkStatusAsync();
+    // checkStatusAsync();
     checkAppStatusAsync();
   }, []);
 

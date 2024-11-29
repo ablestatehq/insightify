@@ -3,7 +3,7 @@ import { get_top_news } from '@api/grapiql';
 import { FONT_NAMES } from '@src/assets/fonts/fonts';
 import { Dialog, FloatingButton, PostDiscussion, SegmentedControl, Square, Stories } from '@src/components';
 import { COLOR, DIMEN, FONTSIZE } from '@src/constants/constants';
-import { IDialogBox, NewsPost, PostDiscussionModal, RootStackParamList, Tab } from '@src/types';
+import { IDialogProps, NewsPost, PostDiscussionModal, RootStackParamList, Tab } from '@src/types';
 import { StyleSheet, Text, View } from 'react-native';
 import { usePosts } from '@src/hooks';
 import { AppContext } from '@src/context';
@@ -27,14 +27,14 @@ const Index = () => {
       setPostModal({ ...postModal, visible: false })
     }
   });
-  const [dialog, setDialog] = useState<IDialogBox>({
+  const [dialog, setDialog] = useState<IDialogProps>({
     title: 'You are a guest',
     message: 'Login to be able to start a discussion',
     visible: false,
     acceptText: 'Login',
-    onAccept() {navigation.navigate('Login', {})},
+    onAccept() { navigation.navigate('Login', {}) },
     cancelText: 'cancel',
-    onReject: () => setDialog({...dialog, visible: false})
+    onReject: () => setDialog({ ...dialog, visible: false })
   })
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -42,7 +42,7 @@ const Index = () => {
     if (isLoggedIn) {
       setPostModal({ ...postModal, visible: true });
     } else {
-      setDialog({...dialog, visible: true})
+      setDialog({ ...dialog, visible: true })
     }
   }
 
@@ -58,8 +58,8 @@ const Index = () => {
         if (data) {
           setNews(data?.news as NewsPost[]);
         }
-      } catch (error){
-        
+      } catch (error) {
+
       } finally {
         setLoading(false);
       }

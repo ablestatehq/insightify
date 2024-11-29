@@ -165,7 +165,7 @@ const StoryDetails = () => {
       {HeaderImage}
       <BackButton navigation={navigation} />
       <Animated.ScrollView
-        style={styles.contentContainer}
+        contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={handleScroll}

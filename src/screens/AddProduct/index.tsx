@@ -18,7 +18,7 @@ import { Dialog, InputText } from '@components/index';
 import { FONT_NAMES } from '@fonts';
 import { storeData, uploadImage } from '@api/strapiJSAPI';
 import image_name_extension from '@utils/imageName';
-import { IDialogBox } from '@src/types';
+import { IDialogProps } from '@src/types';
 
 const { STRAPI_BASE_URL } = environments;
 // Form's data structure
@@ -42,7 +42,7 @@ const Index: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
   const [tutorial, setTutorial] = useState<string | undefined>();
   // const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [dialog, setDialog] = useState<IDialogBox>({
+  const [dialog, setDialog] = useState<IDialogProps>({
     visible: false,
     cancelText: '',
     title: '',

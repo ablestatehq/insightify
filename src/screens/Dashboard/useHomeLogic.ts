@@ -8,7 +8,7 @@ import {isPast, differenceInDays} from "date-fns";
 import { useProducts } from "@src/hooks";
 
 const useHomeLogic = () => {
-  const { opportunities, codeTips, isLoggedIn, user, xp, comments, setCodeTips } = useContext(AppContext);
+  const { opportunities, codeTips, isLoggedIn, user, xp, setCodeTips } = useContext(AppContext);
   const { products } = useProducts();
 
   const randomIndex = useMemo(() => {
@@ -59,9 +59,9 @@ const useHomeLogic = () => {
     user,
     products,
     xp,
-    comments,
     setCodeTips,
     randomIndex,
+    opportunities,
     opportunityIndex,
     showCompleteProfile,
     showProfileCard,
