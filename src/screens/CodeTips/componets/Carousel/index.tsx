@@ -59,7 +59,7 @@ const Index: React.FC<CarouselProps> = ({
         removeClippedSubviews={true}
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={<ListFooter loading={false} text="No more tips" />}
+        ListFooterComponent={<ListFooter loading={false} text="No more tips" isEmpty={data.length === 0} />}
         getItemLayout={(_, index) => ({
           length: SCREENWIDTH - 30,
           offset: (SCREENWIDTH - 30) * index,

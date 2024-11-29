@@ -56,7 +56,7 @@ const Index = () => {
         contentContainerStyle={styles.flatList}
         keyExtractor={(_, index) => index.toString()}
         ListEmptyComponent={<EmptyState text='No products available' />}
-        ListFooterComponent={<ListFooter loading={loadings} text='No more products' />}
+        ListFooterComponent={<ListFooter loading={loadings} text='No more products' isEmpty={products.length === 0} />}
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.6}
         windowSize={5}

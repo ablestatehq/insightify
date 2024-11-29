@@ -5,9 +5,10 @@ import { View, ActivityIndicator, Text } from "react-native";
 interface Props {
   loading: boolean;
   text: string;
+  isEmpty: boolean;
 }
-const ListFooter = ({ loading, text }: Props) => {
-  return (
+const ListFooter = ({ loading, text, isEmpty }: Props) => {
+  return !isEmpty && (
     <View style={{height: 50, justifyContent: 'center', alignItems: 'center'}} >
       {loading ?
         (<ActivityIndicator size="small" color={COLOR.PRIMARY_300} />)
