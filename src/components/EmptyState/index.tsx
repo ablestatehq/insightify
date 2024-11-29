@@ -5,7 +5,7 @@ import { COLOR, FONTSIZE } from '@constants/constants';
 
 const Index = ({text = 'Items found'}: {text?: string}) => (
   <View style={styles.container}>
-    <Text style={styles.noMatchText}>No {text}</Text>
+    <Text style={styles.noMatchText}>{text}</Text>
   </View>
 );
 

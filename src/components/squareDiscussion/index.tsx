@@ -59,7 +59,7 @@ const DiscussionList = ({ discussions }: SquareProps) => {
         data={discussions}
         keyExtractor={(item, index) => `${index}-${item.id}`}
         renderItem={renderItem}
-        ListEmptyComponent={<EmptyState text="Discussions" />}
+        ListEmptyComponent={<EmptyState text="No Discussions" />}
         contentContainerStyle={styles.scrollStyle}
         initialNumToRender={5}
         maxToRenderPerBatch={5}

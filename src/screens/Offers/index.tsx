@@ -110,7 +110,7 @@ const OpportunityList = () => {
           renderItem={renderOpportunity}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
-          ListEmptyComponent={<EmptyState />}
+          ListEmptyComponent={<EmptyState text='No opportunities found'/>}
           ListFooterComponent={<ListFooter loading={loading} text='No more opportunities'/>}
           initialNumToRender={10}
           maxToRenderPerBatch={10}

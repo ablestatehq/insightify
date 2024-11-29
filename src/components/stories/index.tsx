@@ -78,7 +78,7 @@ const Index = ({stories, loading}: StoryProps) => {
             }
           }}
           contentContainerStyle={styles.scrollStyle}
-          ListEmptyComponent={<EmptyState text="Stories" />}
+          ListEmptyComponent={<EmptyState text="No Stories" />}
         />}
     </View>
   );

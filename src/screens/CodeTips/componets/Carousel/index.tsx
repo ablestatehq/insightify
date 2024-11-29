@@ -52,7 +52,7 @@ const Index: React.FC<CarouselProps> = ({
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
-        ListEmptyComponent={<EmptyState />}
+        ListEmptyComponent={<EmptyState text='No tips found' />}
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         windowSize={5}
