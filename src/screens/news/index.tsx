@@ -50,7 +50,6 @@ const Index = () => {
         setNews(data.news as NewsPost[]);
       }
     } catch (error) {
-      console.error('Failed to fetch news:', error);
       setNews([]);
     } finally {
       setLoading(false);
@@ -85,10 +84,8 @@ const Index = () => {
 
     const appStateSubscription = AppState.addEventListener('change', handleAppStateChange);
 
-    // Initial network check
     checkNetworkState();
 
-    // Cleanup
     return () => {
       appStateSubscription.remove();
     };
@@ -116,9 +113,6 @@ const Index = () => {
     <View style={styles.container}>
       <View style={styles.headerStyle}>
         <Text style={styles.title}>News</Text>
-        {!isOnline && (
-          <Text style={styles.offlineIndicator}>Offline</Text>
-        )}
       </View>
       <View style={styles.mainContent}>
         <SegmentedControl
