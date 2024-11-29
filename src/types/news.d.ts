@@ -43,6 +43,7 @@ export type Story = {
 export type StoryProps = {
   stories: NewsPost[];
   loading: boolean;
+  onRefresh?: () => void
 }
 
 export type SquareProps = {
