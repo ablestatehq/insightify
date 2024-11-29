@@ -55,11 +55,11 @@ const Index = () => {
       setLoading(true);
       try {
         const data = await get_top_news();
-        if (data) {
+        if (data && data?.news) {
           setNews(data?.news as NewsPost[]);
         }
       } catch (error) {
-
+        setNews([]);
       } finally {
         setLoading(false);
       }
