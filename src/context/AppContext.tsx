@@ -18,7 +18,9 @@ interface AppContextType {
   setJwt: React.Dispatch<React.SetStateAction<string>>;
   user: any;
   setUser: React.Dispatch<React.SetStateAction<any>>;
-  xp: number,
+  errors: any;
+  setErrors: React.Dispatch<React.SetStateAction<any>>;
+  xp: number;
   setXp: React.Dispatch<React.SetStateAction<number>>;
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -40,6 +42,8 @@ export const AppContext = createContext<AppContextType>({
   setJwt: () => { },
   user: {},
   setUser: () => { },
+  errors: {},
+  setErrors: () => {},
   xp: 0,
   setXp: () => { },
   isLoading: true,
@@ -68,6 +72,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [errors, setErrors] = useState<any>({});
 
   useEffect(() => {
     fetchInitialData();
@@ -119,8 +124,8 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       setOpportunities(opportunity_data);
       setCodeTips(tech_tips_data);
 
-    } catch (error) {
-      // console.error("Error fetching initial data:", error);
+    } catch (error: any) {
+      setErrors(error);
     } finally {
       setIsLoading(false);
     }
@@ -174,6 +179,8 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     setUser,
     jwt,
     setJwt,
+    errors,
+    setErrors,
     xp,
     setXp,
     isLoading,

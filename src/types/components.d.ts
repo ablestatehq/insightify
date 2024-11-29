@@ -1,4 +1,4 @@
-export type IDialogBox = {
+export type IDialogProps = {
   title: string;
   message: string;
   visible: boolean;

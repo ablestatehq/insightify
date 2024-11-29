@@ -17,7 +17,7 @@ import type {
 } from './user';
 
 
-import type {TalentSubmissionForm, IDialogBox} from './components';
+import type {TalentSubmissionForm, IDialogProps} from './components';
 import type {FeedbackObject, NotificationType} from './types';
 
 import type {SegmentedControlProps, StoryProps, Story, SquareProps, PostDiscussionModal, Tab, NewsPost} from './news'
@@ -57,7 +57,7 @@ export {
   SegmentedControlProps,
   ExpandableListItemProps,
   TalentSubmissionForm,
-  IDialogBox,
+  IDialogProps,
   FeedbackObject,
   NotificationType,
   Layout,

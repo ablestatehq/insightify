@@ -1,6 +1,6 @@
 import React from "react";
 import {clearLocalData, retrieveLocalData, storeToLocalStorage} from "@utils/localStorageFunctions";
-import {IDialogBox, RootStackParamList} from "@src/types";
+import {IDialogProps, RootStackParamList} from "@src/types";
 import {AppContext} from "@src/context";
 import {isProfileComplete} from "@src/helper/functions";
 import {useNavigation } from "@react-navigation/native";
@@ -23,7 +23,7 @@ const useProfile = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [showProfileCard, setShowProfileCard] = React.useState<boolean>(false);
   const [joinVisible, setJoinVisible] = React.useState<boolean>(false);
-  const [dialog, setDialog] = React.useState<IDialogBox>({
+  const [dialog, setDialog] = React.useState<IDialogProps>({
     visible: false,
     title: '',
     message: '',
@@ -86,7 +86,7 @@ const useProfile = () => {
   };
 
   const handleSignoutPress = () =>
-    setDialog((prev: IDialogBox) => ({
+    setDialog((prev: IDialogProps) => ({
       ...prev,
       visible: true,
       title: 'Log out',

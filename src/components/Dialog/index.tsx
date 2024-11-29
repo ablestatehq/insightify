@@ -2,7 +2,7 @@ import React from 'react'
 import { Modal, StyleSheet, Text, View, Pressable } from 'react-native'
 import { COLOR, FONTSIZE } from '@constants/constants';
 import { FONT_NAMES } from '@fonts'
-import { IDialogBox } from '@src/types';
+import { IDialogProps } from '@src/types';
 
 const Dialog = ({
   onAccept,
@@ -10,7 +10,7 @@ const Dialog = ({
   acceptText,
   cancelText,
   visible, title, message,
-}: IDialogBox) => {
+}: IDialogProps) => {
   return (
     <Modal transparent visible={visible}>
       <View style={styles.modal}>
