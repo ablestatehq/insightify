@@ -36,7 +36,7 @@ const Index = ({stories, loading}: StoryProps) => {
     </Pressable>
   );
 
-  const sections = [
+  const sections = stories.length === 0 ? [] : [
     {
       title: 'Featured Stories',
       data: stories.slice(0, 2),
