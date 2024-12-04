@@ -1,15 +1,16 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
 import * as Network from 'expo-network';
-import { get_top_news } from '@api/grapiql';
-import { FONT_NAMES } from '@src/assets/fonts/fonts';
-import { Dialog, FloatingButton, PostDiscussion, SegmentedControl, Square, Stories } from '@src/components';
-import { COLOR, DIMEN, FONTSIZE } from '@src/constants/constants';
-import { IDialogProps, NewsPost, PostDiscussionModal, RootStackParamList, Tab } from '@src/types';
-import { StyleSheet, Text, View, AppState, AppStateStatus } from 'react-native';
-import { usePosts } from '@src/hooks';
-import { AppContext } from '@src/context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { StyleSheet, Text, View, AppState, AppStateStatus } from 'react-native';
+
+import { usePosts } from '@src/hooks';
+import { FONT_NAMES } from '@src/assets';
+import { AppContext } from '@src/context';
+import { get_top_news } from '@api/grapiql';
+import { COLOR, DIMEN, FONTSIZE } from '@src/constants';
+import { IDialogProps, NewsPost, PostDiscussionModal, RootStackParamList, Tab } from '@src/types';
+import { Dialog, FloatingButton, PostDiscussion, SegmentedControl, Square, Stories } from '@src/components';
 
 const Index = () => {
   // Hooks 
