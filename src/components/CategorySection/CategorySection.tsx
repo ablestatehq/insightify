@@ -11,10 +11,12 @@ interface CategorySectionProp {
 const CategorySection: React.FC<CategorySectionProp> =
   ({
     initialCategory='',
-    setFilteredItems = ()=>{},
+    setFilteredItems,
     categories = []
   }) => {
-
+    if (!categories.length) {
+      return null;
+    }
     // cache the activeList
     const initialActiveList = useMemo(() => {
       const list = Array(categories.length).fill(false);
