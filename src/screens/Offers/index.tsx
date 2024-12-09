@@ -111,7 +111,11 @@ const OpportunityList = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={<EmptyState text='No opportunities found'/>}
-          ListFooterComponent={<ListFooter loading={loading} text='No more opportunities' isEmpty={filteredOpportunities.length === 0}/>}
+          ListFooterComponent={<ListFooter
+            loading={loading}
+            text='No more opportunities'
+            isEmpty={filteredOpportunities.length === 0}
+          />}
           initialNumToRender={10}
           maxToRenderPerBatch={10}
           windowSize={5}
