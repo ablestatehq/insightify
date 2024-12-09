@@ -4,29 +4,29 @@ import { COLOR, FONTSIZE } from "../constants/constants"
 import { Pressable, StyleSheet, Text } from 'react-native'
 import { FONT_NAMES } from '@fonts';
 
+interface ButtonPosition {
+  bottom: number
+  top: number
+  left: number
+  right: number
+}
 interface FloatingButtonProps {
-  title?: string
-  borderRadius?: number
-  bgColor?: string
-  textColor?: string
-  press?: () => void
-  buttonPosition?: {
-    bottom?: number
-    right?: number
-    left?: number
-    top?: number
-    marginRight?: number
-  }
+  title: string
+  borderRadius: number
+  bgColor: string
+  textColor: string
+  press: () => void
+  buttonPosition: Partial<ButtonPosition>
 }
 
-const FloatingButton: React.FC<FloatingButtonProps> =
+const FloatingButton: React.FC<Partial<FloatingButtonProps>> =
   ({
-    title=undefined,
-    borderRadius=undefined,
-    bgColor=undefined,
-    textColor=undefined,
-    press=undefined,
-    buttonPosition=undefined
+    title,
+    borderRadius=100,
+    bgColor = COLOR.PRIMARY_300,
+    textColor = COLOR.WHITE,
+    press,
+    buttonPosition,
   }) => {
 
     return (
@@ -36,15 +36,15 @@ const FloatingButton: React.FC<FloatingButtonProps> =
           ...buttonPosition,
           padding: title ? 5 : 10,
           paddingHorizontal: title ? 15 : 10,
-          borderRadius: borderRadius ? borderRadius : 100,
-          backgroundColor: bgColor ? bgColor : COLOR.PRIMARY_300,
+          borderRadius,
+          backgroundColor: bgColor,
         }}
         onPress={press}
       >
         {title && <Text
           style={{
             ...styles.text,
-            color: textColor ? textColor : COLOR.WHITE
+            color: textColor,
           }}
         >{title}</Text>}
         {!title && <Feather name="plus" size={24} color={COLOR.WHITE} />}
