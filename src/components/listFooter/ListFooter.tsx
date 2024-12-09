@@ -7,7 +7,11 @@ interface Props {
   text: string;
   isEmpty: boolean;
 }
-const ListFooter = ({ loading, text, isEmpty }: Props) => {
+const ListFooter = ({
+  loading=false,
+  text='',
+  isEmpty=false
+}: Props) => {
   return !isEmpty && (
     <View style={{height: 50, justifyContent: 'center', alignItems: 'center'}} >
       {loading ?

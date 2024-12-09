@@ -21,12 +21,12 @@ interface FloatingButtonProps {
 
 const FloatingButton: React.FC<FloatingButtonProps> =
   ({
-    title,
-    borderRadius,
-    bgColor,
-    textColor,
-    press,
-    buttonPosition
+    title=undefined,
+    borderRadius=undefined,
+    bgColor=undefined,
+    textColor=undefined,
+    press=undefined,
+    buttonPosition=undefined
   }) => {
 
     return (

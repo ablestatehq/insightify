@@ -9,7 +9,13 @@ interface CategorySectionProp {
 }
 
 const CategorySection: React.FC<CategorySectionProp> =
-  ({initialCategory, setFilteredItems, categories}) => {
+  ({
+    initialCategory='',
+    setFilteredItems = ()=>{},
+    categories = []
+  }) => {
+
+    // cache the activeList
     const initialActiveList = useMemo(() => {
       const list = Array(categories.length).fill(false);
       const initialIndex = categories.indexOf(initialCategory as string);

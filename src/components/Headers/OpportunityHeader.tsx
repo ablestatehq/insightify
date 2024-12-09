@@ -13,7 +13,7 @@ interface OpportunityHeaderProps {
   showFilterCard: () => void
 }
 
-function OpportunityHeader({ showFilterCard }: OpportunityHeaderProps): JSX.Element {
+function OpportunityHeader({ showFilterCard=() => {} }: OpportunityHeaderProps): JSX.Element {
   const { notifications } = useContext(AppContext);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 

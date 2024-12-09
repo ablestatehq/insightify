@@ -17,11 +17,11 @@ interface FilterCardProps {
 
 const FilterCard: React.FC<FilterCardProps> =
   ({
-    cardVisible,
-    handleCardVisibility,
+    cardVisible=false,
+    handleCardVisibility=() => {},
     setFilteredItems=() => {},
     filteredItems=[],
-    filteredCount,
+    filteredCount=undefined,
   }) => {
     const { opportunities } = useContext(AppContext);
     const [opportunityCategories, setOpportunityCategories] = useState<any[]>([]);
