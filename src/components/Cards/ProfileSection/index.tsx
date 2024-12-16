@@ -15,37 +15,46 @@ const ProfileSection = () => {
   return (
     <View style={styles.profileContainer}>
       {!profilePhoto ? (
-        <FontAwesome name="user-circle-o" size={80} color={COLOR.SECONDARY_300} />
+        <FontAwesome name="user-circle-o" size={40} color={COLOR.SECONDARY_300} />
       ) : (
         <Image source={{ uri: profilePhoto }} style={styles.profileImage} />
       )}
-      <Pressable onPress={userProfile.operations}>
-        {isLoggedIn && <Text style={styles.profileText}>
-          {userProfile.completed}
-        </Text>}
-        {!isLoggedIn && <Text style={styles.profileText}>Guest</Text>}
-      </Pressable>
+      <View style={styles.profileTextContainer}>
+        {isLoggedIn ?
+          <Text style={styles.profileText}>
+            {userProfile.completed}
+          </Text> :
+          <Text style={styles.profileText}>Guest</Text>}
+        <Pressable onPress={userProfile.operations}>
+          <Text style={styles.editText}>
+            Edit Account
+          </Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   profileContainer: {
-    justifyContent: 'center',
+    flexDirection: 'row',
+    backgroundColor: COLOR.NEUTRAL_1,
+    gap: DIMEN.CONSTANT.SM,
+    borderRadius: 100,
     alignItems: 'center',
-    paddingVertical: DIMEN.PADDING.SM,
-    gap: DIMEN.CONSTANT.XXSM,
+    padding: DIMEN.PADDING.LG,
     marginTop: DIMEN.MARGIN.SM,
+    marginHorizontal: DIMEN.CONSTANT.ME,
   },
   profileImage: {
-    width: 80,
-    height: 80,
+    width: 40,
+    height: 40,
     borderRadius: 80,
   },
   profileTextContainer: {
   },
   profileText: {
-    fontSize: FONTSIZE.TITLE_2,
+    fontSize: FONTSIZE.BODY,
     fontFamily: FONT_NAMES.Heading,
     textAlign: 'center',
     color: COLOR.SECONDARY_300,
@@ -67,6 +76,13 @@ const styles = StyleSheet.create({
   },
   domainStyle: {
     textAlign: 'center',
+  },
+  editText: {
+    fontSize: FONTSIZE.SMALL,
+    fontFamily: FONT_NAMES.Body,
+    color: COLOR.PRIMARY_300,
+    textDecorationLine: 'underline',
+    lineHeight: 12
   }
 });
 
