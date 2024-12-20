@@ -1,13 +1,13 @@
-import {StyleSheet, Text, View, Image, LayoutChangeEvent, Pressable} from 'react-native';
-import React, {useState} from 'react';
-import {Comment} from '@src/types';
-import {FontAwesome} from '@expo/vector-icons';
-import {COLOR, DIMEN, FONTSIZE} from '@src/constants/constants';
-import {resourceAge} from '@src/helper/functions';
-import {environments} from '@src/constants/environments';
-import {FONT_NAMES} from '@src/assets/fonts/fonts';
+import { StyleSheet, Text, View, Image, LayoutChangeEvent, Pressable } from 'react-native';
+import React, { useState } from 'react';
+import { Comment } from '@src/types';
+import { FontAwesome } from '@expo/vector-icons';
+import { COLOR, DIMEN, FONTSIZE } from '@src/constants/constants';
+import { resourceAge } from '@src/helper/functions';
+import { environments } from '@src/constants/environments';
+import { FONT_NAMES } from '@src/assets/fonts/fonts';
 import Icons from '@src/assets/icons';
-import Dot from '../dot';
+import Dot from '../common/dot';
 
 const { BASE_URL } = environments;
 
@@ -25,7 +25,7 @@ function ShowComment({ comment, setReplyTo }:
     setReplyTo: React.Dispatch<React.SetStateAction<Comment | null>>
   }) {
   const [showReplies, setShowReplies] = useState<boolean>(false);
-  const getImage = React.useCallback((url: string) => ({uri: `${BASE_URL}${url}`}), []);
+  const getImage = React.useCallback((url: string) => ({ uri: `${BASE_URL}${url}` }), []);
 
   return (
     <View style={styles.comments}>
@@ -57,13 +57,13 @@ function ShowComment({ comment, setReplyTo }:
           </View>
         </View>}
       </View>
-        <Text style={styles.contentStyle}>{comment.content}</Text>
+      <Text style={styles.contentStyle}>{comment.content}</Text>
       <View style={styles.view_replies_styles}>
         {!comment.gotThread && <View />}
         {comment.gotThread &&
           <Pressable onPress={() => setShowReplies(!showReplies)}>
             <Text style={styles.show_replies_text}>{showReplies ? 'Hide replies' : `Show replies (${comment.children?.length})`}</Text>
-        </Pressable>}
+          </Pressable>}
         <Pressable
           style={{ flexDirection: 'row', alignItems: 'center', gap: DIMEN.CONSTANT.XXSM, alignSelf: 'flex-end' }}
           onPress={() => setReplyTo(comment)}>

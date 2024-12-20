@@ -53,11 +53,14 @@ export type RootStackParamList = {
   Support: undefined
   StoryDetails: NewsPost;
   Discussion: Post;
+  Profile: undefined;
+  ProfileEdit: undefined;
+  LearningPath: undefined
 }
 
 export type LoginDetails = {
-  email?: string
-  password?: string
+  email?: string;
+  password?: string;
 }
 
 export type LoginScreenProps = RouteProp<RootStackParamList, 'Login'>

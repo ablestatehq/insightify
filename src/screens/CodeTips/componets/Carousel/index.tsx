@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { View, StyleSheet, FlatList, ListRenderItem } from 'react-native';
 
-import { EmptyState, ListFooter } from '@components/index';
+import { EmptyState, ListFooter } from '@src/components';
 import TipItem from '../TipItem';
 
 import { DIMEN } from '@constants/constants';

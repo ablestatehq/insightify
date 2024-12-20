@@ -11,6 +11,7 @@ interface Author {
   email: string;
   avatar: string | null;
 };
+
 interface Comment {
   readonly id: number;
   content: string
@@ -26,6 +27,7 @@ interface Comment {
   updatedAt?: string,
   reports?: []
 };
+
 interface ProductContextType {
   products: ProductData[];
   setProducts: React.Dispatch<React.SetStateAction<ProductData[]>>;
@@ -115,6 +117,7 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
       });
     } catch (error: any) { }
   };
+
   useEffect(() => {
     fetchProducts();
   }, []);

@@ -1,6 +1,6 @@
 import { Text, TextInput, View, StyleSheet } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import Header from "@components/Headers/Header";
+import Header from "@src/components/headers/Header";
 import { COLOR, FONTSIZE } from "@constants/constants";
 import { Button, Dialog } from "@components/index";
 import { Formik } from "formik";

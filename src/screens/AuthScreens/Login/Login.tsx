@@ -64,7 +64,7 @@ const Login: React.FC = () => {
         setJwt(response?.jwt);
         const is_community_member = await getFilteredData('community-members', 'email', '$eq', response?.user.email);
         const isMember = is_community_member.length > 0;
-        setUser((prev: any) => ({ ...response?.user, isMember }));
+        setUser({ ...response?.user, isMember });
         setXp(response?.user.totalXP ? response?.user.totalXP : 0);
         setIsLoggedIn(true);
         storeToLocalStorage('isMember', { isMember });

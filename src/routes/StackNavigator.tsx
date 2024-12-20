@@ -4,13 +4,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // screens 
 import Login from '../screens/AuthScreens/Login/Login';
 import SignUp from '../screens/AuthScreens/SignUp/SignUp';
-import Share from '../screens/ShareOpportunity/Share';
+import Share from '../screens/Offers/ShareOffer/Share';
 
 // bottom tab 
 import BottomTabNavigator from './BottomTabNavigator';
-import Contact from '../screens/More/Contact/Contact';
-import FeedBack from '../screens/More/FeedBack/FeedBack';
-import Privacy from '../screens/More/Privacy/Privacy';
+import Contact from '../screens/more-screens/Contact/Contact';
+import FeedBack from '../screens/more-screens/FeedBack/FeedBack';
+import Privacy from '../screens/more-screens/Privacy/Privacy';
 import OnBoard from '../screens/onBoardSharing/OnBoard';
 import { retrieveLocalData } from '../utils/localStorageFunctions';
 import { Loader } from '../components';
@@ -18,18 +18,20 @@ import Notification from '../screens/Notifications/Notification';
 import Forgot from '../screens/AuthScreens/Login/component/Forgot';
 import ResetPassword from '../screens/AuthScreens/Login/component/ResetPassword';
 import Otp from '../screens/AuthScreens/Login/component/Otp';
-import Profile from '../screens/Profile';
+import Profile from '../screens/profile/Profile';
 import ChatRoom from '../screens/ChatScreen/ChatScreen'
-import FindTalent from '../screens/FindTalent/FindTalent';
-import Product from '../screens/Product';
-import Offers from '../screens/Offers'
-import ProductList from '../screens/ProductList';
-import AddProduct from '../screens/AddProduct'
+import FindTalent from '../screens/Talent/FindTalent';
+import Product from '../screens/product';
+import Offers from '../screens/Offers/Offer'
+import ProductList from '../screens/product/ProductList';
+import AddProduct from '../screens/product/AddProduct'
 import ConfirmationScreen from '../screens/AuthScreens/Confirmation'
 import SupportScreen from '@src/screens/support';
-import News from '@src/screens/news'
-import Discussion from '@src/screens/details-discussion';
-import StoryDetails from '@src/screens/details-news';
+import News from '@src/screens/news/News'
+import Discussion from '@src/screens/news/details-discussion';
+import StoryDetails from '@src/screens/news/details-news';
+import ProfileEdit from '../screens/profile/ProfileEdit';
+import LearningPath from '@src/screens/lpOnboarding/learningPath';
 
 const { Screen, Navigator } = createNativeStackNavigator();
 
@@ -72,6 +74,7 @@ const MainStackNavigator = () => {
       <Screen name='Reset' component={ResetPassword} />
       <Screen name='Otp' component={Otp} />
       <Screen name='Profile' component={Profile} />
+      <Screen name='ProfileEdit' component={ProfileEdit} />
       <Screen name='ChatRoom' component={ChatRoom} />
       <Screen name='Talent' component={FindTalent} />
       <Screen name='ProductDetail' component={Product} />
@@ -83,6 +86,7 @@ const MainStackNavigator = () => {
       <Screen name='News' component={News} />
       <Screen name='StoryDetails' component={StoryDetails} />
       <Screen name='Discussion' component={Discussion} />
+      <Screen name='LearningPath' component={LearningPath} />
     </Navigator>
   )
 }

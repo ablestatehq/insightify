@@ -10,16 +10,16 @@ import {
 import { COLOR, DIMEN } from '@constants/constants'
 import {
   XPpoint, Fragment,
-  CompleteProfile,
-  ProfileForm,
-  HomeItem,
   TipCard,
   SeeMore,
   EmptyState
 } from '@src/components';
+import HomeItem from './components/HomeItemCard'
+import CompleteProfile from './components/CompleteProfile';
+import ProfileForm from '../profile/components/ProfileForm';
 
 import { isProfileComplete } from '@src/helper/functions';
-import useHomeLogic from './useHomeLogic';
+import useHomeLogic from './hooks/useHomeLogic';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FONT_NAMES } from '@fonts';
 

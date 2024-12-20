@@ -3,7 +3,8 @@ import RenderHtml from 'react-native-render-html';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { FONT_NAMES } from '@fonts';
-import { CodeSnippet, HTMLText, TipFooter } from '@components/index';
+import { CodeSnippet, HTMLText } from '@src/components';
+import TipFooter from '../TipFooter';
 import { handleBookmark } from '@src/helper/handleFunctions';
 import { COLOR, FONTSIZE } from '@constants/constants';
 

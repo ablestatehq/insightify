@@ -1,7 +1,7 @@
 import { View, StyleSheet, Text } from "react-native";
 import { CommonActions, useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import Header from "@components/Headers/Header";
+import Header from "@src/components/headers/Header";
 import { COLOR, FONTSIZE } from "@constants/constants";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FONT_NAMES } from "@fonts";

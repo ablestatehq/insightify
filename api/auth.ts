@@ -79,9 +79,9 @@ async function setUserPhotoNULL(userId: number, jwt: string) {
 
 const login = async (identifier:string, password:string) => {
   const payload = {
-  "identifier": identifier,
-  "password":password
-}
+    "identifier": identifier,
+    "password": password
+  };
 
   const options = {
     method: 'POST',
@@ -89,13 +89,30 @@ const login = async (identifier:string, password:string) => {
       'content-type': 'application/json'
     },
     body: JSON.stringify(payload)
-  }
+  };
 
   try {
     const response = await fetch(`${STRAPI_BASE_URL}/auth/local?populate=*`, options)
     const data = await response.json();
-
-    return data;
+    if (data?.jwt) {
+      const url = `${STRAPI_BASE_URL}/users/me?populate=*`;
+      const options = {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${data.jwt}`
+        }
+      }
+      const response = await fetch(url, options);
+      const userData = await response.json();
+      return {
+        jwt: data.jwt,
+        user: userData
+      }
+    }
+    return {
+      jwt: null,
+      user: null,
+    };
   } catch (error) {}
 }
 

@@ -8,6 +8,7 @@ import { createClientSocket } from '@src/lib/socket';
 import { Socket } from 'socket.io-client';
 import PostProvider from './post-context';
 import fetchWithCache from '@src/utils/fetch-with-cache';
+import CodeTipsProvider from './TipsContext';
 
 interface AppContextProviderProps {
   children: React.ReactNode;
@@ -24,8 +25,8 @@ interface AppContextType {
   setXp: React.Dispatch<React.SetStateAction<number>>;
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  codeTips: any[];
-  setCodeTips: React.Dispatch<React.SetStateAction<any[]>>;
+  // codeTips: any[];
+  // setCodeTips: React.Dispatch<React.SetStateAction<any[]>>;
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   opportunities: any[];
@@ -48,8 +49,6 @@ export const AppContext = createContext<AppContextType>({
   setXp: () => { },
   isLoading: true,
   setIsLoading: () => { },
-  codeTips: [],
-  setCodeTips: () => { },
   isLoggedIn: false,
   setIsLoggedIn: () => { },
   opportunities: [],
@@ -61,6 +60,7 @@ export const AppContext = createContext<AppContextType>({
   fetchAdditionalData: async (endpoint: string, start: number) => {},
 });
 
+
 const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -68,12 +68,12 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [xp, setXp] = useState<number>(0);
   const [jwt, setJwt] = useState<string>('');
   const [opportunities, setOpportunities] = useState<any[]>([]);
-  const [codeTips, setCodeTips] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [errors, setErrors] = useState<any>({});
 
+  // effects
   useEffect(() => {
     fetchInitialData();
   }, []);
@@ -122,7 +122,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
       // Update state
       setOpportunities(opportunity_data);
-      setCodeTips(tech_tips_data);
+      // setCodeTips(tech_tips_data);
 
     } catch (error: any) {
       setErrors(error);
@@ -151,11 +151,11 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
           if (!newTechTips.data && newTechTips.error) {
             return;
           } else {
-            setCodeTips(prev => {
-              const existingIds = new Set(prev.map((item) => item.id));
-              const filteredNewOpps = newTechTips.data.filter((item: any) => !existingIds.has(item.id));
-              return [...prev, ...filteredNewOpps];
-            });
+            // setCodeTips(prev => {
+            //   const existingIds = new Set(prev.map((item) => item.id));
+            //   const filteredNewOpps = newTechTips.data.filter((item: any) => !existingIds.has(item.id));
+            //   return [...prev, ...filteredNewOpps];
+            // });
           }
           break;
         case 'products':
@@ -163,11 +163,11 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
           if (!newProducts.data && newProducts.error) {
             return;
           } else {
-            setCodeTips(prev => {
-              const existingIds = new Set(prev.map((item) => item.id));
-              const filteredNewProducts = newProducts.data.filter((item: any) => !existingIds.has(item.id));
-              return [...prev, ...filteredNewProducts];
-            });
+            // setCodeTips(prev => {
+            //   const existingIds = new Set(prev.map((item) => item.id));
+            //   const filteredNewProducts = newProducts.data.filter((item: any) => !existingIds.has(item.id));
+            //   return [...prev, ...filteredNewProducts];
+            // });
           }
           break;
       }
@@ -185,8 +185,8 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     setXp,
     isLoading,
     setIsLoading,
-    codeTips,
-    setCodeTips,
+    // codeTips,
+    // setCodeTips,
     isLoggedIn,
     setIsLoggedIn,
     opportunities,
@@ -208,9 +208,11 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   return (
     <ProductProvider>
       <PostProvider>
-        <AppContext.Provider value={contextValue}>
-          {children}
-        </AppContext.Provider>
+        <CodeTipsProvider>
+          <AppContext.Provider value={contextValue}>
+            {children}
+          </AppContext.Provider>
+        </CodeTipsProvider>
       </PostProvider>
     </ProductProvider>
   );

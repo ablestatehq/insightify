@@ -24,7 +24,7 @@ async function getMe() {
         'Authorization': `Bearer ${jwt}`
       }
     };
-    const reponse = await fetch(url, options)
+    const reponse = await fetch(url, options);
     const data = await reponse.json();
     // user to login again
     if (data.error && authToken) {
