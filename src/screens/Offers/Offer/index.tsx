@@ -1,19 +1,3 @@
-<<<<<<< HEAD:src/screens/Offers/index.tsx
-import React, {useCallback, useContext, useState} from 'react';
-import {View, StatusBar, FlatList, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {COLOR, DIMEN} from '@constants/constants';
-import {useFilter} from '@src/hooks';
-import {AppContext} from '@src/context/AppContext';
-import {OpportunityData, OpportunityListProps, RootStackParamList} from '@src/types';
-import {FONT_NAMES} from '@fonts';
-import {
-  EmptyState, FloatingButton, FormModal, CategorySection,
-  FilterCard, OpportunityCard, OpportunityHeader
-} from '@components/index';
-import { fetchNewItems, fetchNextBatch } from '@api/grapiql';
-=======
 import React, { useCallback, useContext, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -32,7 +16,6 @@ import {
   ListFooter
 } from '@src/components';
 import OpportunityItemCard from '../components/OpportunityItemCard';
->>>>>>> new-structure:src/screens/Offers/Offer/index.tsx
 
 // data and contexts
 import { fetchNewItems } from '@api/grapiql';
@@ -40,11 +23,7 @@ import { AppContext } from '@src/context/AppContext';
 
 const OpportunityList = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-<<<<<<< HEAD:src/screens/Offers/index.tsx
-  const { opportunities, user, isLoggedIn, setOpportunities, hasMoreOffers, setHasMoreOffers} = useContext(AppContext);
-=======
-  const { opportunities, user, isLoggedIn, setOpportunities, fetchAdditionalData} = useContext(AppContext);
->>>>>>> new-structure:src/screens/Offers/Offer/index.tsx
+  const { opportunities, user, isLoggedIn, setOpportunities, fetchAdditionalData } = useContext(AppContext);
   const route = useRoute<OpportunityListProps>();
   const { tag } = route.params;
   const [category, setCategory] = useState<string>(tag ?? 'Recent');
@@ -55,31 +34,20 @@ const OpportunityList = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const onRefresh = useCallback(async () => {
+  const onRefresh = async () => {
     try {
       setRefreshing(true);
       const newOpps = await fetchNewItems('opportunities');
-<<<<<<< HEAD:src/screens/Offers/index.tsx
-      const updatedOpps = [...new Set([...newOpps, ...opportunities])];
-      setOpportunities(updatedOpps);
-=======
       setOpportunities(prev => {
         const existingIds = prev.map((item) => item.id);
         const new_opps = newOpps.filter((item: OpportunityData) => !existingIds.includes(item.id));
         return [...new_opps, ...prev];
       });
->>>>>>> new-structure:src/screens/Offers/Offer/index.tsx
     } catch (error) {
-      console.error("Error refreshing opportunities:", error);
+
     } finally {
       setRefreshing(false);
     }
-<<<<<<< HEAD:src/screens/Offers/index.tsx
-  }, [opportunities]);
-  
-  const [filteredOpportunities, isLoading] =
-    useFilter(category, opportunities, filteredItems);
-=======
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -90,53 +58,23 @@ const OpportunityList = () => {
     useCallback(() =>
       useFilter(category, opportunities, filteredItems),
       [opportunities, category, filteredItems]);
-  
+
   // call and set filtered data
   const [filteredOpportunities, isLoading] = offers();
->>>>>>> new-structure:src/screens/Offers/Offer/index.tsx
 
   const toggleFilterCard = () => {
     setShowFilterCard(!showFilterCard);
   };
 
-<<<<<<< HEAD:src/screens/Offers/index.tsx
-
-  const loadMoreOpportunities = useCallback(async () => {
-    // console.log('More offers: ',hasMoreOffers);
-    if (loading || !hasMoreOffers) return;
-    try {
-      setLoading(true);
-      // console.log('Batch-',opportunities.length)
-      const newOpportunities = await fetchNextBatch('opportunities', opportunities.length);
-      if (newOpportunities.data) {
-        const newArr = [...new Set([...opportunities, ...newOpportunities.data])];
-        setOpportunities(newArr);
-        setHasMoreOffers(newOpportunities.hasMore);
-      }
-    } catch (error) {
-      // console.error("Error loading more opportunities:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [hasMoreOffers]);
-
-  const renderOpportunity = useCallback(({ item, index }: { item: OpportunityData, index: number }) => (
-    <OpportunityCard
-      {...item}
-      // key={`${item.id}-${index}`}
-      showModal={() => { }}
-      showReportModal={() => setShowReportModal(true)} />
-  ), []);
-=======
   // handle end of list
   const handleEndReached = useCallback(async () => {
     setLoading(true);
     try {
       await fetchAdditionalData('opportunities', opportunities.length);
-      
+
     } catch (error) {
-      
-    }finally{
+
+    } finally {
       setLoading(false);
     }
   }, [opportunities.length]);
@@ -148,22 +86,16 @@ const OpportunityList = () => {
         showModal={() => { }}
         showReportModal={() => setShowReportModal(true)} />
     );
->>>>>>> new-structure:src/screens/Offers/Offer/index.tsx
 
   const handleFloatingButtonPress = useCallback(() => {
     if (isLoggedIn) {
       navigation.navigate('Share');
     } else {
-      const params = {title: 'Offers'};
+      const params = { title: 'Offers' };
       navigation.navigate('Login', params);
     }
   }, []);
 
-  const renderFooter = () => {
-    if (!loading) return null;
-    return <ActivityIndicator style={{paddingBottom: 30}} size="small" color={COLOR.PRIMARY_300} />;
-  };
-  
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLOR.WHITE} />
@@ -181,21 +113,11 @@ const OpportunityList = () => {
       <View style={styles.opportunityListContainer}>
         <FlatList
           data={filteredOpportunities}
-          keyExtractor={(item, index) => `${item.id}-${index}`}
+          keyExtractor={(item) => item?.id.toString()}
           renderItem={renderOpportunity}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
-<<<<<<< HEAD:src/screens/Offers/index.tsx
-          ListEmptyComponent={<EmptyState />}
-          ListFooterComponent={renderFooter}
-          initialNumToRender={10}
-          maxToRenderPerBatch={10}
-          windowSize={5}
-          onEndReached={loadMoreOpportunities}
-          onEndReachedThreshold={0.5}
-          removeClippedSubviews
-=======
-          ListEmptyComponent={<EmptyState text='No opportunities found'/>}
+          ListEmptyComponent={<EmptyState text='No opportunities found' />}
           ListFooterComponent={<ListFooter
             loading={loading}
             text='No more opportunities'
@@ -207,7 +129,6 @@ const OpportunityList = () => {
           removeClippedSubviews={true}
           onEndReached={handleEndReached}
           onEndReachedThreshold={0.5}
->>>>>>> new-structure:src/screens/Offers/Offer/index.tsx
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -261,11 +182,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-<<<<<<< HEAD:src/screens/Offers/index.tsx
-    paddingBottom: DIMEN.PADDING.ELG,
-=======
     paddingBottom: 50,
->>>>>>> new-structure:src/screens/Offers/Offer/index.tsx
   },
   noTextContainer: {
     flex: 1,

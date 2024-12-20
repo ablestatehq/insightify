@@ -48,23 +48,6 @@ async function getData(
         ...res.attributes
       }));
 
-<<<<<<< HEAD
-    if (data.data) {
-      const hasMore = start + limit < data.data[`${endpoint}`].meta.pagination.total;
-      const results = data.data[`${endpoint}`]['data'].map((res: any) => {
-        return {id: res.id, ...res.attributes}
-      });
-      return {
-        data: results,
-        error: null,
-        hasMore: hasMore,
-      }
-    }
-    return {
-      data: null,
-      error: data?.error,
-      hasMore: false,
-=======
       return {
         data: results,
         error: null,
@@ -73,16 +56,9 @@ async function getData(
           total: rawData.meta?.pagination?.total || results.length
         }
       };
->>>>>>> new-structure
     }
 
     return {
-<<<<<<< HEAD
-      error,
-      data: null,
-      hasMore: false
-    }
-=======
       data: null,
       error: 'No data found',
       meta: null
@@ -95,7 +71,6 @@ async function getData(
       error: error instanceof Error ? error.message : 'An unknown error occurred',
       meta: null
     };
->>>>>>> new-structure
   }
 }
 
@@ -121,7 +96,7 @@ async function fetchNewItems(endpoint: keyof typeof MODALS) {
   const data = await response.json();
 
   if (data.data) {
-    const newItems = data.data[`${endpoint}`]['data']
+    const newItems = data.data[`${String(endpoint)}`]['data']
       .map((res: any) => ({ id: res.id, ...res.attributes }));
     return newItems;
   }
@@ -243,30 +218,18 @@ async function get_top_news() {
       method: 'GET',
     });
 
-<<<<<<< HEAD
-async function login(email:string, password: string) {
-  const mutation = `mutation {
-  login(input: { identifier: ${email}, password: ${password} }) {
-    jwt
-  }`;
-=======
      const data = await response.json();
      return data;
    } catch (error) {
      return error;
   }
->>>>>>> new-structure
 }
 
 export {
   get_top_news,
   getData,
-  uploadImage,
-<<<<<<< HEAD
-  createEntry,
   fetchNewItems,
-=======
->>>>>>> new-structure
+  uploadImage,
   fetchNextBatch,
   fetchDataByID
 }

@@ -4,23 +4,13 @@ import {
   ScrollView,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, {useState} from 'react';
-import {Formik, FormikHelpers} from 'formik';
+import React, { useState } from 'react';
+import { Formik, FormikHelpers } from 'formik';
 
-import {Dropdown} from 'react-native-element-dropdown';
-import {TalentSubmissionForm} from '@src/types';
-import {COLOR, FONTSIZE} from '@constants/constants';
+import { Dropdown } from 'react-native-element-dropdown';
+import { TalentSubmissionForm } from '@src/types';
+import { COLOR, FONTSIZE } from '@constants/constants';
 
-<<<<<<< HEAD:src/screens/FindTalent/FindTalent.tsx
-import {TalentFormValidationSchema} from '@utils/validations';
-import InputText from '@components/FomikComponents/InputText/InputText';
-import SubmitButton from '@components/FomikComponents/SubmitButton/SubmitButton';
-
-import {CustomModal} from '@components/index';
-import {storeData} from '@api/strapiJSAPI';
-import {FONT_NAMES} from '@fonts'
-import Header from '@components/Headers/Header';
-=======
 import { TalentFormValidationSchema } from '@utils/validations';
 import InputText from '@src/components/forms/InputText/InputText';
 import SubmitButton from '@src/components/forms/SubmitButton/SubmitButton';
@@ -29,7 +19,6 @@ import { CustomModal } from '@components/index';
 import { storeData } from '@api/strapiJSAPI';
 import { FONT_NAMES } from '@fonts'
 import Header from '@src/components/headers/Header';
->>>>>>> new-structure:src/screens/Talent/FindTalent.tsx
 
 const FindTalent = () => {
 

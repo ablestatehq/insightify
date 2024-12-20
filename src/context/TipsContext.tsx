@@ -1,7 +1,6 @@
 // contexts/CodeTipsContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { fetchNextBatch, getData } from '@api/grapiql';
-import { environments } from '@src/constants';
 import fetchWithCache from '@src/utils/fetch-with-cache';
 
 interface CodeTipsContextType {

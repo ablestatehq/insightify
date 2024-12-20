@@ -1,11 +1,6 @@
 export const MODALS = {
-  'comments': `query($start: Int, $limit: Int){
-    comments(pagination: { start: $start, limit: $limit }){
-    meta {
-        pagination {
-          total
-        }
-      }
+  'comments': `query {
+    comments(pagination: {start: 0, limit: 25}){
       data{
         id
         attributes{
@@ -46,8 +41,8 @@ export const MODALS = {
     }
   }`,
 
-  'notificationTokens': `query($start: Int, $limit: Int){
-  notificationTokens(sort: "publishedAt:desc", pagination: { start: $start, limit: $limit }){
+  'notificationTokens': `query{
+  notificationTokens(sort: "publishedAt:desc", pagination: {start: 0, limit: 25}){
     data{
       id,
       attributes{
@@ -58,19 +53,10 @@ export const MODALS = {
   }`,
 
   'techTips': `query($start: Int, $limit: Int){
-<<<<<<< HEAD
-    techTips(sort: "publishedAt:desc", pagination: { start: $start, limit: $limit }){
-    meta {
-        pagination {
-          total
-        }
-      }
-=======
     techTips(sort: "publishedAt:desc", pagination: { 
           start: $start, 
           limit: $limit 
         }){
->>>>>>> new-structure
       data{
         id
         attributes{
@@ -85,22 +71,12 @@ export const MODALS = {
     }
   }`,
 
-<<<<<<< HEAD
-  'opportunities': `query($start: Int, $limit: Int){
-    opportunities(sort: "publishedAt:desc", pagination: { start: $start, limit: $limit }){
-    meta {
-        pagination {
-          total
-        }
-      }
-=======
   'opportunities': `query($start: Int, $limit: Int) {
     opportunities(sort: "publishedAt:desc",
     pagination: {
           start: $start, 
           limit: $limit 
         }){
->>>>>>> new-structure
       data{
         id,
         attributes{
@@ -143,20 +119,15 @@ export const MODALS = {
     }
   }`,
 
-  'sentNotifications': `query($start: Int, $limit: Int){
-    sentNotifications(pagination: { start: $start, limit: $limit }){
+  'sentNotifications': `query{
+    sentNotifications(pagination: {start: 0, limit: 25}){
 
     }
   }`,
-<<<<<<< HEAD
-  'communityMembers':`query($start: Int, $limit: Int){
-  communityMembers(pagination: { start: $start, limit: $limit }){
-=======
   'communityMembers':`query($start:Int, $limit: Int){
   communityMembers(pagination: {
           start: $start,
           limit: $limit}){
->>>>>>> new-structure
     data{
       id,
       attributes{
@@ -178,19 +149,10 @@ export const MODALS = {
   }
   }`,
   'products':`query($start: Int, $limit: Int){
-<<<<<<< HEAD
-  products(pagination: { start: $start, limit: $limit }){
-  meta {
-        pagination {
-          total
-        }
-      }
-=======
   products(pagination: {
           start: $start, 
           limit: $limit 
 }){
->>>>>>> new-structure
     data{
       id
       attributes{

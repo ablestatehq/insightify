@@ -31,13 +31,6 @@ interface AppContextType {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   opportunities: any[];
   setOpportunities: React.Dispatch<React.SetStateAction<any[]>>;
-<<<<<<< HEAD
-  hasMoreOffers: boolean;
-  setHasMoreOffers: React.Dispatch<React.SetStateAction<boolean>>;
-  // products: any[];
-  // setProducts: React.Dispatch<React.SetStateAction<any[]>>;
-=======
->>>>>>> new-structure
   isNotificationEnabled: boolean;
   setIsNotificationEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   notifications: any[];
@@ -51,7 +44,7 @@ export const AppContext = createContext<AppContextType>({
   user: {},
   setUser: () => { },
   errors: {},
-  setErrors: () => {},
+  setErrors: () => { },
   xp: 0,
   setXp: () => { },
   isLoading: true,
@@ -60,18 +53,11 @@ export const AppContext = createContext<AppContextType>({
   setIsLoggedIn: () => { },
   opportunities: [],
   setOpportunities: () => { },
-<<<<<<< HEAD
-  hasMoreOffers: true,
-  setHasMoreOffers: () => {},
-  // products: [],
-  // setProducts: () => {},
-=======
->>>>>>> new-structure
   isNotificationEnabled: false,
   setIsNotificationEnabled: () => { },
   notifications: [],
   setNotifications: () => { },
-  fetchAdditionalData: async (endpoint: string, start: number) => {},
+  fetchAdditionalData: async (endpoint: string, start: number) => { },
 });
 
 
@@ -85,14 +71,9 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
   const [socket, setSocket] = useState<Socket | null>(null);
-<<<<<<< HEAD
-  const [hasMoreOffers, setHasMoreOffers] = useState<boolean>(true);
-
-=======
   const [errors, setErrors] = useState<any>({});
 
   // effects
->>>>>>> new-structure
   useEffect(() => {
     fetchInitialData();
   }, []);
@@ -112,28 +93,12 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
   const fetchInitialData = async () => {
     try {
-<<<<<<< HEAD
-      // Run all fetches concurrently
-      const [localOpportunities = [], localTechTips = [], localProducts = []] = await Promise.all([
-        retrieveLocalData('opportunities'),
-        retrieveLocalData('techTips'),
-        retrieveLocalData('products')
-      ]);
-
-=======
->>>>>>> new-structure
       const [
         user_, inCommunity, isNofityOn,
       ] = await Promise.all([
         getMe(),
         retrieveLocalData('isMember'),
         retrieveLocalData('tokens'),
-<<<<<<< HEAD
-        // (await getData('products')).data,
-        (await getData('opportunities')),
-        (await getData('techTips')),
-=======
->>>>>>> new-structure
       ]);
       // User & Notification Logic
       if (isNofityOn) {
@@ -149,23 +114,6 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
         setIsLoggedIn(true);
       }
 
-<<<<<<< HEAD
-      // Opportunities, TechTips, Products
-      const updatedOpportunities = opportunitiesData.data.map((opp: any) => ({
-        ...opp,
-        bookmarked: localOpportunities.find((localOpp: any) => localOpp.id === opp.id)?.bookmarked ?? false,
-      }));
-
-      const updatedTechTips = techTips.data.map((tip: any) => ({
-        ...tip,
-        bookmarked: localTechTips.find((localTip: any) => localTip.id === tip.id)?.bookmarked ?? false,
-      }));
-
-      // Update state
-      setOpportunities(updatedOpportunities);
-      setCodeTips(updatedTechTips);
-      setHasMoreOffers(opportunitiesData.hasMore);
-=======
       // Opportunities, TechTips
       const [opportunity_data, tech_tips_data] = await Promise.all([
         fetchWithCache('opportunities', () => getData('opportunities')),
@@ -175,7 +123,6 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       // Update state
       setOpportunities(opportunity_data);
       // setCodeTips(tech_tips_data);
->>>>>>> new-structure
 
     } catch (error: any) {
       setErrors(error);
@@ -194,7 +141,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
           } else {
             setOpportunities(prev => {
               const existingIds = prev.map((item) => item.id);
-              const filteredNewOpps = newOpps.data.filter((item:any) => !existingIds.includes(item.id));
+              const filteredNewOpps = newOpps.data.filter((item: any) => !existingIds.includes(item.id));
               return [...prev, ...filteredNewOpps];
             });
           }
@@ -244,13 +191,6 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     setIsLoggedIn,
     opportunities,
     setOpportunities,
-<<<<<<< HEAD
-    hasMoreOffers,
-    setHasMoreOffers,
-    // products,
-    // setProducts,
-=======
->>>>>>> new-structure
     isNotificationEnabled,
     setIsNotificationEnabled,
     notifications,

@@ -1,8 +1,8 @@
-import {fetchNextBatch, getData} from "@api/grapiql";
-import {environments} from "@constants/environments";
-import {ProductData} from "@src/types";
-import {storeToLocalStorage} from "@src/utils/localStorageFunctions";
-import React, {createContext, useContext, useEffect, useState} from "react";
+import { fetchNextBatch, getData } from "@api/grapiql";
+import { environments } from "@constants/environments";
+import { ProductData } from "@src/types";
+import { storeToLocalStorage } from "@src/utils/localStorageFunctions";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import fetchWithCache from '@src/utils/fetch-with-cache';
 
 interface Author {
@@ -33,19 +33,16 @@ interface ProductContextType {
   setProducts: React.Dispatch<React.SetStateAction<ProductData[]>>;
   fetchComments: (id: number) => Promise<Comment[]>;
   toggleBookmark: (id: number) => void;
-  hasMoreProducts: boolean;
-  setHasMoreProducts: React.Dispatch<React.SetStateAction<boolean>>;
   submitComment: (id: number, comment: string, jwt: string) => Promise<Comment | null>;
   fetchAdditionalData: (endpoint: string, start: number) => Promise<void>;
 };
 
-const {BASE_URL, STRAPI_TOKEN} = environments;
+const { BASE_URL, STRAPI_TOKEN } = environments;
 
 export const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
 export const ProductProvider = ({ children }: { children: React.ReactNode }) => {
   const [products, setProducts] = useState<ProductData[]>([]);
-  const [hasMoreProducts, setHasMoreProducts] = useState<boolean>(true);
 
   const toggleBookmark = (productId: number) => {
     const updatedProducts = products.map((product: ProductData) => {
@@ -64,24 +61,9 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
   };
 
   const fetchProducts = async () => {
-<<<<<<< HEAD
-    const productsData = (await getData('products'));
-    const localProducts = await retrieveLocalData('products') ?? [];
-
-    // Combine remote data with local updates
-    const updatedProducts = productsData.data.map((product: ProductData) => ({
-      ...product,
-      meta: { ...product.meta, bookmarked: localProducts.find((p: ProductData) => p.id === product.id)?.meta?.bookmarked ?? false }
-    }));
-
-    setProducts(updatedProducts);
-    storeToLocalStorage('products', updatedProducts);
-    setHasMoreProducts(productsData.hasMore);
-=======
-    const products_data = await fetchWithCache('products',() => getData('products'))
+    const products_data = await fetchWithCache('products', () => getData('products'))
 
     setProducts(products_data);
->>>>>>> new-structure
   };
 
   const fetchComments = async (id: number,) => {
@@ -147,12 +129,7 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
       fetchComments,
       toggleBookmark,
       submitComment,
-<<<<<<< HEAD
-      hasMoreProducts,
-      setHasMoreProducts,
-=======
       fetchAdditionalData
->>>>>>> new-structure
     }}>
       {children}
     </ProductContext.Provider>
