@@ -2,6 +2,7 @@ import React from 'react';
 import { COLOR } from '@constants/constants';
 import { AntDesign, Ionicons, FontAwesome,
   EvilIcons, Feather, Octicons} from '@expo/vector-icons';
+import { ViewStyle } from 'react-native';
 
 interface IconName {
   name: string // 'Deck' | 'Sky' | 'Talent' | 'More',
@@ -9,9 +10,10 @@ interface IconName {
   size?: number
   press?: () => void
   _color?: string
+  style?: ViewStyle
 }
 
-const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
+const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color, style}) => {
   switch (name) {
     case 'home':
       return <Feather
@@ -23,6 +25,13 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
     case 'offers':
       return <Ionicons
         name="briefcase-outline"
+        size={size ? size : 20}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
+        onPress={press}
+      />
+    case 'news':
+      return <FontAwesome
+        name="newspaper-o"
         size={size ? size : 20}
         color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
@@ -50,10 +59,11 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
       />
     case 'close':
       return <AntDesign
-        name='closecircle'
+        name='close'
         size={size ? size : 20}
         color={_color ? _color : COLOR.PRIMARY_300}
         onPress={press}
+        style={style}
       />
     case 'clipboard':
       return <FontAwesome
@@ -111,7 +121,37 @@ const Icon: React.FC<IconName> = ({ name, isActive, size, press, _color }) => {
         color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
         onPress={press}
       />
-
+    case 'notifications':
+      return <Ionicons
+        name="notifications-outline"
+        size={size ? size : 20}
+        color={isActive ? COLOR.PRIMARY_300 : COLOR.SECONDARY_100}
+        onPress={press}
+      />
+    case 'back':
+      return <Ionicons
+        name="arrow-back"
+        size={size ? size : 20}
+        color={_color}
+        onPress={press}
+        style={style}
+      />
+    case 'user':
+      return <FontAwesome
+        name="user-circle-o"
+        size={size ? size : 20}
+        color={_color}
+        onPress={press}
+        style={style}
+      />
+    case 'share-arrow':
+      return <Ionicons
+        name="arrow-undo-outline"
+        size={size ? size : 20}
+        color={_color}
+        onPress={press}
+        style={style}
+      />
   }
 };
 

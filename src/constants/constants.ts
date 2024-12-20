@@ -84,4 +84,5 @@ export const DIMEN = {
 
 export const BGTASKS = {
   CHECK_ONLINE_STATUS: 'background-network-check',
+  APP_START_STATUS: 'background-app-start',
 }

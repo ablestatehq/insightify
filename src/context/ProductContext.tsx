@@ -1,8 +1,9 @@
-import {getData} from "@api/grapiql";
+import {fetchNextBatch, getData} from "@api/grapiql";
 import {environments} from "@constants/environments";
 import {ProductData} from "@src/types";
-import {retrieveLocalData, storeToLocalStorage} from "@src/utils/localStorageFunctions";
+import {storeToLocalStorage} from "@src/utils/localStorageFunctions";
 import React, {createContext, useContext, useEffect, useState} from "react";
+import fetchWithCache from '@src/utils/fetch-with-cache';
 
 interface Author {
   id: string;
@@ -10,6 +11,7 @@ interface Author {
   email: string;
   avatar: string | null;
 };
+
 interface Comment {
   readonly id: number;
   content: string
@@ -25,6 +27,7 @@ interface Comment {
   updatedAt?: string,
   reports?: []
 };
+
 interface ProductContextType {
   products: ProductData[];
   setProducts: React.Dispatch<React.SetStateAction<ProductData[]>>;
@@ -33,6 +36,7 @@ interface ProductContextType {
   hasMoreProducts: boolean;
   setHasMoreProducts: React.Dispatch<React.SetStateAction<boolean>>;
   submitComment: (id: number, comment: string, jwt: string) => Promise<Comment | null>;
+  fetchAdditionalData: (endpoint: string, start: number) => Promise<void>;
 };
 
 const {BASE_URL, STRAPI_TOKEN} = environments;
@@ -60,6 +64,7 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
   };
 
   const fetchProducts = async () => {
+<<<<<<< HEAD
     const productsData = (await getData('products'));
     const localProducts = await retrieveLocalData('products') ?? [];
 
@@ -72,6 +77,11 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
     setProducts(updatedProducts);
     storeToLocalStorage('products', updatedProducts);
     setHasMoreProducts(productsData.hasMore);
+=======
+    const products_data = await fetchWithCache('products',() => getData('products'))
+
+    setProducts(products_data);
+>>>>>>> new-structure
   };
 
   const fetchComments = async (id: number,) => {
@@ -111,6 +121,21 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
       return null
     }
   }
+
+  const fetchAdditionalData = async (endpoint: string, start: number) => {
+    try {
+      const newProducts = await fetchNextBatch('products', start as number);
+      if (!newProducts.data && newProducts.error) {
+        return;
+      }
+      setProducts(prev => {
+        const existingIds = prev.map((item) => item.id);
+        const filteredProducts = newProducts.data.filter((item: any) => !existingIds.includes(item.id));
+        return [...prev, ...filteredProducts];
+      });
+    } catch (error: any) { }
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -122,8 +147,12 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
       fetchComments,
       toggleBookmark,
       submitComment,
+<<<<<<< HEAD
       hasMoreProducts,
       setHasMoreProducts,
+=======
+      fetchAdditionalData
+>>>>>>> new-structure
     }}>
       {children}
     </ProductContext.Provider>

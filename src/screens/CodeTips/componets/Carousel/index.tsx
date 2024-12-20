@@ -1,103 +1,84 @@
-import React from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
+import React, { useCallback } from 'react';
+import { View, StyleSheet, FlatList, ListRenderItem } from 'react-native';
 
-import {EmptyState} from '@components/index';
-import TipItem from '../TipItem'
+import { EmptyState, ListFooter } from '@src/components';
+import TipItem from '../TipItem';
 
-import {FONT_NAMES} from '@fonts';
-import {COLOR, DIMEN, FONTSIZE} from '@constants/constants';
+import { DIMEN } from '@constants/constants';
 
-const {SCREENWIDTH} = DIMEN;
+const { SCREENWIDTH } = DIMEN;
 
-interface CorouselProps {
-  data: any[],
-  tips: any[],
-  setTips: React.Dispatch<React.SetStateAction<any>>;
-  comments: any[],
+interface TipData {
+  id: string | number;
+  [key: string]: any;
 }
 
+interface CarouselProps {
+  data: TipData[];
+  tips: any[];
+  setTips: React.Dispatch<React.SetStateAction<any>>;
+  comments: any[];
+  handleEndReached: () => void
+}
 
-function Index({data, tips, setTips, comments}: CorouselProps) {
-  const renderTtem = ({item}: {item: any}) => (
+const Index: React.FC<CarouselProps> = ({
+  data =[],
+  tips = [],
+  setTips,
+  comments = [],
+  handleEndReached=() => {}
+}) => {
+  // render
+  const renderItem: ListRenderItem<TipData> = ({ item }) => (
     <TipItem
-      {...item}
       comments={comments}
       setTips={setTips}
       tips={tips}
+      id={item?.id as number}
+      title={item?.title}
+      details={item?.details}
     />
-  );
+  )
+
+  // Memoized key extractor for performance
+  const keyExtractor = useCallback((item: TipData) =>
+    item?.id.toString(), []);
 
   return (
     <View style={styles.container}>
       <FlatList
         data={data}
-        keyExtractor={(item) => item?.id.toString()}
-        renderItem={renderTtem}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
-        ListEmptyComponent={<EmptyState />}
+        ListEmptyComponent={<EmptyState text='No tips found' />}
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         windowSize={5}
         removeClippedSubviews={true}
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={<ListFooter loading={false} text="No more tips" isEmpty={data.length === 0} />}
+        getItemLayout={(_, index) => ({
+          length: SCREENWIDTH - 30,
+          offset: (SCREENWIDTH - 30) * index,
+          index,
+        })}
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: DIMEN.PADDING.ME,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-  },
-  navigation: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginVertical: 10,
-  },
-  navText: {
-    fontSize: 20,
-  },
-  currentIndex: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  codeTipsContainer: {
-    flex: 1,
-    backgroundColor: COLOR.SECONDARY_50,
-  },
-  renderItemView: {
-    width: SCREENWIDTH - 30,
-    margin: 5,
-    elevation: 0.5,
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: COLOR.WHITE,
-  },
-  tipContent: {
-    lineHeight: 30,
-    color: COLOR.SECONDARY_300,
-    fontFamily: FONT_NAMES.Heading,
-    fontSize: FONTSIZE.HEADING_5,
-  },
-  heading: {
-    fontFamily: FONT_NAMES.Title,
-    fontSize: FONTSIZE.TITLE_1
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   scrollContent: {
-    // paddingBottom: DIMEN.PADDING.ME,
-    // flex: 1,
     flexGrow: 1,
+    paddingBottom: 50,
   },
 });
 
-export default Index;
+export default React.memo(Index);

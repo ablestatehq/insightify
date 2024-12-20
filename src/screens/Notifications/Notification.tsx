@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import { COLOR, FONTSIZE } from '@constants/constants'
-import Header from '@components/Headers/Header'
+import Header from '@src/components/headers/Header'
 import { AppContext } from '@src/context/AppContext'
 import { StyleSheet, View, Text, ScrollView } from 'react-native'
-import NotificationCard from '@components/Cards/NotificationCard'
+import NotificationCard from '@src/components/cards/NotificationCard'
 import { FONT_NAMES } from '@fonts'
 // import { clearLocalData } from '@utils/localStorageFunctions'
 

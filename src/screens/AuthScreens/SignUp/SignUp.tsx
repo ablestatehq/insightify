@@ -10,12 +10,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { InputText, SubmitButton, Dialog } from '@components/index';
 import { signUp } from '@api/auth'
 import { FONT_NAMES } from '@fonts'
-import { IDialogBox, RootStackParamList } from '@src/types'
+import { IDialogProps, RootStackParamList } from '@src/types'
 
 const SignUp = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const [dialog, setDialog] = React.useState<IDialogBox>({
+  const [dialog, setDialog] = React.useState<IDialogProps>({
     visible: false,
     title: '',
     message: '',
@@ -40,7 +40,7 @@ const SignUp = () => {
       formikHelpers.resetForm();
       navigation.navigate('ConfirmEmail', {});
     } catch (error) {
-      setDialog((prev: IDialogBox) => ({
+      setDialog((prev: IDialogProps) => ({
         ...prev,
         visible: true,
         title: 'Sign-up or login failed',

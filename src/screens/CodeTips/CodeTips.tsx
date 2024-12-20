@@ -1,19 +1,22 @@
 import React from 'react';
 import {
-  Text, View, StatusBar, TextInput,
+  Text, View,
   StyleSheet,
   ActivityIndicator,
+  StatusBar, TextInput,
 } from 'react-native';
 
-import {useCodeTips} from './useCodeTips';
+import { useCodeTips } from './hooks/useCodeTips';
+
 // constants
 import Icons from '@icons';
 import {FONT_NAMES} from '@fonts';
 import {COLOR, FONTSIZE} from '@constants/constants';
-import {CategorySection} from '@components/index';
+import {CategorySection} from '@src/components';
 
 // lazy loads
 const Carousel = React.lazy(() => import('./componets/Carousel'));
+
 const CodeTips = () => {
   const {
     category,
@@ -24,7 +27,8 @@ const CodeTips = () => {
     carouselData,
     setCodeTips,
     comments,
-    codeTips
+    codeTips,
+    handleEndReached,
   } = useCodeTips();
 
   return (
@@ -56,7 +60,13 @@ const CodeTips = () => {
       </View>
       <View style={styles.carouselStyle}>
         <React.Suspense fallback={<ActivityIndicator size='small' color={COLOR.PRIMARY_300} />}>
-          <Carousel data={carouselData} setTips={setCodeTips} comments={comments} tips={codeTips} />
+          <Carousel
+            data={carouselData}
+            setTips={setCodeTips}
+            comments={comments}
+            tips={codeTips}
+            handleEndReached={handleEndReached}
+          />
         </React.Suspense>
       </View>
     </View>

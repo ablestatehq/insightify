@@ -2,36 +2,41 @@ import React from 'react';
 import {Pressable, StatusBar, StyleSheet, Switch, Text, View} from 'react-native';
 import {Entypo, Feather, Ionicons} from '@expo/vector-icons';
 
+import useProfile from '@src/screens/profile/hooks/useProfile'
 import onShare from '@utils/onShare';
 import {COLOR, DIMEN, FONTSIZE} from '@constants/constants';
 
-import {FONT_NAMES} from '@fonts'
-import ProfileSection from '@components/Cards/ProfileSection';
-import {useProfile} from '@src/hooks';
-import {Dialog, JoinCommunity, ProfileForm} from '@src/components';
+import { FONT_NAMES } from '@fonts';
+
+// components 
+import { Dialog, JoinCommunity } from '@src/components';
+import ProfileForm from '../profile/components/ProfileForm'
+import ProfileSection from './components/ProfileSection';
 
 
 const SettingsScreen = () => {
 
   const { isNotificationEnabled, toggleSwitch,
     navigation, setJoinVisible, isLoggedIn,
-    userProfile, joinVisible, setDialog, dialog,
+    userProfile, joinVisible, dialog,
     showProfileCard, setShowProfileCard, profilePhoto,
-    handleSignoutPress } = useProfile();
+    handleSignoutPress, handleChatPress } = useProfile();
 
   return (
     <View style={styles.container}>
-      {/* <View style={styles.navBar}> */}
-        {/* <View /> */}
         <Text style={styles.screen_title}>Settings</Text>
-        {/* <Feather name="more-vertical" size={20} color="black" /> */}
-      {/* </View> */}
       {/* User profile section  */}
       <ProfileSection />
 
       <View style={styles.main}>
         {/**Account */}
-        {isLoggedIn && <View style={styles.settingCard}>
+        {isLoggedIn &&
+          <Pressable
+            style={styles.settingCard}
+            onPress={() => {
+              navigation.navigate('Profile');
+            }}
+          >
           <View style={styles.setting_view_left}>
             <Ionicons
               name="person-outline"
@@ -44,9 +49,8 @@ const SettingsScreen = () => {
             size={15}
             name="chevron-thin-right"
             color={COLOR.SECONDARY_100}
-            onPress={() => setShowProfileCard(!showProfileCard)}
           />
-        </View>}
+        </Pressable>}
         {/**Chat */}
         <View style={styles.settingCard}>
           <View style={styles.setting_view_left}>
@@ -65,31 +69,26 @@ const SettingsScreen = () => {
             size={15}
             name="chevron-thin-right"
             color={COLOR.SECONDARY_100}
-            onPress={() => {
-              if (isLoggedIn) {
-                if (userProfile.completed) {
-                  if (!userProfile.inCommunity) {
-                    setJoinVisible(!joinVisible)
-                  } else {
-                    navigation.navigate('ChatRoom')
-                  }
-                } else {
-                  setDialog({
-                    ...dialog,
-                    visible: true,
-                    title: 'User profile',
-                    message: 'Complete your profile to join the comminuty',
-                  })
-                }
-              } else {
-                setDialog({
-                  ...dialog,
-                  visible: true,
-                  title: 'Guest user',
-                  message: 'You are currently a guest user, complete login to join community',
-                });
-              }
-            }}
+            onPress={handleChatPress}
+          />
+        </View>
+        {/**Create a learning path */}
+        <View style={styles.settingCard}>
+          <View style={styles.setting_view_left}>
+            <Ionicons
+              name="chatbubbles-outline"
+              size={13}
+              color={COLOR.SECONDARY_100}
+            />
+            <Text style={styles.settingText}>
+              Learning path
+            </Text>
+          </View>
+          <Entypo
+            size={15}
+            name="chevron-thin-right"
+            color={COLOR.SECONDARY_100}
+            onPress={() => navigation.navigate('LearningPath')}
           />
         </View>
         {/**Support */}

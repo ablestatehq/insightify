@@ -24,7 +24,7 @@ async function getMe() {
         'Authorization': `Bearer ${jwt}`
       }
     };
-    const reponse = await fetch(url, options)
+    const reponse = await fetch(url, options);
     const data = await reponse.json();
     // user to login again
     if (data.error && authToken) {
@@ -342,8 +342,53 @@ async function sendEmail(email:string, jwt: string) {
   }
 };
 
+async function get_users() {
+  const options = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${STRAPI_TOKEN}`
+    }
+  };
+
+  try {
+    const response = await fetch(`${STRAPI_BASE_URL}/users?populate=*`, options);
+    const data = await response.json();
+
+    if (data) {
+      return data.map((user: any) => ({
+        id: user.id,
+        name: user.username.match(/^[^@]+/)[0]
+      }));
+    } 
+    return null;
+  } catch (error) {
+    // console.error('Error fetching users:', error);
+    return null;
+  }
+}
+
+async function get_user_data(id: number) {
+  const options = {
+    method: 'GET',
+    headers: {
+    'content-type': 'application/json',
+    'Authorization': `Bearer ${STRAPI_TALENT_FORM_API_KEY}`
+    },
+  }
+
+  const response = fetch(`${STRAPI_BASE_URL}/users/${id}?populate=*`, options)
+    .then(response => response.json())
+    .then(storedData => storedData)
+    .catch(error => {});
+  
+  return response;
+}
+
 export {
   getMe,
+  get_users,
+  get_user_data,
   sendEmail,
   getFilteredData,
   storeData,

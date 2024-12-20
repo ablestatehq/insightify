@@ -1,7 +1,7 @@
-import {AppContext} from '@src/context';
-import {useContext, useEffect, useRef, useState} from 'react';
-import {generateTransactionRef} from '@src/helper/functions';
-import {storeData, updateStrapiData} from '@api/strapiJSAPI';
+import { AppContext } from '@src/context';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { generateTransactionRef } from '@src/helper/functions';
+import { storeData, updateStrapiData } from '@api/strapiJSAPI';
 import {clearLocalData, retrieveLocalData, storeToLocalStorage} from '@utils/localStorageFunctions';
 import {Device, NotificationController, Notifications} from '@src/helper/notifications';
 
@@ -150,8 +150,9 @@ const usePushNotifications = () => {
     })();
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
+      // add null checks  to remove the NotificationsEmitter error
+      if (notificationListener.current) Notifications.removeNotificationSubscription(notificationListener.current);
+      if(responseListener.current) Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
 

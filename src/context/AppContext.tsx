@@ -1,11 +1,14 @@
 import React, { useState, createContext, useEffect, useCallback } from 'react';
 
-import {getData} from '@api/grapiql';
-import {getMe} from '@api/strapiJSAPI';
-import {retrieveLocalData, storeToLocalStorage} from '@utils/localStorageFunctions';
+import { fetchNextBatch, getData } from '@api/grapiql';
+import { getMe } from '@api/strapiJSAPI';
+import { retrieveLocalData } from '@utils/localStorageFunctions';
 import ProductProvider from './ProductContext';
 import { createClientSocket } from '@src/lib/socket';
 import { Socket } from 'socket.io-client';
+import PostProvider from './post-context';
+import fetchWithCache from '@src/utils/fetch-with-cache';
+import CodeTipsProvider from './TipsContext';
 
 interface AppContextProviderProps {
   children: React.ReactNode;
@@ -16,60 +19,61 @@ interface AppContextType {
   setJwt: React.Dispatch<React.SetStateAction<string>>;
   user: any;
   setUser: React.Dispatch<React.SetStateAction<any>>;
-  xp: number,
+  errors: any;
+  setErrors: React.Dispatch<React.SetStateAction<any>>;
+  xp: number;
   setXp: React.Dispatch<React.SetStateAction<number>>;
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  codeTips: any[];
-  setCodeTips: React.Dispatch<React.SetStateAction<any[]>>;
+  // codeTips: any[];
+  // setCodeTips: React.Dispatch<React.SetStateAction<any[]>>;
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   opportunities: any[];
   setOpportunities: React.Dispatch<React.SetStateAction<any[]>>;
+<<<<<<< HEAD
   hasMoreOffers: boolean;
   setHasMoreOffers: React.Dispatch<React.SetStateAction<boolean>>;
   // products: any[];
   // setProducts: React.Dispatch<React.SetStateAction<any[]>>;
+=======
+>>>>>>> new-structure
   isNotificationEnabled: boolean;
   setIsNotificationEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   notifications: any[];
   setNotifications: React.Dispatch<React.SetStateAction<any[]>>;
-  comments: any[];
-  setComments: React.Dispatch<React.SetStateAction<any[]>>;
-  community: any[];
-  setCommunity: React.Dispatch<React.SetStateAction<any[]>>;
-  fetchAdditionalData: () => Promise<void>;
+  fetchAdditionalData: (endpoint: string, start: number) => Promise<void>;
 }
 
 export const AppContext = createContext<AppContextType>({
   jwt: '',
-  setJwt: () => {},
+  setJwt: () => { },
   user: {},
-  setUser: () => {},
+  setUser: () => { },
+  errors: {},
+  setErrors: () => {},
   xp: 0,
-  setXp: () => {},
+  setXp: () => { },
   isLoading: true,
-  setIsLoading: () => {},
-  codeTips: [],
-  setCodeTips: () => {},
+  setIsLoading: () => { },
   isLoggedIn: false,
-  setIsLoggedIn: () => {},
+  setIsLoggedIn: () => { },
   opportunities: [],
   setOpportunities: () => { },
+<<<<<<< HEAD
   hasMoreOffers: true,
   setHasMoreOffers: () => {},
   // products: [],
   // setProducts: () => {},
+=======
+>>>>>>> new-structure
   isNotificationEnabled: false,
-  setIsNotificationEnabled: () => {},
+  setIsNotificationEnabled: () => { },
   notifications: [],
-  setNotifications: () => {},
-  comments: [],
-  setComments: () => {},
-  community: [],
-  setCommunity: () => {},
-  fetchAdditionalData: async () => {},
+  setNotifications: () => { },
+  fetchAdditionalData: async (endpoint: string, start: number) => {},
 });
+
 
 const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -78,14 +82,17 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [xp, setXp] = useState<number>(0);
   const [jwt, setJwt] = useState<string>('');
   const [opportunities, setOpportunities] = useState<any[]>([]);
-  const [codeTips, setCodeTips] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(false);
-  const [comments, setComments] = useState<any[]>([]);
-  const [community, setCommunity] = useState<any[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
+<<<<<<< HEAD
   const [hasMoreOffers, setHasMoreOffers] = useState<boolean>(true);
 
+=======
+  const [errors, setErrors] = useState<any>({});
+
+  // effects
+>>>>>>> new-structure
   useEffect(() => {
     fetchInitialData();
   }, []);
@@ -102,8 +109,10 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       setOpportunities([...opportunities, data]);
     });
   }, [socket]);
+
   const fetchInitialData = async () => {
     try {
+<<<<<<< HEAD
       // Run all fetches concurrently
       const [localOpportunities = [], localTechTips = [], localProducts = []] = await Promise.all([
         retrieveLocalData('opportunities'),
@@ -111,18 +120,21 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
         retrieveLocalData('products')
       ]);
 
+=======
+>>>>>>> new-structure
       const [
         user_, inCommunity, isNofityOn,
-        // productsData,
-        opportunitiesData, techTips] = await Promise.all([
+      ] = await Promise.all([
         getMe(),
         retrieveLocalData('isMember'),
         retrieveLocalData('tokens'),
+<<<<<<< HEAD
         // (await getData('products')).data,
         (await getData('opportunities')),
         (await getData('techTips')),
+=======
+>>>>>>> new-structure
       ]);
-
       // User & Notification Logic
       if (isNofityOn) {
         setIsNotificationEnabled(isNofityOn.isPushNotificationEnabled);
@@ -137,6 +149,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
         setIsLoggedIn(true);
       }
 
+<<<<<<< HEAD
       // Opportunities, TechTips, Products
       const updatedOpportunities = opportunitiesData.data.map((opp: any) => ({
         ...opp,
@@ -152,38 +165,64 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       setOpportunities(updatedOpportunities);
       setCodeTips(updatedTechTips);
       setHasMoreOffers(opportunitiesData.hasMore);
+=======
+      // Opportunities, TechTips
+      const [opportunity_data, tech_tips_data] = await Promise.all([
+        fetchWithCache('opportunities', () => getData('opportunities')),
+        fetchWithCache('techTips', () => getData('techTips')),
+      ]);
 
-      // Cache data
-      storeToLocalStorage('opportunities', updatedOpportunities);
-      storeToLocalStorage('techTips', updatedTechTips);
-      // storeToLocalStorage('products', updatedProducts);
+      // Update state
+      setOpportunities(opportunity_data);
+      // setCodeTips(tech_tips_data);
+>>>>>>> new-structure
 
-    } catch (error) {
-      console.error("Error fetching initial data:", error);
+    } catch (error: any) {
+      setErrors(error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const fetchAdditionalData = async () => {
+  const fetchAdditionalData = async (endpoint: string, start: number) => {
     try {
-      const [comments_, sent_notifications, community_members, localNotification] = await Promise.all([
-        (await getData('comments')).data,
-        (await getData('sentNotifications')).data,
-        (await getData('communityMembers')).data,
-        retrieveLocalData('notifications'),
-      ]);
-
-      if (comments_) {
-        setComments((prev) => [...prev, ...comments_]);
-      }
-
-      if (localNotification) {
-        setNotifications((prev) => [...prev, ...localNotification]);
-      }
-
-      if (community_members) {
-        setCommunity((prev) => [...prev, ...community_members]);
+      switch (endpoint) {
+        case 'opportunities':
+          const newOpps = await fetchNextBatch('opportunities', start);
+          if (!newOpps.data && newOpps.error) {
+            return;
+          } else {
+            setOpportunities(prev => {
+              const existingIds = prev.map((item) => item.id);
+              const filteredNewOpps = newOpps.data.filter((item:any) => !existingIds.includes(item.id));
+              return [...prev, ...filteredNewOpps];
+            });
+          }
+          break;
+        case 'techtips':
+          const newTechTips = await fetchNextBatch('techTips', start as number);
+          if (!newTechTips.data && newTechTips.error) {
+            return;
+          } else {
+            // setCodeTips(prev => {
+            //   const existingIds = new Set(prev.map((item) => item.id));
+            //   const filteredNewOpps = newTechTips.data.filter((item: any) => !existingIds.has(item.id));
+            //   return [...prev, ...filteredNewOpps];
+            // });
+          }
+          break;
+        case 'products':
+          const newProducts = await fetchNextBatch('products', start as number);
+          if (!newProducts.data && newProducts.error) {
+            return;
+          } else {
+            // setCodeTips(prev => {
+            //   const existingIds = new Set(prev.map((item) => item.id));
+            //   const filteredNewProducts = newProducts.data.filter((item: any) => !existingIds.has(item.id));
+            //   return [...prev, ...filteredNewProducts];
+            // });
+          }
+          break;
       }
     } catch (error: any) { }
   };
@@ -193,28 +232,29 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     setUser,
     jwt,
     setJwt,
+    errors,
+    setErrors,
     xp,
     setXp,
     isLoading,
     setIsLoading,
-    codeTips,
-    setCodeTips,
+    // codeTips,
+    // setCodeTips,
     isLoggedIn,
     setIsLoggedIn,
     opportunities,
     setOpportunities,
+<<<<<<< HEAD
     hasMoreOffers,
     setHasMoreOffers,
     // products,
     // setProducts,
+=======
+>>>>>>> new-structure
     isNotificationEnabled,
     setIsNotificationEnabled,
     notifications,
     setNotifications,
-    comments,
-    setComments,
-    community,
-    setCommunity,
     fetchAdditionalData,
   };
 
@@ -227,9 +267,13 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   }, []);
   return (
     <ProductProvider>
-      <AppContext.Provider value={contextValue}>
-        {children}
-      </AppContext.Provider>
+      <PostProvider>
+        <CodeTipsProvider>
+          <AppContext.Provider value={contextValue}>
+            {children}
+          </AppContext.Provider>
+        </CodeTipsProvider>
+      </PostProvider>
     </ProductProvider>
   );
 };

@@ -1,5 +1,5 @@
 import { View, StyleSheet, Text } from "react-native";
-import Header from "@components/Headers/Header";
+import Header from "@src/components/headers/Header";
 import { COLOR, FONTSIZE } from "@constants/constants";
 import { FONT_NAMES } from "@fonts";
 

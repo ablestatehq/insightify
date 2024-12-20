@@ -1,60 +1,75 @@
 import * as Updates from 'expo-updates';
 import * as TaskManager from 'expo-task-manager';
 import * as Linking from 'expo-linking';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { MainStackNavigator } from '@routes/StackNavigator';
 import AppContextProvider from '@src/context/AppContext';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { BGTASKS } from '@constants/constants';
 import {
-  useNetworkStatus,
-  usePushNotifications,
   registerBackgroundFetchAsync,
-  unregisterBackgroundFetchAsync
+  unregisterBackgroundFetchAsync,
+  usePushNotifications,
 } from '@src/hooks';
 
 import { useFonts } from 'expo-font';
 import { FONT_FILES } from '@fonts';
 import { RootStackParamList } from '@src/types';
-// import usePushNotifications from '@src/hooks';
+import {
+  checkActiveStatus, background_func,
+ } from '@src/helper';
+
+
+// TaskManager.defineTask(BGTASKS.CHECK_ONLINE_STATUS, background_func);
+TaskManager.defineTask(BGTASKS.APP_START_STATUS, checkActiveStatus);
+
+const LINK_CONFIG = {
+  screens: {
+    ConfirmEmail: 'confirmation/:code',
+    Reset: 'reset/:code',
+  },
+};
 
 export default function App() {
 
-  // Load font files in the program.
-  useFonts(FONT_FILES);
+  useFonts(FONT_FILES); // Load font files in the program.
+  usePushNotifications(); // Register the push notification for the app.
 
+  const pre = Linking.createURL('');
   const { isUpdatePending } = Updates.useUpdates();
   const navigationRef = useNavigationContainerRef<RootStackParamList>()
 
-  usePushNotifications();
+  const linking = useMemo(() => ({
+    prefixes: ['https://insightify.ablestate.africa', pre],
+    LINK_CONFIG,
+  }
+  ), []);
+
+  // update when user is online.
+  // const checkStatusAsync = async () => {
+  //   const isRegistered = await TaskManager.isTaskRegisteredAsync(BGTASKS.CHECK_ONLINE_STATUS);
+  //   if (isRegistered) await unregisterBackgroundFetchAsync(BGTASKS.CHECK_ONLINE_STATUS);
+  // };
+
+  // if app is open, for more days, update the app and alert the app.
+  const checkAppStatusAsync = async () => {
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(BGTASKS.APP_START_STATUS);
+    if (isRegistered) return;
+    else await registerBackgroundFetchAsync(BGTASKS.APP_START_STATUS);
+  };
+
+  // checking for the updates to update the app.
   useEffect(() => {
     if (isUpdatePending) {
       Updates.reloadAsync();
     }
   }, [isUpdatePending]);
 
-  // Register the push notification for the app.
-  const pre = Linking.createURL('');
-
-  TaskManager.defineTask(BGTASKS.CHECK_ONLINE_STATUS, useNetworkStatus);
+  // effect for the background task.
   useEffect(() => {
-    registerBackgroundFetchAsync();
-    return () => {
-      unregisterBackgroundFetchAsync();
-    };
+    // checkStatusAsync();
+    checkAppStatusAsync();
   }, []);
-
-  const config = {
-    screens: {
-      ConfirmEmail: 'confirmation/:code',
-      Reset: 'reset/:code',
-    },
-  };
-
-  const linking = {
-    prefixes: ['https://insightify.ablestate.africa', pre],
-    config,
-  };
 
   return (
     <NavigationContainer ref={navigationRef} linking={linking}>

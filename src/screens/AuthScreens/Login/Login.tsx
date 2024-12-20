@@ -7,7 +7,7 @@ import { AppContext } from '@src/context/AppContext'
 import { InputText, SubmitButton, Dialog } from '@components/index'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { login } from '@api/auth';
-import { IDialogBox, LoginScreenProps } from '@src/types';
+import { IDialogProps, LoginScreenProps } from '@src/types';
 import { handleBookmark } from '@src/helper/handleFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -24,7 +24,7 @@ const Login: React.FC = () => {
   const { title, opportunityID } = route.params;
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  const [dialog, setDialog] = React.useState<IDialogBox>({
+  const [dialog, setDialog] = React.useState<IDialogProps>({
     visible: false,
     title: '',
     message: '',
@@ -64,7 +64,7 @@ const Login: React.FC = () => {
         setJwt(response?.jwt);
         const is_community_member = await getFilteredData('community-members', 'email', '$eq', response?.user.email);
         const isMember = is_community_member.length > 0;
-        setUser((prev: any) => ({ ...response?.user, isMember }));
+        setUser({ ...response?.user, isMember });
         setXp(response?.user.totalXP ? response?.user.totalXP : 0);
         setIsLoggedIn(true);
         storeToLocalStorage('isMember', { isMember });
@@ -92,7 +92,7 @@ const Login: React.FC = () => {
           }
         }
       } else {
-        setDialog((prev: IDialogBox) =>
+        setDialog((prev: IDialogProps) =>
         ({
           ...prev,
           visible: true,

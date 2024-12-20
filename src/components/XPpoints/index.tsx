@@ -10,10 +10,10 @@ import { RootStackParamList } from '@src/types';
 
 interface XPpointProps {
   number: number;
-  navigation: NativeStackNavigationProp<RootStackParamList>
+  navigation?: NativeStackNavigationProp<RootStackParamList>
   inCommunity: boolean;
 }
-const Index = ({ number, navigation, inCommunity }: XPpointProps) => {
+const Index = ({ number=0, navigation, inCommunity = false}: XPpointProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.xpView}>
@@ -25,7 +25,9 @@ const Index = ({ number, navigation, inCommunity }: XPpointProps) => {
         size={15}
         color={COLOR.GREY_300}
         style={styles.icon}
-        onPress={() => navigation.navigate('ChatRoom')} />}
+        onPress={() => {
+          if (navigation) navigation.navigate('ChatRoom')
+        }} />}
     </View>
   )
 }

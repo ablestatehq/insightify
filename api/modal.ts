@@ -58,12 +58,19 @@ export const MODALS = {
   }`,
 
   'techTips': `query($start: Int, $limit: Int){
+<<<<<<< HEAD
     techTips(sort: "publishedAt:desc", pagination: { start: $start, limit: $limit }){
     meta {
         pagination {
           total
         }
       }
+=======
+    techTips(sort: "publishedAt:desc", pagination: { 
+          start: $start, 
+          limit: $limit 
+        }){
+>>>>>>> new-structure
       data{
         id
         attributes{
@@ -78,6 +85,7 @@ export const MODALS = {
     }
   }`,
 
+<<<<<<< HEAD
   'opportunities': `query($start: Int, $limit: Int){
     opportunities(sort: "publishedAt:desc", pagination: { start: $start, limit: $limit }){
     meta {
@@ -85,6 +93,14 @@ export const MODALS = {
           total
         }
       }
+=======
+  'opportunities': `query($start: Int, $limit: Int) {
+    opportunities(sort: "publishedAt:desc",
+    pagination: {
+          start: $start, 
+          limit: $limit 
+        }){
+>>>>>>> new-structure
       data{
         id,
         attributes{
@@ -116,6 +132,14 @@ export const MODALS = {
           },
         }
       }
+        meta {
+          pagination {
+            total
+            page
+            pageSize
+            pageCount
+          }
+        }
     }
   }`,
 
@@ -124,8 +148,15 @@ export const MODALS = {
 
     }
   }`,
+<<<<<<< HEAD
   'communityMembers':`query($start: Int, $limit: Int){
   communityMembers(pagination: { start: $start, limit: $limit }){
+=======
+  'communityMembers':`query($start:Int, $limit: Int){
+  communityMembers(pagination: {
+          start: $start,
+          limit: $limit}){
+>>>>>>> new-structure
     data{
       id,
       attributes{
@@ -136,15 +167,30 @@ export const MODALS = {
         primaryRole
       }
     }
+    meta {
+          pagination {
+            total
+            page
+            pageSize
+            pageCount
+          }
+        }
   }
   }`,
   'products':`query($start: Int, $limit: Int){
+<<<<<<< HEAD
   products(pagination: { start: $start, limit: $limit }){
   meta {
         pagination {
           total
         }
       }
+=======
+  products(pagination: {
+          start: $start, 
+          limit: $limit 
+}){
+>>>>>>> new-structure
     data{
       id
       attributes{
@@ -181,7 +227,88 @@ export const MODALS = {
         meta
       }
     }
+    meta {
+          pagination {
+            total
+            page
+            pageSize
+            pageCount
+          }
+        }
   }
+  }`,
+'posts': `query($start: Int, $limit: Int) {
+  posts(pagination: {
+          start: $start, 
+          limit: $limit 
+        }) {
+    data {
+      id
+      attributes {
+        author{
+         data{
+          attributes{
+            firstName
+            lastName
+            email
+            photo{
+              data {
+                id
+                attributes {
+                  url
+                }
+          }
+            }
+          }
+         }
+        }
+        content
+        createdAt
+        updatedAt
+        topics {
+          data {
+            id
+            attributes {
+              name
+              slug
+              description
+              usageCount
+              isTrending
+            }
+          }
+        }
+        type
+        views
+        poll {
+          data {
+            id
+            attributes {
+              # options 
+              endDate
+              isMultipleChoice
+              status
+            }
+          }
+        }
+        media {
+          data {
+            id
+            attributes {
+              url
+            }
+          }
+        }
+      }
+    }
+      meta {
+          pagination {
+            total
+            page
+            pageSize
+            pageCount
+          }
+        }
   }
+}
 `
 }

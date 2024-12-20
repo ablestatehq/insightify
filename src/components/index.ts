@@ -1,36 +1,41 @@
-export {default as Button} from './Button'
-export {default as SignUpWith} from './SignUpWith'
-export {default as Loader} from './Loading/Loader'
-export {default as ProfileForm} from './ProfileForm'
-export {default as HTMLText} from './Cards/HTMLText'
-export {default as TipFooter} from './Cards/TipFooter'
-export {default as FormModal} from './Modals/FormModal'
-export {default as TagInput} from './TagInput/TagInput'
-export {default as FilterCard} from './Cards/FilterCard'
-export {default as FloatingButton} from './FloatingButton'
-export {default as CodeSnippet} from './Cards/CodeSnippet'
-export {default as CustomModal} from './Modals/CustomModal'
-export {default as JoinCommunity} from './Modals/JoinCommunityModal'
-export {default as Header} from '../components/Headers/Header/Header'
-export {default as OpportunityCard} from './Cards/OpportunityItemCard'
-export {default as OpportunityHeader} from './Headers/OpportunityHeader'
-export {default as InputText} from './FomikComponents/InputText/InputText'
-export {default as CategorySection} from './CategorySection/CategorySection'
-export {default as SubmitButton} from './FomikComponents/SubmitButton/SubmitButton'
-export {default as ExpandableItemList} from './CodeTips/ExpandableListItem/ExpandableListItem'
+// header
+export { default as Header } from './headers/Header/Header';
+export { default as OpportunityHeader } from './headers/OpportunityHeader';
+
+export { default as CategorySection } from './CategorySection/CategorySection';
+export { default as XPpoint } from './XPpoints';
+
+// form components
+export {default as TagInput} from './forms/TagInput/TagInput'
+export {default as InputText} from './forms/InputText/InputText'
+export { default as SubmitButton } from './forms/SubmitButton/SubmitButton'
+
+// card components
+export {default as TipCard} from './cards/TipCard';
+export {default as HTMLText} from './cards/HTMLText'
+export {default as FilterCard} from './cards/FilterCard'
+export {default as CodeSnippet} from './cards/CodeSnippet'
+export {default as ProductCard} from './cards/ProductCard';
+export {default as ProfileCard} from './cards/ProfileCard/ProfileCard';
+
+// modal components
+export {default as FormModal} from './modals/FormModal'
+export {default as CustomModal} from './modals/CustomModal'
+export {default as JoinCommunity} from './modals/JoinCommunityModal'
+export { default as Dialog } from './modals/Dialog';
+
+// comments components
+export {default as Comment_} from './comment'
+export {default as Button} from './common/Button'
+export {default as Loader} from './common/Loading/Loader'
+export { default as CommentList } from './comment-list';
 export {default as CommentSection} from './Comments/Comments'
-export {default as IconLabel} from './IconLabelPair'
-export {default as ProfileCard} from './Cards/ProfileCard/ProfileCard';
-export {default as ProductCard} from './Cards/ProductCard';
-export {default as TipCard} from './Cards/TipCard';
-export {default as SeeMore} from './SeeMore'
-export {default as OpportunityItem} from './Cards/OpportunityItem';
-export {default as XPpoint} from './XPpoints';
-export {default as CompleteProfile} from './CompleteProfile'
-export {default as Fragment} from './withSeeMore'
-export {default as SendCard} from './Cards/SendCard'
-export {default as MessageList} from './MessageList'
-export {default as EmptyState} from './EmptyState'
-export {default as Dialog} from './Dialog';
-export {default as HomeItem} from './HomeItemCard';
-export {default as Message} from './Cards/Message'
+export {default as FloatingButton} from './common/FloatingButton'
+
+// common 
+export {default as Dot} from './common/dot';
+export {default as SeeMore} from './common/SeeMore'
+export {default as Fragment} from './common/withSeeMore'
+export {default as EmptyState} from './common/EmptyState'
+export {default as IconLabel} from './common/IconLabelPair'
+export { default as ListFooter } from './common/listFooter/ListFooter';

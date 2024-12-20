@@ -1,9 +1,14 @@
 import {MODALS} from "./modal";
 import {environments} from "../src/constants/environments";
+import { STRAPI_BASE_URL } from "@env";
 
-const {STRAPI_TOKEN, BASE_URL} = environments;
+const {STRAPI_TOKEN, BASE_URL, NEWS_API_KEY, NEWS_URL} = environments;
 
-async function getData(endpoint: keyof typeof MODALS, start: number = 0, limit: number = 25) {
+async function getData(
+  endpoint: keyof typeof MODALS,
+  start: number = 0,
+  limit: number = 25
+) {
   try {
     const query = MODALS[endpoint];
     const response = await fetch(`${BASE_URL}/graphql`, {
@@ -13,11 +18,37 @@ async function getData(endpoint: keyof typeof MODALS, start: number = 0, limit: 
         'Authorization': `Bearer ${STRAPI_TOKEN}`,
         'X-REQUEST-TYPE': 'GraphQL'
       },
-      body: JSON.stringify({query, variables: {start, limit}})
+      body: JSON.stringify({
+        query, 
+        variables: { 
+          start, 
+          limit 
+        }
+      })
     });
 
-    const data = await response.json();
+    const responseData = await response.json();
 
+    // Handle GraphQL errors
+    if (responseData.errors) {
+      return {
+        data: null,
+        error: responseData.errors,
+        meta: null
+      };
+    }
+
+    // process the data
+    if (responseData.data) {
+      const dataKey = Object.keys(responseData.data)[0];
+      const rawData = responseData.data[dataKey];
+
+      const results = rawData.data.map((res: any) => ({
+        id: res.id,
+        ...res.attributes
+      }));
+
+<<<<<<< HEAD
     if (data.data) {
       const hasMore = start + limit < data.data[`${endpoint}`].meta.pagination.total;
       const results = data.data[`${endpoint}`]['data'].map((res: any) => {
@@ -33,14 +64,38 @@ async function getData(endpoint: keyof typeof MODALS, start: number = 0, limit: 
       data: null,
       error: data?.error,
       hasMore: false,
+=======
+      return {
+        data: results,
+        error: null,
+        meta: {
+          pagination: rawData.meta?.pagination || null,
+          total: rawData.meta?.pagination?.total || results.length
+        }
+      };
+>>>>>>> new-structure
     }
 
-  } catch (error) {
     return {
+<<<<<<< HEAD
       error,
       data: null,
       hasMore: false
     }
+=======
+      data: null,
+      error: 'No data found',
+      meta: null
+    };
+
+  } catch (error) {
+    console.error('getData error:', error);
+    return {
+      data: null,
+      error: error instanceof Error ? error.message : 'An unknown error occurred',
+      meta: null
+    };
+>>>>>>> new-structure
   }
 }
 
@@ -73,51 +128,82 @@ async function fetchNewItems(endpoint: keyof typeof MODALS) {
   return [];
 };
 
-async function createEntry(endpoint: string, data: any) {
-  try {
-    const createData = await fetch(`${BASE_URL}/graphql`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${STRAPI_TOKEN}`,
-        'X-REQUEST-TYPE': 'GraphQL'
-      },
-    })
-  } catch (error) {
-    return {
-      error, 
-      data: null
+async function fetchDataByID(endpoint: string, itemID: number): Promise<{ data: any, error: any }> {
+  if(endpoint && itemID) {
+    try {
+      const response = await fetch(`${STRAPI_BASE_URL}/${endpoint}/${itemID}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${STRAPI_TOKEN}`
+        }
+      });
+      const data_ = await response.json();
+      const data = data_?.data ? {...data_.data?.attributes, id: data_.data?.id} : null;
+      return {
+        data,
+        error: null
+      }
+    } catch (error) {
+      return {
+        data: null,
+        error
+      }
     }
   }
+  return {
+    data: null,
+    error: new Error('endpoint or itemID is missing')
+  }
 }
-
-async function uploadImage(uri: string, jwt: string, refId: string, field: string, imageName: string) {
-  const response = await fetch(uri);
-  const blob = await response.blob();
-  const mutation = `mutation UploadImage($file: Upload!, $refId: ID!, $ref: String!, $field: String!, $imageName: String!) {
-    upload(
-      file: $file
-      name: $imageName
-      refId: $refId
-      ref: $ref
-      field: $field
-      source: "content-manager"
-    ) {
-      id
-      url
-    }
-  }`
-
-  const variables = {
-    file: {uri: uri, name: 'test.png', type: 'image/jpeg'},
-    refId: refId,
-    ref: "plugin::users-permissions.user",
-    field: field,
-    imageName: imageName
-  };
+async function uploadImage(
+  uri: string,
+  jwt: string,
+  refId: string,
+  field: string,
+  imageName: string
+): Promise<{ data: any, error: any }> {
+  if (!uri || !jwt || !refId || !field || !imageName) {
+    return {
+      data: null,
+      error: new Error('Missing parameters')
+    };
+  }
 
   try {
-    const response = await fetch('https://insightify-admin.ablestate.cloud/graphql', {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    if (!blob) {
+      return {
+        data: null,
+        error: new Error('Failed to fetch image')
+      };
+    }
+
+    const mutation = `mutation UploadImage($file: Upload!, $refId: ID!, $ref: String!, $field: String!, $imageName: String!) {
+      upload(
+        file: $file
+        name: $imageName
+        refId: $refId
+        ref: $ref
+        field: $field
+        source: "content-manager"
+      ) {
+        id
+        url
+      }
+    }`;
+
+    const variables = {
+      file: {uri: uri, name: 'test.png', type: 'image/jpeg'},
+      refId: refId,
+      ref: "plugin::users-permissions.user",
+      field: field,
+      imageName: imageName
+    };
+
+    const response2 = await fetch('https://insightify-admin.ablestate.cloud/graphql', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${jwt}`,
@@ -130,19 +216,19 @@ async function uploadImage(uri: string, jwt: string, refId: string, field: strin
       })
     });
 
-    const imageResponse = await response.json();
+    const imageResponse = await response2.json();
 
-    if (imageResponse?.data) {
-      return {
-        data: imageResponse?.data,
-        error: null
-      };
-    } else {
+    if (!imageResponse?.data) {
       return {
         data: null,
         error: imageResponse?.errors
       };
     }
+
+    return {
+      data: imageResponse?.data,
+      error: null
+    };
   } catch (error) {
     return {
       data: null,
@@ -151,18 +237,36 @@ async function uploadImage(uri: string, jwt: string, refId: string, field: strin
   }
 }
 
+async function get_top_news() {
+   try {
+    const response = await fetch(`${NEWS_URL}/news`, {
+      method: 'GET',
+    });
 
+<<<<<<< HEAD
 async function login(email:string, password: string) {
   const mutation = `mutation {
   login(input: { identifier: ${email}, password: ${password} }) {
     jwt
   }`;
+=======
+     const data = await response.json();
+     return data;
+   } catch (error) {
+     return error;
+  }
+>>>>>>> new-structure
 }
 
 export {
+  get_top_news,
   getData,
   uploadImage,
+<<<<<<< HEAD
   createEntry,
   fetchNewItems,
+=======
+>>>>>>> new-structure
   fetchNextBatch,
+  fetchDataByID
 }

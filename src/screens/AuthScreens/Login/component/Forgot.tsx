@@ -1,7 +1,7 @@
 import { Text, StyleSheet, View, StatusBar } from "react-native";
 import React, { useCallback, useMemo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import Header from "@components/Headers/Header";
+import Header from "@src/components/headers/Header";
 import { Button, InputText } from "@components/index";
 import { COLOR } from "@constants/constants";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";

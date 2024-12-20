@@ -10,4 +10,7 @@ export const environments = {
   STRAPI_TOKEN: process.env.STRAPI_TOKEN,
   STRAPI_BASE_URL: process.env.STRAPI_BASE_URL,
   STRAPI_TALENT_FORM_API_KEY: process.env.STRAPI_TALENT_FORM_API_KEY,
+  NEWS_API_KEY: process.env.NEWS_API,
+  GEMINI_API_KEY: process.env.GEMINI_API,
+  NEWS_URL: process.env.NEWS_URL,
 }

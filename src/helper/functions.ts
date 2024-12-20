@@ -1,3 +1,4 @@
+import { Platform, Linking } from "react-native"
 import {UserProfile} from "@src/types";
 import {
   differenceInDays,
@@ -8,6 +9,7 @@ import {
   differenceInMonths,
   differenceInYears,
 } from 'date-fns';
+import { retrieveLocalData, storeToLocalStorage } from "@src/utils/localStorageFunctions";
 
 export function resourceAge(date: Date) {
   const publishedAt = new Date(date);
@@ -15,25 +17,24 @@ export function resourceAge(date: Date) {
   
   const seconds = differenceInSeconds(currentDate, publishedAt);
   const minutes = differenceInMinutes(currentDate, publishedAt);
-  if (minutes < 1) return seconds == 0 ? 'just now' : `${seconds} secs`;
+  if (minutes < 1) return seconds < 1 ? 'just now' : `${seconds} secs ago`;
   if (minutes < 60) return `${minutes} min`;
   
   const hours = differenceInHours(currentDate, publishedAt);
-  if (hours < 24) return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+  if (hours < 24) return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
   
   const days = differenceInDays(currentDate, publishedAt);
-  if (days < 7) return `${days} ${days === 1 ? 'day' : 'days'}`;
+  if (days < 7) return `${days} ${days === 1 ? 'day' : 'days'} ago`;
   
   const weeks = differenceInWeeks(currentDate, publishedAt);
-  if (weeks < 4) return `${weeks} ${weeks === 1 ? 'week' : 'weeks'}`;
+  if (weeks < 4) return `${weeks} ${weeks === 1 ? 'week' : 'weeks'} ago`;
   
   const months = differenceInMonths(currentDate, publishedAt);
-  if (months < 12) return `${months} ${months === 1 ? 'month' : 'months'}`;
+  if (months < 12) return `${months} ${months === 1 ? 'month' : 'months'} ago`;
 
   const years = differenceInYears(currentDate, publishedAt);
-  return `${years} yrs`
+  return `${years} yrs ago`
 }
-
 
 export function contentLifeSpan(date:string):string {
   const publishedAt = new Date(date);
@@ -68,7 +69,6 @@ export function contentLifeSpan(date:string):string {
     return `${seconds}sec`
   }
 };
-
 
 export const generateTransactionRef = (length:number) => {
   var result = '';
@@ -114,5 +114,87 @@ export function isProfileComplete(user: UserProfile): boolean {
   )
 }
 
-export function awardPoints(userId: number, productId: number, interactionType: string) {
+export const contactPressed = (contactProvider: string) => {
+  switch (contactProvider) {
+    case 'tel':
+      let number = ''
+      if (Platform.OS === 'ios') {
+        number = 'telprompt:${+256756085187}'
+      } else {
+        number = 'tel:${+256756085187}'
+      }
+      Linking.openURL(number)
+      break
+    case 'youtube':
+      Linking.openURL('youtube://@ablestatehq')
+        .catch(() => {
+          Linking.openURL('https://www.youtube.com/@ablestate');
+        });
+      break
+    case 'email':
+      break
+    case 'twitter':
+      Linking.openURL('twitter://@ablestatehq')
+        .catch(() => {
+          Linking.openURL('https://twitter.com/ablestatehq')
+        });
+      break
+    case 'linkedIn':
+      Linking.openURL('linkedin://@ablestatehq')
+        .catch(() => {
+          Linking.openURL('https://www.linkedin.com/company/ablestatehq/posts/?feedView=all');
+        })
+      break
+    case 'instagram':
+      Linking.openURL('instagram://@ablestatehq')
+        .catch(() => {
+          Linking.openURL('https://www.instagram.com/ablestatehq/');
+        })
+      break
+    default:
+      break
+  }
 }
+
+export function kSeparator(num: number): string {
+  let count: number = 0;
+  while (num >= 1000) {
+    num = num / 1000;
+    count++;
+  }
+  
+  num = Number(num.toFixed(1));
+  
+  switch(count) {
+    case 1:
+      return `${num}K`
+    case 2:
+      return `${num}M`
+    case 3:
+      return `${num}B`
+    case 5: 
+      return `${num}T`
+    default:
+      return `${num}`
+  }
+}
+
+export const calculateInactiveDays = async () => {
+    try {
+      // Retrieve the last open date from AsyncStorage
+      const lastOpenDate = await retrieveLocalData('lastOpenDate');
+      const currentDate = new Date();
+      await storeToLocalStorage('lastOpenDate', currentDate);
+      if (lastOpenDate) {
+        const lastOpen = new Date(lastOpenDate);
+        const timeDiff = currentDate.getTime() - lastOpen.getTime();
+        const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        return daysDiff;
+      } else {
+        // First time the app is opened
+        return 0;
+      }      
+    } catch (error) {
+      console.error('Error calculating inactive days:', error);
+    }
+  };

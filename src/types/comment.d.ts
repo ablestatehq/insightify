@@ -19,4 +19,6 @@ export interface Comment {
   createdAt?: string,
   updatedAt?: string,
   reports?: []
+  gotThread?: boolean;
+  children?: Comment[];
 };
