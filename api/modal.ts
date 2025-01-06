@@ -42,14 +42,14 @@ export const MODALS = {
   }`,
 
   'notificationTokens': `query{
-  notificationTokens(sort: "publishedAt:desc", pagination: {start: 0, limit: 25}){
-    data{
-      id,
-      attributes{
-        tokenID
+    notificationTokens(sort: "publishedAt:desc", pagination: {start: 0, limit: 25}){
+      data{
+        id,
+        attributes{
+          tokenID
+        }
       }
     }
-  }
   }`,
 
   'techTips': `query($start: Int, $limit: Int){
@@ -73,50 +73,50 @@ export const MODALS = {
 
   'opportunities': `query($start: Int, $limit: Int) {
     opportunities(sort: "publishedAt:desc",
-    pagination: {
-          start: $start, 
-          limit: $limit 
-        }){
-      data{
-        id,
-        attributes{
-          Title,
-          Category,
-          Role,
-          URL,
-          Expires,
-          Location,
-          publishedAt,
-          compensation, 
-          Company,
-          Description,
-          company_logo{
-            data{
-              id,
-              attributes{
-                url
+      pagination: {
+            start: $start, 
+            limit: $limit 
+          }){
+        data{
+          id,
+          attributes{
+            Title,
+            Category,
+            Role,
+            URL,
+            Expires,
+            Location,
+            publishedAt,
+            compensation, 
+            Company,
+            Description,
+            company_logo{
+              data{
+                id,
+                attributes{
+                  url
+                }
               }
-            }
-          },
-          cover_image{
-            data{
-              id,
-              attributes{
-                url
+            },
+            cover_image{
+              data{
+                id,
+                attributes{
+                  url
+                }
               }
-            }
-          },
-        }
-      }
-        meta {
-          pagination {
-            total
-            page
-            pageSize
-            pageCount
+            },
           }
         }
-    }
+          meta {
+            pagination {
+              total
+              page
+              pageSize
+              pageCount
+            }
+          }
+      }
   }`,
 
   'sentNotifications': `query{
@@ -125,34 +125,34 @@ export const MODALS = {
     }
   }`,
   'communityMembers':`query($start:Int, $limit: Int){
-  communityMembers(pagination: {
-          start: $start,
-          limit: $limit}){
-    data{
-      id,
-      attributes{
-        email,
-        country,
-        phoneNumber,
-        isWhatsAppPhone,
-        primaryRole
-      }
-    }
-    meta {
-          pagination {
-            total
-            page
-            pageSize
-            pageCount
-          }
+    communityMembers(pagination: {
+            start: $start,
+            limit: $limit}){
+      data{
+        id,
+        attributes{
+          email,
+          country,
+          phoneNumber,
+          isWhatsAppPhone,
+          primaryRole
         }
-  }
+      }
+      meta {
+            pagination {
+              total
+              page
+              pageSize
+              pageCount
+            }
+          }
+    }
   }`,
   'products':`query($start: Int, $limit: Int){
   products(pagination: {
           start: $start, 
           limit: $limit 
-}){
+  }){
     data{
       id
       attributes{
@@ -190,13 +190,13 @@ export const MODALS = {
       }
     }
     meta {
-          pagination {
-            total
-            page
-            pageSize
-            pageCount
-          }
-        }
+      pagination {
+        total
+        page
+        pageSize
+        pageCount
+      }
+    }
   }
   }`,
 'posts': `query($start: Int, $limit: Int) {
