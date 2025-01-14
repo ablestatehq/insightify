@@ -57,7 +57,7 @@ export const AppContext = createContext<AppContextType>({
   setIsNotificationEnabled: () => { },
   notifications: [],
   setNotifications: () => { },
-  fetchAdditionalData: async (endpoint: string, start: number) => { },
+  fetchAdditionalData: async () => { },
 });
 
 
@@ -83,7 +83,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     const clientSocket = createClientSocket(jwt);
     setSocket(clientSocket);
     clientSocket.on('connect', () => {
-      clientSocket.on('onlineUsers', (data) => { });
+      clientSocket.on('onlineUsers', () => { });
     })
 
     clientSocket.on('opportunity:create', ({ data }) => {
@@ -115,14 +115,13 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       }
 
       // Opportunities, TechTips
-      const [opportunity_data, tech_tips_data] = await Promise.all([
+      const [opportunity_data] = await Promise.all([
         fetchWithCache('opportunities', () => getData('opportunities')),
         fetchWithCache('techTips', () => getData('techTips')),
       ]);
 
       // Update state
       setOpportunities(opportunity_data);
-      // setCodeTips(tech_tips_data);
 
     } catch (error: any) {
       setErrors(error);
@@ -136,42 +135,38 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       switch (endpoint) {
         case 'opportunities':
           const newOpps = await fetchNextBatch('opportunities', start);
-          if (!newOpps.data && newOpps.error) {
+          if (newOpps.error) {
+            console.error(newOpps.error);
             return;
-          } else {
-            setOpportunities(prev => {
-              const existingIds = prev.map((item) => item.id);
-              const filteredNewOpps = newOpps.data.filter((item: any) => !existingIds.includes(item.id));
-              return [...prev, ...filteredNewOpps];
-            });
           }
+          setOpportunities(prev => {
+            const existingIds = prev.map((item) => item.id);
+            const filteredNewOpps = newOpps.data.filter((item: any) => !existingIds.includes(item.id));
+            return [...prev, ...filteredNewOpps];
+          });
           break;
         case 'techtips':
-          const newTechTips = await fetchNextBatch('techTips', start as number);
-          if (!newTechTips.data && newTechTips.error) {
+          const newTechTips = await fetchNextBatch('techTips', start);
+          if (newTechTips.error) {
+            console.error(newTechTips.error);
             return;
-          } else {
-            // setCodeTips(prev => {
-            //   const existingIds = new Set(prev.map((item) => item.id));
-            //   const filteredNewOpps = newTechTips.data.filter((item: any) => !existingIds.has(item.id));
-            //   return [...prev, ...filteredNewOpps];
-            // });
           }
+          // Handle newTechTips data here
           break;
         case 'products':
-          const newProducts = await fetchNextBatch('products', start as number);
-          if (!newProducts.data && newProducts.error) {
+          const newProducts = await fetchNextBatch('products', start);
+          if (newProducts.error) {
+            console.error(newProducts.error);
             return;
-          } else {
-            // setCodeTips(prev => {
-            //   const existingIds = new Set(prev.map((item) => item.id));
-            //   const filteredNewProducts = newProducts.data.filter((item: any) => !existingIds.has(item.id));
-            //   return [...prev, ...filteredNewProducts];
-            // });
           }
+          // Handle newProducts data here
           break;
+        default:
+          console.warn(`Unknown endpoint: ${endpoint}`);
       }
-    } catch (error: any) { }
+    } catch (error: any) {
+      console.error(error);
+    }
   };
 
   const contextValue: AppContextType = {
