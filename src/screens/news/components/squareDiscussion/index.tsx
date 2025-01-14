@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Animated from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View, Image, Pressable, Text } from 'react-native';
@@ -11,6 +11,7 @@ import { Post, RootStackParamList, SquareProps } from '@src/types';
 import { COLOR, DIMEN, FONTSIZE, environments } from '@src/constants';
 
 const { BASE_URL } = environments;
+
 const DiscussionList = ({ discussions }: SquareProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -57,7 +58,7 @@ const DiscussionList = ({ discussions }: SquareProps) => {
     <View style={styles.container}>
       <Animated.FlatList
         data={discussions}
-        keyExtractor={(item, index) => `${index}-${item.id}`}
+        keyExtractor={(item) => `${item.id}`}
         renderItem={renderItem}
         ListEmptyComponent={<EmptyState text="No Discussions" />}
         contentContainerStyle={styles.scrollStyle}

@@ -3,7 +3,7 @@ import React, {
   useCallback,
   useEffect,
   useContext,
-  useMemo
+  useMemo,
 } from 'react'
 import {
   StyleSheet,
@@ -11,7 +11,7 @@ import {
   View,
   Image,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from 'react-native'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -27,7 +27,7 @@ import { Comment, RootStackParamList } from '@src/types'
 
 // component and hook imports
 import { Comment_, CommentList, Dot } from '@src/components'
-import { usePosts } from '@src/hooks'
+import { usePosts } from "@src/context/post-context"
 import { AppContext } from '@src/context'
 
 // utility imports

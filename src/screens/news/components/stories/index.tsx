@@ -73,7 +73,11 @@ const Index = ({ stories, loading }: StoryProps) => {
                 <>
                   <Text style={styles.sectionTitle}>{section.title}</Text>
                   <View style={styles.card_view_style}>
-                    {section.data.map((item) => renderStory({ item }))}
+                    {section.data.map((item, index) => (
+                      <React.Fragment key={`${item.id}-${index}`}>
+                        {renderStory({ item })}
+                      </React.Fragment>
+                    ))}
                   </View>
                 </>
               );
