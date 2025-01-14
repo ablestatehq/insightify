@@ -9,10 +9,11 @@ import {
 // constants
 import { COLOR, DIMEN } from '@constants/constants'
 import {
-  XPpoint, Fragment,
+  XPpoint,
+  Fragment,
   TipCard,
   SeeMore,
-  EmptyState
+  EmptyState,
 } from '@src/components';
 import HomeItem from './components/HomeItemCard'
 import CompleteProfile from './components/CompleteProfile';
