@@ -119,7 +119,6 @@ const LearningPath = () => {
           fieldName={'resources_available'}
           placeholder='E.g., Online courses, Books, Workshops'
         />
-
         <InputText
           label="What is your technical background?"
           fieldName={'technical_background'}
